@@ -4,6 +4,20 @@
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
   <version>1.0</version>
+  
+  <properties>
+    <release.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</release.repo.url>
+    <snapshot.repo.id>google-project</snapshot.repo.id>
+    <snapshot.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</snapshot.repo.url>
+    <release.repo.id>google-project</release.repo.id>
+    
+	<!-- SCM properties  -->
+	<addTimestamp>true</addTimestamp>
+	<tag>${pom.artifactId}-${pom.version}</tag>
+	<tagBase>https://maven-confluence-plugin.googlecode.com/svn/tags</tagBase>
+    
+  </properties>
+  
   <build>
   	<plugins>
 	<plugin>
@@ -14,10 +28,38 @@
 	  </configuration>
 	</plugin>
   	</plugins>
+  	
+	<extensions>
+	
+	      <extension>
+	        <groupId>org.jvnet.wagon-svn</groupId>
+	        <artifactId>wagon-svn</artifactId>
+	        <version>1.8</version>	
+	      </extension>
+	
+	</extensions>  	
   </build>
   <modules>
   	<module>maven-confluence-core</module>
   	<module>maven-confluence-reporting-plugin-plugin</module>
   	<module>maven-confluence-reporting-plugin</module>
   </modules>
+  
+  <distributionManagement>
+  	
+    <repository>
+      <id>${release.repo.id}</id>
+      <name>central</name>
+      <url>${release.repo.url}</url>
+    </repository>
+    <snapshotRepository>
+      <id>${snapshot.repo.id}</id>
+      <name>snapshots</name>
+      <url>${snapshot.repo.url}</url>
+    </snapshotRepository>
+    <site>
+    </site>
+
+  </distributionManagement>
+  
 </project>
