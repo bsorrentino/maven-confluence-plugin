@@ -25,6 +25,7 @@
   </scm>
 
   <reporting>
+    <outputDirectory>${basedir}/../maven-confluence-reporting-plugin-docs</outputDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
