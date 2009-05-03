@@ -1,0 +1,44 @@
+
+Repository
+
++-------------------------------------------+
+
+<pluginRepositories>
+  	<pluginRepository>
+  		<id>google-project</id>
+  		<url>http://maven-confluence-plugin.googlecode.com/svn/mavenrepo</url>
+  	</pluginRepository>
+</pluginRepositories>
+
++-------------------------------------------+
+
+
+Usage
+
++-------------------------------------------+
+  <reporting>
+    <outputDirectory>.</outputDirectory>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.bsc.maven</groupId>
+  			<artifactId>maven-confluence-reporting-plugin</artifactId>
+  			<version>1.0.0-SNAPSHOT</version>
+  			<reportSets>
+  				<reportSet>
+  					<id>confluence</id>
+  					<configuration>
+  						<endPoint>http://localhost:8081/rpc/xmlrpc</endPoint>
+  						<spaceKey>DOCS</spaceKey>
+						<password>bartolo</password>
+  					</configuration>
+  					<reports>
+  						<report>confluence-summary</report>				
+  					</reports>
+  				</reportSet>
+  			</reportSets>			
+  
+  		</plugin>
+  	</plugins>
+  </reporting>
++-------------------------------------------+
+ 

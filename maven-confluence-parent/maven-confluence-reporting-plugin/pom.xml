@@ -9,47 +9,32 @@
   <description>
 	plugin that document a project's component
 </description>
-  
+  <url>http://code.google.com/p/maven-confluence-plugin/</url>
+  <name>maven-confluence-plugin - ${version}</name>
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
     <version>1.0</version>
   </parent>
   
-  <properties>
-    <release.repo.url>https://asia.herzumsoftware.com/artifactory/private-internal-repository</release.repo.url>
-    <snapshot.repo.id>hs-central</snapshot.repo.id>
-    <snapshot.repo.url>https://asia.herzumsoftware.com/artifactory/private-internal-repository</snapshot.repo.url>
-    <release.repo.id>hs-central</release.repo.id>
-    
-	<!-- SCM properties  -->
-	<addTimestamp>true</addTimestamp>
-	<tag>${pom.artifactId}-${pom.version}</tag>
-	<tagBase>https://africa.herzumsoftware.com/svn/tags/factory</tagBase>
-    
-  </properties>
   
   <scm>
-  	<connection>scm:svn:https://africa.herzumsoftware.com/svn/trunk/softwarefactory/tool/cosm-reporting-plugin</connection>
-	<developerConnection>scm:svn:https://africa.herzumsoftware.com/svn/trunk/softwarefactory/tool/cosm-reporting-plugin</developerConnection>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</developerConnection>
 	<tag/>
-	<url>https://africa.herzumsoftware.com/svn/trunk/softwarefactory/tool/cosm-reporting-plugin</url>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</url>
   </scm>
 
-  <distributionManagement>
-  	
-    <repository>
-      <id>${release.repo.id}</id>
-      <name>central</name>
-      <url>${release.repo.url}</url>
-    </repository>
-    <snapshotRepository>
-      <id>${snapshot.repo.id}</id>
-      <name>snapshots</name>
-      <url>${snapshot.repo.url}</url>
-    </snapshotRepository>
-  </distributionManagement>
-  
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      
+    </plugins>
+  </reporting>
+    
   <build>
     <plugins>
       <plugin>
@@ -125,4 +110,11 @@
     </dependency>
      
   </dependencies>
+  <distributionManagement>
+  	<site>
+  		<id>google-project</id>
+  		<url>svn:https://maven-confluence-plugin.googlecode.com/svn/docs</url>
+  	
+  	</site>
+  </distributionManagement>
 </project>
