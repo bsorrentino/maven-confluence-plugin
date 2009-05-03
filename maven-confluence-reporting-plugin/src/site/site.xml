@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+    
+    
+  <body>
+    <menu name="Overview">
+    
+    	<item name="Goals" href="confluence-summary-mojo.html"/>
+    	<item name="Usage" href="usage.html"/>
+
+    </menu>
+
+    <menu name="Summary" >
+    	
+    	<item name="Dependencies" href="dependencies.html" />
+    	<item name="Source" href="source-repository.html" />
+    
+    </menu>
+
+
+
+<!-- 
+	<menu name="summary" ref="reports" />     
+
+    <menu name="Examples">
+      <item name="Creating Content" href="/examples/creating-content.html"/>
+      <item name="Configuring the Site Descriptor" href="/examples/sitedescriptor.html"/>
+      <item name="Configuring Reports" href="/examples/configuring-reports.html"/>
+      <item name="Configuring Site Run" href="/examples/siterun.html"/>
+      <item name="Changing the Template File" href="/examples/templatefile.html"/>
+      <item name="Creating Skins" href="/examples/creatingskins.html"/>
+      <item name="Excluding Document Formats" href="/examples/moduleexcludes.html"/>
+      <item name="Deploying to sourceforge.net" href="/examples/site-deploy-to-sourceforge.net.html"/>
+    </menu>
+-->    
+
+  </body>
+</project>
