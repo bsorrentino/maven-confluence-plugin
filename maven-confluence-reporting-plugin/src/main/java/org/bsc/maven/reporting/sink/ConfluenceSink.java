@@ -38,9 +38,13 @@ public class ConfluenceSink extends SinkAdapter implements org.codehaus.doxia.si
 	public ConfluenceSink( Writer w, org.codehaus.doxia.sink.Sink delegate ) {
 		this._s = delegate;
 		_w = new PrintWriter(w);
+		
 	}
 
-
+	public Writer getWriter() {
+		return _w;
+	}
+	
 	@Override
 	public void horizontalRule() {
 

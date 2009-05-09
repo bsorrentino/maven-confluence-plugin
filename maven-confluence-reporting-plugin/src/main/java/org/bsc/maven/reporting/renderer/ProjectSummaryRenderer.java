@@ -56,7 +56,7 @@ public class ProjectSummaryRenderer extends AbstractMavenReportRenderer {
         String homepage = project.getUrl();
         if ( homepage == null )
         {
-            homepage = "";
+            homepage = "";	
         }
 
         startSection( getReportString( "report.summary.general.title" ) );

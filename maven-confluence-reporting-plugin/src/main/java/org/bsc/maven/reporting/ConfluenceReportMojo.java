@@ -1,4 +1,5 @@
 package org.bsc.maven.reporting;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
@@ -39,6 +40,10 @@ import org.jfrog.maven.annomojo.annotations.MojoGoal;
 import org.jfrog.maven.annomojo.annotations.MojoParameter;
 import org.jfrog.maven.annomojo.annotations.MojoPhase;
 
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+
 
 
 /**
@@ -50,6 +55,12 @@ import org.jfrog.maven.annomojo.annotations.MojoPhase;
 @MojoPhase("site")
 @MojoGoal("confluence-summary")
 public class ConfluenceReportMojo extends AbstractMavenReport {
+
+	private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
+
+	private static final String PROJECT_SCM_MANAGER_VAR = "project.scmManager";
+
+	private static final String PROJECT_SUMMARY_VAR = "project.summary";
 
 	/**
 	 * Confluence end point url 
@@ -117,8 +128,6 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	@MojoComponent
 	protected I18N i18n;
 
-	protected Sink confluenceSink;
-	
 	//@MojoComponent()
 	//protected Renderer siteRenderer;
 
@@ -160,8 +169,12 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	@MojoParameter(defaultValue="${project.scm.url}")
     private String webAccessUrl;
 	
+	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Their default location is ${basedir}/src/site/confluence")
+	private java.io.File templateWiki;
 	
-	private Writer confluenceWriter;
+	//private Writer confluenceWriter;
+	//protected Sink confluenceSink;
+	
 
 	/**
 	 * 
@@ -201,37 +214,109 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	protected void executeReport(Locale locale) throws MavenReportException {
 		getLog().info( "executeReport " );
 
-        new ProjectSummaryRenderer( getSink(), 
+		MiniTemplator t = null;
+		
+		if( templateWiki==null || !templateWiki.exists()) {
+			getLog().warn("template not set! default using ...");
+			
+			java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("defaultTemplate.wiki");
+			
+			if( is==null ) {
+				final String msg = "default template cannot be found";
+				getLog().error( msg);
+				throw new MavenReportException(msg);
+			}
+			
+			try {
+				t = new MiniTemplator(new java.io.InputStreamReader(is));
+			} catch (Exception e) {
+				final String msg = "error loading template";
+				getLog().error(msg,e);
+				throw new MavenReportException(msg, e);
+			}
+		}
+		else {
+			try {
+				t = new MiniTemplator(templateWiki);
+			} catch (Exception e) {
+				final String msg = "error loading template";
+				getLog().error(msg,e);
+				throw new MavenReportException(msg, e);
+			}
+			
+		}
+		
+		{ // SUMMARY
+		
+			final StringWriter w = new StringWriter( 10 * 1024 );
+			final Sink sink = new ConfluenceSink( w ,(org.codehaus.doxia.sink.Sink) getSink());
+			//final Sink sink = getSink();
+
+			new ProjectSummaryRenderer( sink, 
 				project, 
 				i18n, 
 				locale ).render();
         
-        getSink().pageBreak();
+			try {
+				t.setVariable(PROJECT_SUMMARY_VAR, w.toString());
+			} catch (VariableNotDefinedException e) {
+				getLog().warn( String.format( "variable %s not defined in template", PROJECT_SUMMARY_VAR));
+			}
         
-        new ScmRenderer( scmManager, 
-        				getSink(), 
-        				project.getModel(), 
-        				i18n, 
-        				locale, 
-        				checkoutDirectoryName, 
-        				webAccessUrl, 
-        				anonymousConnection, 
-        				developerConnection).render();
+		}
+		
+        //getSink().pageBreak();
         
-        getSink().pageBreak();
+		{
+		
+			final StringWriter w = new StringWriter( 10 * 1024 );
+			final Sink sink = new ConfluenceSink(w,(org.codehaus.doxia.sink.Sink) getSink());
+			//final Sink sink = getSink();
 
-        new DependenciesRenderer( getSink(), 
-				project, 
-				mavenProjectBuilder, 
-				localRepository, 
-				factory, 
-				i18n, 
-				locale, 
-				resolveProject(), 
-				getLog() ).render();
+			new ScmRenderer( scmManager, 
+							sink, 
+	        				project.getModel(), 
+	        				i18n, 
+	        				locale, 
+	        				checkoutDirectoryName, 
+	        				webAccessUrl, 
+	        				anonymousConnection, 
+	        				developerConnection).render();
 
-        
-		String wiki = confluenceWriter.toString();
+			try {
+				t.setVariable(PROJECT_SCM_MANAGER_VAR, w.toString());
+			} catch (VariableNotDefinedException e) {
+				getLog().warn( String.format( "variable %s not defined in template", PROJECT_SCM_MANAGER_VAR));
+			}
+		}
+		
+        //getSink().pageBreak();
+
+		{
+			final StringWriter w = new StringWriter( 10 * 1024 );
+			final Sink sink = new ConfluenceSink(w,(org.codehaus.doxia.sink.Sink) getSink());
+			//final Sink sink = getSink();
+
+	        new DependenciesRenderer( sink, 
+					project, 
+					mavenProjectBuilder, 
+					localRepository, 
+					factory, 
+					i18n, 
+					locale, 
+					resolveProject(), 
+					getLog() ).render();
+
+			try {
+				t.setVariable(PROJECT_DEPENDENCIES_VAR, w.toString());
+			} catch (VariableNotDefinedException e) {
+				getLog().warn( String.format( "variable %s not defined in template", PROJECT_DEPENDENCIES_VAR));
+			}
+		}
+		
+		String wiki = t.generateOutput();
+
+		//String wiki = confluenceWriter.toString();
 		
 		//
 		// write in confluence
@@ -259,7 +344,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 		}
 		
 		System.out.println( "========================================");
-		System.out.println( confluenceWriter.toString() );
+		System.out.println( wiki);
 		System.out.println( "========================================");
 		
 	}
@@ -268,12 +353,14 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	public void generate(org.codehaus.doxia.sink.Sink sink, Locale locale) throws MavenReportException {
 
 		getLog().info( "generate " + sink );
-
+/*
 		confluenceWriter = new StringWriter( 10 * 1024 );
 		
 		confluenceSink = new ConfluenceSink(confluenceWriter,sink);
 		
 		super.generate((org.codehaus.doxia.sink.Sink) confluenceSink, locale);
+*/
+		super.generate(sink, locale);
 		
 	}
 
