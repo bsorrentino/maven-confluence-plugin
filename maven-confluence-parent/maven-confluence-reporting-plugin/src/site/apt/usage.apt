@@ -1,5 +1,8 @@
 
+
 Repository
+
+To use this plugin you have to include the following repository declaration in your POM
 
 +-------------------------------------------+
 
@@ -15,6 +18,8 @@ Repository
 
 Usage
 
+this plugin must be declared in reporting secion in your POM
+
 +-------------------------------------------+
   <reporting>
   	<plugins>
@@ -28,7 +33,9 @@ Usage
   					<configuration>
   						<endPoint>http://localhost:8081/rpc/xmlrpc</endPoint>
   						<spaceKey>DOCS</spaceKey>
-						<password>bartolo</password>
+  						<username>admin</username>
+						<password>******</password> <!-- CONFLUENCE PASSWORD -->
+						<parentPageTitle>Home</parentPageTitle><!-PARENT PAGE IN THE GIVEN SPACE -->
   					</configuration>
   					<reports>
   						<report>confluence-summary</report>				
@@ -40,4 +47,8 @@ Usage
   	</plugins>
   </reporting>
 +-------------------------------------------+
+
+Use generation template
+
+By default the
  
