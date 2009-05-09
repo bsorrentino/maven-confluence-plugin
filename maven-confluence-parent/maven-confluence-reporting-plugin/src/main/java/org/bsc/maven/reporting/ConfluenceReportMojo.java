@@ -169,7 +169,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	@MojoParameter(defaultValue="${project.scm.url}")
     private String webAccessUrl;
 	
-	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Their default location is ${basedir}/src/site/confluence")
+	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Default location is ${basedir}/src/site/confluence")
 	private java.io.File templateWiki;
 	
 	//private Writer confluenceWriter;
