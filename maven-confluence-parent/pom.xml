@@ -4,6 +4,7 @@
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
   <version>1.0</version>
+  <name>maven confluence plugin - parent</name>
   
   <properties>
     <release.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</release.repo.url>
@@ -17,7 +18,7 @@
 	<tagBase>https://maven-confluence-plugin.googlecode.com/svn/tags</tagBase>
     
   </properties>
-  
+
   <build>
   	<plugins>
 	<plugin>
