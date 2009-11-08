@@ -107,9 +107,19 @@
           <activation>
               <os>
                   <family>mac</family>
-                  <version>10.6</version>
+                  <version>10.6.1</version>
               </os>
           </activation>
+
+          <dependencies>
+            <dependency>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                    <version>1.5.0</version>
+                    <scope>system</scope>
+                    <systemPath>/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Home/lib/dt.jar</systemPath>
+            </dependency>
+          </dependencies>
           <build>
             <plugins>
                   <plugin>
