@@ -7,8 +7,8 @@
   <packaging>maven-plugin</packaging>
   <version>1.0.0-SNAPSHOT</version>
   <description>
-	plugin that document a project's component
-</description>
+  plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
+  </description>
   <url>http://code.google.com/p/maven-confluence-plugin/</url>
   <name>maven-confluence-plugin - ${version}</name>
   <parent>

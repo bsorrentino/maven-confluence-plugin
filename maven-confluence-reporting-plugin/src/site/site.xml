@@ -8,7 +8,8 @@
   <body>
     <menu name="Overview">
     
-    	<item name="Goals" href="confluence-summary-mojo.html"/>
+    	<item name="Summary" href="project-summary.html"/>
+    	<item name="Goals" href="plugin-info.html"/>
     	<item name="Usage" href="usage.html"/>
 
     </menu>
