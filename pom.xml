@@ -21,7 +21,6 @@
   </properties>
   <scm>
 	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</developerConnection>
-	<tag>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence</tag>
 	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</url>
   </scm>
 
