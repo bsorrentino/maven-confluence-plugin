@@ -7,12 +7,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-core</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <name>maven confluence plugin - core</name>
 
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/confluence-mojo-1.0</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/confluence-mojo-1.0</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</url>
   </scm>
   
   <profiles>
