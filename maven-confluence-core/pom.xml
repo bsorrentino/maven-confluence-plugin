@@ -11,8 +11,8 @@
   <name>maven confluence plugin - core</name>
 
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-core</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-core</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0-SNAPSHOT/maven-confluence-core</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0-SNAPSHOT/maven-confluence-core</url>
   </scm>
   
   <profiles>
