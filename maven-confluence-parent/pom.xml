@@ -17,7 +17,30 @@
 	<tag>${pom.artifactId}-${pom.version}</tag>
 	<tagBase>https://maven-confluence-plugin.googlecode.com/svn/tags</tagBase>
     
+        <jfrog.maven-plugin-anno.version>1.3.3</jfrog.maven-plugin-anno.version>
   </properties>
+
+    <repositories>
+  	<repository>
+  		<id>jfrog</id>
+  		<name>jfrog</name>
+  		<url>http://www.jfrog.org/artifactory/plugins-releases-local</url>
+  		<snapshots>
+  			<enabled>false</enabled>
+  		</snapshots>
+  	</repository>
+  </repositories>
+
+  <pluginRepositories>
+  	<pluginRepository>
+  		<id>jfrog</id>
+  		<name>jfrog</name>
+  		<url>http://www.jfrog.org/artifactory/plugins-releases-local</url>
+  		<snapshots>
+  			<enabled>false</enabled>
+  		</snapshots>
+  	</pluginRepository>
+  </pluginRepositories>
 
   <build>
   	<plugins>
@@ -42,7 +65,7 @@
   </build>
   <modules>
   	<module>maven-confluence-core</module>
-  	<module>maven-confluence-reporting-plugin-plugin</module>
+  	<!--module>maven-confluence-reporting-plugin-plugin</module-->
   	<module>maven-confluence-reporting-plugin</module>
   </modules>
   
