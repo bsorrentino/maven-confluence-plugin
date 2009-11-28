@@ -47,57 +47,19 @@ h3. POM embedded usage
     <version>1.0</version>
   </parent>
   
-  <properties>
-    
-  </properties>
 
   <scm>
   </scm>
   
   <build>
     <plugins>
-
-	<plugin>
-	  <artifactId>maven-compiler-plugin</artifactId>
-	  <configuration>
-	    <source>1.5</source>
-	    <target>1.5</target>
-	  </configuration>
-	</plugin>
-<!--       
-	<plugin>
-		<groupId>cosm.maven.plugin</groupId>
-		<artifactId>cosm-confluence-plugin</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<configuration>
-		</configuration>
-	  <dependencies>
-	    <dependency>
-	      <groupId>org.jfrog.maven.annomojo</groupId>
-	      <artifactId>maven-plugin-tools-anno</artifactId>
-	      <version>1.3.1</version>
-	      <scope>runtime</scope>
-	    </dependency>
-	  </dependencies>
-	</plugin>
--->      
     </plugins>
   </build>
-  <pluginRepositories>
-  	<pluginRepository>
-  		<id>jfrog</id>
-  		<name>jfrog</name>
-  		<url>http://www.jfrog.org/artifactory/plugins-releases</url>
-  		<snapshots>
-  			<enabled>false</enabled>
-  		</snapshots>
-  	</pluginRepository>
-  </pluginRepositories>
   <dependencies>
     <dependency>
       <groupId>org.jfrog.maven.annomojo</groupId>
       <artifactId>maven-plugin-anno</artifactId>
-      <version>1.3.1</version>
+      <version>${jfrog.maven-plugin-anno.version}</version>
     </dependency>
     <dependency>
       <groupId>org.bsc.maven</groupId>
@@ -179,29 +141,29 @@ h3. POM embedded usage
           <activation>
               <os>
                   <family>mac</family>
-                  <version>10.6</version>
+                  <version>10.6.2</version>
               </os>
           </activation>
           <build>
-            <plugins>
+            <plugins>       
                   <plugin>
                     <artifactId>maven-plugin-plugin</artifactId>
                     <!--version>2.3</version-->
 
                     <dependencies>
 
-                            <dependency>
-                                    <groupId>com.sun</groupId>
-                                    <artifactId>tools</artifactId>
-                                    <version>1.5.0</version>
-                                    <scope>system</scope>
-                                    <systemPath>/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Home/lib/dt.jar</systemPath>
-                            </dependency>
+                      <dependency>
+                        <groupId>com.sun</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>1.5.0</version>
+                        <scope>system</scope>
+                        <systemPath>/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Home/lib/dt.jar</systemPath>
+                      </dependency>
 
                       <dependency>
                         <groupId>org.jfrog.maven.annomojo</groupId>
                         <artifactId>maven-plugin-tools-anno</artifactId>
-                        <version>1.3.1</version>
+                        <version>${jfrog.maven-plugin-anno.version}</version>
                         <scope>runtime</scope>
                       </dependency>
                     </dependencies>
@@ -230,7 +192,7 @@ h3. POM embedded usage
                       <dependency>
                         <groupId>org.jfrog.maven.annomojo</groupId>
                         <artifactId>maven-plugin-tools-anno</artifactId>
-                        <version>1.3.1</version>
+                        <version>${jfrog.maven-plugin-anno.version}</version>
                         <scope>runtime</scope>
                       </dependency>
                     </dependencies>
