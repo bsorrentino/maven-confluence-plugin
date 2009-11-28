@@ -19,6 +19,11 @@
     
         <jfrog.maven-plugin-anno.version>1.3.3</jfrog.maven-plugin-anno.version>
   </properties>
+  <scm>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</developerConnection>
+	<tag/>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</url>
+  </scm>
 
     <repositories>
   	<repository>
