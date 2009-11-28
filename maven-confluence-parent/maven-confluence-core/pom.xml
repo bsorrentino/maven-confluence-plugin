@@ -10,10 +10,6 @@
   <version>1.0.0-SNAPSHOT</version>
   <name>maven confluence plugin - core</name>
 
-  <properties>
-  <tag>maven-confluence-core-${project.version}</tag>
-  </properties>
-
   <scm>
 	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</developerConnection>
 	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</url>
