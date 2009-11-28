@@ -18,8 +18,8 @@
   </parent>
   
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-reporting-plugin</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-reporting-plugin</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0-SNAPSHOT/maven-confluence-reporting-plugin</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0-SNAPSHOT/maven-confluence-reporting-plugin</url>
   </scm>
 
   <reporting>  
