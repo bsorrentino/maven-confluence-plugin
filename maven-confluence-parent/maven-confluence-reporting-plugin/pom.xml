@@ -17,9 +17,6 @@
     <version>1.0</version>
   </parent>
   
-  <properties>
-  <tag>maven-confluence-reporting-plugin-${project.version}</tag>
-  </properties>
   <scm>
 	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</developerConnection>
 	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</url>
