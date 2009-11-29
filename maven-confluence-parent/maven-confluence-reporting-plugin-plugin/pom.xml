@@ -49,6 +49,8 @@ h3. POM embedded usage
   
 
   <scm>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-reporting-plugin-plugin</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-reporting-plugin-plugin</url>
   </scm>
   
   <build>
