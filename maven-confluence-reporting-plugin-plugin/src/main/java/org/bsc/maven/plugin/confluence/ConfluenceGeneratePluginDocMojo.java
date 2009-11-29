@@ -86,6 +86,10 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
 	 */
 	@MojoParameter(expression="${confluence.password}")
 	private String password;
+
+	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Default location is ${basedir}/src/site/confluence")
+	private java.io.File templateWiki;
+
 	
     /**
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
@@ -194,7 +198,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
         try
         {
     		
-    		Confluence confluence = new Confluence( endPoint );
+            Confluence confluence = new Confluence( endPoint );
             confluence.login(username, password);
 
             File outputDir = new File( getOutputDirectory() );
@@ -204,7 +208,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
             
             Page p = confluence.getPage(spaceKey, parentPageTitle);
             
-            Generator generator = new PluginConfluenceDocGenerator(confluence, p, getLog() ); /*PluginXdocGenerator()*/;
+            Generator generator = new PluginConfluenceDocGenerator(confluence, p, templateWiki, getLog() ); /*PluginXdocGenerator()*/;
             generator.execute( outputDir, pluginDescriptor );
             
             confluence.logout();
