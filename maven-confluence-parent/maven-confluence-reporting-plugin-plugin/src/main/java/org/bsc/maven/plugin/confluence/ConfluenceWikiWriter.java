@@ -34,6 +34,10 @@ public class ConfluenceWikiWriter extends PrintWriter {
 		append( "h2. ");
 		return this;
 	}
+	public ConfluenceWikiWriter appendBigHeading() {
+		append( "h3. ");
+		return this;
+	}
 	
 	/**
 	 *  {info:title=Useful Information}
