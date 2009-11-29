@@ -134,7 +134,12 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
 
         try
         {
-            pluginDescriptor.setDependencies( PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ) );
+            java.util.List dependencies = new java.util.ArrayList();
+
+            dependencies.addAll(PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ));
+            dependencies.addAll(PluginUtils.toComponentDependencies( project.getCompileDependencies() ));
+
+            pluginDescriptor.setDependencies( dependencies );
 
             mojoScanner.populatePluginDescriptor( project, pluginDescriptor );
             
@@ -199,7 +204,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
             
             Page p = confluence.getPage(spaceKey, parentPageTitle);
             
-            Generator generator = new PluginConfluenceDocGenerator(confluence, p); /*PluginXdocGenerator()*/;
+            Generator generator = new PluginConfluenceDocGenerator(confluence, p, getLog() ); /*PluginXdocGenerator()*/;
             generator.execute( outputDir, pluginDescriptor );
             
             confluence.logout();
