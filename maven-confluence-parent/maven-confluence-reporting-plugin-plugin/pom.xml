@@ -4,7 +4,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-reporting-plugin-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <name> confluence plugin for plugin</name>
   <description><![CDATA[
 
@@ -44,13 +44,13 @@ h3. POM embedded usage
   <parent>
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </parent>
   
 
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-reporting-plugin-plugin</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.0/maven-confluence-reporting-plugin-plugin</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin-plugin</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin-plugin</url>
   </scm>
   
   <build>
@@ -75,6 +75,17 @@ h3. POM embedded usage
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-tools-api</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-impl</artifactId>
+      <version>2.0</version>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>org.apache.maven</groupId>
       <artifactId>maven-repository-metadata</artifactId>
       <version>2.0</version>
     </dependency>
@@ -87,11 +98,6 @@ h3. POM embedded usage
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-registry</artifactId>
       <version>2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-tools-api</artifactId>
-      <version>2.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -110,11 +116,7 @@ h3. POM embedded usage
       <version>2.1</version>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-impl</artifactId>
-      <version>2.0</version>
-    </dependency>
+-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
