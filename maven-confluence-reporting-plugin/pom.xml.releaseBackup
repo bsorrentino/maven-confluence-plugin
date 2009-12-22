@@ -5,7 +5,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-reporting-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.0</version>
   <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
   </description>
@@ -14,7 +14,7 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>1.1</version>
+    <version>1.0</version>
   </parent>
   
   <scm>
@@ -57,7 +57,7 @@
    <dependency>
     <groupId>org.bsc.maven</groupId>
   	<artifactId>maven-confluence-core</artifactId>
-  	<version>1.1-SNAPSHOT</version>
+  	<version>1.0</version>
    </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
@@ -65,26 +65,7 @@
       <version>1.1</version>
       <scope>test</scope>
     </dependency>
-    <!--
-    NEEDS FOR PLUGIN DOCUMENTATION
-    -->
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-tools-api</artifactId>
-      <version>2.1</version>
-    </dependency>
-<!--
-    <dependency>
-      <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-impl</artifactId>
-      <version>2.0</version>
-    </dependency>
--->
+     
   </dependencies>
   <distributionManagement>
   	<site>
@@ -127,11 +108,11 @@
                         <scope>runtime</scope>
                       </dependency>
                     </dependencies>
-            
+            <!--
                     <configuration>
-                      <goalPrefix>confluence</goalPrefix>
+                      <goalPrefix>report</goalPrefix>
                     </configuration>
-            
+            -->
                   </plugin>
             </plugins>
 
@@ -156,11 +137,6 @@
                         <scope>runtime</scope>
                       </dependency>
                     </dependencies>
-
-                    <configuration>
-                      <goalPrefix>confluence</goalPrefix>
-                    </configuration>
-
                   </plugin>
             </plugins>
 
