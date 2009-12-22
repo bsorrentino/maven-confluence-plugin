@@ -1,7 +1,5 @@
 package org.bsc.maven.reporting;
-import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,16 +39,12 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 import org.jfrog.maven.annomojo.annotations.MojoPhase;
 
 import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.TemplateSyntaxException;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 
 
 
 /**
- * 
- * @author Sorrentino
- *  
- *  @plexus.component
+ * Generate Project's documentation in confluence's wiki format
  */
 @MojoPhase("site")
 @MojoGoal("confluence-summary")
