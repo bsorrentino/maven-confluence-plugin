@@ -1,0 +1,10 @@
+
+
+h2. Index
+{toc}
+
+
+${plugin.summary}
+
+
+${plugin.goals}
