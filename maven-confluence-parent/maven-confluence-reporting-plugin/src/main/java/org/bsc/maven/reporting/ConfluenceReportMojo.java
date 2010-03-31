@@ -166,6 +166,9 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Default location is ${basedir}/src/site/confluence")
 	private java.io.File templateWiki;
 	
+	@MojoParameter(description="child pages - <child><name/>[<source/>]</child>")
+	private java.util.List<Child> children;
+	
 	//private Writer confluenceWriter;
 	//protected Sink confluenceSink;
 	
@@ -174,7 +177,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	 * 
 	 */
 	public ConfluenceReportMojo() {
-		
+		children = Collections.emptyList();
 	}
 
 	@Override
@@ -204,10 +207,44 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 		
 	}
 	
+	/**
+	 * 
+	 * 
+	 */
+	private void generateChildren(Confluence confluence, String spaceKey, String parentPageTitle, String titlePrefix ) /*throws MavenReportException*/ {
+		
+		getLog().info( String.format( "generateChildren # [%d]", children.size()) );
+
+		for( Child child : children ) {
+		
+			java.io.File source = child.getSource(getProject());
+			
+			getLog().info( child.toString() );
+			
+			try {
+				
+				final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
+				
+	            Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName())  );
+	            
+	            p.setContent(t.generateOutput());
+	            
+	            confluence.storePage(p);
+
+				
+			} catch (Exception e) {
+				final String msg = "error loading template";
+				getLog().error(msg,e);
+				//throw new MavenReportException(msg, e);
+			}
+		}
+		
+	}
+	
 	@Override
 	protected void executeReport(Locale locale) throws MavenReportException {
 		getLog().info( "executeReport " );
-
+		
 		MiniTemplator t = null;
 		
 		if( templateWiki==null || !templateWiki.exists()) {
@@ -329,6 +366,8 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
             p.setContent(wiki);
             
             confluence.storePage(p);
+            
+            generateChildren(confluence, spaceKey, title, title);
 			
 		} catch (Exception e) {
 			getLog().warn( "has been imposssible connect to confluence due exception", e );
