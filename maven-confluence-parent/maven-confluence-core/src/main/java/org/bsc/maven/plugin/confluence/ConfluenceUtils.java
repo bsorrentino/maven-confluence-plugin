@@ -115,7 +115,7 @@ public class ConfluenceUtils {
 	 */
 	public static Page getOrCreatePage( Confluence confluence, Page parentPage, String title ) throws Exception {
 		if( null==confluence ) throw new IllegalArgumentException("confluence instance is null");
-
+		
 		PageSummary pageSummary = findPageByTitle( confluence, parentPage.getId(), title);
 
     	Page result;
