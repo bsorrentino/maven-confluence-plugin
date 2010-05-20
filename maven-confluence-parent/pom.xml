@@ -7,10 +7,10 @@
   <name>maven confluence plugin - parent</name>
   
   <properties>
-    <release.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</release.repo.url>
     <snapshot.repo.id>google-project</snapshot.repo.id>
     <snapshot.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</snapshot.repo.url>
-    <release.repo.id>google-project</release.repo.id>
+    <release.repo.id>java.net-m2-repository</release.repo.id>
+    <release.repo.url>java-net:/maven2-repository/trunk/repository/</release.repo.url>
     
 	<!-- SCM properties  -->
 	<addTimestamp>true</addTimestamp>
