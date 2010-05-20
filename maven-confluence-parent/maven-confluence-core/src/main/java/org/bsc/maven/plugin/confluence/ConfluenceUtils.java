@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 
+import org.codehaus.swizzle.confluence.Attachment;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
@@ -130,7 +131,15 @@ public class ConfluenceUtils {
     		result.setTitle(title);
 
     	}
-
+    	
     	return result;
 	}
+	
+	public static void addAttchment( Confluence confluence, Page page, Attachment attachment, java.io.File source ) {
+		
+		//confluence.addAttachment(contentId, attachment, attachmentData)
+		
+		
+	}
+	
 }
