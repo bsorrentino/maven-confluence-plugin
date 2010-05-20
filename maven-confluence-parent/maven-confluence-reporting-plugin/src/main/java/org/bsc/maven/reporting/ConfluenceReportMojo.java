@@ -166,7 +166,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Default location is ${basedir}/src/site/confluence")
 	private java.io.File templateWiki;
 	
-	@MojoParameter(description="child pages - <child><name/>[<source/>]</child>")
+	@MojoParameter(description="child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
 	private java.util.List<Child> children;
 	
 	//private Writer confluenceWriter;
@@ -211,11 +211,12 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	 * 
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	private void generateChildren(Confluence confluence, String spaceKey, String parentPageTitle, String titlePrefix ) /*throws MavenReportException*/ {
 		
 		getLog().info( String.format( "generateChildren # [%d]", children.size()) );
 
-		for( Child child : children ) {
+		for( Child child : (java.util.List<Child>)children ) {
 		
 			java.io.File source = child.getSource(getProject());
 			

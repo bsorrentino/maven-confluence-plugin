@@ -649,7 +649,7 @@ public class ConfluenceSink extends SinkAdapter implements org.codehaus.doxia.si
 			// ignore text after title
 			if( Command.TITLE == c ) return;
 		}
-		_w.print( text );
+		_w.print( ConfluenceUtils.decode(text) );
 	}
 
 	@Override
