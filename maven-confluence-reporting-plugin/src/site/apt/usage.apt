@@ -15,7 +15,6 @@ Repository
 
 +-------------------------------------------+
 
-
 Usage
 
   This plugin must be declared in reporting section in your POM
@@ -36,6 +35,18 @@ Usage
   						<username>admin</username>
 						<password>******</password> <!-- CONFLUENCE PASSWORD -->
 						<parentPageTitle>Home</parentPageTitle><!-PARENT PAGE IN THE GIVEN SPACE -->
+								
+						<!-- SINCE RELEASE 1.2 - ADD CHILDREN -->	
+						<children>
+							<child>
+								<name>child1</name>
+								<source>${basedir}/src/site/confluence/child1.wiki</source>
+							</child>
+							<child>
+								<name>child2</name><!-- DEFAULT SOURCE IS ${basedir}/src/site/confluence/${name}.wiki -->
+							</child>
+						</children>
+									
   					</configuration>
   					<reports>
   						<report>confluence-summary</report>				
