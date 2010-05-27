@@ -1,1 +1,1 @@
-mvn -e clean compile -Dconfluence.spaceKey=  -Dconfluence.userName= -Dconfluence.password=B -Dconfluence.parentPage="Maven Plugins" -Dconfluence.endPoint= confluence:plugin-doc
+mvn -e clean compile -Dconfluence.spaceKey=  -Dconfluence.userName= -Dconfluence.password= -Dconfluence.parentPage="Maven Plugins" -Dconfluence.endPoint= confluence:plugin-doc
