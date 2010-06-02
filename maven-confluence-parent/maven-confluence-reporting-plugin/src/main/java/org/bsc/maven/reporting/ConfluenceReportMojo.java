@@ -19,10 +19,8 @@ import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.scm.manager.ScmManager;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
@@ -48,7 +46,7 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
  */
 @MojoPhase("site")
 @MojoGoal("confluence-summary")
-public class ConfluenceReportMojo extends AbstractMavenReport {
+public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 
 	private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
 
@@ -56,38 +54,6 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 
 	private static final String PROJECT_SUMMARY_VAR = "project.summary";
 
-	/**
-	 * Confluence end point url 
-	 */
-	@MojoParameter(expression="${confluence.endPoint}", defaultValue="http://localhost:8080/rpc/xmlrpc")
-	private String endPoint;
-
-	/**
-	 * Confluence target confluence's spaceKey 
-	 */
-	@MojoParameter(expression="${confluence.spaceKey}", required=true)
-	private String spaceKey;
-
-	/**
-	 * Confluence target confluence's spaceKey 
-	 */
-	@MojoParameter(expression="${confluence.parentPage}",defaultValue="Home")
-	private String parentPageTitle;
-	
-	/**
-	 * Confluence username 
-	 */
-	@MojoParameter(expression="${confluence.userName}",defaultValue="admin")
-	private String username;
-
-	/**
-	 * Confluence password 
-	 */
-	@MojoParameter(expression="${confluence.password}")
-	private String password;
-	
-	@MojoParameter(expression="${project}")
-	protected MavenProject project;
 
     /**
      * Local Repository.
@@ -163,12 +129,6 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	@MojoParameter(defaultValue="${project.scm.url}")
     private String webAccessUrl;
 	
-	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Default location is ${basedir}/src/site/confluence")
-	private java.io.File templateWiki;
-	
-	@MojoParameter(description="child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
-	private java.util.List<Child> children;
-	
 	//private Writer confluenceWriter;
 	//protected Sink confluenceSink;
 	
@@ -177,7 +137,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	 * 
 	 */
 	public ConfluenceReportMojo() {
-		children = Collections.emptyList();
+		super();
 	}
 
 	@Override
@@ -207,40 +167,6 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 		
 	}
 	
-	/**
-	 * 
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	private void generateChildren(Confluence confluence, String spaceKey, String parentPageTitle, String titlePrefix ) /*throws MavenReportException*/ {
-		
-		getLog().info( String.format( "generateChildren # [%d]", children.size()) );
-
-		for( Child child : (java.util.List<Child>)children ) {
-		
-			java.io.File source = child.getSource(getProject());
-			
-			getLog().info( child.toString() );
-			
-			try {
-				
-				final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
-				
-	            Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName())  );
-	            
-	            p.setContent(t.generateOutput());
-	            
-	            confluence.storePage(p);
-
-				
-			} catch (Exception e) {
-				final String msg = "error loading template";
-				getLog().error(msg,e);
-				//throw new MavenReportException(msg, e);
-			}
-		}
-		
-	}
 	
 	@Override
 	protected void executeReport(Locale locale) throws MavenReportException {
@@ -281,7 +207,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 		{ // SUMMARY
 		
 			final StringWriter w = new StringWriter( 10 * 1024 );
-			final Sink sink = new ConfluenceSink( w ,(org.codehaus.doxia.sink.Sink) getSink());
+			final Sink sink = new ConfluenceSink( w ,getSink());
 			//final Sink sink = getSink();
 
 			new ProjectSummaryRenderer( sink, 
@@ -302,7 +228,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 		{
 		
 			final StringWriter w = new StringWriter( 10 * 1024 );
-			final Sink sink = new ConfluenceSink(w,(org.codehaus.doxia.sink.Sink) getSink());
+			final Sink sink = new ConfluenceSink(w, getSink());
 			//final Sink sink = getSink();
 
 			new ScmRenderer( scmManager, 
@@ -326,7 +252,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 
 		{
 			final StringWriter w = new StringWriter( 10 * 1024 );
-			final Sink sink = new ConfluenceSink(w,(org.codehaus.doxia.sink.Sink) getSink());
+			final Sink sink = new ConfluenceSink(w,getSink());
 			//final Sink sink = getSink();
 
 	        new DependenciesRenderer( sink, 
@@ -356,19 +282,19 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 		Confluence confluence = null;
 		
 		try {
-			confluence = new Confluence(endPoint);
+			confluence = new Confluence(getEndPoint());
 			
-			confluence.login(username, password);
+			confluence.login(getUsername(), getPassword());
 			
 	    	String title = project.getArtifactId() + "-" + project.getVersion();
 
-            Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, title );
+            Page p = ConfluenceUtils.getOrCreatePage( confluence, getSpaceKey(), getParentPageTitle(), title );
             
             p.setContent(wiki);
             
             confluence.storePage(p);
             
-            generateChildren(confluence, spaceKey, title, title);
+            generateChildren(confluence, getSpaceKey(), title, title);
 			
 		} catch (Exception e) {
 			getLog().warn( "has been imposssible connect to confluence due exception", e );
@@ -384,7 +310,7 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	}
 	
 	@Override
-	public void generate(org.codehaus.doxia.sink.Sink sink, Locale locale) throws MavenReportException {
+	public void generate(org.apache.maven.doxia.sink.Sink sink, Locale locale) throws MavenReportException {
 
 		getLog().info( "generate " + sink );
 /*
@@ -473,11 +399,6 @@ public class ConfluenceReportMojo extends AbstractMavenReport {
 	@Override
 	protected String getOutputDirectory() {
 		return outputDirectory.toString();
-	}
-
-	@Override
-	protected MavenProject getProject() {
-		return project;
 	}
 
 	

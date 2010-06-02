@@ -1,8 +1,5 @@
 package org.bsc.maven.plugin.confluence;
 
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import org.apache.maven.plugin.logging.Log;
 import static org.bsc.maven.plugin.confluence.ConfluenceUtils.decode;
 
 import java.io.File;
@@ -16,12 +13,16 @@ import java.util.List;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.reporting.MavenReportException;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
-//import org.codehaus.swizzle.confluence.PageSummary;
+
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 
 /**
  * 
@@ -62,6 +63,20 @@ public class PluginConfluenceDocGenerator implements Generator {
 			throw new IOException( e.getMessage() );
 		}
     }
+	
+	/**
+	 * 
+	 */
+	public void execute(File destinationDirectory, PluginToolsRequest request) throws IOException {
+        try {
+			processMojoDescriptors(request.getPluginDescriptor());
+		} catch (Exception e) {
+			
+			throw new IOException( e.getMessage() );
+		}
+		
+	}
+
 	
 	/**
 	 * 
@@ -499,5 +514,6 @@ public class PluginConfluenceDocGenerator implements Generator {
 
         return list;
     }
+
 
 }

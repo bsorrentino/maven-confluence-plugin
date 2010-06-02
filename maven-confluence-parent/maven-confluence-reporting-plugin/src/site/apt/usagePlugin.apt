@@ -16,27 +16,50 @@ Repository
 +-------------------------------------------+
 
 
++-------------------------------------------+
+
 Usage
 
-  This plugin must be declared into build section of your POM
+  This plugin must be declared in reporting section in your POM
 
 +-------------------------------------------+
-  <build>
+  <reporting>
   	<plugins>
   		<plugin>
-                    <groupId>org.bsc.maven</groupId>
-                    <artifactId>maven-confluence-reporting-plugin</artifactId>
-                    <version>1.1-SNAPSHOT</version>
-                    <configuration>
-                            <endPoint>http://support.softphone.it/confluence/rpc/xmlrpc</endPoint>
-                            <spaceKey>DEV</spaceKey>
-                            <username></username>
-                            <password></password> <!-- CONFLUENCE PASSWORD -->
-                            <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-                    </configuration>
+  			<groupId>org.bsc.maven</groupId>
+  			<artifactId>maven-confluence-reporting-plugin</artifactId>
+  			<version>1.3</version>
+  			<reportSets>
+  				<reportSet>
+  					<id>confluence</id>
+  					<configuration>
+  						<endPoint>http://localhost:8081/rpc/xmlrpc</endPoint>
+  						<spaceKey>DOCS</spaceKey>
+  						<username>admin</username>
+						<password>******</password> <!-- CONFLUENCE PASSWORD -->
+						<parentPageTitle>Home</parentPageTitle><!-PARENT PAGE IN THE GIVEN SPACE -->
+								
+						<!-- SINCE RELEASE 1.3 - ADD CHILDREN -->	
+						<children>
+							<child>
+								<name>child1</name>
+								<source>${basedir}/src/site/confluence/child1.wiki</source>
+							</child>
+							<child>
+								<name>child2</name><!-- DEFAULT SOURCE IS ${basedir}/src/site/confluence/${name}.wiki -->
+							</child>
+						</children>
+									
+  					</configuration>
+  					<reports>
+  						<report>plugin-confluence-summary</report>				
+  					</reports>
+  				</reportSet>
+  			</reportSets>			
+  
   		</plugin>
   	</plugins>
-  </build>
+  </reporting>
 +-------------------------------------------+
 
 Use generation template
