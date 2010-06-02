@@ -17,8 +17,38 @@
 	<tag>${pom.artifactId}-${pom.version}</tag>
 	<tagBase>https://maven-confluence-plugin.googlecode.com/svn/tags</tagBase>
     
-        <jfrog.maven-plugin-anno.version>1.3.3</jfrog.maven-plugin-anno.version>
+    <jfrog.maven-plugin-anno.version>1.3.3</jfrog.maven-plugin-anno.version>
+
+    <mavenVersion>2.0.6</mavenVersion>
+    <doxiaVersion>1.0</doxiaVersion>
+    <doxia-sitetoolsVersion>1.0</doxia-sitetoolsVersion>
+    <pluginToolsVersion>2.6</pluginToolsVersion>
   </properties>
+
+<profiles>
+      <profile>
+          <id>macosx</id>
+          <activation>
+              <os>
+                  <family>mac</family>
+              </os>
+          </activation>
+			<properties>
+			  	<java.rt.systemPath>/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Home/lib/dt.jar</java.rt.systemPath>
+			</properties>
+ 	 </profile>
+ 	   
+     <profile>
+        <id>other-so</id>
+        <activation>
+          <activeByDefault>true</activeByDefault>
+        </activation>
+		<properties>
+	  		<java.rt.systemPath></java.rt.systemPath>
+		</properties>
+	</profile>
+</profiles>			
+
   <scm>
 	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</developerConnection>
 	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</url>
