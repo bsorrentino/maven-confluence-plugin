@@ -1,19 +1,20 @@
 package org.bsc.maven.plugin.confluence;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import org.apache.maven.doxia.siterenderer.Renderer;
 
+import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
-import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
+import org.bsc.maven.reporting.AbstractConfluenceReportMojo;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
 import org.jfrog.maven.annomojo.annotations.MojoComponent;
@@ -27,7 +28,7 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
  *
  */
 @MojoGoal("plugin-confluence-summary")
-public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
+public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMojo {
 
     /**
      * Report output directory.
@@ -38,54 +39,14 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
 
 
     /**
-     * The Maven Project.
-     *
-     */
-	@MojoParameter( expression="${project}", readonly=true, required=true)
-    private MavenProject project;
-
-    /**
      * Mojo scanner tools.
      *
      */
 	@MojoComponent
     protected MojoScanner mojoScanner;
 
-	/**
-	 * Confluence end point url 
-	 */
-	@MojoParameter(expression="${confluence.endPoint}", defaultValue="http://localhost:8080/rpc/xmlrpc")
-	private String endPoint;
 
 	/**
-	 * Confluence target confluence's spaceKey 
-	 */
-	@MojoParameter(expression="${confluence.spaceKey}", required=true)
-	private String spaceKey;
-
-	/**
-	 * Confluence target confluence's spaceKey 
-	 */
-	@MojoParameter(expression="${confluence.parentPage}",defaultValue="Home")
-	private String parentPageTitle;
-	
-	/**
-	 * Confluence username 
-	 */
-	@MojoParameter(expression="${confluence.userName}",defaultValue="admin")
-	private String username;
-
-	/**
-	 * Confluence password 
-	 */
-	@MojoParameter(expression="${confluence.password}")
-	private String password;
-
-	@MojoParameter(defaultValue="${basedir}/src/site/confluence/template.wiki", description="MiniTemplator source. Default location is ${basedir}/src/site/confluence")
-	private java.io.File templateWiki;
-
-	
-    /**
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
      */
     protected String getOutputDirectory()
@@ -94,18 +55,10 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
     }
 
     /**
-     * @see org.apache.maven.reporting.AbstractMavenReport#getProject()
-     */
-    protected MavenProject getProject()
-    {
-        return project;
-    }    
-
-
-    /**
      * @see org.apache.maven.reporting.AbstractMavenReport#executeReport(java.util.Locale)
      */
-    protected void executeReport( Locale locale )  throws MavenReportException
+    @SuppressWarnings("unchecked")
+	protected void executeReport( Locale locale )  throws MavenReportException
     {
         if ( !project.getPackaging().equals( "maven-plugin" ) )
         {
@@ -114,7 +67,6 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
 
         String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
 
-        // TODO: could use this more, eg in the writing of the plugin descriptor!
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
 
         pluginDescriptor.setGroupId( project.getGroupId() );
@@ -128,13 +80,15 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
         try
         {
             java.util.List dependencies = new java.util.ArrayList();
-
+            
             dependencies.addAll(PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ));
             dependencies.addAll(PluginUtils.toComponentDependencies( project.getCompileDependencies() ));
 
             pluginDescriptor.setDependencies( dependencies );
 
-            mojoScanner.populatePluginDescriptor( project, pluginDescriptor );
+            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+                    
+            mojoScanner.populatePluginDescriptor( request );
             
             pluginDescriptor.setDescription( project.getDescription() );
 
@@ -187,18 +141,27 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractMavenReport {
         try
         {
     		
-            Confluence confluence = new Confluence( endPoint );
-            confluence.login(username, password);
+            Confluence confluence = new Confluence( getEndPoint() );
+            confluence.login(getUsername(), getPassword());
 
             File outputDir = new File( getOutputDirectory() );
             outputDir.mkdirs();
 
-            getLog().info( "speceKey=" + spaceKey + " parentPageTitle=" + parentPageTitle);
+            getLog().info( "speceKey=" + getSpaceKey() + " parentPageTitle=" + getParentPageTitle());
             
-            Page p = confluence.getPage(spaceKey, parentPageTitle);
+            Page p = confluence.getPage(getSpaceKey(), getParentPageTitle());
             
-            Generator generator = new PluginConfluenceDocGenerator(confluence, p, templateWiki, getLog() ); /*PluginXdocGenerator()*/;
-            generator.execute( outputDir, pluginDescriptor );
+            org.apache.maven.tools.plugin.generator.Generator generator = 
+            		new PluginConfluenceDocGenerator(confluence, p, templateWiki, getLog() ); /*PluginXdocGenerator()*/;
+
+            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            		
+            generator.execute( outputDir, request );
+
+            String title = project.getArtifactId() + "-" + project.getVersion();
+            
+            generateChildren(confluence, getSpaceKey(), title, title);
+
             
             confluence.logout();
         }

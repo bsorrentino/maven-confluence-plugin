@@ -17,7 +17,7 @@ import org.bsc.maven.plugin.confluence.ConfluenceUtils;
  *
  */
 @SuppressWarnings("unchecked")
-public class ConfluenceSink extends SinkAdapter implements org.codehaus.doxia.sink.Sink {
+public class ConfluenceSink extends SinkAdapter implements org.apache.maven.doxia.sink.Sink {
 
 	enum Command {
 		
@@ -32,10 +32,10 @@ public class ConfluenceSink extends SinkAdapter implements org.codehaus.doxia.si
 	java.util.Stack commandStack = new java.util.Stack();
 	java.util.Stack dataStack = new java.util.Stack();
 	
-	org.codehaus.doxia.sink.Sink _s;
+	org.apache.maven.doxia.sink.Sink _s;
 	PrintWriter _w;
 	
-	public ConfluenceSink( Writer w, org.codehaus.doxia.sink.Sink delegate ) {
+	public ConfluenceSink( Writer w, org.apache.maven.doxia.sink.Sink delegate ) {
 		this._s = delegate;
 		_w = new PrintWriter(w);
 		
@@ -562,7 +562,7 @@ public class ConfluenceSink extends SinkAdapter implements org.codehaus.doxia.si
 		}
 		
 		_w.print('|');
-		_s.tableCell();
+		try { _s.tableCell(); } catch( Exception e ) { /* TODO log */ }
 				
 	}
 
@@ -590,7 +590,7 @@ public class ConfluenceSink extends SinkAdapter implements org.codehaus.doxia.si
 			commandStack.push(Command.HEADER);
 		}
 		_w.print("||");
-		_s.tableHeaderCell();
+		try { _s.tableHeaderCell(); } catch( Exception e ) { /*TODO Log*/ } 
 	}
 
 	@Override

@@ -1,10 +1,5 @@
 package org.bsc.maven.reporting.test;
-import java.io.File;
-
-import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.bsc.maven.reporting.ConfluenceReportMojo;
-import org.codehaus.plexus.PlexusContainer;
 
 
 
