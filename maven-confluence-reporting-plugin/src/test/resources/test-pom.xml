@@ -6,15 +6,24 @@
   <version>1.0.0-SNAPSHOT</version>
   <description>test pom</description>
   
-  
+  <scm>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</url>
+  </scm>
+ 
 <build>
     <plugins>
       <plugin>
       <artifactId>maven-confluence-reporting-plugin</artifactId>
     	<configuration>
+    		<properties>
+    			<basedir>${basedir}</basedir>
+    			<project.version>${project.version}</project.version>
+    		</properties>
         </configuration>
   	  </plugin>
 	 </plugins>
 </build>
+
 
 </project>
