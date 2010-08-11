@@ -13,7 +13,6 @@ import java.util.List;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.Generator;
@@ -35,17 +34,18 @@ public class PluginConfluenceDocGenerator implements Generator {
 
 	private final Confluence confluence;
 	private final Page parentPage;
-	private final Log log;
-        private final java.io.File templateWiki;
-	/**
+    private final java.io.File templateWiki;
+	
+    private final ConfluenceGeneratePluginDocMojo mojo;
+    /**
 	 * 
 	 * @param space
 	 */
-	public PluginConfluenceDocGenerator( Confluence confluence, Page parentPage, java.io.File templateWiki, Log log ) {
+	public PluginConfluenceDocGenerator( ConfluenceGeneratePluginDocMojo mojo, Confluence confluence, Page parentPage, java.io.File templateWiki ) {
+		this.mojo = mojo;
 		this.confluence = confluence;
 		this.parentPage = parentPage;
-                this.log = log;
-                this.templateWiki = templateWiki;
+        this.templateWiki = templateWiki;
 	
 	}
 
@@ -89,20 +89,20 @@ public class PluginConfluenceDocGenerator implements Generator {
     	List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
 
     	if( mojos==null ) {
-            log.warn( "no mojos found [pluginDescriptor.getMojos()]");
+            mojo.getLog().warn( "no mojos found [pluginDescriptor.getMojos()]");
             return ;
         }
 
         MiniTemplator t = null;
 
         if( templateWiki==null || !templateWiki.exists()) {
-                log.warn("template not set! default using ...");
+        		mojo.getLog().warn("template not set! default using ...");
 
                 java.io.InputStream is = getClass().getClassLoader().getResourceAsStream(DEFAULT_PLUGIN_TEMPLATE_WIKI);
 
                 if( is==null ) {
                         final String msg = "default template cannot be found";
-                        log.error( msg);
+                        mojo.getLog().error( msg);
                         throw new MavenReportException(msg);
                 }
 
@@ -110,7 +110,7 @@ public class PluginConfluenceDocGenerator implements Generator {
                         t = new MiniTemplator(new java.io.InputStreamReader(is));
                 } catch (Exception e) {
                         final String msg = "error loading template";
-                        log.error(msg,e);
+                        mojo.getLog().error(msg,e);
                         throw new MavenReportException(msg, e);
                 }
         }
@@ -119,12 +119,14 @@ public class PluginConfluenceDocGenerator implements Generator {
                         t = new MiniTemplator(templateWiki);
                 } catch (Exception e) {
                         final String msg = "error loading template";
-                        log.error(msg,e);
+                        mojo.getLog().error(msg,e);
                         throw new MavenReportException(msg, e);
                 }
 
         }
    	
+        mojo.addProperties(t);
+        
     	String title = pluginDescriptor.getArtifactId() + "-" + pluginDescriptor.getVersion();
     	
     	Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
@@ -139,7 +141,7 @@ public class PluginConfluenceDocGenerator implements Generator {
             try {
                     t.setVariable("plugin.summary", writer.toString());
             } catch (VariableNotDefinedException e) {
-                    log.warn( String.format( "variable %s not defined in template", "plugin.summary"));
+            		mojo.getLog().warn( String.format( "variable %s not defined in template", "plugin.summary"));
             }
 
         }
@@ -154,7 +156,7 @@ public class PluginConfluenceDocGenerator implements Generator {
             try {
                     t.setVariable("plugin.goals", writer.toString());
             } catch (VariableNotDefinedException e) {
-                    log.warn( String.format( "variable %s not defined in template", "plugin.goals"));
+            		mojo.getLog().warn( String.format( "variable %s not defined in template", "plugin.goals"));
             }
 
         }

@@ -1,5 +1,10 @@
 package org.bsc.maven.reporting.test;
+import java.io.File;
+
+import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.bsc.maven.reporting.ConfluenceReportMojo;
+import org.codehaus.plexus.PlexusContainer;
 
 
 
@@ -11,7 +16,7 @@ public class ReportingMojoTest extends AbstractMojoTestCase {
 	}
 
 	public void testLookup() throws Exception  {
-/*		
+
 		File testPom = new File( getBasedir(), "/src/test/resources/test-pom.xml" );
 
 		PlexusContainer container = createContainerInstance();
@@ -26,8 +31,8 @@ public class ReportingMojoTest extends AbstractMojoTestCase {
         ConfluenceReportMojo confluenceMojo = (ConfluenceReportMojo) mojo;
         
         
-        System.out.println( confluenceMojo.getSink() );
-*/        
+        System.out.printf( "properties=[%s]\n", confluenceMojo.getProperties() );
+
 	}
 	
 }

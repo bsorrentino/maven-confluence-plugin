@@ -10,8 +10,13 @@ import org.codehaus.swizzle.confluence.Page;
 import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 
 public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
+	
+	@MojoParameter(description="additional properties pass to template processor")
+	private java.util.Map properties;
+	
 	/**
 	 * Confluence end point url 
 	 */
@@ -49,12 +54,14 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	protected java.io.File templateWiki;
 	
 	@MojoParameter(description="child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
-	private java.util.List<Child> children;
-	
-	
-	
+	private java.util.List children;
+		
 	public AbstractConfluenceReportMojo() {
 		children = Collections.emptyList();
+	}
+
+	public final java.util.Map getProperties() {
+		return properties;
 	}
 
 	public final String getEndPoint() {
@@ -82,10 +89,31 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 		return project;
 	}
 
+	@SuppressWarnings("unchecked")
+	public void addProperties( MiniTemplator t ) {
+		java.util.Map<String,String> properties = getProperties();
+		
+		if( properties==null || properties.isEmpty()) {
+			getLog().info( "no properties set!");			
+		}
+		else {
+			for( java.util.Map.Entry<String,String> e : properties.entrySet()) {
+				getLog().debug( String.format( "property %s = %s", e.getKey(), e.getValue()));
+				
+				try {
+					t.setVariable(e.getKey(), e.getValue(), true /* isOptional */);
+				} catch (VariableNotDefinedException e1) {
+					getLog().warn( String.format( "variable %s not defined in template", e.getKey()));
+				}
+			}
+		}
+
+	}
 	/**
 	 * 
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	protected void generateChildren(Confluence confluence, String spaceKey, String parentPageTitle, String titlePrefix ) /*throws MavenReportException*/ {
 		
 		getLog().info( String.format( "generateChildren # [%d]", children.size()) );
@@ -101,6 +129,8 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 				final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
 				
 	            Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName())  );
+	            
+	            addProperties(t);
 	            
 	            p.setContent(t.generateOutput());
 	            

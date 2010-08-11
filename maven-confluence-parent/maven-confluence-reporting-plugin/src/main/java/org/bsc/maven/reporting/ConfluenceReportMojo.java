@@ -204,6 +204,8 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 			
 		}
 		
+		super.addProperties(t);		
+		
 		{ // SUMMARY
 		
 			final StringWriter w = new StringWriter( 10 * 1024 );
