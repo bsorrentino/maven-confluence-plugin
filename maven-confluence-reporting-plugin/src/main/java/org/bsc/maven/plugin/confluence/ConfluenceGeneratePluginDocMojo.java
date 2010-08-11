@@ -1,7 +1,6 @@
 package org.bsc.maven.plugin.confluence;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -152,7 +151,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             Page p = confluence.getPage(getSpaceKey(), getParentPageTitle());
             
             org.apache.maven.tools.plugin.generator.Generator generator = 
-            		new PluginConfluenceDocGenerator(confluence, p, templateWiki, getLog() ); /*PluginXdocGenerator()*/;
+            		new PluginConfluenceDocGenerator( this, confluence, p, templateWiki ); /*PluginXdocGenerator()*/;
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             		
