@@ -116,6 +116,8 @@
       <url>${snapshot.repo.url}</url>
     </snapshotRepository>
     <site>
+    	<id>google-project</id>
+    	<url>http://maven-confluence-plugin.googlecode.com/svn/docs</url>
     </site>
 
   </distributionManagement>
