@@ -46,14 +46,38 @@
   </profiles>
   <dependencies>
   	<dependency>
-  		<groupId>org.codehaus.swizzle</groupId>
-  		<artifactId>swizzle-confluence</artifactId>
-  		<version>1.1</version>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.4</version>
+                <scope>test</scope>
   	</dependency>
+
+        <dependency>
+          <groupId>org.codehaus.swizzle</groupId>
+          <artifactId>swizzle-confluence</artifactId>
+          <version>1.1</version>
+          
+          <exclusions>
+              <exclusion>
+                  <groupId>xmlrpc</groupId>
+                  <artifactId>xmlrpc</artifactId>
+              </exclusion>
+           </exclusions>
+          
+        </dependency>
+        
+        <dependency>
+            <groupId>xmlrpc</groupId>
+            <artifactId>xmlrpc-client</artifactId>
+            <version>3.0</version>
+        </dependency>
+
   	<dependency>
   		<groupId>miniTemplator</groupId>
   		<artifactId>miniTemplator</artifactId>
   		<version>1.0</version>
   	</dependency>
   </dependencies>
+
+
 </project>
