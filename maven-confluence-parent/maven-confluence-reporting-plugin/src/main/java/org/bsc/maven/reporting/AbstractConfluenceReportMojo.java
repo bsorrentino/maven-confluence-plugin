@@ -11,6 +11,7 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import org.codehaus.swizzle.confluence.Attachment;
 
 public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	
@@ -55,13 +56,18 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	
 	@MojoParameter(description="child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
 	private java.util.List children;
-		
+
+	@MojoParameter(description="attachment folder", defaultValue="${basedir}/src/site/confluence/attachments")
+	private java.io.File attachmentFolder;
+        
+
 	public AbstractConfluenceReportMojo() {
 		children = Collections.emptyList();
 	}
 
 	public final java.util.Map getProperties() {
-		return properties;
+            if( null==properties ) properties = new java.util.HashMap(5);
+            return properties;
 	}
 
 	public final String getEndPoint() {
@@ -109,6 +115,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 		}
 
 	}
+
 	/**
 	 * 
 	 * 
@@ -145,5 +152,70 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 		}
 		
 	}
-	
+
+
+	@SuppressWarnings("unchecked")
+	protected void generateAttachments(Confluence confluence, Page page ) /*throws MavenReportException*/ {
+
+		getLog().info( String.format( "generateAttachments pageId [%s]", page.getId() ) );
+
+                java.io.File[] files = attachmentFolder.listFiles();
+
+                if( files==null || files.length==0 ) {
+                    getLog().info( String.format("No attachments found in folder [%s] " , attachmentFolder.getPath() ));
+                    return;
+                }
+
+                final String version = "0";
+                for( java.io.File f : files ) {
+
+                    if (f.isDirectory() || f.isHidden()) {
+                        continue;
+                    }
+
+                    Attachment a = null;
+
+                    try {
+                        a = confluence.getAttachment(page.getId(), f.getName(), version);
+                    }
+                    catch( Exception e ) {
+                        getLog().error( String.format("Error reading attachment [%s] " , f.getName() ), e );
+                    }
+
+                    if (a != null) {
+
+
+                        java.util.Date date = a.getCreated();
+
+                        if (date == null) {
+                            getLog().warn(String.format("creation date of attachments [%s] is undefined. It will be replaced! ", a.getFileName()));
+                        } else {
+                            if (f.lastModified() > date.getTime()) {
+                                getLog().info(String.format("attachment [%s] is more recent than the remote one. It will be replaced! " , a.getFileName()));
+                            } else {
+                                getLog().info(String.format("attachment [%s] skipped! no updated detected" , a.getFileName()));
+                                continue;
+
+                            }
+                        }
+                    }
+                    else {
+                        a = new Attachment();
+                        a.setComment("attached by maven-confluence-plugin");
+                        a.setFileName( f.getName() ) ;
+                        //a.setContentType( "image/jpg" );
+
+                    }
+
+                    try {
+                        ConfluenceUtils.addAttchment(confluence, page, a, f);
+                    }
+                    catch( Exception e ) {
+                        getLog().error( String.format("Error uploading attachment [%s] " , f.getName() ), e );
+                    }
+
+                }
+ 
+            }
+
 }

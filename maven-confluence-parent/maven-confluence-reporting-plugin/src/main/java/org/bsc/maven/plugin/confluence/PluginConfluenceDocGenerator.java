@@ -93,6 +93,12 @@ public class PluginConfluenceDocGenerator implements Generator {
             return ;
         }
 
+        String title = pluginDescriptor.getArtifactId() + "-" + pluginDescriptor.getVersion();
+
+        mojo.getProperties().put( "pageTitle", title);
+        mojo.getProperties().put( "artifactId", mojo.getProject().getArtifactId());
+        mojo.getProperties().put( "version", mojo.getProject().getVersion());
+
         MiniTemplator t = null;
 
         if( templateWiki==null || !templateWiki.exists()) {
@@ -127,7 +133,6 @@ public class PluginConfluenceDocGenerator implements Generator {
    	
         mojo.addProperties(t);
         
-    	String title = pluginDescriptor.getArtifactId() + "-" + pluginDescriptor.getVersion();
     	
     	Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
 
