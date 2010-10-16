@@ -171,7 +171,14 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 	@Override
 	protected void executeReport(Locale locale) throws MavenReportException {
 		getLog().info( "executeReport " );
-		
+
+                String title = project.getArtifactId() + "-" + project.getVersion();
+
+                getProperties().put( "pageTitle", title);
+                getProperties().put( "artifactId", project.getArtifactId());
+                getProperties().put( "version", project.getVersion());
+
+                
 		MiniTemplator t = null;
 		
 		if( templateWiki==null || !templateWiki.exists()) {
@@ -288,7 +295,6 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 			
 			confluence.login(getUsername(), getPassword());
 			
-	    	String title = project.getArtifactId() + "-" + project.getVersion();
 
             Page p = ConfluenceUtils.getOrCreatePage( confluence, getSpaceKey(), getParentPageTitle(), title );
             
@@ -298,7 +304,9 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
             
             generateChildren(confluence, getSpaceKey(), title, title);
 			
-		} catch (Exception e) {
+           generateAttachments(confluence, p);
+
+                } catch (Exception e) {
 			getLog().warn( "has been imposssible connect to confluence due exception", e );
 		}
 		finally {
@@ -308,7 +316,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 		System.out.println( "========================================");
 		System.out.println( wiki);
 		System.out.println( "========================================");
-		
+
 	}
 	
 	@Override
