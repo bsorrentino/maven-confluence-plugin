@@ -10,7 +10,7 @@
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
   </description>
   <url>http://code.google.com/p/maven-confluence-plugin/</url>
-  <name>maven-confluence-plugin - ${version}</name>
+  <name>maven-confluence-plugin - ${project.version}</name>
   
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
