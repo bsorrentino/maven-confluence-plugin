@@ -154,7 +154,6 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	protected void generateAttachments(Confluence confluence, Page page ) /*throws MavenReportException*/ {
 
 		getLog().info( String.format( "generateAttachments pageId [%s]", page.getId() ) );
@@ -203,7 +202,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                         a = new Attachment();
                         a.setComment("attached by maven-confluence-plugin");
                         a.setFileName( f.getName() ) ;
-                        //a.setContentType( "image/jpg" );
+                        a.setContentType( "application/octet-stream" );
 
                     }
 
