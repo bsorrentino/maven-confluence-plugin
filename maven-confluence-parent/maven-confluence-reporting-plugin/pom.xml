@@ -76,25 +76,7 @@
   </build>
   
   <dependencies>
-<!-- 
-================
-TEST
-================
- -->    
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
- 
-    <dependency>
-      <groupId>org.apache.maven.shared</groupId>
-      <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
-    </dependency>
-    
+  
     <dependency>
       <groupId>org.jfrog.maven.annomojo</groupId>
       <artifactId>maven-plugin-anno</artifactId>
@@ -135,6 +117,25 @@ NEEDS FOR PLUGIN DOCUMENTATION
       <artifactId>maven-plugin-tools-api</artifactId>
       <version>${pluginToolsVersion}</version>
     </dependency>
+<!-- 
+================
+TEST
+================
+ -->    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+ 
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
+      <version>1.1</version>
+      <scope>test</scope>
+    </dependency>
+    
 
   </dependencies>
   
