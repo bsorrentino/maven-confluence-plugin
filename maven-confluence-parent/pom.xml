@@ -20,9 +20,10 @@
     <jfrog.maven-plugin-anno.version>1.3.3</jfrog.maven-plugin-anno.version>
 
     <mavenVersion>2.0.6</mavenVersion>
-    <doxiaVersion>1.0</doxiaVersion>
+    <doxiaVersion>1.0</doxiaVersion>  
     <doxia-sitetoolsVersion>1.0</doxia-sitetoolsVersion>
     <pluginToolsVersion>2.6</pluginToolsVersion>
+  
   </properties>
 
 <profiles>
