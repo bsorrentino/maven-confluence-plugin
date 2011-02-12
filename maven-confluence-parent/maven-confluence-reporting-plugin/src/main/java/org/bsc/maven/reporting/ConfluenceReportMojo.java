@@ -1,5 +1,6 @@
 package org.bsc.maven.reporting;
 import java.io.StringWriter;
+import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.doxia.sink.SinkFactory;
 import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
@@ -28,6 +30,7 @@ import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
 import org.bsc.maven.reporting.renderer.ScmRenderer;
 import org.bsc.maven.reporting.sink.ConfluenceSink;
+import org.bsc.maven.reporting.sink.SinkDelegate;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
@@ -216,7 +219,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 		{ // SUMMARY
 		
 			final StringWriter w = new StringWriter( 10 * 1024 );
-			final Sink sink = new ConfluenceSink( w ,getSink());
+			final Sink sink = new ConfluenceSink( w , getSink());
 			//final Sink sink = getSink();
 
 			new ProjectSummaryRenderer( sink, 
@@ -320,18 +323,12 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 	}
 	
 	@Override
-	public void generate(org.apache.maven.doxia.sink.Sink sink, Locale locale) throws MavenReportException {
+	public void generate(Sink aSink, SinkFactory aSinkFactory, Locale aLocale) throws MavenReportException {
+		
+		getLog().info( "generate " + aSink );
 
-		getLog().info( "generate " + sink );
-/*
-		confluenceWriter = new StringWriter( 10 * 1024 );
 		
-		confluenceSink = new ConfluenceSink(confluenceWriter,sink);
-		
-		super.generate((org.codehaus.doxia.sink.Sink) confluenceSink, locale);
-*/
-		super.generate(sink, locale);
-		
+		super.generate(aSink, aSinkFactory, aLocale);
 	}
 
 	/**

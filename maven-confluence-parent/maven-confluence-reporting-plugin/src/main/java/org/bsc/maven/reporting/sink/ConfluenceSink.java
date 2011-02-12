@@ -3,7 +3,9 @@ package org.bsc.maven.reporting.sink;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import org.apache.maven.doxia.sink.SinkAdapter;
+import org.apache.maven.doxia.module.xhtml.XhtmlSink;
+import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.doxia.siterenderer.sink.SiteRendererSink;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 
 
@@ -16,8 +18,7 @@ import org.bsc.maven.plugin.confluence.ConfluenceUtils;
  * @author Sorrentino
  *
  */
-@SuppressWarnings("unchecked")
-public class ConfluenceSink extends SinkAdapter implements org.apache.maven.doxia.sink.Sink {
+public class ConfluenceSink extends SiteRendererSink {
 
 	enum Command {
 		
@@ -29,13 +30,14 @@ public class ConfluenceSink extends SinkAdapter implements org.apache.maven.doxi
 		
 	}
 	
-	java.util.Stack commandStack = new java.util.Stack();
-	java.util.Stack dataStack = new java.util.Stack();
+	java.util.Stack<Command> commandStack = new java.util.Stack<Command>();
+	java.util.Stack<String> dataStack = new java.util.Stack<String>();
 	
 	org.apache.maven.doxia.sink.Sink _s;
 	PrintWriter _w;
 	
 	public ConfluenceSink( Writer w, org.apache.maven.doxia.sink.Sink delegate ) {
+		super( null );
 		this._s = delegate;
 		_w = new PrintWriter(w);
 		
