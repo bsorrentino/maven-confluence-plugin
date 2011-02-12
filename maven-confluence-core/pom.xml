@@ -22,6 +22,7 @@
   	<plugins>
   		<plugin>
   			<artifactId>maven-deploy-plugin</artifactId>
+  			<version>2.5</version>
   			<executions>		
   				<execution>
   					<phase>package</phase>
@@ -48,14 +49,14 @@
   	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
-  		<version>4.4</version>
+  		<version>4.8.2</version>
                 <scope>test</scope>
   	</dependency>
 
         <dependency>
           <groupId>org.codehaus.swizzle</groupId>
           <artifactId>swizzle-confluence</artifactId>
-          <version>1.1</version>
+          <version>1.6</version>
           
           <exclusions>
               <exclusion>
