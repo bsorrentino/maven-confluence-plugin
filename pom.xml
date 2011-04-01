@@ -3,14 +3,20 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.3.2-SNAPSHOT</version>
+  <version>1.3.2</version>
   <name>maven confluence plugin - parent</name>
   
   <properties>
     <snapshot.repo.id>google-project</snapshot.repo.id>
     <snapshot.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</snapshot.repo.url>
+<!-- 
+	NO LONGER AVAILABLE
+	
     <release.repo.id>java.net-m2-repository</release.repo.id>
     <release.repo.url>java-net:/maven2-repository/trunk/repository/</release.repo.url>
+ -->
+    <release.repo.id>google-project</release.repo.id>
+    <release.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</release.repo.url>
     
 	<!-- SCM properties  -->
 	<addTimestamp>true</addTimestamp>
@@ -85,8 +91,8 @@
 </profiles>			
 
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/branches/maven-confluence-1.3.x</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/branches/maven-confluence-1.3.x</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.3.2-SNAPSHOT</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-1.3.2-SNAPSHOT</url>
   </scm>
 
     <repositories>
@@ -152,7 +158,7 @@
     </snapshotRepository>
     <site>
     	<id>google-project</id>
-    	<url>http://maven-confluence-plugin.googlecode.com/svn/docs</url>
+    	<url>http://maven-confluence-plugin.googlecode.com/svn/docs/1.3.x</url>
     </site>
 
   </distributionManagement>
