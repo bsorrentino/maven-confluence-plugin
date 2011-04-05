@@ -178,7 +178,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                         a = confluence.getAttachment(page.getId(), f.getName(), version);
                     }
                     catch( Exception e ) {
-                        getLog().error( String.format("Error reading attachment [%s] " , f.getName() ), e );
+                        getLog().warn( String.format("Error getting attachment [%s] from confluence: [%s]" , f.getName() , e.getMessage()) );
                     }
 
                     if (a != null) {
