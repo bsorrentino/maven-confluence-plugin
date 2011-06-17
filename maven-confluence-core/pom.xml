@@ -14,7 +14,22 @@
 	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</developerConnection>
 	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</url>
   </scm>
-  
+ 
+  <url>http://code.google.com/p/maven-confluence-plugin/</url>
+  <developers>
+	<developer>
+		<id>bsorrentino</id>
+		<name>Bartolomeo Sorrentino</name>
+		<email>bartolomeo.sorrentino@gmail.com</email>
+	</developer>
+</developers>
+<licenses>
+    <license>
+      <name>Apache License Version 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
   <profiles>
   	<profile>
   		<id>fix-deps</id>
