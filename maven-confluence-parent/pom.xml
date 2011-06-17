@@ -7,10 +7,32 @@
   <name>maven confluence plugin - parent</name>
   
   <properties>
+  
+	<!-- 
+	================
+	GOOGLE REPO 
+	================
     <snapshot.repo.id>google-project</snapshot.repo.id>
     <snapshot.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</snapshot.repo.url>
+	-->
+
+	<!-- 
+	================
+	JAVANET REPO 
+	================
     <release.repo.id>java.net-m2-repository</release.repo.id>
     <release.repo.url>java-net:/maven2-repository/trunk/repository/</release.repo.url>
+	-->
+
+	<!-- 
+	================
+	SONATYPE REPO 
+	================
+	-->
+    <snapshot.repo.id>sonatype-repo</snapshot.repo.id>
+    <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
+    <release.repo.id>sonatype-repo</release.repo.id>
+    <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</release.repo.url>
     
 	<!-- SCM properties  -->
 	<addTimestamp>true</addTimestamp>
