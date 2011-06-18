@@ -169,11 +169,11 @@
 	  </configuration>
 	</plugin>
     
-    <!--
+    <!-- 
     ============================================================
     mvn release:perform -Darguments=-Dgpg.passphrase=thephrase
     ============================================================
-    -->
+     -->
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
@@ -188,6 +188,7 @@
           </execution>
         </executions>
       </plugin>
+    
 
   	</plugins>
   	
@@ -221,7 +222,7 @@
     </snapshotRepository>
     <site>
     	<id>google-project</id>
-    	<url>http://maven-confluence-plugin.googlecode.com/svn/docs</url>
+    	<url>svn:https://maven-confluence-plugin.googlecode.com/svn/docs</url>
     </site>
 
   </distributionManagement>

@@ -90,18 +90,27 @@
             <version>3.0</version>
         </dependency>
 
+<!-- 
+	ISSUE 18
+	
+	This 'system deps' inclusion cause: java.lang.NoClassDefFoundError: org/codehaus/swizzle/confluence/Page during execution
+	
   	<dependency>
   		<groupId>miniTemplator</groupId>
   		<artifactId>miniTemplator</artifactId>
   		<version>1.0</version>
+
+  		<optional>true</optional>  		  
   		<scope>system</scope>
   		<systemPath>${project.basedir}/lib/miniTemplator-1.0.jar</systemPath>
-  		<optional>true</optional>
+  		
   	</dependency>
-  </dependencies>
+ -->
+   </dependencies>
 
 	<build>
 	<plugins>
+ 
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-antrun-plugin</artifactId>
@@ -119,6 +128,7 @@
 				</execution>
 			</executions>
 		</plugin>
+ 
 	</plugins>
 	</build>
 

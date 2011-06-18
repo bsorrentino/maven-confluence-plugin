@@ -144,11 +144,5 @@ TEST
 
   </dependencies>
   
-  <distributionManagement>
-  	<site>
-  		<id>google-project</id>
-  		<url>svn:https://maven-confluence-plugin.googlecode.com/svn/docs</url>	
-  	</site>
-  </distributionManagement>
 
 </project>
