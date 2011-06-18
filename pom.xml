@@ -3,7 +3,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.1</version>
   <name>maven confluence plugin - parent</name>
   
   <properties>
@@ -128,8 +128,8 @@
   </licenses>
   
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.0.1-SNAPSHOT</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.0.1-SNAPSHOT</url>
   </scm>
 
     <repositories>
