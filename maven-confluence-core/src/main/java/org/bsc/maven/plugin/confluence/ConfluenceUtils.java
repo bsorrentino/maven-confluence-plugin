@@ -3,7 +3,6 @@ package org.bsc.maven.plugin.confluence;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
