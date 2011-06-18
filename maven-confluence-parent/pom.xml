@@ -104,6 +104,39 @@
 	  		<java.rt.systemPath />
 		</properties>
 	</profile>
+
+	<profile>
+		<id>release</id>
+		<build>
+			<plugins>
+
+				<!-- 
+				============================================================ 
+				mvn -Prelease release:perform -Darguments=-Dgpg.passphrase=thephrase 
+				============================================================ 
+				-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>1.3</version>
+
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+
+				</plugin>
+
+
+			</plugins>
+		</build>
+	</profile>
+	
 </profiles>			
 
 <description>maven confluence plugin - parent project</description>
@@ -169,29 +202,6 @@
 	  </configuration>
 	</plugin>
     
-    <!-- 
-    ============================================================
-    mvn release:perform -Darguments=-Dgpg.passphrase=thephrase
-    ============================================================
-     -->
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.3</version>
-        <!-- 
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-         -->
-      </plugin>
-    
-
   	</plugins>
   	
 	<extensions>
