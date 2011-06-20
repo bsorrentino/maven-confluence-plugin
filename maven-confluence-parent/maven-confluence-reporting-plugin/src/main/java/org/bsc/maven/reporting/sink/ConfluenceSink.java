@@ -71,7 +71,7 @@ public class ConfluenceSink extends SiteRendererSink {
 	@Override
 	public void anchor(String name) {
 		
-		_w.printf("{anchor:%s} ", ConfluenceUtils.encodeAnchor(name) );		
+		//_w.printf("{anchor:%s} ", ConfluenceUtils.encodeAnchor(name) );		
 		_s.anchor(name);
 	}
 
