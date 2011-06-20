@@ -39,16 +39,16 @@
 	<tag>${project.artifactId}-${project.version}</tag>
 	<tagBase>https://maven-confluence-plugin.googlecode.com/svn/tags</tagBase>
     
-    <mavenVersion>3.0.2</mavenVersion>
+    <mavenVersion>3.0.3</mavenVersion>
     <doxiaVersion>1.0</doxiaVersion>  
     <doxia-sitetoolsVersion>1.0</doxia-sitetoolsVersion>
-    <pluginToolsVersion>2.7</pluginToolsVersion>
+    <pluginToolsVersion>2.8</pluginToolsVersion>
 
     <jfrog.maven-plugin-anno.version>1.4.0</jfrog.maven-plugin-anno.version>
 
 <!--  NEED FOR TEST  -->
 <!--plexus.utils.version>2.0.5</plexus.utils.version-->
-    <plexus.utils.version>2.0.6</plexus.utils.version>
+    <plexus.utils.version>2.1</plexus.utils.version>
   
   </properties>
 
