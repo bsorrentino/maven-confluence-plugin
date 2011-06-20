@@ -121,15 +121,15 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
         List artifacts = new ArrayList( listener.getArtifacts() );
         artifacts.removeAll( dependencies );
 
-        startSection( getReportString( "report.transitivedependencies.title" ) );
+        startSection( getReportString( "report.dependencies.transitive.title" ) );
 
         if ( artifacts.isEmpty() )
         {
-            paragraph( getReportString( "report.transitivedependencies.nolist" ) );
+            paragraph( getReportString( "report.dependencies.transitive.nolist" ) );
         }
         else
         {
-            paragraph( getReportString( "report.transitivedependencies.intro" ) );
+            paragraph( getReportString( "report.dependencies.transitive.intro" ) );
 
             dependenciesByScope = getDependenciesByScope( artifacts );
 
@@ -163,7 +163,7 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
         endSection();
 
         //for Artifact Descriptions / URLs
-        startSection( getReportString( "report.dependencies.graph.tables.title" ) );
+        startSection( getReportString( "report.dependencies.file.details.title" ) );
         printDescriptionsAndURLs( listener.getRootNode() );
         endSection();
 
