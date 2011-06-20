@@ -234,7 +234,7 @@
     </snapshotRepository>
     <site>
     	<id>google-project</id>
-    	<url>svn:https://maven-confluence-plugin.googlecode.com/svn/docs</url>
+    	<url>svn:https://maven-confluence-plugin.googlecode.com/svn/docs/3.x</url>
     </site>
 
   </distributionManagement>
