@@ -75,6 +75,7 @@ Usage
   	</plugins>
   </reporting>
 +-------------------------------------------+
+  
 
 Use generation template
 
@@ -88,8 +89,14 @@ Use generation template
 *---------------------------+-----------------+
 | $\{project.dependencies\} | dependencies    |
 *---------------------------+-----------------+
+| $\{pageTitle\}            | title of page   |
+*---------------------------+-----------------+
+| $\{artifactId\}           | artifactId      |
+*---------------------------+-----------------+
+| $\{version\}              | version         |
+*---------------------------+-----------------+
 Built-In template variables
-  
+
 Template example
 
 +-------------------------------------------+
