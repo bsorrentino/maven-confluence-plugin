@@ -5,7 +5,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-reporting-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.2</version>
   <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
   </description>
@@ -15,15 +15,15 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
   </parent>
 
 	<properties>
 	</properties>
   
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-reporting-plugin</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.0.2-SNAPSHOT/maven-confluence-reporting-plugin</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.0.2-SNAPSHOT/maven-confluence-reporting-plugin</url>
   </scm>
 
   <developers>
@@ -101,7 +101,7 @@
    <dependency>
     <groupId>org.bsc.maven</groupId>
   	<artifactId>maven-confluence-core</artifactId>
-  	<version>3.0.2-SNAPSHOT</version>
+  	<version>3.0.2</version>
    </dependency>
 <!--
 =================================
