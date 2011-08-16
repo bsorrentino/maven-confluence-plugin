@@ -45,7 +45,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	/**
 	 * Confluence password 
 	 */
-	@MojoParameter(expression="${confluence.password}")
+	@MojoParameter(expression="${confluence.password}",required=true)
 	private String password;
 	
 	@MojoParameter( expression="${project}", readonly=true, required=true)
