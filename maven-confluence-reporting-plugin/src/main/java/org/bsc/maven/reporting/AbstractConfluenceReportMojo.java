@@ -65,8 +65,9 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 		children = Collections.emptyList();
 	}
 
-	public final java.util.Map getProperties() {
-            if( null==properties ) properties = new java.util.HashMap(5);
+	@SuppressWarnings("unchecked")
+	public final java.util.Map<String,String> getProperties() {
+            if( null==properties ) properties = new java.util.HashMap<String,String>(5);
             return properties;
 	}
 
@@ -95,7 +96,6 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 		return project;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void addProperties( MiniTemplator t ) {
 		java.util.Map<String,String> properties = getProperties();
 		
