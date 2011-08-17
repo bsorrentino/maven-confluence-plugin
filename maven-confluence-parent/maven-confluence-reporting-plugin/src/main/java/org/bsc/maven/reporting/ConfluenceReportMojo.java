@@ -148,7 +148,12 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 
 		getLog().info( "execute" );
 		
+		try {
 		super.execute();
+		}
+		catch( Throwable t ) {
+			getLog().error(t);
+		}
 	}
 
 	/**
@@ -175,11 +180,11 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 	protected void executeReport(Locale locale) throws MavenReportException {
 		getLog().info( "executeReport " );
 
-                String title = project.getArtifactId() + "-" + project.getVersion();
+        String title = project.getArtifactId() + "-" + project.getVersion();
 
-                getProperties().put( "pageTitle", title);
-                getProperties().put( "artifactId", project.getArtifactId());
-                getProperties().put( "version", project.getVersion());
+        getProperties().put( "pageTitle", title);
+        getProperties().put( "artifactId", project.getArtifactId());
+        getProperties().put( "version", project.getVersion());
 
                 
 		MiniTemplator t = null;
