@@ -78,6 +78,46 @@ public class ConfluenceUtils {
         return null;
 	}
 
+        /**
+	 * 
+	 * @param confluence
+	 * @param parentPageId
+	 * @param title
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean removePage( Confluence confluence, String spaceKey, String parentPageTitle, String title ) throws Exception {
+            
+            if( null==confluence ) throw new IllegalArgumentException("confluence instance is null");
+            
+            Page parentPage = confluence.getPage(spaceKey, parentPageTitle);
+
+            PageSummary pageSummary = findPageByTitle( confluence, parentPage.getId(), title);
+            
+            if( pageSummary!=null ) {
+                confluence.removePage(pageSummary.getId());
+                return true;
+            }
+            
+            return false;
+        }
+
+        public static boolean removePage( Confluence confluence, Page parentPage, String title ) throws Exception {
+            
+            if( null==confluence ) throw new IllegalArgumentException("confluence instance is null");
+            if( null==parentPage ) throw new IllegalArgumentException("parentPage is null");
+            
+
+            PageSummary pageSummary = findPageByTitle( confluence, parentPage.getId(), title);
+            
+            if( pageSummary!=null ) {
+                confluence.removePage(pageSummary.getId());
+                return true;
+            }
+            
+            return false;
+        }
+
 	/**
 	 * 
 	 * @param confluence
@@ -87,26 +127,27 @@ public class ConfluenceUtils {
 	 * @throws Exception
 	 */
 	public static Page getOrCreatePage( Confluence confluence, String spaceKey, String parentPageTitle, String title ) throws Exception {
-		if( null==confluence ) throw new IllegalArgumentException("confluence instance is null");
+            if (null == confluence) {
+                throw new IllegalArgumentException("confluence instance is null");
+            }
 
-		Page parentPage = confluence.getPage(spaceKey, parentPageTitle);
+            Page parentPage = confluence.getPage(spaceKey, parentPageTitle);
 
-		PageSummary pageSummary = findPageByTitle( confluence, parentPage.getId(), title);
+            PageSummary pageSummary = findPageByTitle(confluence, parentPage.getId(), title);
 
-    	Page result;
-    	
-    	if( null!=pageSummary ) {
-        	result = confluence.getPage(pageSummary.getId());
-    	}
-    	else {
-    		result = new Page(Collections.EMPTY_MAP);
-    		result.setSpace(parentPage.getSpace());
-    		result.setParentId(parentPage.getId());
-    		result.setTitle(title);
+            Page result;
 
-    	}
+            if (null != pageSummary) {
+                result = confluence.getPage(pageSummary.getId());
+            } else {
+                result = new Page(Collections.EMPTY_MAP);
+                result.setSpace(parentPage.getSpace());
+                result.setParentId(parentPage.getId());
+                result.setTitle(title);
 
-    	return result;
+            }
+
+            return result;
 	}
 
 	/**

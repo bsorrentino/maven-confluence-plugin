@@ -60,6 +60,11 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	@MojoParameter(description="attachment folder", defaultValue="${basedir}/src/site/confluence/attachments")
 	private java.io.File attachmentFolder;
         
+        @MojoParameter(expression = "${confluence.removeSnapshots}", 
+                        required = false, 
+                        defaultValue = "false",
+                        description = "During publish of documentation related to a new release, if it's true, the pages related to SNAPSHOT will be removed ")
+        protected boolean removeSnapshots = false;
 
 	public AbstractConfluenceReportMojo() {
 		children = Collections.emptyList();
@@ -96,6 +101,17 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 		return project;
 	}
 
+        public boolean isRemoveSnapshots() {
+            return removeSnapshots;
+        }
+
+        public boolean isSnapshot() {
+            final String version = project.getVersion();
+
+            return (version!=null && version.endsWith("-SNAPSHOT"));
+            
+        }
+        
 	public void addProperties( MiniTemplator t ) {
 		java.util.Map<String,String> properties = getProperties();
 		
@@ -133,15 +149,23 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 			
 			try {
 				
-				final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
-				
-	            Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName())  );
-	            
-	            addProperties(t);
-	            
-	            p.setContent(t.generateOutput());
-	            
-	            confluence.storePage(p);
+                            if(!isSnapshot() && isRemoveSnapshots()) {
+                                final String snapshot = titlePrefix.concat("-SNAPSHOT");
+                                boolean deleted = ConfluenceUtils.removePage(confluence, spaceKey, parentPageTitle, snapshot);
+
+                                if( deleted )
+                                    getLog().info( String.format("Page [%s] has been removed!", snapshot) );
+                            }
+
+                            final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));	
+
+                            Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName())  );
+
+                            addProperties(t);
+
+                            p.setContent(t.generateOutput());
+
+                            confluence.storePage(p);
 
 				
 			} catch (Exception e) {
