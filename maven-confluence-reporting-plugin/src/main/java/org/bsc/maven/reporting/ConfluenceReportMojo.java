@@ -178,7 +178,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 	
 	@Override
 	protected void executeReport(Locale locale) throws MavenReportException {
-		getLog().info( "executeReport " );
+            getLog().info( String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
         String title = project.getArtifactId() + "-" + project.getVersion();
 
@@ -302,7 +302,16 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 			confluence = new Confluence(getEndPoint());
 			
 			confluence.login(getUsername(), getPassword());
-			
+                        
+            if(!isSnapshot() && isRemoveSnapshots()) {
+                final String snapshot = title.concat("-SNAPSHOT");
+                getLog().info( String.format("removing page [%s]!", snapshot) );
+                boolean deleted = ConfluenceUtils.removePage(confluence, getSpaceKey(), getParentPageTitle(), snapshot);
+
+                if( deleted )
+                    getLog().info( String.format("Page [%s] has been removed!", snapshot) );
+            }
+	
 
             Page p = ConfluenceUtils.getOrCreatePage( confluence, getSpaceKey(), getParentPageTitle(), title );
             
@@ -321,10 +330,11 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 			confluenceLogout(confluence);
 		}
 		
+                /*
 		System.out.println( "========================================");
 		System.out.println( wiki);
 		System.out.println( "========================================");
-
+                */  
 	}
 	
 	@Override

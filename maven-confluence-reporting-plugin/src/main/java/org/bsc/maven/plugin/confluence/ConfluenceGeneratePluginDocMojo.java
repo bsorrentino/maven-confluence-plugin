@@ -33,7 +33,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
      * Report output directory.
      *
      */
-	@MojoParameter(expression="${project.build.directory}/generated-site/confluence",required=true)
+    @MojoParameter(expression="${project.build.directory}/generated-site/confluence",required=true)
     private String outputDirectory;
 
 
@@ -41,11 +41,11 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
      * Mojo scanner tools.
      *
      */
-	@MojoComponent
+    @MojoComponent
     protected MojoScanner mojoScanner;
 
 
-	/**
+     /**
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
      */
     protected String getOutputDirectory()
@@ -63,6 +63,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
         {
             return;
         }
+
+        getLog().info( String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
         String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
 
@@ -134,12 +136,12 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
         return "plugin-info";
     }
 
-    private void generatePluginDocumentation( PluginDescriptor pluginDescriptor )
-        throws MavenReportException
+    private void generatePluginDocumentation( PluginDescriptor pluginDescriptor )  throws MavenReportException
     {
         try
         {
     		
+            
             Confluence confluence = new Confluence( getEndPoint() );
             confluence.login(getUsername(), getPassword());
 

@@ -31,11 +31,9 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 @SuppressWarnings("unchecked")
 public class PluginConfluenceDocGenerator implements Generator {
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.wiki";
-
-	private final Confluence confluence;
-	private final Page parentPage;
+    private final Confluence confluence;
+    private final Page parentPage;
     private final java.io.File templateWiki;
-	
     private final ConfluenceGeneratePluginDocMojo mojo;
     /**
 	 * 
@@ -135,6 +133,15 @@ public class PluginConfluenceDocGenerator implements Generator {
         
     	
     	Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
+        
+        if(!mojo.isSnapshot() && mojo.isRemoveSnapshots()) {
+            final String snapshot = title.concat("-SNAPSHOT");
+            mojo.getLog().info( String.format("removing page [%s]!", snapshot) );
+            boolean deleted = ConfluenceUtils.removePage(confluence, parentPage, snapshot);
+            
+            if( deleted )
+                mojo.getLog().info( String.format("Page [%s] has been removed!", snapshot) );
+        }
 
         {
             StringWriter writer = new StringWriter(100*1024);

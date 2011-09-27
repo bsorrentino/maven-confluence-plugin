@@ -4,7 +4,7 @@
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
   <version>3.0.3-SNAPSHOT</version>
-  <name>maven confluence plugin - parent</name>
+  <name>maven confluence plugin parent - ${project.version}</name>
   
   <properties>
   
