@@ -1,5 +1,6 @@
 package org.bsc.maven.reporting;
 
+import java.io.File;
 import java.util.Collections;
 
 import org.apache.maven.project.MavenProject;
@@ -11,6 +12,7 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import java.io.FilenameFilter;
 import org.codehaus.swizzle.confluence.Attachment;
 
 public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
@@ -60,6 +62,9 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	@MojoParameter(description="attachment folder", defaultValue="${basedir}/src/site/confluence/attachments")
 	private java.io.File attachmentFolder;
         
+	@MojoParameter(description="children folder", defaultValue="${basedir}/src/site/confluence/children")
+	private java.io.File childrenFolder;
+
         @MojoParameter(expression = "${confluence.removeSnapshots}", 
                         required = false, 
                         defaultValue = "false",
@@ -132,48 +137,80 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
 	}
 
+        
+        private boolean generateChild( Confluence confluence, String spaceKey, String parentPageTitle, String titlePrefix, Child child ) {
+                
+            java.io.File source = child.getSource(getProject());
+
+                getLog().info( child.toString() );
+
+                try {
+
+                    if(!isSnapshot() && isRemoveSnapshots()) {
+                        final String snapshot = titlePrefix.concat("-SNAPSHOT");
+                        boolean deleted = ConfluenceUtils.removePage(confluence, spaceKey, parentPageTitle, snapshot);
+
+                        if( deleted )
+                            getLog().info( String.format("Page [%s] has been removed!", snapshot) );
+                    }
+
+                    final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));	
+
+                    Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName())  );
+
+                    addProperties(t);
+
+                    p.setContent(t.generateOutput());
+
+                    confluence.storePage(p);
+
+                    return true;
+                    
+                } catch (Exception e) {
+                        final String msg = "error loading template";
+                        getLog().error(msg,e);
+                        //throw new MavenReportException(msg, e);
+                        
+                        return false;
+                }
+
+        }
+        
 	/**
 	 * 
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	protected void generateChildren(Confluence confluence, String spaceKey, String parentPageTitle, String titlePrefix ) /*throws MavenReportException*/ {
+	protected void generateChildren( final Confluence confluence, final String spaceKey, final String parentPageTitle, final String titlePrefix ) /*throws MavenReportException*/ {
 		
 		getLog().info( String.format( "generateChildren # [%d]", children.size()) );
 
 		for( Child child : (java.util.List<Child>)children ) {
 		
-			java.io.File source = child.getSource(getProject());
-			
-			getLog().info( child.toString() );
-			
-			try {
-				
-                            if(!isSnapshot() && isRemoveSnapshots()) {
-                                final String snapshot = titlePrefix.concat("-SNAPSHOT");
-                                boolean deleted = ConfluenceUtils.removePage(confluence, spaceKey, parentPageTitle, snapshot);
-
-                                if( deleted )
-                                    getLog().info( String.format("Page [%s] has been removed!", snapshot) );
-                            }
-
-                            final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));	
-
-                            Page p = ConfluenceUtils.getOrCreatePage( confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName())  );
-
-                            addProperties(t);
-
-                            p.setContent(t.generateOutput());
-
-                            confluence.storePage(p);
-
-				
-			} catch (Exception e) {
-				final String msg = "error loading template";
-				getLog().error(msg,e);
-				//throw new MavenReportException(msg, e);
-			}
+                        generateChild( confluence, spaceKey, parentPageTitle, titlePrefix, child );
 		}
+                
+                if( childrenFolder.exists() && childrenFolder.isDirectory() ) {
+                    
+                    childrenFolder.listFiles( new FilenameFilter() {
+
+                        public boolean accept(File file, String fileName) {
+                            
+                            if( !file.isFile() && !file.canRead() ) return false;
+                            if( !fileName.endsWith(".wiki")) return false;
+                                
+                            
+                            Child child = new Child();
+                            
+                            child.setName( fileName.substring(0, fileName.length()-5) );
+                            child.setSource( new File(file, fileName) );
+                            
+                            return generateChild( confluence, spaceKey, parentPageTitle, titlePrefix, child );
+                            
+                        }
+                        
+                    });
+                }
 		
 	}
 
