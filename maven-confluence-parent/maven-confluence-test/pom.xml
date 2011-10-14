@@ -7,7 +7,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>maven-confluence-test</artifactId>
-  <name>maven confluence plugin test</name>
+  <name>maven confluence plugin test - ${project.version}</name>
   <description>description</description>
   
   
