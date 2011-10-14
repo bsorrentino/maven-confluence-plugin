@@ -189,6 +189,9 @@ public class ConfluenceUtils {
         
 	public static void addAttchment( Confluence confluence, Page page, Attachment attachment, java.io.InputStream source ) throws Exception {
 
+                if( page.getId() == null ) {
+                    throw new IllegalStateException("PageId is null. Attachment cannot be added!");
+                }
 		BufferedInputStream fis = new BufferedInputStream(source, 4096 );
 		ByteArrayOutputStream baos = new ByteArrayOutputStream( );
 
@@ -202,8 +205,8 @@ public class ConfluenceUtils {
 		if( len> 0 ) baos.write(readbuf, 0, len);
 
 		attachment.setPageId( page.getId() );
-
-		confluence.addAttachment( new Integer(attachment.getPageId()), attachment, baos.toByteArray() );
+                
+		confluence.addAttachment( new Long(page.getId()), attachment, baos.toByteArray() );
 
 
 	}
