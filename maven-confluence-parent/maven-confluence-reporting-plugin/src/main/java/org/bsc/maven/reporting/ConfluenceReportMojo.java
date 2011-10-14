@@ -320,7 +320,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
             
             p.setContent(wiki);
             
-            confluence.storePage(p);
+            p = confluence.storePage(p);
             
             generateChildren(confluence, getSpaceKey(), title, title);
 			
