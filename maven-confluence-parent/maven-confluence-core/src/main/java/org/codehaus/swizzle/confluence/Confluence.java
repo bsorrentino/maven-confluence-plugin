@@ -30,7 +30,7 @@ public class Confluence {
     private String token;
     protected boolean sendRawData;
 
-    public Confluence(String endpoint) throws MalformedURLException {
+    protected Confluence(String endpoint) throws MalformedURLException {
         this(new XmlRpcClient());
 	if (endpoint.endsWith("/")) {
             endpoint = endpoint.substring(0, endpoint.length() - 1);
@@ -50,12 +50,12 @@ public class Confluence {
 
     // Would have been nicer to have a constructor with clientConfig and optionally a transport
     // but there's a circular dependency between an XmlRpcClient and TransportFactory
-    public Confluence(XmlRpcClient client) {
+    protected Confluence(XmlRpcClient client) {
         this.client = client;
         token = ""; // empty token allows anonymous access
     }
 
-    public Confluence(Confluence c) {
+    protected Confluence(Confluence c) {
         this.client = c.client;
         token = c.token; // empty token allows anonymous access
     }
