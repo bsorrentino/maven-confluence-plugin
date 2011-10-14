@@ -162,7 +162,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
                     p.setContent(t.generateOutput());
 
-                    confluence.storePage(p);
+                    p = confluence.storePage(p);
 
                     return true;
                     

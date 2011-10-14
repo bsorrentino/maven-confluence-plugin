@@ -183,7 +183,7 @@ public class PluginConfluenceDocGenerator implements Generator {
 
         page.setContent( wiki.toString() );
         
-        confluence.storePage(page);
+        page = confluence.storePage(page);
 
     }
 
