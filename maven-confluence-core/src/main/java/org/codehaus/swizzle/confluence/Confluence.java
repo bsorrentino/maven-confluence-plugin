@@ -55,6 +55,16 @@ public class Confluence {
         token = ""; // empty token allows anonymous access
     }
 
+    public Confluence(Confluence c) {
+        this.client = c.client;
+        token = c.token; // empty token allows anonymous access
+    }
+
+
+    protected String getServicePrefix() {
+        return "confluence1.";
+    }
+    
     public boolean willSendRawData() {
         return sendRawData;
     }
@@ -829,7 +839,7 @@ public class Confluence {
             vector = args;
         }
         try {
-            return client.execute("confluence1." + command, vector);
+            return client.execute(getServicePrefix() + command, vector);
         } catch (XmlRpcClientException e) {
             throw new SwizzleException(e.getMessage(), e.linkedException);
         } catch (XmlRpcException e) {
