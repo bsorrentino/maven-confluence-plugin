@@ -41,6 +41,7 @@ import org.jfrog.maven.annomojo.annotations.MojoPhase;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import org.codehaus.swizzle.confluence.ConfluenceFactory;
 
 
 
@@ -299,9 +300,11 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 		Confluence confluence = null;
 		
 		try {
-			confluence = new Confluence(getEndPoint());
+			//confluence = new Confluence(getEndPoint());
 			
-			confluence.login(getUsername(), getPassword());
+			//confluence.login(getUsername(), getPassword());
+                    
+                        confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), getUsername(), getPassword());
                         
             if(!isSnapshot() && isRemoveSnapshots()) {
                 final String snapshot = title.concat("-SNAPSHOT");

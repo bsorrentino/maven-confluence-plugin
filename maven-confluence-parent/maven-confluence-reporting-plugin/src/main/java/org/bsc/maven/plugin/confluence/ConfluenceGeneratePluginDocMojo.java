@@ -15,6 +15,7 @@ import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.bsc.maven.reporting.AbstractConfluenceReportMojo;
 import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.ConfluenceFactory;
 import org.codehaus.swizzle.confluence.Page;
 import org.jfrog.maven.annomojo.annotations.MojoComponent;
 import org.jfrog.maven.annomojo.annotations.MojoGoal;
@@ -142,8 +143,9 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
         {
     		
             
-            Confluence confluence = new Confluence( getEndPoint() );
-            confluence.login(getUsername(), getPassword());
+            //Confluence confluence = new Confluence( getEndPoint() );
+            //confluence.login(getUsername(), getPassword());
+            final Confluence confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), getUsername(), getPassword());
 
             File outputDir = new File( getOutputDirectory() );
             outputDir.mkdirs();
