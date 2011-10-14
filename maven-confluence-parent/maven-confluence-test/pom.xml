@@ -12,7 +12,7 @@
   
   
   <properties>
-  	<confluence.home>http://localhost:8090/confluence</confluence.home>
+  	<confluence.home>http://localhost:8090</confluence.home>
         <confluence.userName>admin</confluence.userName>
         <confluence.password>admin</confluence.password>
         
@@ -92,8 +92,6 @@ MAVEN 2
   						<spaceKey>DEV</spaceKey>
 						<parentPageTitle>TEST</parentPageTitle>
 						 
-						<username>bsorrentino</username>
-						<password>BActiuSP</password>
 						<children>
 							<child>
 								<name>child1</name>
