@@ -50,7 +50,7 @@ MAVEN 3
   						<endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
   						 
 					   	<spaceKey>ds</spaceKey>
-  						<parentPageTitle>Home</parentPageTitle>
+  						<parentPageTitle>Tutorial</parentPageTitle>
 						
   					</configuration>
   					<reports>

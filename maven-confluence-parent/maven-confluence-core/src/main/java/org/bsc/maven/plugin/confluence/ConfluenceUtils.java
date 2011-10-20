@@ -7,10 +7,15 @@ import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.ConfluenceException;
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
+import org.codehaus.swizzle.confluence.ServerInfo;
+import org.codehaus.swizzle.confluence.SwizzleException;
 
 /**
  * 
@@ -210,5 +215,16 @@ public class ConfluenceUtils {
 
 
 	}
+        
+        public static String getVersion( Confluence confluence ) {
+            try {
+                final ServerInfo si = confluence.getServerInfo();
+                return String.format("Confluence version [%d.%d.%d-%s] development version [%b]", si.getMajorVersion(), si.getMinorVersion(), si.getPatchLevel(), si.getBuildId(), si.isDevelopmentBuild());
+            } catch (Exception ex) {
+                // TODO LOG
+                return ex.getMessage();
+            } 
+        
+        }
 	
 }
