@@ -29,6 +29,8 @@ public class Confluence {
     private final XmlRpcClient client;
     private String token;
     protected boolean sendRawData;
+    
+    private java.lang.ref.SoftReference<ServerInfo> serverInfoCache = null;
 
     protected Confluence(String endpoint) throws MalformedURLException {
         this(new XmlRpcClient());
@@ -97,10 +99,15 @@ public class Confluence {
      * retrieve some basic information about the server being connected to. Useful for clients that need to turn certain features on or off depending on the version of the server. (Since 1.0.3)
      */
     public ServerInfo getServerInfo() throws SwizzleException, ConfluenceException {
-        Map data = (Map) call("getServerInfo");
-        return new ServerInfo(data);
-    }
+        
+        
+        if( serverInfoCache == null || serverInfoCache.get()==null ) {
+            Map data = (Map) call("getServerInfo");
+            serverInfoCache = new java.lang.ref.SoftReference<ServerInfo>( new ServerInfo(data) );
+        }
 
+        return serverInfoCache.get();
+    }
     /**
      * returns all the {@link SpaceSummary} instances that the current user can see.
      */

@@ -1,6 +1,5 @@
 package org.bsc.maven.reporting;
 import java.io.StringWriter;
-import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +29,6 @@ import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
 import org.bsc.maven.reporting.renderer.ScmRenderer;
 import org.bsc.maven.reporting.sink.ConfluenceSink;
-import org.bsc.maven.reporting.sink.SinkDelegate;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
@@ -42,6 +40,7 @@ import org.jfrog.maven.annomojo.annotations.MojoPhase;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
+import org.codehaus.swizzle.confluence.ServerInfo;
 
 
 
@@ -305,7 +304,9 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 			//confluence.login(getUsername(), getPassword());
                     
                         confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), getUsername(), getPassword());
-                        
+
+                        getLog().info( ConfluenceUtils.getVersion(confluence) );
+
             if(!isSnapshot() && isRemoveSnapshots()) {
                 final String snapshot = title.concat("-SNAPSHOT");
                 getLog().info( String.format("removing page [%s]!", snapshot) );

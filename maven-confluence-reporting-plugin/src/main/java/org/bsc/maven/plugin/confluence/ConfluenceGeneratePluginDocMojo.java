@@ -147,6 +147,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             //confluence.login(getUsername(), getPassword());
             final Confluence confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), getUsername(), getPassword());
 
+            getLog().info( ConfluenceUtils.getVersion(confluence) );
+
             File outputDir = new File( getOutputDirectory() );
             outputDir.mkdirs();
 
