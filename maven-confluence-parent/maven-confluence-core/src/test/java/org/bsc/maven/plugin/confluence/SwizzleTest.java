@@ -35,7 +35,9 @@ public class SwizzleTest {
         //confluence = new Confluence( "http://localhost:8090/" );
         //confluence.login("admin", "admin");
 
-        confluence = ConfluenceFactory.createInstanceDetectingVersion( "http://localhost:8090/", "admin", "admin" );
+        Confluence.ProxyInfo proxyInfo = null;
+        
+        confluence = ConfluenceFactory.createInstanceDetectingVersion( "http://localhost:8090/", proxyInfo, "admin", "admin" );
         
 
     }
