@@ -12,13 +12,20 @@ import java.net.MalformedURLException;
  */
 public class Confluence2 extends Confluence {
 
+   
     protected Confluence2(Confluence c) {
         super(c);
     }
-
+/*
     protected Confluence2(String endpoint) throws MalformedURLException {
         super(endpoint);
     }
+*/
+    protected Confluence2(String endpoint, ProxyInfo proxyInfo) throws MalformedURLException {
+        super(endpoint, proxyInfo);
+    }
+    
+    
 
     @Override
     protected String getServicePrefix() {

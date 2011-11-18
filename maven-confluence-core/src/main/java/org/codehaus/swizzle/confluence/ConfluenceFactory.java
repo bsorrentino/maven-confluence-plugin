@@ -15,21 +15,21 @@ public class ConfluenceFactory {
     protected ConfluenceFactory() {}
     
     
-    public static Confluence createInstanceVersion3x( String url ) throws MalformedURLException {
+    public static Confluence createInstanceVersion3x( String url, Confluence.ProxyInfo proxyInfo ) throws MalformedURLException {
         
-        return new Confluence( url );
-        
-    }
-
-    public static Confluence createInstanceVersion4x( String url ) throws MalformedURLException {
-        
-        return new Confluence2( url );
+        return new Confluence( url, proxyInfo );
         
     }
 
-    public static Confluence createInstanceDetectingVersion( String url, String login, String password  ) throws MalformedURLException, SwizzleException {
+    public static Confluence createInstanceVersion4x( String url, Confluence.ProxyInfo proxyInfo ) throws MalformedURLException {
         
-        Confluence c = new Confluence(url);
+        return new Confluence2( url, proxyInfo );
+        
+    }
+
+    public static Confluence createInstanceDetectingVersion( String url, Confluence.ProxyInfo proxyInfo, String login, String password ) throws MalformedURLException, SwizzleException {
+        
+        Confluence c = new Confluence(url, proxyInfo);
         c.login(login, password);
         
         ServerInfo info = c.getServerInfo();

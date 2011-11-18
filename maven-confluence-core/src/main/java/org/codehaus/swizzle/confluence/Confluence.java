@@ -6,15 +6,20 @@ import org.apache.xmlrpc.client.XmlRpcClientException;
 
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.naming.directory.SearchResult;
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 
 /**
  * @version $Revision$ $Date$
@@ -26,12 +31,31 @@ import org.apache.xmlrpc.client.XmlRpcClient;
  *
  */
 public class Confluence {
+    
+    public static class ProxyInfo {
+        final public String host;
+        final public int port;
+        
+        final public String userName;
+        final public String password;
+
+        public ProxyInfo(String host, int port, String userName, String password) {
+            this.host = host;
+            this.port = port;
+            this.userName = userName;
+            this.password = password;
+        }
+        
+        
+    }
+    
     private final XmlRpcClient client;
     private String token;
     protected boolean sendRawData;
     
     private java.lang.ref.SoftReference<ServerInfo> serverInfoCache = null;
 
+/*    
     protected Confluence(String endpoint) throws MalformedURLException {
         this(new XmlRpcClient());
 	if (endpoint.endsWith("/")) {
@@ -49,7 +73,49 @@ public class Confluence {
         
         client.setConfig(clientConfig);
     }
+*/
+    
+    private boolean isNullOrEmpty( String v ) {
+        if( v == null ) return true;
+        return ( v.trim().length() == 0 );
+    }
+    
+    protected Confluence(String endpoint, ProxyInfo proxyInfo ) throws MalformedURLException {
+        this(new XmlRpcClient());
+	if (endpoint.endsWith("/")) {
+            endpoint = endpoint.substring(0, endpoint.length() - 1);
+        }
 
+        if (!endpoint.endsWith("/rpc/xmlrpc")) {
+            endpoint += "/rpc/xmlrpc";
+        }
+    
+        final java.net.URL serviceURL = new java.net.URL(endpoint);
+
+        XmlRpcClientConfigImpl clientConfig = new XmlRpcClientConfigImpl();
+        clientConfig.setServerURL( serviceURL );
+
+        clientConfig.setEnabledForExtensions(true); // add this to support attachment upload
+
+        client.setConfig( clientConfig );
+
+        if( proxyInfo !=null && !isNullOrEmpty(proxyInfo.host) ) {
+            XmlRpcCommonsTransportFactory transportFactory = new XmlRpcCommonsTransportFactory( client );
+
+            HttpClient httpClient = new HttpClient();
+            HostConfiguration hostConfiguration = httpClient.getHostConfiguration();
+            hostConfiguration.setProxy( proxyInfo.host, proxyInfo.port );
+            hostConfiguration.setHost(serviceURL.getHost(), serviceURL.getPort(), serviceURL.getProtocol());
+
+            if( !isNullOrEmpty(proxyInfo.userName) && !isNullOrEmpty(proxyInfo.password) ) {
+                Credentials cred = new UsernamePasswordCredentials(proxyInfo.userName,proxyInfo.password);
+                httpClient.getState().setProxyCredentials(AuthScope.ANY, cred);
+            }
+
+            transportFactory.setHttpClient( httpClient );
+            client.setTransportFactory( transportFactory );
+        }
+    }
     // Would have been nicer to have a constructor with clientConfig and optionally a transport
     // but there's a circular dependency between an XmlRpcClient and TransportFactory
     protected Confluence(XmlRpcClient client) {

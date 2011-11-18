@@ -8,6 +8,7 @@ import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.reporting.MavenReportException;
+import org.apache.maven.settings.Proxy;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -145,7 +146,21 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             
             //Confluence confluence = new Confluence( getEndPoint() );
             //confluence.login(getUsername(), getPassword());
-            final Confluence confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), getUsername(), getPassword());
+            Confluence.ProxyInfo proxyInfo = null;
+
+            final Proxy activeProxy = mavenSettings.getActiveProxy();
+
+            if( activeProxy!=null ) {
+                
+                proxyInfo = 
+                        new Confluence.ProxyInfo( 
+                                activeProxy.getHost(),
+                                activeProxy.getPort(), 
+                                activeProxy.getUsername(), 
+                                activeProxy.getPassword()
+                                );
+            }
+            final Confluence confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
 
             getLog().info( ConfluenceUtils.getVersion(confluence) );
 
