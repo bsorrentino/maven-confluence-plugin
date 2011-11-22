@@ -80,7 +80,7 @@ Usage
 Use generation template
 
   By default the plugin use an internal template to generate confluence page. You can customize the generated page creating a personal template into  folder <<<$\{basedir\}/src/site/confluence>>> named <<<template.wiki>>>.
-  The template can include all valid confluence contents plus the following built-in varables 
+  The template can include all valid confluence contents plus the following built-in variables 
   
 *---------------------------+-----------------+
 | $\{project.summary\}      | project summary |
@@ -96,6 +96,14 @@ Use generation template
 | $\{version\}              | version         |
 *---------------------------+-----------------+
 Built-In template variables
+
+
+Tips & Tricks
+
+ * How to refer to an image <<!$\{pageTitle\}^image_name!>>.
+
+ * How to refer to an attachment <<[$\{pageTitle\}^attachment_name]>>.
+
 
 Template example
 
