@@ -31,6 +31,7 @@ import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
  *
  */
 public class Confluence {
+    protected static final String SERVICE_PREFIX_1 = "confluence1.";
     
     public static class ProxyInfo {
         final public String host;
@@ -130,7 +131,7 @@ public class Confluence {
 
 
     protected String getServicePrefix() {
-        return "confluence1.";
+        return SERVICE_PREFIX_1;
     }
     
     public boolean willSendRawData() {
@@ -318,7 +319,7 @@ public class Confluence {
      * version fields at a minimum. The parentId field is always optional. All other fields will be ignored.
      */
     public Page storePage(Page page) throws SwizzleException, ConfluenceException {
-        Map data = (Map) call("storePage", page);
+        Map data = (Map) call(SERVICE_PREFIX_1, "storePage", new Object[] { page });
         return new Page(data);
     }
 
@@ -892,6 +893,20 @@ public class Confluence {
     }
 
     private Object call(String command, Object[] args) throws SwizzleException {
+        return call( getServicePrefix(), command, args );
+    }
+    
+    /**
+     * Force use of service prefix
+     * Need for fix issue 29
+     * 
+     * @param servicePrefix
+     * @param command
+     * @param args
+     * @return
+     * @throws SwizzleException 
+     */
+    private Object call(String servicePrefix , String command, Object[] args) throws SwizzleException {
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
             if (arg instanceof MapObject) {
@@ -912,7 +927,7 @@ public class Confluence {
             vector = args;
         }
         try {
-            return client.execute(getServicePrefix() + command, vector);
+            return client.execute(servicePrefix + command, vector);
         } catch (XmlRpcClientException e) {
             throw new SwizzleException(e.getMessage(), e.linkedException);
         } catch (XmlRpcException e) {
