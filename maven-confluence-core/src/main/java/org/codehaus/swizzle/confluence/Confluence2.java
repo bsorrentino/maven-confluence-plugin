@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
  */
 public class Confluence2 extends Confluence {
 
+    protected static final String SERVICE_PREFIX_2 = "confluence2.";
    
     protected Confluence2(Confluence c) {
         super(c);
@@ -29,7 +30,7 @@ public class Confluence2 extends Confluence {
 
     @Override
     protected String getServicePrefix() {
-        return "confluence2.";
+        return SERVICE_PREFIX_2;
     }
     
 }
