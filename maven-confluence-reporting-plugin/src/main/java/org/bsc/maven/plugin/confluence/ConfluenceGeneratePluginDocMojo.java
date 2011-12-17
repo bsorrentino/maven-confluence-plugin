@@ -19,6 +19,7 @@ import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
 import org.codehaus.swizzle.confluence.Page;
 import org.jfrog.maven.annomojo.annotations.MojoComponent;
+import org.jfrog.maven.annomojo.annotations.MojoExecute;
 import org.jfrog.maven.annomojo.annotations.MojoGoal;
 import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
@@ -28,6 +29,7 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
  * 
  *
  */
+@MojoExecute(phase="compile")
 @MojoGoal("plugin-confluence-summary")
 public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMojo {
 
@@ -47,7 +49,14 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
     protected MojoScanner mojoScanner;
 
 
-     /**
+    /**
+    * The file encoding of the source files.
+    *
+    */
+    @MojoParameter( expression="${encoding}", defaultValue="${project.build.sourceEncoding}")
+    private String encoding;    
+
+    /**
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
      */
     protected String getOutputDirectory()
@@ -59,14 +68,15 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
      * @see org.apache.maven.reporting.AbstractMavenReport#executeReport(java.util.Locale)
      */
     @SuppressWarnings("unchecked")
-	protected void executeReport( Locale locale )  throws MavenReportException
+    @Override
+    protected void executeReport( Locale locale )  throws MavenReportException
     {
+        getLog().info( String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
+
         if ( !project.getPackaging().equals( "maven-plugin" ) )
         {
             return;
         }
-
-        getLog().info( String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
         String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
 
@@ -90,8 +100,16 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             pluginDescriptor.setDependencies( dependencies );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            request.setEncoding( encoding );
                     
-            mojoScanner.populatePluginDescriptor( request );
+            try {
+                mojoScanner.populatePluginDescriptor(request);
+                
+            } catch (InvalidPluginDescriptorException e) {
+                // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
+                getLog().warn("Plugin without mojos. " + e.getMessage());
+
+            }
             
             pluginDescriptor.setDescription( project.getDescription() );
 
@@ -101,11 +119,6 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             // Write the overview
             //PluginOverviewRenderer r = new PluginOverviewRenderer( getSink(), pluginDescriptor, locale );
             //r.render();
-        }
-        catch ( InvalidPluginDescriptorException e )
-        {
-            throw new MavenReportException( 
-            		"Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'", e );
         }
         catch ( ExtractionException e )
         {
@@ -127,7 +140,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
      */
     public String getName( Locale locale )
     {
-        return getBundle( locale ).getString( "report.plugin.name" );
+        return "confluence-plugin-report";
     }
 
     /**
@@ -135,7 +148,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
      */
     public String getOutputName()
     {
-        return "plugin-info";
+        return "confluence-plugin-report";
     }
 
     private void generatePluginDocumentation( PluginDescriptor pluginDescriptor )  throws MavenReportException

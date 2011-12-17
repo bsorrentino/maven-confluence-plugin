@@ -42,9 +42,9 @@
     <mavenVersion>3.0.3</mavenVersion>
     <doxiaVersion>1.0</doxiaVersion>  
     <doxia-sitetoolsVersion>1.0</doxia-sitetoolsVersion>
-    <pluginToolsVersion>2.8</pluginToolsVersion>
+    <pluginToolsVersion>2.9</pluginToolsVersion>
 
-    <jfrog.maven-plugin-anno.version>1.4.0</jfrog.maven-plugin-anno.version>
+    <jfrog.maven-plugin-anno.version>1.4.1</jfrog.maven-plugin-anno.version>
 
 <!--  NEED FOR TEST  -->
 <!--plexus.utils.version>2.0.5</plexus.utils.version-->
