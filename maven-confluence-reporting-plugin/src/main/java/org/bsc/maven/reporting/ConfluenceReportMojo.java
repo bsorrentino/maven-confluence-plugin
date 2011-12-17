@@ -167,6 +167,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
         getProperties().put("pageTitle", title);
         getProperties().put("artifactId", project.getArtifactId());
         getProperties().put("version", project.getVersion());
+        getProperties().put("parentPageTitle", getParentPageTitle());
 
 
         MiniTemplator t = null;
