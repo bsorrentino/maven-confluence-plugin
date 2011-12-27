@@ -191,7 +191,9 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             		
             generator.execute( outputDir, request );
 
-            String title = project.getArtifactId() + "-" + project.getVersion();
+            // Issue 32
+            final String title = getTitle();
+            //String title = project.getArtifactId() + "-" + project.getVersion();
             
             generateChildren(confluence, getSpaceKey(), title, title);
 

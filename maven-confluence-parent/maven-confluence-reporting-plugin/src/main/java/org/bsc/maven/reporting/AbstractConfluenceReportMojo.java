@@ -14,7 +14,13 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.FilenameFilter;
 import org.codehaus.swizzle.confluence.Attachment;
+import org.jfrog.maven.annomojo.annotations.MojoSince;
 
+/**
+ * 
+ * @author bsorrentino
+ */
+//@MojoThreadSafe
 public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	
     @MojoParameter(description = "additional properties pass to template processor")
@@ -44,21 +50,47 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      */
     @MojoParameter(expression = "${confluence.password}", required = true)
     private String password;
+    
+    /**
+     * 
+     */
     @MojoParameter(expression = "${project}", readonly = true, required = true)
     protected MavenProject project;
+    
+    /**
+     * 
+     */
     @MojoParameter(defaultValue = "${basedir}/src/site/confluence/template.wiki", description = "MiniTemplator source. Default location is ${basedir}/src/site/confluence")
     protected java.io.File templateWiki;
+    
+    /**
+     * 
+     */
     @MojoParameter(description = "child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
     private java.util.List children;
+    
+    /**
+     * 
+     */
     @MojoParameter(description = "attachment folder", defaultValue = "${basedir}/src/site/confluence/attachments")
     private java.io.File attachmentFolder;
+    
+    /**
+     * 
+     */
     @MojoParameter(description = "children folder", defaultValue = "${basedir}/src/site/confluence/children")
     private java.io.File childrenFolder;
+    
+    /**
+     * 
+     */
     @MojoParameter(expression = "${confluence.removeSnapshots}",
     required = false,
     defaultValue = "false",
     description = "During publish of documentation related to a new release, if it's true, the pages related to SNAPSHOT will be removed ")
     protected boolean removeSnapshots = false;
+    
+    
     /**
      * @parameter expression="${settings}"
      * @readonly
@@ -69,11 +101,25 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     /**
      * 
+     * @since 3.1.3
+     */
+    
+    @MojoParameter(expression = "${project.build.finalName}",
+    required = false,
+    description = "Confluence Page Title - since 3.1.3")
+    private String title;
+
+    /**
+     * 
      */
     public AbstractConfluenceReportMojo() {
         children = Collections.emptyList();
     }
 
+    protected final String getTitle() {
+        return title;
+    }
+    
     @SuppressWarnings("unchecked")
     public final java.util.Map<String, String> getProperties() {
         if (null == properties) {

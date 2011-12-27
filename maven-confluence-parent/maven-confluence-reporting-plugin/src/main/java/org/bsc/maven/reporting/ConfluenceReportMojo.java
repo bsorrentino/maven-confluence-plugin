@@ -162,7 +162,9 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
     protected void executeReport(Locale locale) throws MavenReportException {
         getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
-        String title = project.getArtifactId() + "-" + project.getVersion();
+        // Issue 32
+        final String title = getTitle();
+        //String title = project.getArtifactId() + "-" + project.getVersion();
 
         getProperties().put("pageTitle", title);
         getProperties().put("artifactId", project.getArtifactId());
