@@ -2,7 +2,7 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>3.1.2-SNAPSHOT</version>
+    <version>3.1.3-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -17,7 +17,11 @@
         <confluence.password>admin</confluence.password>
         
   </properties> 
-  
+
+<build>
+    <finalName>site-generation-test</finalName>
+</build>
+
 <profiles>
 
 <!--
@@ -51,6 +55,8 @@ MAVEN 3
   						 
 					   	<spaceKey>ds</spaceKey>
   						<parentPageTitle>Tutorial</parentPageTitle>
+                                                <title>my-site-generation-test</title>
+                                                 
 						
   					</configuration>
   					<reports>

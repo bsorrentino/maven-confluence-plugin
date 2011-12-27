@@ -181,6 +181,7 @@ NEEDS FOR PLUGIN DOCUMENTATION
                                                 <spaceKey>MVNCONFSITE</spaceKey>
                                                 <parentPageTitle>Home</parentPageTitle>
                                                 <username>bsorrentino</username>
+                                                <templateWiki>${basedir}/src/site/confluence/codehaus-home.wiki</templateWiki>
                                             </configuration>
                                             <reports>
                                                 <report>plugin-confluence-summary</report>                          
