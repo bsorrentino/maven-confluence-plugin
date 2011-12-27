@@ -48,7 +48,7 @@ Below an example of plugin declaration
         <plugin>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-reporting-plugin</artifactId>
-            <version>${project.version}</version>
+            <version>${version}</version>
             <reportSets>
                 <reportSet>
                     <id>confluence</id>
