@@ -2,17 +2,17 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>3.1.4</version>
+    <version>3.1.5-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-core</artifactId>
-  <version>3.1.4</version>
+  <version>3.1.5-SNAPSHOT</version>
   <name>maven confluence plugin core - ${project.version}</name>
 
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.1.4-SNAPSHOT/maven-confluence-core</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.1.4-SNAPSHOT/maven-confluence-core</url>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-core</url>
   </scm>
  
   <description>maven confluence plugin - core project</description>
