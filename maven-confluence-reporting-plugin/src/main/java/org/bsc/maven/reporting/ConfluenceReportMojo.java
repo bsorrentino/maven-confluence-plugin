@@ -323,6 +323,11 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 
             p = confluence.storePage(p);
 
+            for( String label : getLabels() ) {
+                
+                confluence.addLabelByName(label, Long.parseLong(p.getId()) );
+            }
+            
             generateChildren(confluence, getSpaceKey(), title, title);
 
             generateAttachments(confluence, p);

@@ -13,6 +13,7 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.FilenameFilter;
+import java.util.List;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.jfrog.maven.annomojo.annotations.MojoSince;
 
@@ -91,6 +92,10 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
     protected boolean removeSnapshots = false;
     
     
+    @MojoParameter(description="Labels to add")
+    java.util.List/*<String>*/ labels;
+    
+    
     /**
      * @parameter expression="${settings}"
      * @readonly
@@ -164,6 +169,10 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     }
 
+    public List<String> getLabels() {
+        return (labels==null) ? Collections.emptyList() : labels;
+    }
+
     public void addProperties(MiniTemplator t) {
         java.util.Map<String, String> properties = getProperties();
 
@@ -209,6 +218,11 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
             p.setContent(t.generateOutput());
 
             p = confluence.storePage(p);
+            
+            for( String label : getLabels() ) {
+                
+                confluence.addLabelByName(label, Long.parseLong(p.getId()) );
+            }
 
             return true;
 
