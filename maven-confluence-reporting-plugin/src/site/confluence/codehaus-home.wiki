@@ -64,7 +64,7 @@ Below an example of plugin declaration
                                 SINCE RELEASE 1.2 - ADD CHILDREN
                                 SINCE RELEASE 3.1.2 YOU CAN PUT CHILD PAGE IN children SUBFOLDER AVOIDING TO DECLARE THEM IN POM
                             -->	
-                            <children>
+                            <!--children>
                                 <child>
                                     <name>child1</name>
                                     <source>${basedir}/src/site/confluence/child1.wiki</source>
@@ -72,7 +72,14 @@ Below an example of plugin declaration
                                 <child>
                                     <name>child2</name><!-- DEFAULT SOURCE IS ${basedir}/src/site/confluence/${name}.wiki -->
                                 </child>
-                           </children>
+                           </children-->
+                            <!-- 
+                                SINCE RELEASE 3.1.4 YOU CAN PUT LABELS
+                            -->	
+							<labels>
+								<label>label1</label>
+								<label>label2</label>
+							</labels>
 
                     </configuration>
                     <reports>
