@@ -181,7 +181,7 @@ NEEDS FOR PLUGIN DOCUMENTATION
                                 <plugin>
                                     <groupId>org.bsc.maven</groupId>
                                     <artifactId>maven-confluence-reporting-plugin</artifactId>
-                                    <version>3.1.3</version>
+                                    <version>3.1.4</version>
                                     <reportSets>
                                         <reportSet>
                                             <id>confluence</id>
@@ -191,6 +191,11 @@ NEEDS FOR PLUGIN DOCUMENTATION
                                                 <parentPageTitle>Home</parentPageTitle>
                                                 <username>bsorrentino</username>
                                                 <templateWiki>${basedir}/src/site/confluence/codehaus-home.wiki</templateWiki>
+                                                <labels>
+                                                	<label>maven</label>
+                                                	<label>confluence</label>
+                                                	<label>report</label>
+                                                </labels>
                                             </configuration>
                                             <reports>
                                                 <report>plugin-confluence-summary</report>                          
