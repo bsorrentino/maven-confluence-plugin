@@ -217,7 +217,12 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
                     locale).render();
 
             try {
-                t.setVariable(PROJECT_SUMMARY_VAR, w.toString());
+                final String project_summary_var = w.toString();
+                
+                getProperties().put(PROJECT_SUMMARY_VAR,project_summary_var); // to share with children
+                
+                t.setVariable(PROJECT_SUMMARY_VAR, project_summary_var);
+                
             } catch (VariableNotDefinedException e) {
                 getLog().warn(String.format("variable %s not defined in template", PROJECT_SUMMARY_VAR));
             }
@@ -243,7 +248,12 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
                     developerConnection).render();
 
             try {
-                t.setVariable(PROJECT_SCM_MANAGER_VAR, w.toString());
+                final String project_scm_var = w.toString();
+                
+                getProperties().put(PROJECT_SCM_MANAGER_VAR,project_scm_var); // to share with children
+                
+                t.setVariable(PROJECT_SCM_MANAGER_VAR, project_scm_var );
+                
             } catch (VariableNotDefinedException e) {
                 getLog().warn(String.format("variable %s not defined in template", PROJECT_SCM_MANAGER_VAR));
             }
@@ -267,7 +277,12 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
                     getLog()).render();
 
             try {
-                t.setVariable(PROJECT_DEPENDENCIES_VAR, w.toString());
+                final String project_dependencies_var = w.toString();
+                
+                getProperties().put(PROJECT_DEPENDENCIES_VAR,project_dependencies_var); // to share with children
+
+                t.setVariable(PROJECT_DEPENDENCIES_VAR, project_dependencies_var);
+                
             } catch (VariableNotDefinedException e) {
                 getLog().warn(String.format("variable %s not defined in template", PROJECT_DEPENDENCIES_VAR));
             }
