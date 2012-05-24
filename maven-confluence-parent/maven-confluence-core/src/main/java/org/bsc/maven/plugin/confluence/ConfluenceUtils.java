@@ -164,24 +164,24 @@ public class ConfluenceUtils {
 	 * @throws Exception
 	 */
 	public static Page getOrCreatePage( Confluence confluence, Page parentPage, String title ) throws Exception {
-		if( null==confluence ) throw new IllegalArgumentException("confluence instance is null");
-		
-		PageSummary pageSummary = findPageByTitle( confluence, parentPage.getId(), title);
+            if( null==confluence ) throw new IllegalArgumentException("confluence instance is null");
 
-    	Page result;
-    	
-    	if( null!=pageSummary ) {
-        	result = confluence.getPage(pageSummary.getId());
-    	}
-    	else {
-    		result = new Page(Collections.EMPTY_MAP);
-    		result.setSpace(parentPage.getSpace());
-    		result.setParentId(parentPage.getId());
-    		result.setTitle(title);
+            PageSummary pageSummary = findPageByTitle( confluence, parentPage.getId(), title);
 
-    	}
-    	
-    	return result;
+            Page result;
+
+            if( null!=pageSummary ) {
+                    result = confluence.getPage(pageSummary.getId());
+            }
+            else {
+                    result = new Page(Collections.EMPTY_MAP);
+                    result.setSpace(parentPage.getSpace());
+                    result.setParentId(parentPage.getId());
+                    result.setTitle(title);
+
+            }
+
+            return result;
 	}
 
 
