@@ -2,7 +2,7 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>3.1.4-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -12,7 +12,7 @@
   
   
   <properties>
-  	<confluence.home>http://localhost:8099</confluence.home>
+  	<confluence.home>http://localhost:8090</confluence.home>
         <confluence.userName>admin</confluence.userName>
         <confluence.password>admin</confluence.password>
         
@@ -55,7 +55,7 @@ MAVEN 3
   						 
 					   	<spaceKey>ds</spaceKey>
   						<parentPageTitle>Tutorial</parentPageTitle>
-                                                <title>my-site-generation-test</title>
+                                                <title>my-site-generation-test ver3.1.6</title>
                                                 <labels>
                                                     <label>test</label>
                                                     <label>confluence</label>                                           
