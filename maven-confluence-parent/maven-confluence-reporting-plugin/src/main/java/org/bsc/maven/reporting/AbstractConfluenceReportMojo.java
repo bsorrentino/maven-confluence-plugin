@@ -12,10 +12,10 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.List;
 import org.codehaus.swizzle.confluence.Attachment;
-import org.jfrog.maven.annomojo.annotations.MojoSince;
 
 /**
  * 
@@ -61,7 +61,8 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
     /**
      * 
      */
-    @MojoParameter(defaultValue = "${basedir}/src/site/confluence/template.wiki", description = "MiniTemplator source. Default location is ${basedir}/src/site/confluence")
+    @MojoParameter(defaultValue = "${basedir}/src/site/confluence/template.wiki", 
+            description = "MiniTemplator source. Default location is ${basedir}/src/site/confluence")
     protected java.io.File templateWiki;
     
     /**
@@ -192,11 +193,11 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     }
 
-    private boolean generateChild(Confluence confluence, String spaceKey, String parentPageTitle, String titlePrefix, Child child) {
+    private boolean generateChild(Confluence confluence, String spaceKey, String parentPageTitle, Child child, String titlePrefix) {
 
         java.io.File source = child.getSource(getProject());
 
-        getLog().info(child.toString());
+        getLog().info( String.format("generateChild spacekey=[%s] parentPageTtile=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
 
         try {
 
@@ -209,13 +210,19 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                 }
             }
 
-            final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
+            final String pageName = String.format("%s - %s", titlePrefix, child.getName());
 
-            Page p = ConfluenceUtils.getOrCreatePage(confluence, spaceKey, parentPageTitle, String.format("%s - %s", titlePrefix, child.getName()));
+            Page p = ConfluenceUtils.getOrCreatePage(confluence, spaceKey, parentPageTitle, pageName);
 
-            addProperties(t);
+            if( source != null && source.isFile() && source.exists()) {
+                
+                final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
+            
+                addProperties(t);
 
-            p.setContent(t.generateOutput());
+                p.setContent(t.generateOutput());
+            }
+            
 
             p = confluence.storePage(p);
             
@@ -224,6 +231,8 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                 confluence.addLabelByName(label, Long.parseLong(p.getId()) );
             }
 
+            child.setName( pageName );
+            
             return true;
 
         } catch (Exception e) {
@@ -236,6 +245,55 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     }
 
+    protected void generateChildrenFromChild(final Confluence confluence, final java.io.File folder, final String spaceKey, final Child parentChild ) /*throws MavenReportException*/ {
+
+        getLog().info(String.format("generateChildrenFromChild [%s]", folder.getAbsolutePath()) );
+
+        if (folder.exists() && folder.isDirectory()) {
+
+            folder.listFiles(new FileFilter() {
+
+                @Override
+                public boolean accept(File file) {
+
+                    getLog().info(String.format("generateChildrenFromChild\n\t process file [%s]", file.getPath()) );
+
+                    if( file.isHidden() || file.getName().charAt(0)=='.') return false ;
+                    
+                    if( file.isDirectory() ) {
+                        Child child = new Child();
+
+                        child.setName(file.getName());
+                        child.setSource( new java.io.File(file,templateWiki.getName()));
+
+                        if( generateChild(confluence, spaceKey, parentChild.getName(), child, parentChild.getName()) ) {
+ 
+                            generateChildrenFromChild(confluence, file, spaceKey, child );    
+                        }
+                       return true;
+                    }
+                    
+                    final String fileName = file.getName();
+
+                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(".wiki") || fileName.equals(templateWiki.getName())) {
+                        return false;
+                    }
+
+                    Child child = new Child();
+
+                    child.setName(fileName.substring(0, fileName.length() - 5));
+                    child.setSource(file);
+                    
+
+                    generateChild(confluence, spaceKey, parentChild.getName(), child, parentChild.getName() );
+                    return false;
+
+                }
+            });
+        }
+
+    }
+    
     /**
      * 
      * 
@@ -247,29 +305,48 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
         for (Child child : (java.util.List<Child>) children) {
 
-            generateChild(confluence, spaceKey, parentPageTitle, titlePrefix, child);
+            generateChild(confluence, spaceKey, parentPageTitle, child, titlePrefix );
         }
 
         if (childrenFolder.exists() && childrenFolder.isDirectory()) {
 
-            childrenFolder.listFiles(new FilenameFilter() {
+            childrenFolder.listFiles(new FileFilter() {
 
-                public boolean accept(File file, String fileName) {
+                @Override
+                public boolean accept(File file) {
 
-                    if (!file.isFile() && !file.canRead()) {
+                    getLog().info(String.format("generateChildren\n\t process file [%s]", file.getPath()) );
+
+                    if( file.isHidden() || file.getName().charAt(0)=='.') return false ;
+
+                    if( file.isDirectory() ) {
+                       
+                        Child parentChild = new Child();
+
+                        parentChild.setName(file.getName());
+                        parentChild.setSource( new java.io.File(file,templateWiki.getName()));
+
+                        if( generateChild(confluence, spaceKey, parentPageTitle, parentChild, titlePrefix) ) {
+ 
+                            generateChildrenFromChild(confluence, file, spaceKey, parentChild );    
+                        }
+                        
                         return false;
                     }
-                    if (!fileName.endsWith(".wiki")) {
+                     
+                    final String fileName = file.getName();
+
+                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(".wiki") || fileName.equals(templateWiki.getName())) {
                         return false;
                     }
-
 
                     Child child = new Child();
 
                     child.setName(fileName.substring(0, fileName.length() - 5));
-                    child.setSource(new File(file, fileName));
+                    child.setSource(file);
 
-                    return generateChild(confluence, spaceKey, parentPageTitle, titlePrefix, child);
+                    generateChild(confluence, spaceKey, parentPageTitle, child, titlePrefix);
+                    return false;
 
                 }
             });
