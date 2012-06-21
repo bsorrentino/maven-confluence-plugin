@@ -76,10 +76,10 @@ Below an example of plugin declaration
                             <!-- 
                                 SINCE RELEASE 3.1.4 YOU CAN PUT LABELS
                             -->	
-							<labels>
-								<label>label1</label>
-								<label>label2</label>
-							</labels>
+			   <labels>
+                            <label>label1</label>
+                            <label>label2</label>
+			   </labels>
 
                     </configuration>
                     <reports>
