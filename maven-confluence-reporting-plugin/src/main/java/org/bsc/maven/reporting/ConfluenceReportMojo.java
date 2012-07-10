@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -166,12 +168,8 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
         final String title = getTitle();
         //String title = project.getArtifactId() + "-" + project.getVersion();
 
-        getProperties().put("pageTitle", title);
-        getProperties().put("artifactId", project.getArtifactId());
-        getProperties().put("version", project.getVersion());
-        getProperties().put("parentPageTitle", getParentPageTitle());
-
-
+        super.initTemplateProperties();
+        
         MiniTemplator t = null;
 
         if (templateWiki == null || !templateWiki.exists()) {

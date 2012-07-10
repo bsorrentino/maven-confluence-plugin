@@ -78,14 +78,12 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             return;
         }
 
+        super.initTemplateProperties();
+        
         String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
-
         PluginDescriptor pluginDescriptor = new PluginDescriptor();
-
         pluginDescriptor.setGroupId( project.getGroupId() );
-
         pluginDescriptor.setArtifactId( project.getArtifactId() );
-
         pluginDescriptor.setVersion( project.getVersion() );
 
         pluginDescriptor.setGoalPrefix( goalPrefix );
