@@ -15,6 +15,7 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.List;
+import java.util.Map;
 import org.codehaus.swizzle.confluence.Attachment;
 
 /**
@@ -174,13 +175,37 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         return (labels==null) ? Collections.emptyList() : labels;
     }
 
-    public void addProperties(MiniTemplator t) {
-        java.util.Map<String, String> properties = getProperties();
+    /**
+     * initialize properties shared with template
+     */
+    protected void initTemplateProperties() {
+        
+        getProperties().put("pageTitle", getTitle());
+        getProperties().put("parentPageTitle", getParentPageTitle());
+        getProperties().put("artifactId", project.getArtifactId());
+        getProperties().put("version", project.getVersion());
+        getProperties().put("groupId", project.getGroupId());
+        getProperties().put("name", project.getName());
+        getProperties().put("description", project.getDescription());
 
-        if (properties == null || properties.isEmpty()) {
+        java.util.Properties projectProps = project.getProperties();
+        
+        if( projectProps!=null ) {
+            
+            for(Map.Entry<Object,Object> e : projectProps.entrySet()){
+                getProperties().put( String.valueOf(e.getKey()), String.valueOf(e.getValue()) );
+            }
+        }
+        
+    }
+    
+    public void addProperties(MiniTemplator t) {
+        java.util.Map<String, String> props = getProperties();
+
+        if (props == null || props.isEmpty()) {
             getLog().info("no properties set!");
         } else {
-            for (java.util.Map.Entry<String, String> e : properties.entrySet()) {
+            for (java.util.Map.Entry<String, String> e : props.entrySet()) {
                 getLog().debug(String.format("property %s = %s", e.getKey(), e.getValue()));
 
                 try {
