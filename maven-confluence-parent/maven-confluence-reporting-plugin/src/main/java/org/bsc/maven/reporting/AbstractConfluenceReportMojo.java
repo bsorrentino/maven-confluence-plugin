@@ -63,13 +63,14 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * 
      */
     @MojoParameter(defaultValue = "${basedir}/src/site/confluence/template.wiki", 
-            description = "MiniTemplator source. Default location is ${basedir}/src/site/confluence")
+                   description = "MiniTemplator source. Default location is ${basedir}/src/site/confluence")
     protected java.io.File templateWiki;
     
     /**
      * 
      */
-    @MojoParameter(description = "child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
+    @MojoParameter( deprecated="use children folder instead", 
+                    description = "child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
     private java.util.List children;
     
     /**
@@ -88,9 +89,9 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * 
      */
     @MojoParameter(expression = "${confluence.removeSnapshots}",
-    required = false,
-    defaultValue = "false",
-    description = "During publish of documentation related to a new release, if it's true, the pages related to SNAPSHOT will be removed ")
+                   required = false,
+                   defaultValue = "false",
+                   description = "During publish of documentation related to a new release, if it's true, the pages related to SNAPSHOT will be removed ")
     protected boolean removeSnapshots = false;
     
     
@@ -112,10 +113,21 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      */
     
     @MojoParameter(expression = "${project.build.finalName}",
-    required = false,
-    description = "Confluence Page Title - since 3.1.3")
+                   required = false,
+                   description = "Confluence Page Title - since 3.1.3")
     private String title;
 
+    /**
+     * 
+     * @since 3.2.1
+     */
+    
+    @MojoParameter(expression = "${fileExt}",
+                   required = false,
+                   defaultValue=".wiki",
+                   description = "file wiki extension - since 3.2.1")
+    private String fileExt;
+    
     /**
      * 
      */
@@ -123,9 +135,22 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         children = Collections.emptyList();
     }
 
+    /**
+     * 
+     * @return 
+     */
     protected final String getTitle() {
         return title;
     }
+
+    /**
+     * 
+     * @return 
+     */
+    public String getFileExt() {
+        return (fileExt.charAt(0)=='.' ) ? fileExt : ".".concat(fileExt);
+    }
+    
     
     @SuppressWarnings("unchecked")
     public final java.util.Map<String, String> getProperties() {
@@ -220,7 +245,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     private boolean generateChild(Confluence confluence, String spaceKey, String parentPageTitle, Child child, String titlePrefix) {
 
-        java.io.File source = child.getSource(getProject());
+        java.io.File source = child.getSource(getProject(), getFileExt());
 
         getLog().info( String.format("generateChild spacekey=[%s] parentPageTtile=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
 
@@ -300,13 +325,14 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                     
                     final String fileName = file.getName();
 
-                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(".wiki") || fileName.equals(templateWiki.getName())) {
+                    if (!file.isFile() || !file.canRead() || !fileName.endsWith( getFileExt() ) || fileName.equals(templateWiki.getName())) {
                         return false;
                     }
 
                     Child child = new Child();
+                    final int extensionLen = getFileExt().length();
 
-                    child.setName(fileName.substring(0, fileName.length() - 5));
+                    child.setName(fileName.substring(0, fileName.length() - extensionLen));
                     child.setSource(file);
                     
 
@@ -361,13 +387,15 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                      
                     final String fileName = file.getName();
 
-                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(".wiki") || fileName.equals(templateWiki.getName())) {
+                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(getFileExt()) || fileName.equals(templateWiki.getName())) {
                         return false;
                     }
 
                     Child child = new Child();
-
-                    child.setName(fileName.substring(0, fileName.length() - 5));
+                    
+                    final int extensionLen = getFileExt().length();
+                    
+                    child.setName(fileName.substring(0, fileName.length() - extensionLen));
                     child.setSource(file);
 
                     generateChild(confluence, spaceKey, parentPageTitle, child, titlePrefix);

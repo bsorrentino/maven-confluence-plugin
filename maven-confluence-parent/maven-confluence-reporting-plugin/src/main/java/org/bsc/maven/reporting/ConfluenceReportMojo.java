@@ -175,7 +175,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
         if (templateWiki == null || !templateWiki.exists()) {
             getLog().warn("template not set! default using ...");
 
-            java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("defaultTemplate.wiki");
+            java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("defaultTemplate.confluence");
 
             if (is == null) {
                 final String msg = "default template cannot be found";

@@ -32,13 +32,13 @@ public class Child {
 		this.source = location;
 	}
 	
-	public java.io.File getSource( MavenProject project ) {
+	public java.io.File getSource( MavenProject project, String ext ) {
 		
 		if( source==null ) {
 			if( project==null ) throw new IllegalArgumentException("project is null");
 			if( name==null ) throw new IllegalStateException("name is null");
 			
-			final String path = String.format("src/site/confluence/%s.wiki", getName());
+			final String path = String.format("src/site/confluence/%s.%s", getName(), ext);
 			
 			source = new java.io.File( project.getBasedir(), path);
 		}
