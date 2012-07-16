@@ -55,12 +55,17 @@ MAVEN 3
   						 
 					   	<spaceKey>ds</spaceKey>
   						<parentPageTitle>Tutorial</parentPageTitle>
-                                                <title>my-site-generation-test ver3.1.6</title>
+                                                <title>my-site-generation-test ver3.2.1</title>
                                                 <labels>
                                                     <label>test</label>
                                                     <label>confluence</label>                                           
                                                 </labels> 
-						
+                                                <!--
+                                                <childrenFolder>${basedir}/src/site/confluence/children.wiki</childrenFolder>
+                                                -->
+                                                <!-- TEST ISSUE 40 -->
+                                                <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                                                <fileExt>.confluence</fileExt>
   					</configuration>
   					<reports>
   						<report>confluence-summary</report>				
