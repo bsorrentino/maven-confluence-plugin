@@ -30,7 +30,7 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
  */
 @SuppressWarnings("unchecked")
 public class PluginConfluenceDocGenerator implements Generator {
-    public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.wiki";
+    public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
     private final Confluence confluence;
     private final Page parentPage;
     private final java.io.File templateWiki;
