@@ -112,6 +112,7 @@ h4. Change wiki files extension
     </configuration>
 {code}
 
+{quote}
 
 {tip:title=Authentication}
 
@@ -123,7 +124,6 @@ confluence.password
 
 {tip}
 
-{quote}
 
 h3. Use template variables
 
