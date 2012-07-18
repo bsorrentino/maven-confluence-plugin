@@ -65,7 +65,7 @@ MAVEN 3
                                                 -->
                                                 <!-- TEST ISSUE 40 -->
                                                 <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
-                                                <fileExt>.confluence</fileExt>
+                                                <wikiFilesExt>.confluence</wikiFilesExt>
   					</configuration>
   					<reports>
   						<report>confluence-summary</report>				

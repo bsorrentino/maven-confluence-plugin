@@ -122,11 +122,11 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * @since 3.2.1
      */
     
-    @MojoParameter(expression = "${fileExt}",
+    @MojoParameter(expression = "${wikiFilesExt}",
                    required = false,
                    defaultValue=".wiki",
-                   description = "file wiki extension - since 3.2.1")
-    private String fileExt;
+                   description = "wiki files' extension - since 3.2.1")
+    private String wikiFilesExt;
     
     /**
      * 
@@ -148,7 +148,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * @return 
      */
     public String getFileExt() {
-        return (fileExt.charAt(0)=='.' ) ? fileExt : ".".concat(fileExt);
+        return (wikiFilesExt.charAt(0)=='.' ) ? wikiFilesExt : ".".concat(wikiFilesExt);
     }
     
     
