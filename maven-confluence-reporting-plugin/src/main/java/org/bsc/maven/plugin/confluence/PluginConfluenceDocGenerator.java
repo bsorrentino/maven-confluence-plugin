@@ -100,27 +100,47 @@ public class PluginConfluenceDocGenerator implements Generator {
         MiniTemplator t = null;
 
         if( templateWiki==null || !templateWiki.exists()) {
-        		mojo.getLog().warn("template not set! default using ...");
+            
+            mojo.getLog().warn("template not set! default using ...");
 
-                java.io.InputStream is = getClass().getClassLoader().getResourceAsStream(DEFAULT_PLUGIN_TEMPLATE_WIKI);
+            java.net.URL sourceUrl = getClass().getClassLoader().getResource(DEFAULT_PLUGIN_TEMPLATE_WIKI);
 
-                if( is==null ) {
-                        final String msg = "default template cannot be found";
-                        mojo.getLog().error( msg);
-                        throw new MavenReportException(msg);
-                }
+            if (sourceUrl == null) {
+                final String msg = "default template cannot be found";
+                mojo.getLog().error(msg);
+                throw new MavenReportException(msg);
+            }
 
-                try {
-                        t = new MiniTemplator(new java.io.InputStreamReader(is));
-                } catch (Exception e) {
-                        final String msg = "error loading template";
-                        mojo.getLog().error(msg,e);
-                        throw new MavenReportException(msg, e);
-                }
+            try {
+                t = new MiniTemplator(sourceUrl);
+            } catch (Exception e) {
+                final String msg = "error loading template";
+                mojo.getLog().error(msg, e);
+                throw new MavenReportException(msg, e);
+            }
+/*                         
+            java.io.InputStream is = getClass().getClassLoader().getResourceAsStream(DEFAULT_PLUGIN_TEMPLATE_WIKI);
+
+            if( is==null ) {
+                    final String msg = "default template cannot be found";
+                    mojo.getLog().error( msg);
+                    throw new MavenReportException(msg);
+            }
+
+            try {
+                    t = new MiniTemplator(new java.io.InputStreamReader(is));
+            } catch (Exception e) {
+                    final String msg = "error loading template";
+                    mojo.getLog().error(msg,e);
+                    throw new MavenReportException(msg, e);
+            }
+                 
+*/
         }
         else {
                 try {
-                        t = new MiniTemplator(templateWiki);
+                        t = new MiniTemplator(templateWiki.toURI().toURL());
+                        //t = new MiniTemplator(templateWiki);
                 } catch (Exception e) {
                         final String msg = "error loading template";
                         mojo.getLog().error(msg,e);

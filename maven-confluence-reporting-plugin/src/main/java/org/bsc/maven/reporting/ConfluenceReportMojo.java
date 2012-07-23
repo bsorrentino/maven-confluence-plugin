@@ -42,6 +42,8 @@ import org.jfrog.maven.annomojo.annotations.MojoPhase;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.httpclient.ProxyHost;
 import org.apache.maven.settings.Proxy;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
@@ -163,6 +165,13 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {
         getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
+        try {
+            loadUserInfoFromSettings();
+        } catch (MojoExecutionException ex) {
+            
+            throw new MavenReportException("error reading credential", ex);
+        }
+        
 
         // Issue 32
         final String title = getTitle();
@@ -175,6 +184,23 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
         if (templateWiki == null || !templateWiki.exists()) {
             getLog().warn("template not set! default using ...");
 
+            java.net.URL sourceUrl = getClass().getClassLoader().getResource("defaultTemplate.confluence");
+
+            if (sourceUrl == null) {
+                final String msg = "default template cannot be found";
+                getLog().error(msg);
+                throw new MavenReportException(msg);
+            }
+
+            try {
+                t = new MiniTemplator(sourceUrl);
+            } catch (Exception e) {
+                final String msg = "error loading template";
+                getLog().error(msg, e);
+                throw new MavenReportException(msg, e);
+            }
+            
+/*            
             java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("defaultTemplate.confluence");
 
             if (is == null) {
@@ -190,9 +216,12 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
                 getLog().error(msg, e);
                 throw new MavenReportException(msg, e);
             }
+         
+*/
         } else {
             try {
-                t = new MiniTemplator(templateWiki);
+                //t = new MiniTemplator(templateWiki);
+                t = new MiniTemplator(templateWiki.toURI().toURL());
             } catch (Exception e) {
                 final String msg = "error loading template";
                 getLog().error(msg, e);

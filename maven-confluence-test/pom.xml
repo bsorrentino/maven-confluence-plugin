@@ -13,9 +13,10 @@
   
   <properties>
   	<confluence.home>http://localhost:8090</confluence.home>
-        <confluence.userName>admin</confluence.userName>
-        <confluence.password>admin</confluence.password>
-        
+	<!--
+    <confluence.userName>admin</confluence.userName>
+    <confluence.password>admin</confluence.password>
+    -->    
   </properties> 
 
 <build>
@@ -66,6 +67,8 @@ MAVEN 3
                                                 <!-- TEST ISSUE 40 -->
                                                 <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                                                 <wikiFilesExt>.confluence</wikiFilesExt>
+                                                <!-- TEST ISSUE 39 -->
+                                                <serverId>confluence-local</serverId>
   					</configuration>
   					<reports>
   						<report>confluence-summary</report>				

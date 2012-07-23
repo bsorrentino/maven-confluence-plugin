@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.maven.doxia.siterenderer.Renderer;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.reporting.MavenReportException;
@@ -78,6 +79,13 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             return;
         }
 
+        try {
+            loadUserInfoFromSettings();
+        } catch (MojoExecutionException ex) {
+            
+            throw new MavenReportException("error reading credential", ex);
+        }
+        
         super.initTemplateProperties();
         
         String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
