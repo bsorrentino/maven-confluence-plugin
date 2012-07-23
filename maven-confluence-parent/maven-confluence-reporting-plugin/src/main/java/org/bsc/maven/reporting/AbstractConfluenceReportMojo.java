@@ -13,10 +13,15 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.List;
 import java.util.Map;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.settings.Server;
 import org.codehaus.swizzle.confluence.Attachment;
+import org.jfrog.maven.annomojo.annotations.MojoComponent;
+import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 /**
  * 
@@ -45,12 +50,12 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
     /**
      * Confluence username 
      */
-    @MojoParameter(expression = "${confluence.userName}", defaultValue = "admin")
+    @MojoParameter(expression = "${confluence.userName}", required = false )
     private String username;
     /**
      * Confluence password 
      */
-    @MojoParameter(expression = "${confluence.password}", required = true)
+    @MojoParameter(expression = "${confluence.password}", required = false)
     private String password;
     
     /**
@@ -128,6 +133,34 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                    description = "wiki files' extension - since 3.2.1")
     private String wikiFilesExt;
     
+    
+    /**
+     * Issue 39
+     * 
+     * Server's <code>id</code> in <code>settings.xml</code> to look up username and password.
+     * Defaults to <code>${url}</code> if not given.
+     *
+     * @since 1.0
+     * @parameter expression="${settingsKey}"
+     */
+    @MojoParameter( 
+            expression="${serverId}",
+            description="Server's <code>id</code> in <code>settings.xml</code> to look up username and password"
+    )
+    private String serverId;
+    
+    /**
+     * Issue 39
+     * 
+     * MNG-4384
+     * 
+     * @since 1.5
+     * @component role="hidden.org.sonatype.plexus.components.sec.dispatcher.SecDispatcher"
+     * @required  
+     */
+    @MojoComponent(role="org.sonatype.plexus.components.sec.dispatcher.SecDispatcher",roleHint="default")
+    private SecDispatcher securityDispatcher;    
+    
     /**
      * 
      */
@@ -200,6 +233,53 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         return (labels==null) ? Collections.emptyList() : labels;
     }
 
+    
+    /**
+     * Issue 39
+     * 
+     * Load username password from settings if user has not set them in JVM properties
+     * 
+     * @throws MojoExecutionException
+     */
+    protected void loadUserInfoFromSettings() throws MojoExecutionException
+    {
+
+        if ( ( getUsername() == null || getPassword() == null ) && ( mavenSettings != null ) )
+        {
+            if ( this.serverId == null ) throw new MojoExecutionException("SettingKey must be set! (username and/or password are not provided)");
+
+            Server server = this.mavenSettings.getServer( this.serverId );
+
+            if ( server == null ) throw new MojoExecutionException( String.format("server with id [%s] not found in settings!" ));
+
+            if ( getUsername() == null && server.getUsername() !=null  ) username = server.getUsername();
+
+            if( getPassword() == null && server.getPassword() != null ) {
+                    try
+                    {
+                        //
+                        // FIX to resolve
+                        // org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException: 
+                        // java.io.FileNotFoundException: ~/.settings-security.xml (No such file or directory)
+                        //
+                        if( securityDispatcher instanceof DefaultSecDispatcher ) {
+                        
+                            
+                            //System.setProperty( DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION, sb.toString() );
+                                
+                            ((DefaultSecDispatcher)securityDispatcher).setConfigurationFile("~/.m2/settings-security.xml");
+                        }
+                        
+                        password = securityDispatcher.decrypt( server.getPassword() );
+                    }
+                    catch ( SecDispatcherException e )
+                    {
+                        throw new MojoExecutionException( e.getMessage() );
+                    }
+            }
+        }
+    }
+    
     /**
      * initialize properties shared with template
      */
@@ -266,7 +346,8 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
             if( source != null && source.isFile() && source.exists()) {
                 
-                final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
+                //final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
+                final MiniTemplator t = new MiniTemplator(source.toURI().toURL());
             
                 addProperties(t);
 
