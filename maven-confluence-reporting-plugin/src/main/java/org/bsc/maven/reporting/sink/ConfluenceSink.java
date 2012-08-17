@@ -3,8 +3,6 @@ package org.bsc.maven.reporting.sink;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import org.apache.maven.doxia.module.xhtml.XhtmlSink;
-import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.siterenderer.sink.SiteRendererSink;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 
@@ -20,17 +18,18 @@ import org.bsc.maven.plugin.confluence.ConfluenceUtils;
  */
 public class ConfluenceSink extends SiteRendererSink {
 
-	enum Command {
+	public enum Command {
 		
 		HEADER,
 		CELL,
 		LINK,
 		ANCHOR,
-		TITLE
+		TITLE,
+                PANEL
 		
 	}
 	
-	java.util.Stack<Command> commandStack = new java.util.Stack<Command>();
+	public final java.util.Stack<Command> commandStack = new java.util.Stack<Command>();
 	java.util.Stack<String> dataStack = new java.util.Stack<String>();
 	
 	org.apache.maven.doxia.sink.Sink _s;
@@ -672,18 +671,25 @@ public class ConfluenceSink extends SiteRendererSink {
 	@Override
 	public void verbatim_() {
 		
-		_w.println("{noFormat}");
+		_w.println( dataStack.pop() );
 		_s.verbatim_();
 	}
 
 	@Override
 	public void verbatim(boolean boxed) {
 		
-		_w.println("{noFormat}");
+                if( !commandStack.empty() && Command.PANEL==commandStack.peek()) {
+        		_w.println("{panel}");
+                        dataStack.push("{panel}");
+                    
+                }
+                else {
+        		_w.println("{noFormat}");
+                        dataStack.push("{noFormat}");
+                    
+                }
 		_s.verbatim(boxed);
 	}
 
-
-	
 	
 }

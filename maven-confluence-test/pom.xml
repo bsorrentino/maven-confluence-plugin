@@ -19,6 +19,12 @@
     -->    
   </properties> 
 
+  <scm>
+	<connection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</connection>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</url>
+  </scm>
+
 <build>
     <finalName>site-generation-test</finalName>
 </build>
