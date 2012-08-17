@@ -14,6 +14,7 @@ import org.apache.maven.scm.provider.starteam.repository.StarteamScmProviderRepo
 import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.apache.maven.scm.repository.ScmRepositoryException;
+import org.bsc.maven.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -630,6 +631,22 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
         }
 
         return false;
+    }
+
+    @Override
+    protected void verbatimLink(String text, String href) {
+       if( sink instanceof ConfluenceSink ) {
+           
+           ((ConfluenceSink)sink).commandStack.push( ConfluenceSink.Command.PANEL );
+           
+           super.verbatimLink(text, href);
+           
+           ((ConfluenceSink)sink).commandStack.pop();
+       
+           return;
+       }
+       
+       super.verbatimLink(text, href);
     }
 
 }
