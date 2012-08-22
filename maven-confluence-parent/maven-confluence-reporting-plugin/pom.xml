@@ -41,6 +41,9 @@
     </licenses>
 
 
+    <!--
+    LEGACY MAVEN2 REPORTING
+
     <reporting>  
         <plugins>                       
             <plugin>
@@ -51,6 +54,7 @@
             
         </plugins>
     </reporting>
+    -->
 
     <build>
         <plugins>
@@ -181,7 +185,7 @@ NEEDS FOR PLUGIN DOCUMENTATION
   
     <profiles>
         <profile>
-            <id>codehaus</id>
+            <id>report</id>
  
             <dependencies>
             </dependencies>
@@ -196,11 +200,23 @@ NEEDS FOR PLUGIN DOCUMENTATION
         
                         <configuration>
                             <reportPlugins>
-               
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-plugin-plugin</artifactId>
+                                    <version>2.9</version>
+                                </plugin>
+
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                                    <version>2.2</version>
+                                </plugin>
+                
+                
                                 <plugin>
                                     <groupId>org.bsc.maven</groupId>
                                     <artifactId>maven-confluence-reporting-plugin</artifactId>
-                                    <version>3.1.4</version>
+                                    <version>${project,version}</version>
                                     <reportSets>
                                         <reportSet>
                                             <id>confluence</id>
@@ -208,7 +224,7 @@ NEEDS FOR PLUGIN DOCUMENTATION
                                                 <endPoint>http://docs.codehaus.org/rpc/xmlrpc</endPoint>                           
                                                 <spaceKey>MVNCONFSITE</spaceKey>
                                                 <parentPageTitle>Home</parentPageTitle>
-                                                <username>bsorrentino</username>
+                                                <serverId>codehaus</serverId>
                                                 <templateWiki>${basedir}/src/site/confluence/codehaus-home.wiki</templateWiki>
                                                 <labels>
                                                 	<label>maven</label>
