@@ -634,19 +634,15 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
     }
 
     @Override
-    protected void verbatimLink(String text, String href) {
-       if( sink instanceof ConfluenceSink ) {
+    protected void verbatimLink( final String text, final String href) {
+    
+        ConfluenceSink.pushCommandBlock(sink, ConfluenceSink.Command.PANEL, new Runnable() {
            
-           ((ConfluenceSink)sink).commandStack.push( ConfluenceSink.Command.PANEL );
-           
-           super.verbatimLink(text, href);
-           
-           ((ConfluenceSink)sink).commandStack.pop();
-       
-           return;
-       }
-       
-       super.verbatimLink(text, href);
+            public void run() {
+               ScmRenderer.super.verbatimLink(text, href);
+            }
+        });
+        
     }
 
 }
