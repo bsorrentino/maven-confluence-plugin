@@ -68,7 +68,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * 
      */
     @MojoParameter(defaultValue = "${basedir}/src/site/confluence/template.wiki", 
-                   description = "MiniTemplator source. Default location is ${basedir}/src/site/confluence")
+                   description = "Home page template source. Template name will be used also as template source for children" )
     protected java.io.File templateWiki;
     
     /**
@@ -130,7 +130,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
     @MojoParameter(expression = "${wikiFilesExt}",
                    required = false,
                    defaultValue=".wiki",
-                   description = "wiki files' extension - since 3.2.1")
+                   description = "Children files extension - since 3.2.1")
     private String wikiFilesExt;
     
     
@@ -144,7 +144,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * @parameter expression="${settingsKey}"
      */
     @MojoParameter( 
-            expression="${serverId}",
+            expression="${confluence.serverId}",
             description="Server's <code>id</code> in <code>settings.xml</code> to look up username and password"
     )
     private String serverId;

@@ -5,6 +5,7 @@ import java.io.Writer;
 
 import org.apache.maven.doxia.siterenderer.sink.SiteRendererSink;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
+import org.codehaus.doxia.sink.Sink;
 
 
 /**
@@ -29,13 +30,33 @@ public class ConfluenceSink extends SiteRendererSink {
 		
 	}
 	
-	public final java.util.Stack<Command> commandStack = new java.util.Stack<Command>();
-	java.util.Stack<String> dataStack = new java.util.Stack<String>();
+	final java.util.Stack<Command> commandStack = new java.util.Stack<Command>();
+	final java.util.Stack<String> dataStack = new java.util.Stack<String>();
 	
 	org.apache.maven.doxia.sink.Sink _s;
 	PrintWriter _w;
 	
-	public ConfluenceSink( Writer w, org.apache.maven.doxia.sink.Sink delegate ) {
+        /**
+         * 
+         * 
+         */
+        public static void pushCommandBlock( org.apache.maven.doxia.sink.Sink sink, ConfluenceSink.Command cmd, Runnable task ) {
+            if( task == null ) throw new IllegalArgumentException("task parameter is null!");
+            
+            if( sink instanceof ConfluenceSink ) {
+           
+                ((ConfluenceSink)sink).commandStack.push( cmd );
+                
+                task.run();
+                
+                ((ConfluenceSink)sink).commandStack.pop();
+             
+            }
+            else             
+                task.run();
+        }
+
+        public ConfluenceSink( Writer w, org.apache.maven.doxia.sink.Sink delegate ) {
 		super( null );
 		this._s = delegate;
 		_w = new PrintWriter(w);
