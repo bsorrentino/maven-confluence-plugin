@@ -54,15 +54,14 @@ h4. Basic Declaration
     <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-confluence-reporting-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>${plugin.version}</version>
         <reportSets>
             <reportSet>
                 <id>confluence</id>
                 <configuration>
                 <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
                 <spaceKey>DOCS</spaceKey>
-                <username>admin</username> <!-- CONFLUENCE USER -->
-                <password>******</password> <!-- CONFLUENCE PASSWORD -->
+                <serverId>server_id_configured_in_settings_xml</serverId>
                 <parentPageTitle>Home</parentPageTitle><!-PARENT PAGE IN THE GIVEN SPACE -->
                 <title>custom_title</title><!-- PAGE TITLE BY DEFAULT ${project.build.finalName} - SINCE 3.1.3 -->
                 </configuration>
@@ -83,8 +82,7 @@ h4. Add labels
     <configuration>
             <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
     <spaceKey>DOCS</spaceKey>
-    <username>admin</username> <!-- CONFLUENCE USER -->
-    <password>******</password> <!-- CONFLUENCE PASSWORD -->
+    <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-PARENT PAGE IN THE GIVEN SPACE -->
     <title>custom_title</title><!-- PAGE TITLE BY DEFAULT ${project.build.finalName} - SINCE 3.1.3 -->
 
@@ -101,8 +99,7 @@ h4. Change wiki files extension
     <configuration>
             <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
     <spaceKey>DOCS</spaceKey>
-    <username>admin</username> <!-- CONFLUENCE USER -->
-    <password>******</password> <!-- CONFLUENCE PASSWORD -->
+    <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-PARENT PAGE IN THE GIVEN SPACE -->
     <title>custom_title</title><!-- PAGE TITLE BY DEFAULT ${project.build.finalName} - SINCE 3.1.3 -->
 
@@ -116,11 +113,17 @@ h4. Change wiki files extension
 
 {tip:title=Authentication}
 
-put yours confluence credential within *settings.xml* as properties - 
+Put yours confluence credential within settings.xml as server 
+
 {noformat}
-confluence.userName
-confluence.password
-{noformat}
+<server>
+    <id>my_confluence_server</id>
+    <username>my_user</username>
+    <password>my_password</password>
+</server>
+{noformat}  
+
+Take note that also [maven ecryption|http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords ] is supported
 
 {tip}
 
