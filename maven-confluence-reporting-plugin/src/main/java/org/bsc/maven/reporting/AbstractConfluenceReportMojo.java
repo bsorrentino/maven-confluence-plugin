@@ -539,7 +539,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                 }
             } else {
                 a = new Attachment();
-                a.setComment("attached by maven-confluence-plugin");
+                a.setComment(String.format( "%s - attached by maven-confluence-plugin", f.getName()));
                 a.setFileName(f.getName());
                 a.setContentType("application/octet-stream");
 
