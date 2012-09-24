@@ -13,8 +13,13 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.settings.Server;
 import org.codehaus.swizzle.confluence.Attachment;
@@ -284,6 +289,8 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * initialize properties shared with template
      */
     protected void initTemplateProperties() {
+    
+        processProperties();
         
         getProperties().put("pageTitle", getTitle());
         getProperties().put("parentPageTitle", getParentPageTitle());
@@ -311,7 +318,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
             getLog().info("no properties set!");
         } else {
             for (java.util.Map.Entry<String, String> e : props.entrySet()) {
-                getLog().debug(String.format("property %s = %s", e.getKey(), e.getValue()));
+                //getLog().debug(String.format("property %s = %s", e.getKey(), e.getValue()));
 
                 try {
                     t.setVariable(e.getKey(), e.getValue(), true /* isOptional */);
@@ -547,4 +554,146 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         }
 
     }
+    
+    /**
+     * 
+     */
+    public static class ProcessUriException extends Exception {
+
+        public ProcessUriException(String string, Throwable thrwbl) {
+            super(string, thrwbl);
+        }
+
+        public ProcessUriException(String string) {
+            super(string);
+        }
+        
+    }
+    
+    /**
+     * Issue 46
+     * 
+     **/ 
+    private void processProperties() {
+        
+        for( Map.Entry<String,String> e : this.getProperties().entrySet() ) {
+            
+            try {
+                
+                java.net.URI uri = new java.net.URI( e.getValue() );
+                
+                getProperties().put( e.getKey(), processUri( uri ));
+                
+            } catch (ProcessUriException ex) {
+                getLog().warn( String.format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
+                if( ex.getCause() != null )
+                    getLog().debug( ex.getCause() );
+                
+            } catch (URISyntaxException ex) {
+   
+                // DO Nothing
+                getLog().debug( String.format("property [%s] is not a valid uri", e.getKey()));
+            }
+            
+        }
+    }
+    
+    /**
+     * 
+     * @param uri
+     * @return
+     * @throws org.bsc.maven.reporting.AbstractConfluenceReportMojo.ProcessUriException 
+     */
+    private String processUri( java.net.URI uri ) throws ProcessUriException {
+        	
+        String scheme = uri.getScheme();
+        
+        if( scheme == null ) throw new ProcessUriException("uri is invalid!");
+        
+        String source = uri.getRawSchemeSpecificPart();
+
+        java.io.Reader result = null;
+
+        if ("classpath".equalsIgnoreCase(scheme)) {
+            java.io.InputStream is = null;
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
+            is = cl.getResourceAsStream(source);
+
+            if (is == null) {
+                getLog().warn(String.format("resource [%s] doesn't exist in context classloader", source));
+
+                cl = getClass().getClassLoader();
+
+                is = cl.getResourceAsStream(source);
+
+                if (is == null) {
+                    throw new ProcessUriException(String.format("resource [%s] doesn't exist in classloader", source));
+                }
+
+            }
+
+            result = new java.io.InputStreamReader(is);
+
+        } else {
+            
+            try {
+                java.net.URL url = uri.toURL();
+
+
+                result = new java.io.InputStreamReader(url.openStream());
+
+            } catch (IOException e) {
+                throw new ProcessUriException(String.format("error opening url [%s]!", source), e);
+            } catch (Exception e) {
+                throw new ProcessUriException(String.format("url [%s] is not valid!", source), e);
+            }
+        }
+        try {
+            return toString(result);
+        } catch (IOException ex) {
+            throw new ProcessUriException("error reading content!", ex);
+        }
+    }
+    
+    /**
+     *
+     * @param reader
+     * @return
+     * @throws IOException
+     */
+    private String toString(java.io.Reader reader) throws IOException {
+        if (reader == null) {
+            throw new IllegalArgumentException("reader");
+        }
+
+        java.io.Reader r = null;
+        
+        try {
+
+            if (reader instanceof java.io.BufferedReader) {
+                r = reader;
+            } else {
+
+                r = new java.io.BufferedReader(reader);
+            }
+
+            StringBuilder contents = new StringBuilder(4096);
+
+            int c;
+            while ((c = r.read()) != -1) {
+
+                contents.append((char) c);
+            }
+
+            return contents.toString();
+
+        }
+        finally {
+            if( r!= null ) {
+                r.close();
+            }
+        }
+    }
+	    
 }
