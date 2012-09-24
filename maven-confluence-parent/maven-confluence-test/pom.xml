@@ -12,17 +12,13 @@
   
   
   <properties>
-  	<confluence.home>http://localhost:8090</confluence.home>
-	<!--
-    <confluence.userName>admin</confluence.userName>
-    <confluence.password>admin</confluence.password>
-    -->    
+  	<confluence.home>http://localhost:8099</confluence.home>
   </properties> 
 
   <scm>
-	<connection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</connection>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</url>
+	<connection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</connection>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</url>
   </scm>
 
 <build>
@@ -58,23 +54,29 @@ MAVEN 3
   				<reportSet>
   					<id>confluence</id>
   					<configuration>
-  						<endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
-  						 
-					   	<spaceKey>ds</spaceKey>
-  						<parentPageTitle>Tutorial</parentPageTitle>
-                                                <title>my-site-generation-test ver3.2.1</title>
-                                                <labels>
-                                                    <label>test</label>
-                                                    <label>confluence</label>                                           
-                                                </labels> 
-                                                <!--
-                                                <childrenFolder>${basedir}/src/site/confluence/children.wiki</childrenFolder>
-                                                -->
-                                                <!-- TEST ISSUE 40 -->
-                                                <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
-                                                <wikiFilesExt>.confluence</wikiFilesExt>
-                                                <!-- TEST ISSUE 39 -->
-                                                <serverId>confluence-local</serverId>
+                                            <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+
+                                            <spaceKey>ds</spaceKey>
+                                            <parentPageTitle>Tutorial</parentPageTitle>
+                                            <title>my-site-generation-test ver3.2.1</title>
+                                            <labels>
+                                                <label>test</label>
+                                                <label>confluence</label>                                           
+                                            </labels> 
+                                            <!--
+                                            <childrenFolder>${basedir}/src/site/confluence/children.wiki</childrenFolder>
+                                            -->
+                                            <!-- TEST ISSUE 40 -->
+                                            <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                                            <wikiFilesExt>.confluence</wikiFilesExt>
+                                            <!-- TEST ISSUE 39 -->
+                                            <serverId>confluence-local</serverId>
+                                            
+                                            <properties>
+                                                <evaluation>(y)</evaluation>
+                                                <page>classpath:plugin-report.properties</page>
+                                                <page1>file://${basedir}/src/main/resources/confluence.html</page1>
+                                            </properties>
   					</configuration>
   					<reports>
   						<report>confluence-summary</report>				
