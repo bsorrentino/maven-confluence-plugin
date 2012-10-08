@@ -2,7 +2,7 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>3.2.4-SNAPSHOT</version>
+    <version>3.2.4</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -16,9 +16,9 @@
   </properties> 
 
   <scm>
-	<connection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</connection>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</url>
+	<connection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.2.4-SNAPSHOT/maven-confluence-test</connection>
+	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.2.4-SNAPSHOT/maven-confluence-test</developerConnection>
+	<url>https://maven-confluence-plugin.googlecode.com/svn/tags/maven-confluence-parent-3.2.4-SNAPSHOT/maven-confluence-test</url>
   </scm>
 
 <build>
