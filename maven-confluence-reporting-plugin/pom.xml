@@ -216,7 +216,7 @@ NEEDS FOR PLUGIN DOCUMENTATION
                                 <plugin>
                                     <groupId>org.bsc.maven</groupId>
                                     <artifactId>maven-confluence-reporting-plugin</artifactId>
-                                    <version>${project,version}</version>
+                                    <version>${project.version}</version>
                                     <reportSets>
                                         <reportSet>
                                             <id>confluence</id>
