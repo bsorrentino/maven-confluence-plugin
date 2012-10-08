@@ -255,7 +255,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
             Server server = this.mavenSettings.getServer( this.serverId );
 
-            if ( server == null ) throw new MojoExecutionException( String.format("server with id [%s] not found in settings!" ));
+            if ( server == null ) throw new MojoExecutionException( String.format("server with id [%s] not found in settings!", this.serverId ));
 
             if ( getUsername() == null && server.getUsername() !=null  ) username = server.getUsername();
 
