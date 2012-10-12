@@ -161,8 +161,9 @@
   </licenses>
   
   <scm>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent</url>
+	<connection>scm:git:https://code.google.com/p/maven-confluence-plugin/</connection>
+	<developerConnection>scm:git:https://code.google.com/p/maven-confluence-plugin/</developerConnection>
+	<url>https://code.google.com/p/maven-confluence-plugin/</url>
   </scm>
 
     <repositories>

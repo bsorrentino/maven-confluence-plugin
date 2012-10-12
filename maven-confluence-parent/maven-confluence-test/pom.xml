@@ -15,15 +15,16 @@
   	<confluence.home>http://localhost:8099</confluence.home>
   </properties> 
 
-  <scm>
-	<connection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</connection>
-	<developerConnection>scm:svn:https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</developerConnection>
-	<url>https://maven-confluence-plugin.googlecode.com/svn/trunk/maven-confluence-parent/maven-confluence-test</url>
-  </scm>
 
 <build>
     <finalName>site-generation-test</finalName>
 </build>
+
+  <scm>
+	<connection>scm:git:https://code.google.com/p/maven-confluence-plugin/</connection>
+	<developerConnection>scm:git:https://code.google.com/p/maven-confluence-plugin/</developerConnection>
+	<url>https://code.google.com/p/maven-confluence-plugin/</url>
+  </scm>
 
 <profiles>
 
