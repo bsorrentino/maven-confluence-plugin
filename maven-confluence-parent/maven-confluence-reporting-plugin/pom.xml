@@ -5,7 +5,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-reporting-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>3.2.5-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
     <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
     </description>
@@ -15,7 +15,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>3.2.5-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-core</artifactId>
-            <version>3.2.5-SNAPSHOT</version>
+            <version>3.3.0-SNAPSHOT</version>
         </dependency>
         
 <!--
@@ -141,11 +141,11 @@ NEEDS FOR PLUGIN DOCUMENTATION
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-tools-api</artifactId>
         </dependency>
-    <!-- 
-    ================
-    TEST
-    ================
-     -->    
+<!-- 
+================
+TEST
+================
+    -->    
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -159,6 +159,14 @@ NEEDS FOR PLUGIN DOCUMENTATION
             <version>1.1</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.7-b41</version>
+            <scope>test</scope>
+        </dependency>
+            
     
     <!--
     ===================================

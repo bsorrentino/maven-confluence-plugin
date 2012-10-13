@@ -1,10 +1,15 @@
 package org.bsc.maven.reporting.test;
 import java.io.File;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.bsc.maven.reporting.ConfluenceReportMojo;
 import org.codehaus.plexus.PlexusContainer;
+import org.hamcrest.core.IsNull;
+import org.junit.Assert;
+import org.junit.Test;
 
 
 
@@ -44,5 +49,4 @@ public class ReportingMojoTest extends AbstractMojoTestCase {
 
 	}
 	
-        
 }
