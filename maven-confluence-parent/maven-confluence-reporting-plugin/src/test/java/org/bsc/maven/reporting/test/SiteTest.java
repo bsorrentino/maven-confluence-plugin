@@ -4,7 +4,7 @@
  */
 package org.bsc.maven.reporting.test;
 
-import org.bsc.maven.reporting.test.model.Site;
+import org.bsc.maven.reporting.model.Site;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import org.hamcrest.core.Is;
@@ -34,8 +34,9 @@ public class SiteTest {
         
         Site site = (Site) result;
         
-        Assert.assertThat(site.getHome().getFile(), IsNull.notNullValue());        
-        Assert.assertThat(site.getHome().getFile().getName(), IsEqual.equalTo("home.confluence"));        
+        Assert.assertThat(site.getHome().getUri(), IsNull.notNullValue());        
+        Assert.assertThat(site.getHome().getName(), IsEqual.equalTo("home"));        
+        Assert.assertThat(site.getHome().getSource().getName(), IsEqual.equalTo("home.confluence"));        
         Assert.assertThat(site.getHome(), IsNull.notNullValue());        
         Assert.assertThat(site.getHome().getAttachments(), IsNull.notNullValue());        
         Assert.assertThat(site.getHome().getAttachments().isEmpty(), Is.is(false));

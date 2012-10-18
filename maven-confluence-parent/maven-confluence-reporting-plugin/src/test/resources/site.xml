@@ -7,7 +7,7 @@ and open the template in the editor.
 
 <site>
     
-    <home file="home.confluence">
+    <home name="home" uri="file:///home.confluence">
         <attachment/>
         
         <child>

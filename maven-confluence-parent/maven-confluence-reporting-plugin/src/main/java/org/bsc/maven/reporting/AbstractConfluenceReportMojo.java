@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.settings.Server;
+import org.bsc.maven.reporting.model.Site;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.jfrog.maven.annomojo.annotations.MojoComponent;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
@@ -330,9 +331,9 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     }
 
-    private boolean generateChild(Confluence confluence, String spaceKey, String parentPageTitle, Child child, String titlePrefix) {
+    private <T extends Site.Page> boolean  generateChild(Confluence confluence, String spaceKey, String parentPageTitle, T child, String titlePrefix) {
 
-        java.io.File source = child.getSource(getProject(), getFileExt());
+        java.net.URI source = child.getUri(getProject(), getFileExt());
 
         getLog().info( String.format("generateChild spacekey=[%s] parentPageTtile=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
 
@@ -351,10 +352,9 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
             Page p = ConfluenceUtils.getOrCreatePage(confluence, spaceKey, parentPageTitle, pageName);
 
-            if( source != null && source.isFile() && source.exists()) {
+            if( source != null /*&& source.isFile() && source.exists() */) {
                 
-                //final MiniTemplator t = new MiniTemplator(new java.io.FileReader(source));
-                final MiniTemplator t = new MiniTemplator(source.toURI().toURL());
+                final MiniTemplator t = new MiniTemplator(source.toURL());
             
                 addProperties(t);
 
@@ -383,7 +383,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     }
 
-    protected void generateChildrenFromChild(final Confluence confluence, final java.io.File folder, final String spaceKey, final Child parentChild ) /*throws MavenReportException*/ {
+    protected <T extends Site.Page> void generateChildrenFromChild(final Confluence confluence, final java.io.File folder, final String spaceKey, final T parentChild ) /*throws MavenReportException*/ {
 
         getLog().info(String.format("generateChildrenFromChild [%s]", folder.getAbsolutePath()) );
 
