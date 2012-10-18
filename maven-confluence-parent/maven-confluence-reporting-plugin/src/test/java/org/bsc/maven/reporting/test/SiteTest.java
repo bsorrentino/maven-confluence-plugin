@@ -42,6 +42,7 @@ public class SiteTest {
         Assert.assertThat(site.getHome().getAttachments().isEmpty(), Is.is(false));
         Assert.assertThat(site.getHome().getChildren(), IsNull.notNullValue());        
         Assert.assertThat(site.getHome().getChildren().isEmpty(), Is.is(false));
+        Assert.assertThat(site.getLabels().isEmpty(), Is.is(false));
         
     }
 
