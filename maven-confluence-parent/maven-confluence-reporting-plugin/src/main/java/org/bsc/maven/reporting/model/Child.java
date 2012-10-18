@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting;
+package org.bsc.maven.reporting.model;
 
 import org.apache.maven.project.MavenProject;
 import org.bsc.maven.reporting.model.Site;

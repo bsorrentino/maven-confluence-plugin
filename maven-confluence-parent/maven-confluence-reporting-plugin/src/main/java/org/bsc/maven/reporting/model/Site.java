@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.maven.project.MavenProject;
-import org.bsc.maven.reporting.Child;
 
 /**
  *

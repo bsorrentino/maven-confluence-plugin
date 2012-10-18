@@ -1,5 +1,6 @@
 package org.bsc.maven.reporting;
 
+import org.bsc.maven.reporting.model.Child;
 import java.io.File;
 import java.util.Collections;
 
