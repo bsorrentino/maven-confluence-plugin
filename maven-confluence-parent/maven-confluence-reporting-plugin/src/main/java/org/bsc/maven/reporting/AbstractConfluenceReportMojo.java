@@ -15,15 +15,13 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.settings.Server;
 import org.bsc.maven.reporting.model.Site;
+import org.bsc.maven.reporting.model.Site.ProcessUriException;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.jfrog.maven.annomojo.annotations.MojoComponent;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
@@ -175,6 +173,15 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         children = Collections.emptyList();
     }
 
+    protected List<Child> getChildren() {
+        return children;
+    }
+
+    protected File getChildrenFolder() {
+        return childrenFolder;
+    }
+
+    
     /**
      * 
      * @return 
@@ -555,22 +562,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         }
 
     }
-    
-    /**
-     * 
-     */
-    public static class ProcessUriException extends Exception {
-
-        public ProcessUriException(String string, Throwable thrwbl) {
-            super(string, thrwbl);
-        }
-
-        public ProcessUriException(String string) {
-            super(string);
-        }
-        
-    }
-    
+       
     /**
      * Issue 46
      * 
@@ -606,52 +598,9 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * @throws org.bsc.maven.reporting.AbstractConfluenceReportMojo.ProcessUriException 
      */
     private String processUri( java.net.URI uri ) throws ProcessUriException {
-        	
-        String scheme = uri.getScheme();
-        
-        if( scheme == null ) throw new ProcessUriException("uri is invalid!");
-        
-        String source = uri.getRawSchemeSpecificPart();
-
-        java.io.Reader result = null;
-
-        if ("classpath".equalsIgnoreCase(scheme)) {
-            java.io.InputStream is = null;
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-
-            is = cl.getResourceAsStream(source);
-
-            if (is == null) {
-                getLog().warn(String.format("resource [%s] doesn't exist in context classloader", source));
-
-                cl = getClass().getClassLoader();
-
-                is = cl.getResourceAsStream(source);
-
-                if (is == null) {
-                    throw new ProcessUriException(String.format("resource [%s] doesn't exist in classloader", source));
-                }
-
-            }
-
-            result = new java.io.InputStreamReader(is);
-
-        } else {
-            
-            try {
-                java.net.URL url = uri.toURL();
-
-
-                result = new java.io.InputStreamReader(url.openStream());
-
-            } catch (IOException e) {
-                throw new ProcessUriException(String.format("error opening url [%s]!", source), e);
-            } catch (Exception e) {
-                throw new ProcessUriException(String.format("url [%s] is not valid!", source), e);
-            }
-        }
+    
         try {
-            return toString(result);
+            return toString( Site.processUri(uri) );
         } catch (IOException ex) {
             throw new ProcessUriException("error reading content!", ex);
         }

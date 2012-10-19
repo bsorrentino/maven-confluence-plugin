@@ -37,6 +37,56 @@ public class Site {
             super(string);
         }
     }
+  
+    public static java.io.Reader processUri( java.net.URI uri ) throws ProcessUriException {
+            String scheme = uri.getScheme();
+
+            if (scheme == null) {
+                throw new ProcessUriException("uri is invalid!");
+            }
+
+            String source = uri.getRawSchemeSpecificPart();
+
+            java.io.Reader result = null;
+
+            if ("classpath".equalsIgnoreCase(scheme)) {
+                java.io.InputStream is = null;
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
+                is = cl.getResourceAsStream(source);
+
+                if (is == null) {
+                    //getLog().warn(String.format("resource [%s] doesn't exist in context classloader", source));
+
+                    cl = Site.class.getClassLoader();
+
+                    is = cl.getResourceAsStream(source);
+
+                    if (is == null) {
+                        throw new ProcessUriException(String.format("resource [%s] doesn't exist in classloader", source));
+                    }
+
+                }
+
+                result = new java.io.InputStreamReader(is);
+
+            } else {
+
+                try {
+                    java.net.URL url = uri.toURL();
+
+
+                    result = new java.io.InputStreamReader(url.openStream());
+
+                } catch (IOException e) {
+                    throw new ProcessUriException(String.format("error opening url [%s]!", source), e);
+                } catch (Exception e) {
+                    throw new ProcessUriException(String.format("url [%s] is not valid!", source), e);
+                }
+            }
+
+            return result;
+    }
 
     protected static class Source {
 
@@ -68,54 +118,7 @@ public class Site {
         }
 
         public java.io.Reader getContentAsStream() throws ProcessUriException {
-
-            String scheme = uri.getScheme();
-
-            if (scheme == null) {
-                throw new ProcessUriException("uri is invalid!");
-            }
-
-            String source = uri.getRawSchemeSpecificPart();
-
-            java.io.Reader result = null;
-
-            if ("classpath".equalsIgnoreCase(scheme)) {
-                java.io.InputStream is = null;
-                ClassLoader cl = Thread.currentThread().getContextClassLoader();
-
-                is = cl.getResourceAsStream(source);
-
-                if (is == null) {
-                    //getLog().warn(String.format("resource [%s] doesn't exist in context classloader", source));
-
-                    cl = getClass().getClassLoader();
-
-                    is = cl.getResourceAsStream(source);
-
-                    if (is == null) {
-                        throw new ProcessUriException(String.format("resource [%s] doesn't exist in classloader", source));
-                    }
-
-                }
-
-                result = new java.io.InputStreamReader(is);
-
-            } else {
-
-                try {
-                    java.net.URL url = uri.toURL();
-
-
-                    result = new java.io.InputStreamReader(url.openStream());
-
-                } catch (IOException e) {
-                    throw new ProcessUriException(String.format("error opening url [%s]!", source), e);
-                } catch (Exception e) {
-                    throw new ProcessUriException(String.format("url [%s] is not valid!", source), e);
-                }
-            }
-
-            return result;
+            return Site.processUri( uri );
         }
     }
 
@@ -211,43 +214,22 @@ public class Site {
             return getUri();
         }
     }
-    java.util.List<JAXBElement> labels;
+    java.util.List<String> labels;
 
-    @XmlAnyElement
-    public java.util.List<JAXBElement> getLabels() {
+    @XmlElement(name="label")
+    public java.util.List<String> getLabels() {
         if (null == labels) {
             synchronized (this) {
-                labels = new java.util.ArrayList<JAXBElement>();
+                labels = new java.util.ArrayList<String>();
             }
         }
         return labels;
     }
 
-    public void setLabels(java.util.List<JAXBElement> labels) {
+    public void setLabels(java.util.List<String> labels) {
         this.labels = labels;
     }
 
-    public java.util.Iterator<java.util.Map.Entry<String, String>> labelIterator() {
-
-        return new java.util.Iterator<java.util.Map.Entry<String, String>>() {
-            final ListIterator<JAXBElement> e = getLabels().listIterator();
-
-            public boolean hasNext() {
-                return e.hasNext();
-            }
-
-            public Entry<String, String> next() {
-
-                JAXBElement ee = e.next();
-
-                return new AbstractMap.SimpleImmutableEntry(ee.getName().getLocalPart(), ee.getValue());
-            }
-
-            public void remove() {
-                throw new UnsupportedOperationException("remove not supported!.");
-            }
-        };
-    }
     Page home;
 
     public Page getHome() {

@@ -7,10 +7,10 @@ and open the template in the editor.
 
 <site>
     
-    <labels>
-        <label1>value1</label1>
-        <label2>value2</label2>
-    </labels>
+    <label>label1</label>
+    <label>label2</label>
+    <label>label3</label>
+    
         
     <home name="home" uri="file:///home.confluence">
         <attachment/>

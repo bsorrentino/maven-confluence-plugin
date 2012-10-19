@@ -43,7 +43,10 @@ public class SiteTest {
         Assert.assertThat(site.getHome().getChildren(), IsNull.notNullValue());        
         Assert.assertThat(site.getHome().getChildren().isEmpty(), Is.is(false));
         Assert.assertThat(site.getLabels().isEmpty(), Is.is(false));
-        
+ 
+        for( String label : site.getLabels() ) {
+            System.out.printf( "label=[%s]\n", label);
+        }
     }
 
 }
