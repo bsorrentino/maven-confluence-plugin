@@ -120,7 +120,8 @@ public class Site {
         @Override
         public String toString() {
             return new StringBuilder()
-                    .append( "Page ")
+                    .append( getClass().getSimpleName())
+                    .append(": ")
                     .append( getName() )
                     .append( " - ")
                     .append( String.valueOf( getUri()))
@@ -162,6 +163,7 @@ public class Site {
 
         String version;
 
+        @XmlAttribute
         public String getVersion() {
             return version;
         }
@@ -259,17 +261,22 @@ public class Site {
         this.home = home;
     }
 
-   private void printPage( PrintStream out, int level, char c, final Page page ) {
+   private void printSource( PrintStream out, int level, char c, final Source source ) {
        for( int i=0; i <level; ++i ) {
            System.out.print(c);
        }
        out.print( " " );
-       out.println( page );
+       out.println( source );
    } 
 
    private void printChildren( PrintStream out, int level, Page parent ) {
-        printPage( out, level, '-', parent );
+        printSource( out, level, '-', parent );
         
+        for( Attachment attach : parent.getAttachments() ) {
+            
+            printSource( out, level+1, '#', attach );
+                     
+        }
         for( Page child : parent.getChildren() ) {
             
             printChildren( out, level+1, child );
@@ -280,6 +287,16 @@ public class Site {
     public void print( PrintStream out ) {
 
         out.println( "Site" );
+
+        if( !getLabels().isEmpty() ) {
+            out.println(" Labels");
+            for( String label : getLabels() ) {
+
+                out.printf( "  %s\n", label );
+
+            }
+        }
+        
         printChildren( out, 0, getHome() );
         
     }

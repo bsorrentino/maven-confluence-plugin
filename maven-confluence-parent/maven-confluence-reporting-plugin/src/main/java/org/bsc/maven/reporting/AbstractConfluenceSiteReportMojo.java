@@ -24,9 +24,9 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
      * @param confluence
      * @param page 
      */
-    protected void navigateAttachments(Confluence confluence, Site.Page page) /*throws MavenReportException*/ {
+    protected void navigateAttachments( java.io.File folder,  Site.Page page) /*throws MavenReportException*/ {
 
-        java.io.File[] files = getAttachmentFolder().listFiles();
+        java.io.File[] files = folder.listFiles();
 
         if (files == null || files.length == 0) {
             return;
@@ -65,12 +65,18 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                 public boolean accept(File file) {
 
                     if( file.isHidden() || file.getName().charAt(0)=='.') return false ;
+
+                    final java.io.File attachmentSubFolder = 
+                                new java.io.File( file, getAttachmentFolder().getName() );
                     
                     if( file.isDirectory() ) {
+            
                         Site.Page child = new Site.Page();
 
                         child.setName(file.getName());
                         child.setUri( new java.io.File(file,templateWiki.getName()).toURI());
+ 
+                        navigateAttachments( attachmentSubFolder, child);
                         
                         parentChild.getChildren().add(child);
  
@@ -91,6 +97,8 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                     child.setName(fileName.substring(0, fileName.length() - extensionLen));
                     child.setUri(file.toURI());
                     
+                    navigateAttachments( attachmentSubFolder, child);
+                    
                     parentChild.getChildren().add(child);
                     
                     return false;
@@ -103,9 +111,9 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
    
     public Site createFromFolder() {
         
-        final String spaceKey = super.getSpaceKey();
-        
         final Site result = new Site();
+        
+        result.getLabels().addAll(  super.getLabels());
         
         final Site.Page home = new Site.Page();
         
@@ -127,6 +135,8 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
         
         result.getHome().getChildren().addAll( super.getChildren() );
 
+        navigateAttachments(getAttachmentFolder(), home);
+        
         if (getChildrenFolder().exists() && getChildrenFolder().isDirectory()) {
 
             getChildrenFolder().listFiles(new FileFilter() {
