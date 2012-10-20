@@ -4,14 +4,10 @@
  */
 package org.bsc.maven.reporting.model;
 
-import edu.emory.mathcs.backport.java.util.AbstractMap;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map.Entry;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -120,9 +116,21 @@ public class Site {
         public java.io.Reader getContentAsStream() throws ProcessUriException {
             return Site.processUri( uri );
         }
+        
+        @Override
+        public String toString() {
+            return new StringBuilder()
+                    .append( "Page ")
+                    .append( getName() )
+                    .append( " - ")
+                    .append( String.valueOf( getUri()))
+                    .toString();
+        }
     }
 
     public static class Attachment extends Source {
+        public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
+        public static final String DEFAULT_VERSION = "0";
 
         String contentType;
 
@@ -152,8 +160,19 @@ public class Site {
             this.comment = comment;
         }
 
+        String version;
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
+        }
+        
         public Attachment() {
-            setContentType("application/octet-stream");
+            this.contentType = DEFAULT_CONTENT_TYPE;
+            this.version = DEFAULT_VERSION;
         }
     }
 
@@ -238,5 +257,30 @@ public class Site {
 
     public void setHome(Page home) {
         this.home = home;
+    }
+
+   private void printPage( PrintStream out, int level, char c, final Page page ) {
+       for( int i=0; i <level; ++i ) {
+           System.out.print(c);
+       }
+       out.print( " " );
+       out.println( page );
+   } 
+
+   private void printChildren( PrintStream out, int level, Page parent ) {
+        printPage( out, level, '-', parent );
+        
+        for( Page child : parent.getChildren() ) {
+            
+            printChildren( out, level+1, child );
+                     
+        }
+   } 
+    
+    public void print( PrintStream out ) {
+
+        out.println( "Site" );
+        printChildren( out, 0, getHome() );
+        
     }
 }

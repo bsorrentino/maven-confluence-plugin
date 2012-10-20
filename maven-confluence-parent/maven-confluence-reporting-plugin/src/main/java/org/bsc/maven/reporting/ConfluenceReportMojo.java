@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -42,10 +40,8 @@ import org.jfrog.maven.annomojo.annotations.MojoPhase;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.httpclient.ProxyHost;
 import org.apache.maven.settings.Proxy;
+import org.bsc.maven.reporting.model.Site;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
 
 /**
@@ -53,7 +49,7 @@ import org.codehaus.swizzle.confluence.ConfluenceFactory;
  */
 @MojoPhase("site")
 @MojoGoal("confluence-summary")
-public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
+public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
 
     private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
     private static final String PROJECT_SCM_MANAGER_VAR = "project.scmManager";
@@ -161,9 +157,15 @@ public class ConfluenceReportMojo extends AbstractConfluenceReportMojo {
 
 
     }
-
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {
+        
+        Site site = super.createFromFolder();
+        
+        site.print( System.out );
+    }
+
+    protected void executeReport2(Locale locale) throws MavenReportException {
         getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
         try {
             loadUserInfoFromSettings();

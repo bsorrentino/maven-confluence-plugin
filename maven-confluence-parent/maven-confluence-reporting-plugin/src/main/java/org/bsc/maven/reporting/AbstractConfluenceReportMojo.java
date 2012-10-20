@@ -181,6 +181,10 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         return childrenFolder;
     }
 
+    protected File getAttachmentFolder() {
+        return attachmentFolder;
+    }
+
     
     /**
      * 

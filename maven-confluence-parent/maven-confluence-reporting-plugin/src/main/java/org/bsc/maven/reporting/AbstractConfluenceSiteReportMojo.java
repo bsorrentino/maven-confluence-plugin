@@ -4,15 +4,14 @@
  */
 package org.bsc.maven.reporting;
 
-import biz.source_code.miniTemplator.MiniTemplator;
 import java.io.File;
 import java.io.FileFilter;
+import java.net.URISyntaxException;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
-import org.bsc.maven.reporting.model.Child;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.model.SiteFactory;
+import org.codehaus.swizzle.confluence.Attachment;
 import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
 
 /**
  *
@@ -20,10 +19,43 @@ import org.codehaus.swizzle.confluence.Page;
  */
 public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenceReportMojo implements SiteFactory {
 
-    
-   protected void navigateChild(final java.io.File folder, final Site.Page parentChild ) /*throws MavenReportException*/ {
+    /**
+     * 
+     * @param confluence
+     * @param page 
+     */
+    protected void navigateAttachments(Confluence confluence, Site.Page page) /*throws MavenReportException*/ {
 
-        getLog().info(String.format("generateChildrenFromChild [%s]", folder.getAbsolutePath()) );
+        java.io.File[] files = getAttachmentFolder().listFiles();
+
+        if (files == null || files.length == 0) {
+            return;
+        }
+
+        for (java.io.File f : files) {
+
+            if (f.isDirectory() || f.isHidden()) {
+                continue;
+            }
+
+            Site.Attachment a = new Site.Attachment();
+
+            a.setName( f.getName() );
+            a.setUri(  f.toURI() );
+            
+            page.getAttachments().add(a);
+
+        }
+
+    }
+    
+    /**
+     * 
+     * @param level
+     * @param folder
+     * @param parentChild 
+     */
+   protected void navigateChild( final int level, final java.io.File folder, final Site.Page parentChild ) /*throws MavenReportException*/ {
 
         if (folder.exists() && folder.isDirectory()) {
 
@@ -32,18 +64,17 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                 @Override
                 public boolean accept(File file) {
 
-                    getLog().info(String.format("generateChildrenFromChild\n\t process file [%s]", file.getPath()) );
-
                     if( file.isHidden() || file.getName().charAt(0)=='.') return false ;
                     
                     if( file.isDirectory() ) {
-                        Child child = new Child();
+                        Site.Page child = new Site.Page();
 
                         child.setName(file.getName());
-                        child.setSource( new java.io.File(file,templateWiki.getName()));
-
+                        child.setUri( new java.io.File(file,templateWiki.getName()).toURI());
+                        
+                        parentChild.getChildren().add(child);
  
-                       navigateChild( file, child );    
+                        navigateChild( level+1, file, child );    
                        
                        return true;
                     }
@@ -54,13 +85,14 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                         return false;
                     }
 
-                    Child child = new Child();
+                    Site.Page child = new Site.Page();
                     final int extensionLen = getFileExt().length();
 
                     child.setName(fileName.substring(0, fileName.length() - extensionLen));
-                    child.setSource(file);
+                    child.setUri(file.toURI());
                     
-
+                    parentChild.getChildren().add(child);
+                    
                     return false;
 
                 }
@@ -75,7 +107,23 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
         
         final Site result = new Site();
         
-        result.setHome( new Site.Page() );
+        final Site.Page home = new Site.Page();
+        
+        home.setName("home");
+        
+        if (templateWiki == null || !templateWiki.exists()) {
+            try {
+                java.net.URL sourceUrl = getClass().getClassLoader().getResource("defaultTemplate.confluence");
+                home.setUri( sourceUrl.toURI() );
+            } catch (URISyntaxException ex) {
+                // TODO log
+            }
+        }
+        else {
+            home.setUri(templateWiki.toURI());
+        }
+        
+        result.setHome( home );
         
         result.getHome().getChildren().addAll( super.getChildren() );
 
@@ -96,7 +144,9 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                         parentChild.setName(file.getName());
                         parentChild.setUri( new java.io.File(file,templateWiki.getName()).toURI());
 
-                        navigateChild( file, parentChild );    
+                        result.getHome().getChildren().add(parentChild);
+
+                        navigateChild( 1, file, parentChild );    
                         
                         return false;
                     }
@@ -113,6 +163,8 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                     
                     child.setName(fileName.substring(0, fileName.length() - extensionLen));
                     child.setUri(file.toURI());
+
+                    result.getHome().getChildren().add(child);
 
                     return false;
 
