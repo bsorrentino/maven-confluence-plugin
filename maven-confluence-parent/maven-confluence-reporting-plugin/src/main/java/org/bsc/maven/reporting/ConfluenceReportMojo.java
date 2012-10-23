@@ -159,13 +159,191 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
     }
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {
+        getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
+        try {
+            loadUserInfoFromSettings();
+        } catch (MojoExecutionException ex) {
+            
+            throw new MavenReportException("error reading credential", ex);
+        }
+        // Issue 32
+        final String title = getTitle();
+        //String title = project.getArtifactId() + "-" + project.getVersion();
+
+        super.initTemplateProperties();
         
         Site site = super.createFromFolder();
         
         site.print( System.out );
+        
+        MiniTemplator t = null;
+        try {
+            t = new MiniTemplator( site.getHome().getUri().toURL() );
+            
+        } catch (Exception e) {
+            final String msg = "error loading template";
+            getLog().error(msg, e);
+            throw new MavenReportException(msg, e);
+        }
+        
+        super.addProperties(t);
+
+       /////////////////////////////////////////////////////////////////
+       // SUMMARY
+       /////////////////////////////////////////////////////////////////
+       {
+
+            final StringWriter w = new StringWriter(10 * 1024);
+            final Sink sink = new ConfluenceSink(w, getSink());
+            //final Sink sink = getSink();
+
+            new ProjectSummaryRenderer(sink,
+                    project,
+                    i18n,
+                    locale).render();
+
+            try {
+                final String project_summary_var = w.toString();
+                
+                getProperties().put(PROJECT_SUMMARY_VAR,project_summary_var); // to share with children
+                
+                t.setVariable(PROJECT_SUMMARY_VAR, project_summary_var);
+                
+            } catch (VariableNotDefinedException e) {
+                getLog().warn(String.format("variable %s not defined in template", PROJECT_SUMMARY_VAR));
+            }
+
+        }
+
+       /////////////////////////////////////////////////////////////////
+       // SCM
+       /////////////////////////////////////////////////////////////////
+
+        {
+
+            final StringWriter w = new StringWriter(10 * 1024);
+            final Sink sink = new ConfluenceSink(w, getSink());
+            //final Sink sink = getSink();
+
+            new ScmRenderer(scmManager,
+                    sink,
+                    project.getModel(),
+                    i18n,
+                    locale,
+                    checkoutDirectoryName,
+                    webAccessUrl,
+                    anonymousConnection,
+                    developerConnection).render();
+
+            try {
+                final String project_scm_var = w.toString();
+                
+                getProperties().put(PROJECT_SCM_MANAGER_VAR,project_scm_var); // to share with children
+                
+                t.setVariable(PROJECT_SCM_MANAGER_VAR, project_scm_var );
+                
+            } catch (VariableNotDefinedException e) {
+                getLog().warn(String.format("variable %s not defined in template", PROJECT_SCM_MANAGER_VAR));
+            }
+        }
+
+       /////////////////////////////////////////////////////////////////
+       // DEPENDENCIES
+       /////////////////////////////////////////////////////////////////
+
+        {
+            final StringWriter w = new StringWriter(10 * 1024);
+            final Sink sink = new ConfluenceSink(w, getSink());
+            //final Sink sink = getSink();
+
+            new DependenciesRenderer(sink,
+                    project,
+                    mavenProjectBuilder,
+                    localRepository,
+                    factory,
+                    i18n,
+                    locale,
+                    resolveProject(),
+                    getLog()).render();
+
+            try {
+                final String project_dependencies_var = w.toString();
+                
+                getProperties().put(PROJECT_DEPENDENCIES_VAR,project_dependencies_var); // to share with children
+
+                t.setVariable(PROJECT_DEPENDENCIES_VAR, project_dependencies_var);
+                
+            } catch (VariableNotDefinedException e) {
+                getLog().warn(String.format("variable %s not defined in template", PROJECT_DEPENDENCIES_VAR));
+            }
+        }
+
+        String wiki = t.generateOutput();
+
+        //
+        // write in confluence
+        // 
+        Confluence confluence = null;
+
+        try {
+            //confluence = new Confluence(getEndPoint());
+
+            //confluence.login(getUsername(), getPassword());
+            
+            Confluence.ProxyInfo proxyInfo = null;
+
+            final Proxy activeProxy = mavenSettings.getActiveProxy();
+
+            if( activeProxy!=null ) {
+                
+                proxyInfo = 
+                        new Confluence.ProxyInfo( 
+                                activeProxy.getHost(),
+                                activeProxy.getPort(), 
+                                activeProxy.getUsername(), 
+                                activeProxy.getPassword()
+                                );
+            }
+            
+            confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
+
+            getLog().info(ConfluenceUtils.getVersion(confluence));
+
+            if (!isSnapshot() && isRemoveSnapshots()) {
+                final String snapshot = title.concat("-SNAPSHOT");
+                getLog().info(String.format("removing page [%s]!", snapshot));
+                boolean deleted = ConfluenceUtils.removePage(confluence, getSpaceKey(), getParentPageTitle(), snapshot);
+
+                if (deleted) {
+                    getLog().info(String.format("Page [%s] has been removed!", snapshot));
+                }
+            }
+
+
+            Page confluencePage = ConfluenceUtils.getOrCreatePage(confluence, getSpaceKey(), getParentPageTitle(), title);
+
+            confluencePage.setContent(wiki);
+
+            confluencePage = confluence.storePage(confluencePage);
+
+            for( String label : site.getLabels() ) {
+                
+                confluence.addLabelByName(label, Long.parseLong(confluencePage.getId()) );
+            }
+                               
+            generateChildren( confluence, site.getHome(), confluencePage, getSpaceKey(), title, title);
+
+        } catch (Exception e) {
+            getLog().warn("has been imposssible connect to confluence due exception", e);
+        } finally {
+            confluenceLogout(confluence);
+        }
+
+
+
     }
 
-    protected void executeReport2(Locale locale) throws MavenReportException {
+    protected void executeReport3_2_x(Locale locale) throws MavenReportException {
         getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
         try {
             loadUserInfoFromSettings();

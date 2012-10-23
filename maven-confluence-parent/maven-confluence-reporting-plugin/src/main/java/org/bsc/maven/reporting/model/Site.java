@@ -11,6 +11,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -102,6 +103,7 @@ public class Site {
             }
             this.uri = value;
         }
+
         String name;
 
         @XmlAttribute
@@ -127,6 +129,12 @@ public class Site {
                     .append( String.valueOf( getUri()))
                     .toString();
         }
+        
+        protected void validateSource() {
+            if (null == uri) {
+                throw new IllegalStateException("uri is null");
+            }            
+        } 
     }
 
     public static class Attachment extends Source {
@@ -171,6 +179,22 @@ public class Site {
         public void setVersion(String version) {
             this.version = version;
         }
+
+        public boolean hasBeenUpdatedFrom( java.util.Date date) {
+            if( date != null ) {
+                
+                validateSource();
+
+                if ("file".equals(uri.getScheme())) {
+                    java.io.File f = new java.io.File(uri);
+            
+                    return f.lastModified() > date.getTime();
+                }
+            }
+            
+            return true;
+        }
+
         
         public Attachment() {
             this.contentType = DEFAULT_CONTENT_TYPE;
@@ -180,15 +204,15 @@ public class Site {
 
     public static class Page extends Source {
 
+        
         java.util.List<Page> children;
         java.util.List<Attachment> attachments;
         String name;
 
         @Deprecated
         public File getSource() {
-            if (null == uri) {
-                throw new IllegalStateException("uri is null");
-            }
+            validateSource();
+
             if (!"file".equals(uri.getScheme())) {
                 throw new IllegalArgumentException("uri not represent a file");
             }
@@ -217,6 +241,7 @@ public class Site {
             return attachments;
         }
 
+        
         public java.net.URI getUri(MavenProject project, String ext) {
 
             if (getUri() == null) {

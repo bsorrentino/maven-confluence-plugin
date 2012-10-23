@@ -184,6 +184,12 @@ public class ConfluenceUtils {
             return result;
 	}
 
+	public static boolean addAttchment( Confluence confluence, Page page, Attachment attachment, java.net.URL source ) throws Exception {
+
+		addAttchment(  confluence, page, attachment, source.openStream() );
+
+		return true;
+	}
 
 	public static boolean addAttchment( Confluence confluence, Page page, Attachment attachment, java.io.File source ) throws Exception {
 

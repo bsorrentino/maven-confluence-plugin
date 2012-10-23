@@ -343,7 +343,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     }
 
-    private <T extends Site.Page> boolean  generateChild(Confluence confluence, String spaceKey, String parentPageTitle, T child, String titlePrefix) {
+    protected <T extends Site.Page> Page  generateChild(Confluence confluence,  T child, String spaceKey, String parentPageTitle, String titlePrefix) {
 
         java.net.URI source = child.getUri(getProject(), getFileExt());
 
@@ -383,18 +383,19 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
             child.setName( pageName );
             
-            return true;
+            return p;
 
         } catch (Exception e) {
             final String msg = "error loading template";
             getLog().error(msg, e);
             //throw new MavenReportException(msg, e);
 
-            return false;
+            return null;
         }
 
     }
 
+    @Deprecated
     protected <T extends Site.Page> void generateChildrenFromChild(final Confluence confluence, final java.io.File folder, final String spaceKey, final T parentChild ) /*throws MavenReportException*/ {
 
         getLog().info(String.format("generateChildrenFromChild [%s]", folder.getAbsolutePath()) );
@@ -416,7 +417,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                         child.setName(file.getName());
                         child.setSource( new java.io.File(file,templateWiki.getName()));
 
-                        if( generateChild(confluence, spaceKey, parentChild.getName(), child, parentChild.getName()) ) {
+                        if( generateChild(confluence,child,  spaceKey, parentChild.getName(), parentChild.getName()) != null ) {
  
                             generateChildrenFromChild(confluence, file, spaceKey, child );    
                         }
@@ -436,7 +437,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                     child.setSource(file);
                     
 
-                    generateChild(confluence, spaceKey, parentChild.getName(), child, parentChild.getName() );
+                    generateChild(confluence, child, spaceKey, parentChild.getName(), parentChild.getName() );
                     return false;
 
                 }
@@ -450,13 +451,14 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * 
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     protected void generateChildren(final Confluence confluence, final String spaceKey, final String parentPageTitle, final String titlePrefix) /*throws MavenReportException*/ {
 
         getLog().info(String.format("generateChildren # [%d]", children.size()));
 
         for (Child child : (java.util.List<Child>) children) {
 
-            generateChild(confluence, spaceKey, parentPageTitle, child, titlePrefix );
+            generateChild(confluence, child, spaceKey, parentPageTitle, titlePrefix );
         }
 
         if (childrenFolder.exists() && childrenFolder.isDirectory()) {
@@ -477,7 +479,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                         parentChild.setName(file.getName());
                         parentChild.setSource( new java.io.File(file,templateWiki.getName()));
 
-                        if( generateChild(confluence, spaceKey, parentPageTitle, parentChild, titlePrefix) ) {
+                        if( generateChild(confluence, parentChild, spaceKey, parentPageTitle, titlePrefix) != null ) {
  
                             generateChildrenFromChild(confluence, file, spaceKey, parentChild );    
                         }
@@ -498,7 +500,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                     child.setName(fileName.substring(0, fileName.length() - extensionLen));
                     child.setSource(file);
 
-                    generateChild(confluence, spaceKey, parentPageTitle, child, titlePrefix);
+                    generateChild(confluence, child, spaceKey, parentPageTitle, titlePrefix);
                     return false;
 
                 }
@@ -507,6 +509,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     }
 
+    @Deprecated
     protected void generateAttachments(Confluence confluence, Page page) /*throws MavenReportException*/ {
 
         getLog().info(String.format("generateAttachments pageId [%s]", page.getId()));
