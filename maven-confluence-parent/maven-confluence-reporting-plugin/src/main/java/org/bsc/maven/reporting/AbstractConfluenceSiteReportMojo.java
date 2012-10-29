@@ -24,6 +24,30 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
     /**
      * 
      * @param page
+     * @param source 
+     */
+    private void setPageUriFormFile( Site.Page page, java.io.File source ) {
+        if( page == null ) {
+            throw new IllegalArgumentException( "page is null!");
+        }
+        
+        if (source != null && source.exists() && source.isFile() && source.canRead() ) {
+            page.setUri(source.toURI());
+        }
+        else {
+            try {
+                java.net.URL sourceUrl = getClass().getClassLoader().getResource("defaultTemplate.confluence");
+                page.setUri( sourceUrl.toURI() );
+            } catch (URISyntaxException ex) {
+                // TODO log
+            }
+        }
+        
+    }
+    
+    /**
+     * 
+     * @param page
      * @param confluence
      * @param confluencePage 
      */
@@ -101,11 +125,11 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
         
         for( Site.Page child : parentPage.getChildren() ) {
 
-            final Page confluencePage = generateChild(confluence, child, spaceKey, parentPageTitle, titlePrefix);
+            final Page confluencePage = generateChild(confluence, child, spaceKey, parentPage.getName(), titlePrefix);
             
             if( confluencePage != null  ) {
 
-                generateChildren(confluence, child, confluencePage, spaceKey, parentPageTitle, titlePrefix );    
+                generateChildren(confluence, child, confluencePage, spaceKey, child.getName(), titlePrefix );    
             }
             
         }
@@ -117,29 +141,33 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
      * @param confluence
      * @param page 
      */
-    protected void navigateAttachments( java.io.File folder,  Site.Page page) /*throws MavenReportException*/ {
+    protected boolean navigateAttachments( java.io.File folder,  Site.Page page) /*throws MavenReportException*/ {
 
-        java.io.File[] files = folder.listFiles();
+        if (folder.exists() && folder.isDirectory()) {
 
-        if (files == null || files.length == 0) {
-            return;
-        }
+            java.io.File[] files = folder.listFiles();
 
-        for (java.io.File f : files) {
+            if (files != null && files.length > 0) {
 
-            if (f.isDirectory() || f.isHidden()) {
-                continue;
+                for (java.io.File f : files) {
+
+                    if (f.isDirectory() || f.isHidden()) {
+                        continue;
+                    }
+
+                    Site.Attachment a = new Site.Attachment();
+
+                    a.setName(f.getName());
+                    a.setUri(f.toURI());
+
+                    page.getAttachments().add(a);
+                }
             }
 
-            Site.Attachment a = new Site.Attachment();
-
-            a.setName( f.getName() );
-            a.setUri(  f.toURI() );
-            
-            page.getAttachments().add(a);
-
+            return true;
         }
-
+        
+        return false;
     }
     
     /**
@@ -157,20 +185,22 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                 @Override
                 public boolean accept(File file) {
 
-                    if( file.isHidden() || file.getName().charAt(0)=='.') return false ;
+                    if( file.isHidden() || file.getName().charAt(0)=='.') {
+                        return false ;
+                    }
 
-                    final java.io.File attachmentSubFolder = 
-                                new java.io.File( file, getAttachmentFolder().getName() );
                     
                     if( file.isDirectory() ) {
+                    
+                        if( navigateAttachments(file, parentChild)) {
+                            return false;
+                        }
             
                         Site.Page child = new Site.Page();
 
                         child.setName(file.getName());
-                        child.setUri( new java.io.File(file,templateWiki.getName()).toURI());
+                        setPageUriFormFile(child, new java.io.File(file,templateWiki.getName()) );
  
-                        navigateAttachments( attachmentSubFolder, child);
-                        
                         parentChild.getChildren().add(child);
  
                         navigateChild( level+1, file, child );    
@@ -188,9 +218,7 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                     final int extensionLen = getFileExt().length();
 
                     child.setName(fileName.substring(0, fileName.length() - extensionLen));
-                    child.setUri(file.toURI());
-                    
-                    navigateAttachments( attachmentSubFolder, child);
+                    setPageUriFormFile(child, file );
                     
                     parentChild.getChildren().add(child);
                     
@@ -212,17 +240,7 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
         
         home.setName("home");
         
-        if (templateWiki == null || !templateWiki.exists()) {
-            try {
-                java.net.URL sourceUrl = getClass().getClassLoader().getResource("defaultTemplate.confluence");
-                home.setUri( sourceUrl.toURI() );
-            } catch (URISyntaxException ex) {
-                // TODO log
-            }
-        }
-        else {
-            home.setUri(templateWiki.toURI());
-        }
+        setPageUriFormFile(home, templateWiki);
         
         result.setHome( home );
         
@@ -245,7 +263,7 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                         Site.Page parentChild = new Site.Page();
 
                         parentChild.setName(file.getName());
-                        parentChild.setUri( new java.io.File(file,templateWiki.getName()).toURI());
+                        setPageUriFormFile(parentChild, new java.io.File(file,templateWiki.getName()) );
 
                         result.getHome().getChildren().add(parentChild);
 
@@ -265,7 +283,7 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
                     final int extensionLen = getFileExt().length();
                     
                     child.setName(fileName.substring(0, fileName.length() - extensionLen));
-                    child.setUri(file.toURI());
+                    setPageUriFormFile(child, file );
 
                     result.getHome().getChildren().add(child);
 
