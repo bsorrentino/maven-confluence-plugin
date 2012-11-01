@@ -24,7 +24,7 @@ public class SiteTest {
     public void jaxbTest() throws Exception {
 
         JAXBContext jc = JAXBContext.newInstance(Site.class);
-
+        
         Unmarshaller unmarshaller = jc.createUnmarshaller();
 
         Object result = unmarshaller.unmarshal( getClass().getClassLoader().getResourceAsStream("site.xml"));

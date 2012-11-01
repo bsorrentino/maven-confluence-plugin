@@ -234,7 +234,7 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
         
         final Site result = new Site();
         
-        result.getLabels().addAll(  super.getLabels());
+        result.getLabels().addAll( super.getLabels());
         
         final Site.Page home = new Site.Page();
         

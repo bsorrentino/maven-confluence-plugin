@@ -4,6 +4,7 @@
  */
 package org.bsc.maven.reporting.model;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -22,24 +23,21 @@ import org.apache.maven.project.MavenProject;
 public class Site {
 
     /**
-     *
+     * 
      */
-    public static class ProcessUriException extends Exception {
-
-        public ProcessUriException(String string, Throwable thrwbl) {
-            super(string, thrwbl);
-        }
-
-        public ProcessUriException(String string) {
-            super(string);
-        }
-    }
-  
-    public static java.io.Reader processUri( java.net.URI uri ) throws ProcessUriException {
+    protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
+    
+    /**
+     * 
+     * @param uri
+     * @return
+     * @throws Exception 
+     */
+    public static java.io.Reader processUri( java.net.URI uri ) throws /*ProcessUri*/Exception {
             String scheme = uri.getScheme();
 
             if (scheme == null) {
-                throw new ProcessUriException("uri is invalid!");
+                throw new /*ProcessUri*/Exception("uri is invalid!");
             }
 
             String source = uri.getRawSchemeSpecificPart();
@@ -60,7 +58,7 @@ public class Site {
                     is = cl.getResourceAsStream(source);
 
                     if (is == null) {
-                        throw new ProcessUriException(String.format("resource [%s] doesn't exist in classloader", source));
+                        throw new /*ProcessUri*/Exception(String.format("resource [%s] doesn't exist in classloader", source));
                     }
 
                 }
@@ -76,17 +74,22 @@ public class Site {
                     result = new java.io.InputStreamReader(url.openStream());
 
                 } catch (IOException e) {
-                    throw new ProcessUriException(String.format("error opening url [%s]!", source), e);
+                    throw new /*ProcessUri*/Exception(String.format("error opening url [%s]!", source), e);
                 } catch (Exception e) {
-                    throw new ProcessUriException(String.format("url [%s] is not valid!", source), e);
+                    throw new /*ProcessUri*/Exception(String.format("url [%s] is not valid!", source), e);
                 }
             }
 
             return result;
     }
 
+    /**
+     * class Source
+     */
     protected static class Source {
-
+        
+        private transient final Site site;
+        
         java.net.URI uri;
 
         @XmlAttribute
@@ -114,8 +117,17 @@ public class Site {
         public void setName(String name) {
             this.name = name;
         }
+        
+        @XmlTransient
+        public java.util.List<String> getLabels() {
+            return (site!=null) ? site.getLabels() : Collections.emptyList();
+        }
+        
+        public Source() {
+            this.site = _SITE.peek();
+        }
 
-        public java.io.Reader getContentAsStream() throws ProcessUriException {
+        public java.io.Reader getContentAsStream() throws /*ProcessUri*/Exception {
             return Site.processUri( uri );
         }
         
@@ -137,6 +149,9 @@ public class Site {
         } 
     }
 
+    /**
+     * class Attachment
+     */
     public static class Attachment extends Source {
         public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
         public static final String DEFAULT_VERSION = "0";
@@ -197,11 +212,15 @@ public class Site {
 
         
         public Attachment() {
+            
             this.contentType = DEFAULT_CONTENT_TYPE;
             this.version = DEFAULT_VERSION;
         }
     }
 
+    /**
+     * class Page
+     */
     public static class Page extends Source {
 
         
@@ -260,6 +279,12 @@ public class Site {
             return getUri();
         }
     }
+
+    public Site() {  
+        _SITE.push(this);
+    }
+    
+    
     java.util.List<String> labels;
 
     @XmlElement(name="label")

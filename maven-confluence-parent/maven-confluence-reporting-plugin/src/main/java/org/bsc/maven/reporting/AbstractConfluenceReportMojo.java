@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.settings.Server;
+import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
-import org.bsc.maven.reporting.model.Site.ProcessUriException;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.jfrog.maven.annomojo.annotations.MojoComponent;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
@@ -376,7 +376,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
             p = confluence.storePage(p);
             
-            for( String label : getLabels() ) {
+            for( String label : child.getLabels() ) {
                 
                 confluence.addLabelByName(label, Long.parseLong(p.getId()) );
             }
@@ -608,7 +608,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
     
         try {
             return toString( Site.processUri(uri) );
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
         }
     }
