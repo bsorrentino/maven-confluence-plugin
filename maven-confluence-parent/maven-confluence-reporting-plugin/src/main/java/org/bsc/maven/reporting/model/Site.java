@@ -19,7 +19,7 @@ import org.apache.maven.project.MavenProject;
  *
  * @author softphone
  */
-@XmlRootElement
+@XmlRootElement( name="site", namespace = "http://code.google.com/p/maven-confluence-plugin")
 public class Site {
 
     /**

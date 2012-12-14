@@ -99,6 +99,7 @@
                         <configuration>
                             <includes>
                                 <include>org/bsc/maven/reporting/model/Site.java</include>
+                                <include>org/bsc/maven/reporting/model/package-info.java</include>
                             </includes>
                             <outputDirectory>${project.build.directory}/schemas</outputDirectory>
                         </configuration>

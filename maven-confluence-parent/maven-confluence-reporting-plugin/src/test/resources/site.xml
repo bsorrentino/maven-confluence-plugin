@@ -5,7 +5,7 @@ and open the template in the editor.
 -->
 
 
-<site>
+<c:site xmlns:c="http://code.google.com/p/maven-confluence-plugin">
     
     <label>label1</label>
     <label>label2</label>
@@ -24,4 +24,4 @@ and open the template in the editor.
     
         
     
-</site>
+</c:site>
