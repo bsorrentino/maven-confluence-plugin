@@ -172,7 +172,15 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
 
         super.initTemplateProperties();
         
-        Site site = super.createFromFolder();
+        Site site = null;
+        
+        if( isSiteDescriptorValid() ) {
+            site = super.createFromModel();
+        }
+        
+        if( site == null ) {
+            site = super.createFromFolder();
+        }
         
         site.print( System.out );
         

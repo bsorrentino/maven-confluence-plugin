@@ -7,13 +7,16 @@ package org.bsc.maven.reporting;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URISyntaxException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
-import org.bsc.maven.reporting.model.Child;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.model.SiteFactory;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
+import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 /**
  *
@@ -21,6 +24,19 @@ import org.codehaus.swizzle.confluence.Page;
  */
 public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenceReportMojo implements SiteFactory {
 
+    /**
+     * 
+     * @since 3.3.0
+     */
+    @MojoParameter(defaultValue = "${basedir}/src/site/confluence/site.xml", 
+                   description = "site xml descriptor" )
+    protected java.io.File siteDescriptor;
+    
+    
+    protected boolean isSiteDescriptorValid() {
+        return ( siteDescriptor!=null  && siteDescriptor.exists() && siteDescriptor.isFile());   
+    }
+    
     /**
      * 
      * @param page
@@ -230,6 +246,7 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
 
     }
    
+    @Override
     public Site createFromFolder() {
         
         final Site result = new Site();
@@ -296,8 +313,34 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
         return result;
     }
 
+    /**
+     * 
+     * @return 
+     */
+    @Override
     public Site createFromModel() {
-        return null;
+        
+        Site site = null;
+        
+        if( !isSiteDescriptorValid() ) {
+        
+            getLog().warn( "siteDescriptor is not valid!" );
+            
+        }
+        else {
+            try {
+
+                JAXBContext jc = JAXBContext.newInstance(Site.class);
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+                site = (Site) unmarshaller.unmarshal( siteDescriptor );
+
+            } catch (JAXBException ex) {
+                getLog().error("error creating site from model!", ex);
+
+            }
+        }
+        return site;
     }
     
 }
