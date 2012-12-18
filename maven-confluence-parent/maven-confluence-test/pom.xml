@@ -78,6 +78,7 @@ MAVEN 3
                                                 <page>classpath:plugin-report.properties</page>
                                                 <page1>file://${basedir}/src/main/resources/confluence.html</page1>
                                             </properties>
+                                            
   					</configuration>
   					<reports>
   						<report>confluence-summary</report>				
