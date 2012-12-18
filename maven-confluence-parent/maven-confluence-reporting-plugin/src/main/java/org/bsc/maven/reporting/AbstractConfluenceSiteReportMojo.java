@@ -31,6 +31,14 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
     @MojoParameter(defaultValue = "${basedir}/src/site/confluence/site.xml", 
                    description = "site xml descriptor" )
     protected java.io.File siteDescriptor;
+
+    /**
+     * 
+     * @return 
+     */
+    public File getSiteDescriptor() {
+        return siteDescriptor;
+    }
     
     
     protected boolean isSiteDescriptorValid() {

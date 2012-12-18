@@ -166,12 +166,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
             
             throw new MavenReportException("error reading credential", ex);
         }
-        // Issue 32
-        final String title = getTitle();
-        //String title = project.getArtifactId() + "-" + project.getVersion();
 
-        super.initTemplateProperties();
-        
         Site site = null;
         
         if( isSiteDescriptorValid() ) {
@@ -181,8 +176,21 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
         if( site == null ) {
             site = super.createFromFolder();
         }
-        
+        else {
+            site.setBasedir(getSiteDescriptor());
+            if( site.getHome().getName()!=null ) {
+                setTitle( site.getHome().getName() );
+            }
+
+        }
         site.print( System.out );
+
+        
+        super.initTemplateProperties();
+        
+        // Issue 32
+        final String title = getTitle();
+        //String title = project.getArtifactId() + "-" + project.getVersion();
         
         MiniTemplator t = null;
         try {

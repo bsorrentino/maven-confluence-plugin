@@ -88,12 +88,18 @@ public class Site {
      */
     protected static class Source {
         
-        private transient final Site site;
+        protected  transient final Site site;
         
-        java.net.URI uri;
+        private java.net.URI uri;
 
         @XmlAttribute
         public final java.net.URI getUri() {
+            if( uri!=null && 
+                !uri.isAbsolute() && 
+                site.getBasedir()!=null ) 
+            {
+                return site.getBasedir().toURI().resolve(uri);
+            }
             return uri;
         }
 
@@ -101,9 +107,9 @@ public class Site {
             if (null == value) {
                 throw new IllegalArgumentException("uri is null");
             }
-            if (!value.isAbsolute()) {
-                throw new IllegalArgumentException("uri is absolute");
-            }
+            //if (!value.isAbsolute()) {
+            //    throw new IllegalArgumentException("uri is not absolute!");
+            //}
             this.uri = value;
         }
 
@@ -200,8 +206,10 @@ public class Site {
                 
                 validateSource();
 
-                if ("file".equals(uri.getScheme())) {
-                    java.io.File f = new java.io.File(uri);
+                final java.net.URI _uri = super.getUri();
+
+                if ( !_uri.isAbsolute() || "file".equals(_uri.getScheme())) {
+                    java.io.File f = new java.io.File(_uri);
             
                     return f.lastModified() > date.getTime();
                 }
@@ -232,11 +240,13 @@ public class Site {
         public File getSource() {
             validateSource();
 
-            if (!"file".equals(uri.getScheme())) {
+            final java.net.URI _uri = super.getUri();
+            
+            if ( !_uri.isAbsolute() && !"file".equals(_uri.getScheme())) {
                 throw new IllegalArgumentException("uri not represent a file");
             }
 
-            return new java.io.File(uri);
+            return new java.io.File(_uri);
         }
 
         @XmlElement(name = "child")
@@ -270,10 +280,11 @@ public class Site {
                 if (getName() == null) {
                     throw new IllegalStateException("name is null");
                 }
+                
+                setUri( site.getBasedir().toURI().resolve( getName().concat(ext)) );
 
-                final String path = String.format("src/site/confluence/%s.%s", getName(), ext);
-
-                setUri(new java.io.File(project.getBasedir(), path).toURI());
+                //final String path = String.format("src/site/confluence/%s%s", getName(), ext);
+                //setUri(new java.io.File(project.getBasedir(), path).toURI());
             }
 
             return getUri();
@@ -284,8 +295,18 @@ public class Site {
         _SITE.push(this);
     }
     
+    private transient java.io.File basedir;
+
+    public File getBasedir() {
+        return basedir;
+    }
+
+    public void setBasedir(File basedir) {
+        this.basedir = basedir;
+    }
     
-    java.util.List<String> labels;
+    
+    private java.util.List<String> labels;
 
     @XmlElement(name="label")
     public java.util.List<String> getLabels() {

@@ -196,6 +196,14 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
     /**
      * 
+     * @param title 
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * 
      * @return 
      */
     public String getFileExt() {

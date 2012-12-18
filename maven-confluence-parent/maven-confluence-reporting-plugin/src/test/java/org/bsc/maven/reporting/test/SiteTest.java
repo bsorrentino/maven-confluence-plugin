@@ -23,6 +23,10 @@ public class SiteTest {
     @Test
     public void jaxbTest() throws Exception {
 
+        java.io.File basepath = new java.io.File("src/site/confluence/home.confluence");
+        java.net.URI relativeURI = new java.net.URI("template.confluence");
+        System.out.printf("uri=[%s]\n", basepath.toURI().resolve(relativeURI) );
+        
         JAXBContext jc = JAXBContext.newInstance(Site.class);
         
         Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -34,6 +38,7 @@ public class SiteTest {
         
         Site site = (Site) result;
         
+        site.setBasedir( basepath );
         Assert.assertThat(site.getHome().getUri(), IsNull.notNullValue());        
         Assert.assertThat(site.getHome().getName(), IsEqual.equalTo("home"));        
         Assert.assertThat(site.getHome().getSource().getName(), IsEqual.equalTo("home.confluence"));        

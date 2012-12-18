@@ -12,7 +12,7 @@ and open the template in the editor.
     <label>label3</label>
     
         
-    <home name="home" uri="file:///home.confluence">
+    <home name="home" uri="home.confluence">
         <attachment/>
         
         <child>
