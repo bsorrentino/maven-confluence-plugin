@@ -13,6 +13,7 @@
 package biz.source_code.miniTemplator;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,36 +113,46 @@ public static class BlockNotDefinedException extends RuntimeException {
 
 //--- public nested classes ------------------------------------------
 
-/**
-* Specifies the parameters for constructing a {@link MiniTemplator} object.
-*/
-public static class TemplateSpecification {                // template specification
+    /**
+    * Specifies the parameters for constructing a {@link MiniTemplator} object.
+    */
+    public static class TemplateSpecification {                // template specification
 
-   /**
-   * The template URL.
-   */
-   public java.net.URL        url;
+        /**
+         * The template URL.
+         */
+        public final java.net.URL url;
+        /**
+         * The character set to be used for reading and writing files. This
+         * charset is used for reading the template and subtemplate files and
+         * for writing output with
+         * {@link #generateOutput(String outputFileName)}. If this field is
+         * null, the default charset of the Java VM is used.
+         */
+        public Charset charset = Charset.defaultCharset();
+        /**
+         * Flags for the conditional commands ($if, $elseIf). A set of flag
+         * names, that can be used with the $if and $elseIf commands. The flag
+         * names are case-insensitive.
+         */
+        public Set<String> conditionFlags = null;
+        /**
+         * Enables the short form syntax for conditional blocks.
+         */
+        public boolean shortFormEnabled = false;
+        /**
+         *
+         */
+        public boolean skipUndefinedVars = false;
 
-
-   /**
-   * The character set to be used for reading and writing files.
-   * This charset is used for reading the template and subtemplate files and for
-   * writing output with {@link #generateOutput(String outputFileName)}.
-   * If this field is null, the default charset of the Java VM is used.
-   */
-   public Charset            charset;
-
-   /**
-   * Flags for the conditional commands ($if, $elseIf).
-   * A set of flag names, that can be used with the $if and $elseIf commands.
-   * The flag names are case-insensitive.
-   */
-   public Set<String>        conditionFlags;
-
-   /**
-   * Enables the short form syntax for conditional blocks.
-   */
-   public boolean            shortFormEnabled; }
+        /**
+         * 
+         * @param url 
+         */
+        public TemplateSpecification(URL url) {
+            this.url = url;
+        }
+    }
 
 //--- private nested classes -----------------------------------------
 
@@ -173,6 +184,7 @@ private BlockInstTabRec[]    blockInstTab;                 // block instances ta
    // This table contains an entry for each block instance that has been added.
    // Indexed by BlockInstNo.
 private int                  blockInstTabCnt;              // no of entries used in BlockInstTab
+private boolean              skipUndefinedVars;
 
 //--- constructors ---------------------------------------------------
 
@@ -199,17 +211,22 @@ public MiniTemplator (TemplateSpecification templateSpec)
 public MiniTemplator (java.net.URL templateUrl)
       throws IOException, TemplateSyntaxException 
 {
-   TemplateSpecification templateSpec = new TemplateSpecification();
-   templateSpec.url = templateUrl;
-   init(templateSpec); 
+   init(new TemplateSpecification(templateUrl)); 
 }
 
 private void init (TemplateSpecification templateSpec)
       throws IOException, TemplateSyntaxException {
     
-   if(templateSpec==null) throw new IllegalArgumentException("templateSpec is null");
-   if(templateSpec.url==null) throw new IllegalArgumentException("templateSpec.url is null");
+   if(templateSpec==null) {
+       throw new IllegalArgumentException("templateSpec is null");
+   }
+   
+   if(templateSpec.url==null) {
+       throw new IllegalArgumentException("templateSpec.url is null");
+   }
     
+   this.skipUndefinedVars = templateSpec.skipUndefinedVars;
+   
    charset = templateSpec.charset;
    if (charset == null) {
       charset = Charset.defaultCharset(); }
@@ -621,8 +638,15 @@ private void writeBlockInstance (StringBuilder out, int blockInstNo) {
                throw new AssertionError(); }
             String variableValue = bitr.blockVarTab[vrtr.blockVarNo];
             if (variableValue != null) {
-               out.append(variableValue); }
-            tPos = vrtr.tPosEnd;
+               out.append(variableValue); 
+            }
+            
+            if( this.skipUndefinedVars ) {
+               tPos = vrtr.tPosBegin;
+            }
+            else {
+               tPos = vrtr.tPosEnd;             
+            }
             varRefNo++;
             break; }
          case 2: {                               // sub block
@@ -766,7 +790,6 @@ private boolean[]            condPassed;                   // true if an enabled
 private MiniTemplator        miniTemplator;                // the MiniTemplator who created this parser object
    // The reference to the MiniTemplator object is only used to call MiniTemplator.loadSubtemplate().
 private boolean              resumeCmdParsingFromStart;    // true = resume command parsing from the start position of the last command
-
 //--- constructor ----------------------------------------------------
 
 // (The MiniTemplator object is only passed to the parser, because the

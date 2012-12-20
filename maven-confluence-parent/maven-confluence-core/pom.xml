@@ -32,36 +32,6 @@
     </license>
   </licenses>
 
-  <profiles>
-  	<profile>
-  		<id>fix-deps</id>
-  <build>
-  	<plugins>
-  		<plugin>
-  			<artifactId>maven-deploy-plugin</artifactId>
-  			<version>2.5</version>
-  			<executions>		
-  				<execution>
-  					<phase>package</phase>
-  					<goals>
-  						<goal>deploy-file</goal>
-  					</goals>
-  					<configuration>
-  						<file>${localRepository}/miniTemplator/miniTemplator/1.0/miniTemplator-1.0.jar</file>
-  						<repositoryId>${release.repo.id}</repositoryId>
-  						<url>${release.repo.url</url>
-				  		<groupId>miniTemplator</groupId>
-				  		<artifactId>miniTemplator</artifactId>
-				  		<version>1.0</version>
-				  		<packaging>jar</packaging>
-  					</configuration>
-  				</execution>
-  			</executions>
-  		</plugin>
-  	</plugins>
-  </build>
-  	</profile>
-  </profiles>
   
   <dependencies>
   	<dependency>
@@ -125,7 +95,9 @@
  -->
    </dependencies>
 
-	<build>
+
+   <build>
+       
 <!--             
 	<plugins>
  
@@ -151,5 +123,38 @@
         
 -->        
 	</build>
+<!--
+  <profiles>
+  	<profile>
+  		<id>fix-deps</id>
+  <build>
+  	<plugins>
+  		<plugin>
+  			<artifactId>maven-deploy-plugin</artifactId>
+  			<version>2.5</version>
+  			<executions>		
+  				<execution>
+  					<phase>package</phase>
+  					<goals>
+  						<goal>deploy-file</goal>
+  					</goals>
+  					<configuration>
+  						<file>${localRepository}/miniTemplator/miniTemplator/1.0/miniTemplator-1.0.jar</file>
+  						<repositoryId>${release.repo.id}</repositoryId>
+  						<url>${release.repo.url</url>
+				  		<groupId>miniTemplator</groupId>
+				  		<artifactId>miniTemplator</artifactId>
+				  		<version>1.0</version>
+				  		<packaging>jar</packaging>
+  					</configuration>
+  				</execution>
+  			</executions>
+  		</plugin>
+  	</plugins>
+  </build>
+  	</profile>
+        
+  </profiles>
+-->
 
 </project>
