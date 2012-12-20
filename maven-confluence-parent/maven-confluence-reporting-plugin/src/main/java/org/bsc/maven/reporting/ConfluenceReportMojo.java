@@ -194,7 +194,11 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
         
         MiniTemplator t = null;
         try {
-            t = new MiniTemplator( site.getHome().getUri().toURL() );
+            MiniTemplator.TemplateSpecification spec = 
+                    new MiniTemplator.TemplateSpecification(site.getHome().getUri().toURL());
+            spec.skipUndefinedVars = true;
+            
+            t = new MiniTemplator( spec );
             
         } catch (Exception e) {
             final String msg = "error loading template";
@@ -389,7 +393,11 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
             }
 
             try {
-                t = new MiniTemplator(sourceUrl);
+                MiniTemplator.TemplateSpecification spec = 
+                    new MiniTemplator.TemplateSpecification(sourceUrl);
+                spec.skipUndefinedVars = true;
+
+                t = new MiniTemplator(spec);
             } catch (Exception e) {
                 final String msg = "error loading template";
                 getLog().error(msg, e);
@@ -416,8 +424,10 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
 */
         } else {
             try {
-                //t = new MiniTemplator(templateWiki);
-                t = new MiniTemplator(templateWiki.toURI().toURL());
+                MiniTemplator.TemplateSpecification spec = 
+                        new MiniTemplator.TemplateSpecification(templateWiki.toURI().toURL());
+                spec.skipUndefinedVars = true;
+                t = new MiniTemplator(spec);
             } catch (Exception e) {
                 final String msg = "error loading template";
                 getLog().error(msg, e);
