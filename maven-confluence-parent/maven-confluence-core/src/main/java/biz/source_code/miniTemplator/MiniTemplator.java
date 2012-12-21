@@ -640,12 +640,11 @@ private void writeBlockInstance (StringBuilder out, int blockInstNo) {
             if (variableValue != null) {
                out.append(variableValue); 
             }
-            
-            if( this.skipUndefinedVars ) {
-               tPos = vrtr.tPosBegin;
+            if( variableValue == null && this.skipUndefinedVars ) {
+                tPos = vrtr.tPosBegin;
             }
             else {
-               tPos = vrtr.tPosEnd;             
+                tPos = vrtr.tPosEnd;             
             }
             varRefNo++;
             break; }
