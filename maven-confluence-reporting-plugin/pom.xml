@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.bsc.maven</groupId>
+    <artifactId>maven-confluence-reporting-plugin</artifactId>
+    <packaging>maven-plugin</packaging>
+    <version>3.3.0-beta2-SNAPSHOT</version>
+    <description>
+  plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
+    </description>
+    <url>http://code.google.com/p/maven-confluence-plugin/</url>
+    <name>maven-confluence-plugin - ${project.version}</name>
+  
+    <parent>
+        <artifactId>maven-confluence-parent</artifactId>
+        <groupId>org.bsc.maven</groupId>
+        <version>3.3.0-beta2-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+    </properties>
+  
+  <scm>
+	<connection>scm:git:https://code.google.com/p/maven-confluence-plugin/</connection>
+	<developerConnection>scm:git:https://code.google.com/p/maven-confluence-plugin/</developerConnection>
+	<url>https://code.google.com/p/maven-confluence-plugin/</url>
+  </scm>
+
+    <developers>
+        <developer>
+            <id>bsorrentino</id>
+            <name>Bartolomeo Sorrentino</name>
+            <email>bartolomeo.sorrentino@gmail.com</email>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache License Version 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+
+    <!--
+    LEGACY MAVEN2 REPORTING
+
+    <reporting>  
+        <plugins>                       
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+            
+        </plugins>
+    </reporting>
+    -->
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>2.9</version>
+                <dependencies>
+
+                    <dependency>
+                        <groupId>org.jfrog.maven.annomojo</groupId>
+                        <artifactId>maven-plugin-tools-anno</artifactId>
+                        <version>${jfrog.maven-plugin-anno.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                
+                <configuration>
+                    <extractors>
+                        <extractor>javaanno</extractor>
+                    </extractors>
+                
+                </configuration>
+                    
+	 
+            </plugin>
+<!--
+===================================
+    JAXB SCHEMA GENERATION
+===================================
+-->            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.3.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <includes>
+                                <include>org/bsc/maven/reporting/model/Site.java</include>
+                                <include>org/bsc/maven/reporting/model/package-info.java</include>
+                            </includes>
+                            <outputDirectory>${project.build.directory}/schemas</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>            
+        </plugins>
+    </build>
+  
+    <dependencies>
+  
+        <dependency>
+            <groupId>org.jfrog.maven.annomojo</groupId>
+            <artifactId>maven-plugin-anno</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>maven-confluence-core</artifactId>
+            <version>3.3.0-beta2-SNAPSHOT</version>
+        </dependency>
+        
+<!--
+=================================
+NEEDS FOR PASSWORD ENCRYPTION
+=================================
+-->
+        <dependency>
+            <groupId>org.sonatype.plexus</groupId>
+            <artifactId>plexus-sec-dispatcher</artifactId>
+            <version>1.4</version>
+        </dependency>
+<!--        
+        <dependency>
+            <groupId>org.sonatype.plexus</groupId>
+            <artifactId>plexus-cipher</artifactId>
+            <version>1.7</version>
+            <scope>runtime</scope>
+        </dependency>  
+-->        
+<!--
+=================================
+NEEDS FOR PLUGIN DOCUMENTATION
+=================================
+-->
+     <!-- plexus -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-tools-api</artifactId>
+        </dependency>
+<!-- 
+================
+TEST
+================
+    -->    
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+ 
+        <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-plugin-testing-harness</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.7-b41</version>
+            <scope>test</scope>
+        </dependency>
+            
+    
+    <!--
+    ===================================
+    NEED FOR GENERATE PLUGIN REPORT
+    ===================================
+    -->
+        <dependency>
+            <groupId>org.jfrog.maven.annomojo</groupId>
+            <artifactId>maven-plugin-tools-anno</artifactId>
+            <version>${jfrog.maven-plugin-anno.version}</version>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+    
+        <dependency>
+        	<groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-tools-java</artifactId>
+            <version>2.9</version>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+	
+	
+    </dependencies>
+  
+    <profiles>
+        <profile>
+            <id>report</id>
+ 
+            <dependencies>
+            </dependencies>
+    
+            <build>
+        
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.0</version>
+        
+                        <configuration>
+                            <reportPlugins>
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-plugin-plugin</artifactId>
+                                    <version>2.9</version>
+                                </plugin>
+
+                                <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                                    <version>2.2</version>
+                                </plugin>
+                
+                
+                                <plugin>
+                                    <groupId>org.bsc.maven</groupId>
+                                    <artifactId>maven-confluence-reporting-plugin</artifactId>
+                                    <version>${project.version}</version>
+                                    <reportSets>
+                                        <reportSet>
+                                            <id>confluence</id>
+                                            <configuration>
+                                                <endPoint>http://docs.codehaus.org/rpc/xmlrpc</endPoint>                           
+                                                <spaceKey>MVNCONFSITE</spaceKey>
+                                                <parentPageTitle>Home</parentPageTitle>
+                                                <serverId>codehaus</serverId>
+                                                <templateWiki>${basedir}/src/site/confluence/codehaus-home.wiki</templateWiki>
+                                                <labels>
+                                                	<label>maven</label>
+                                                	<label>confluence</label>
+                                                	<label>report</label>
+                                                </labels>
+                                            </configuration>
+                                            <reports>
+                                                <report>plugin-confluence-summary</report>                          
+                                            </reports>
+                                        </reportSet>
+                                    </reportSets>                    
+                                </plugin>
+                            </reportPlugins>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+
+        </profile>    
+
+    </profiles>
+</project>

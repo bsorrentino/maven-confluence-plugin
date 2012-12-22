@@ -1,0 +1,4 @@
+/maven-confluence-test/target/
+/maven-confluence-reporting-plugin/target/
+target/
+.DS_Store

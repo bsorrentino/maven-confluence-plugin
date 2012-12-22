@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<c:site xmlns:c="http://code.google.com/p/maven-confluence-plugin">
+    
+    <label>label1</label>
+    <label>label2</label>
+    <label>label3</label>
+    
+        
+    <home name="home" uri="home.confluence">
+        <attachment/>
+        
+        <child>
+            <attachment/>
+        </child>
+            
+        <child/>
+    </home>
+    
+        
+    
+</c:site>
