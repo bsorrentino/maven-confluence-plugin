@@ -1,9 +1,0 @@
-
-
-${project.summary}
-
-
-${project.scmManager}
-
-
-${project.dependencies}
