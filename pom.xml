@@ -3,7 +3,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.3.0-beta3</version>
+  <version>3.3.0-beta4-SNAPSHOT</version>
   <name>maven confluence plugin parent - ${project.version}</name>
   
   <properties>
