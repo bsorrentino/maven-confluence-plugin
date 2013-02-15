@@ -263,7 +263,8 @@ public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenc
         
         final Site.Page home = new Site.Page();
         
-        home.setName("home");
+        
+        home.setName(getTitle());
         
         setPageUriFormFile(home, templateWiki);
         
