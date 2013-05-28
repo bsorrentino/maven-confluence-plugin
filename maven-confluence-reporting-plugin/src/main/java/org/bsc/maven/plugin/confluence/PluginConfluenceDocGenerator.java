@@ -113,7 +113,12 @@ public class PluginConfluenceDocGenerator implements Generator {
             }
 
             try {
-                t = new MiniTemplator(sourceUrl);
+                
+                
+                t = new MiniTemplator.Builder()
+                        .setSkipUndefinedVars(true)
+                        .build( sourceUrl );
+                
             } catch (Exception e) {
                 final String msg = "error loading template";
                 mojo.getLog().error(msg, e);
@@ -140,7 +145,10 @@ public class PluginConfluenceDocGenerator implements Generator {
         }
         else {
                 try {
-                        t = new MiniTemplator(templateWiki.toURI().toURL());
+                      t = new MiniTemplator.Builder()
+                        .setSkipUndefinedVars(true)
+                        .build( templateWiki.toURI().toURL() );
+
                         //t = new MiniTemplator(templateWiki);
                 } catch (Exception e) {
                         final String msg = "error loading template";

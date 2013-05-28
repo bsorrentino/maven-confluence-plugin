@@ -212,11 +212,9 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
         
         MiniTemplator t = null;
         try {
-            MiniTemplator.TemplateSpecification spec = 
-                    new MiniTemplator.TemplateSpecification(site.getHome().getUri().toURL());
-            spec.skipUndefinedVars = true;
-            
-            t = new MiniTemplator( spec );
+            t = new MiniTemplator.Builder()
+                    .setSkipUndefinedVars(true)
+                    .build( Site.processUri(site.getHome().getUri()) );
             
         } catch (Exception e) {
             final String msg = "error loading template";
@@ -411,11 +409,9 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
             }
 
             try {
-                MiniTemplator.TemplateSpecification spec = 
-                    new MiniTemplator.TemplateSpecification(sourceUrl);
-                spec.skipUndefinedVars = true;
-
-                t = new MiniTemplator(spec);
+                t = new MiniTemplator.Builder()
+                        .setSkipUndefinedVars(true)
+                        .build( sourceUrl );
             } catch (Exception e) {
                 final String msg = "error loading template";
                 getLog().error(msg, e);
@@ -442,10 +438,11 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
 */
         } else {
             try {
-                MiniTemplator.TemplateSpecification spec = 
-                        new MiniTemplator.TemplateSpecification(templateWiki.toURI().toURL());
-                spec.skipUndefinedVars = true;
-                t = new MiniTemplator(spec);
+                
+                  t = new MiniTemplator.Builder()
+                    .setSkipUndefinedVars(true)
+                    .build( Site.processUri(templateWiki.toURI()) );
+
             } catch (Exception e) {
                 final String msg = "error loading template";
                 getLog().error(msg, e);

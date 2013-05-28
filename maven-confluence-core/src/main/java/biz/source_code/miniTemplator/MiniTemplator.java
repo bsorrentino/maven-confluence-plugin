@@ -83,6 +83,7 @@ public class MiniTemplator {
 
 //--- exceptions -----------------------------------------------------
 
+    
 /**
 * Thrown when a syntax error is encountered within the template.
 */
@@ -113,15 +114,11 @@ public static class BlockNotDefinedException extends RuntimeException {
 
 //--- public nested classes ------------------------------------------
 
-    /**
-    * Specifies the parameters for constructing a {@link MiniTemplator} object.
-    */
-    public static class TemplateSpecification {                // template specification
+/**
+* Specifies the parameters for constructing a {@link MiniTemplator} object.
+*/
+public static class Builder {                // template specification
 
-        /**
-         * The template URL.
-         */
-        public final java.net.URL url;
         /**
          * The character set to be used for reading and writing files. This
          * charset is used for reading the template and subtemplate files and
@@ -129,29 +126,54 @@ public static class BlockNotDefinedException extends RuntimeException {
          * {@link #generateOutput(String outputFileName)}. If this field is
          * null, the default charset of the Java VM is used.
          */
-        public Charset charset = Charset.defaultCharset();
+        private Charset charset = Charset.defaultCharset();
         /**
          * Flags for the conditional commands ($if, $elseIf). A set of flag
          * names, that can be used with the $if and $elseIf commands. The flag
          * names are case-insensitive.
          */
-        public Set<String> conditionFlags = null;
+        private Set<String> conditionFlags = null;
         /**
          * Enables the short form syntax for conditional blocks.
          */
-        public boolean shortFormEnabled = false;
+        private boolean shortFormEnabled = false;
         /**
          *
          */
-        public boolean skipUndefinedVars = false;
+        private boolean skipUndefinedVars = false;
 
-        /**
-         * 
-         * @param url 
-         */
-        public TemplateSpecification(URL url) {
-            this.url = url;
+        
+        public Builder setCharset(Charset charset) {
+            this.charset = charset;
+            return this;
         }
+
+        public Builder setConditionFlags(Set<String> conditionFlags) {
+            this.conditionFlags = conditionFlags;
+            return this;
+        }
+
+        public Builder setShortFormEnabled(boolean shortFormEnabled) {
+            this.shortFormEnabled = shortFormEnabled;
+            return this;
+        }
+
+        public Builder setSkipUndefinedVars(boolean skipUndefinedVars) {
+            this.skipUndefinedVars = skipUndefinedVars;
+            return this;
+        }
+
+           
+        public final MiniTemplator build( java.io.Reader content ) throws IOException {
+            MiniTemplator result = new MiniTemplator();
+            result.init(this, content);
+            return result;
+        }     
+        public final MiniTemplator build( java.net.URL url ) throws IOException {
+            MiniTemplator result = new MiniTemplator();
+            result.init(this, new java.io.InputStreamReader( url.openStream()));
+            return result;
+        }     
     }
 
 //--- private nested classes -----------------------------------------
@@ -188,17 +210,6 @@ private boolean              skipUndefinedVars;
 
 //--- constructors ---------------------------------------------------
 
-/**
-* Constructs a MiniTemplator object.
-* <p>During construction, the template and subtemplate files are read and parsed.
-* <p>Note: The {@link MiniTemplatorCache} class may be used to cache MiniTemplator objects.
-* @param  templateSpec             the template specification.
-* @throws TemplateSyntaxException  when a syntax error is detected within the template.
-* @throws IOException              when an i/o error occurs while reading the template.
-*/
-public MiniTemplator (TemplateSpecification templateSpec)
-      throws IOException, TemplateSyntaxException {
-   init(templateSpec); }
 
 /**
 * Constructs a MiniTemplator object by specifying only the file name.
@@ -208,36 +219,34 @@ public MiniTemplator (TemplateSpecification templateSpec)
 * @throws IOException              when an i/o error occurs while reading the template.
 * @see #MiniTemplator(TemplateSpecification)
 */
-public MiniTemplator (java.net.URL templateUrl)
-      throws IOException, TemplateSyntaxException 
-{
-   init(new TemplateSpecification(templateUrl)); 
-}
 
-private void init (TemplateSpecification templateSpec)
+private void init( Builder builder, java.io.Reader content )
       throws IOException, TemplateSyntaxException {
     
-   if(templateSpec==null) {
+   if(builder==null) {
        throw new IllegalArgumentException("templateSpec is null");
    }
    
-   if(templateSpec.url==null) {
-       throw new IllegalArgumentException("templateSpec.url is null");
+   if(content==null) {
+       throw new IllegalArgumentException("templateSpec.uri is null");
    }
     
-   this.skipUndefinedVars = templateSpec.skipUndefinedVars;
+   this.skipUndefinedVars = builder.skipUndefinedVars;
    
-   charset = templateSpec.charset;
+   charset = builder.charset;
    if (charset == null) {
       charset = Charset.defaultCharset(); }
 
-   final  java.io.InputStream is = templateSpec.url.openStream();
-   
-   final String templateText = readStreamIntoString( new java.io.InputStreamReader(is) );
-   
-   mtp = new MiniTemplatorParser(templateText, templateSpec.conditionFlags, templateSpec.shortFormEnabled, this);
-   
-   reset(); 
+   try {
+    final String templateText = readStreamIntoString( content );
+
+    mtp = new MiniTemplatorParser(templateText, builder.conditionFlags, builder.shortFormEnabled, this);
+
+    reset(); 
+   }
+   finally {
+       content.close();
+   }
 }
 
 /**

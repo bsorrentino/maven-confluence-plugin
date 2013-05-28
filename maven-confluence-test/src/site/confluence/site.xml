@@ -9,7 +9,7 @@ and open the template in the editor.
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:ns1='http://code.google.com/p/maven-confluence-plugin'
     xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
-    <home name="Descriptor1" uri="template.confluence">
+    <home name="Descriptor1" uri="classpath:template1.confluence">
 <!--        
         <attachment name="" uri="" comment="" contentType="" version=""></attachment>
         <attachment name="" uri="" comment="" contentType="" version=""></attachment>

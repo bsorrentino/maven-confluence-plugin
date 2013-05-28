@@ -45,6 +45,15 @@ MAVEN 3
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.0</version>
+        
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+        </dependencies>
         <configuration>
           <reportPlugins>
   		<plugin>

@@ -399,8 +399,10 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
             Page p = ConfluenceUtils.getOrCreatePage(confluence, spaceKey, parentPageTitle, pageName);
 
             if( source != null /*&& source.isFile() && source.exists() */) {
-                
-                final MiniTemplator t = new MiniTemplator(source.toURL());
+
+                final MiniTemplator t = new MiniTemplator.Builder()
+                    .setSkipUndefinedVars(true)
+                    .build( Site.processUri(source) );
             
                 addProperties(t);
 
