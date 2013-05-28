@@ -244,7 +244,7 @@
     </snapshotRepository>
     <site>
     	<id>google-project</id>
-    	<url>svn:https://maven-confluence-plugin.googlecode.com/svn/docs/3.x</url>
+    	<url>svn:https://bsc-documentation-repo.googlecode.com/svn/trunk/maven-confluence-plugin/</url>
     </site>
 
   </distributionManagement>
