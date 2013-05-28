@@ -1,28 +1,34 @@
 package org.bsc.maven.plugin.confluence;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import org.apache.maven.doxia.siterenderer.Renderer;
+
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
-import org.apache.maven.tools.plugin.util.PluginUtils;
 import org.bsc.maven.reporting.AbstractConfluenceReportMojo;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
 import org.codehaus.swizzle.confluence.Page;
-import org.jfrog.maven.annomojo.annotations.MojoComponent;
-import org.jfrog.maven.annomojo.annotations.MojoExecute;
-import org.jfrog.maven.annomojo.annotations.MojoGoal;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.tools.plugin.generator.Generator;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 
 /**
  * Generate Plugin's documentation in confluence's wiki format
@@ -30,15 +36,17 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
  * 
  *
  */
-@MojoExecute(phase="compile")
-@MojoGoal("plugin-confluence-summary")
+//@MojoExecute(phase="compile")
+//@MojoGoal("plugin-confluence-summary")
+@Mojo(name="plugin-confluence-summary",threadSafe=true,requiresDependencyResolution= ResolutionScope.COMPILE,defaultPhase= LifecyclePhase.COMPILE)
 public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMojo {
 
     /**
      * Report output directory.
      *
      */
-    @MojoParameter(expression="${project.build.directory}/generated-site/confluence",required=true)
+    //@MojoParameter(expression="${project.build.directory}/generated-site/confluence",required=true)
+    @Parameter( defaultValue="${project.build.directory}/generated-site/confluence",required=true )
     private String outputDirectory;
 
 
@@ -46,7 +54,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
      * Mojo scanner tools.
      *
      */
-    @MojoComponent
+    //@MojoComponent
+    @Component
     protected MojoScanner mojoScanner;
 
 
@@ -54,16 +63,43 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
     * The file encoding of the source files.
     *
     */
-    @MojoParameter( expression="${encoding}", defaultValue="${project.build.sourceEncoding}")
+    //@MojoParameter( expression="${encoding}", defaultValue="${project.build.sourceEncoding}")
+    @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
     private String encoding;    
 
     /**
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
      */
+    @Override
     protected String getOutputDirectory()
     {
         return outputDirectory;
     }
+
+    
+     protected static List<ComponentDependency>  toComponentDependencies(List<Dependency>   dependencies)
+     {
+         //return PluginUtils.toComponentDependencies( dependencies )
+         
+         List<ComponentDependency>   componentDeps = new LinkedList<ComponentDependency>();
+ 
+         for ( Iterator<Dependency> it = dependencies.iterator(); it.hasNext(); )
+         {
+             Dependency dependency = it.next();
+             
+             ComponentDependency cd = new ComponentDependency();
+ 
+             cd.setArtifactId( dependency.getArtifactId() );
+             cd.setGroupId( dependency.getGroupId() );
+             cd.setVersion( dependency.getVersion() );
+             cd.setType( dependency.getType() );
+ 
+             componentDeps.add( cd );
+         }
+         
+         return componentDeps;
+     }
+ 
 
     /**
      * @see org.apache.maven.reporting.AbstractMavenReport#executeReport(java.util.Locale)
@@ -100,8 +136,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
         {
             java.util.List dependencies = new java.util.ArrayList();
             
-            dependencies.addAll(PluginUtils.toComponentDependencies( project.getRuntimeDependencies() ));
-            dependencies.addAll(PluginUtils.toComponentDependencies( project.getCompileDependencies() ));
+            dependencies.addAll(toComponentDependencies( project.getRuntimeDependencies() ));
+            dependencies.addAll(toComponentDependencies( project.getCompileDependencies() ));
 
             pluginDescriptor.setDependencies( dependencies );
 
@@ -189,8 +225,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             getLog().info( "speceKey=" + getSpaceKey() + " parentPageTitle=" + getParentPageTitle());
             
             Page p = confluence.getPage(getSpaceKey(), getParentPageTitle());
-            
-            org.apache.maven.tools.plugin.generator.Generator generator = 
+           
+            Generator generator =
             		new PluginConfluenceDocGenerator( this, confluence, p, templateWiki ); /*PluginXdocGenerator()*/;
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );

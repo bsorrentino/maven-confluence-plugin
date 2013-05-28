@@ -10,13 +10,13 @@ import java.net.URISyntaxException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.model.SiteFactory;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 /**
  *
@@ -25,11 +25,12 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
 public abstract class AbstractConfluenceSiteReportMojo extends AbstractConfluenceReportMojo implements SiteFactory {
 
     /**
-     * 
+     * site xml descriptor
      * @since 3.3.0
      */
-    @MojoParameter(defaultValue = "${basedir}/src/site/confluence/site.xml", 
-                   description = "site xml descriptor" )
+    //@MojoParameter(defaultValue = "${basedir}/src/site/confluence/site.xml", 
+    //               description = "site xml descriptor" )
+    @Parameter(defaultValue = "${basedir}/src/site/confluence/site.xml")
     protected java.io.File siteDescriptor;
 
     /**

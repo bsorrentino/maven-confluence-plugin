@@ -34,10 +34,14 @@ public class Site {
      * @throws Exception 
      */
     public static java.io.Reader processUri( java.net.URI uri ) throws /*ProcessUri*/Exception {
+            if( uri == null ) {
+                throw new IllegalArgumentException( "uri is null!" );
+            }
+            
             String scheme = uri.getScheme();
 
             if (scheme == null) {
-                throw new /*ProcessUri*/Exception("uri is invalid!");
+                throw new /*ProcessUri*/Exception( String.format("uri [%s] is invalid!", String.valueOf(uri) ));
             }
 
             String source = uri.getRawSchemeSpecificPart();

@@ -1,8 +1,6 @@
 package org.bsc.maven.reporting.model;
 
-import org.apache.maven.project.MavenProject;
-import org.bsc.maven.reporting.model.Site;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * 
@@ -11,7 +9,11 @@ import org.jfrog.maven.annomojo.annotations.MojoParameter;
  */
 public class Child extends Site.Page {
 
-    @MojoParameter(defaultValue = "${basedir}/src/site/confluence")
+    /**
+     * 
+     */
+    //@MojoParameter(defaultValue = "${basedir}/src/site/confluence")
+    @Parameter(defaultValue = "${basedir}/src/site/confluence")
     private java.io.File source;
 
     @Override

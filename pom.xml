@@ -8,81 +8,102 @@
   
   <properties>
   
-	<!-- 
-	================
-	GOOGLE REPO 
-	================
+    <!-- 
+    ================
+    GOOGLE REPO 
+    ================
     <snapshot.repo.id>google-project</snapshot.repo.id>
     <snapshot.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</snapshot.repo.url>
-	-->
+    -->
 
-	<!-- 
-	================
-	JAVANET REPO 
-	================
+    <!-- 
+    ================
+    JAVANET REPO 
+    ================
     <release.repo.id>java.net-m2-repository</release.repo.id>
     <release.repo.url>java-net:/maven2-repository/trunk/repository/</release.repo.url>
-	-->
+    -->
 
-	<!-- 
-	================
-	SONATYPE REPO 
-	================
-	-->
+    <!-- 
+    ================
+    SONATYPE REPO 
+    ================
+    -->
     <snapshot.repo.id>sonatype-repo</snapshot.repo.id>
     <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
     <release.repo.id>sonatype-repo</release.repo.id>
     <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</release.repo.url>
     
-	<!-- SCM properties  -->
-	<addTimestamp>true</addTimestamp>
-	<tag>${project.artifactId}-${project.version}</tag>
-	<tagBase>https://maven-confluence-plugin.googlecode.com/svn/tags</tagBase>
+    <!-- SCM properties  -->
+    <addTimestamp>true</addTimestamp>
+    <tag>${project.artifactId}-${project.version}</tag>
     
-    <mavenVersion>3.0.3</mavenVersion>
-    <doxiaVersion>1.0</doxiaVersion>  
-    <doxia-sitetoolsVersion>1.0</doxia-sitetoolsVersion>
-    <pluginToolsVersion>2.9</pluginToolsVersion>
-
-    <jfrog.maven-plugin-anno.version>1.4.1</jfrog.maven-plugin-anno.version>
-
-<!--  NEED FOR TEST  -->
-<!--plexus.utils.version>2.0.5</plexus.utils.version-->
-    <plexus.utils.version>2.1</plexus.utils.version>
+    <mavenVersion>3.0.1</mavenVersion>
+    <pluginToolsVersion>3.1</pluginToolsVersion>
   
   </properties>
 
 <dependencyManagement>
 <dependencies>
 
-    <dependency>
-      <groupId>org.jfrog.maven.annomojo</groupId>
-      <artifactId>maven-plugin-anno</artifactId>
-      <version>${jfrog.maven-plugin-anno.version}</version>
-    </dependency>
+  <dependency>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-plugin-api</artifactId>
+    <version>${mavenVersion}</version>
+  </dependency>
+ 
+  <dependency>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-core</artifactId>
+    <version>${mavenVersion}</version>
+  </dependency>
 
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>${plexus.utils.version}</version>
-      </dependency>
-
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>${mavenVersion}</version>
-    </dependency>
-
+    <!-- dependencies to annotations -->
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-api</artifactId>
+      <artifactId>maven-plugin-annotations</artifactId>
       <version>${pluginToolsVersion}</version>
     </dependency>
     
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-generators</artifactId>
+      <version>${pluginToolsVersion}</version>
+    </dependency>    
+    
+    <!-- generated help mojo has a dependency to plexus-utils -->
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>3.0.8</version>
+    </dependency>
+    
+   <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-tools-api</artifactId>
+      <version>${pluginToolsVersion}</version>
+   </dependency>
+
+    <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>2.1</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${mavenVersion}</version>
+        <scope>test</scope>
+    </dependency>
+     
 </dependencies>
 </dependencyManagement>
 
+    
 <profiles>
+<!--    
       <profile>
           <id>macosx</id>
           <activation>
@@ -104,7 +125,7 @@
 	  		<java.rt.systemPath />
 		</properties>
 	</profile>
-
+-->
 	<profile>
 		<id>release</id>
 		<build>
@@ -166,40 +187,26 @@
 	<url>https://code.google.com/p/maven-confluence-plugin/</url>
   </scm>
 
-    <repositories>
-  	<repository>
-  		<id>jfrog</id>
-  		<name>jfrog</name>
-  		<url>http://www.jfrog.org/artifactory/plugins-releases-local</url>
-  		<snapshots>
-  			<enabled>false</enabled>
-  		</snapshots>
-  	</repository>
-  </repositories>
 
-  <pluginRepositories>
-  	<pluginRepository>
-  		<id>jfrog</id>
-  		<name>jfrog</name>
-  		<url>http://www.jfrog.org/artifactory/plugins-releases-local</url>
-  		<snapshots>
-  			<enabled>false</enabled>
-  		</snapshots>
-  	</pluginRepository>
-  	<pluginRepository>
-  		<id>java-net</id>
-  		<url>http://download.java.net/maven/2</url>
-  	</pluginRepository>
-  </pluginRepositories>
+<build>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${pluginToolsVersion}</version>
+            </plugin>
 
-  <build>
+        </plugins>
+    </pluginManagement>
+    
   	<plugins>
 	<plugin>
 	  <artifactId>maven-compiler-plugin</artifactId>
 	  <version>2.3.2</version>
 	  <configuration>
-	    <source>1.5</source>
-	    <target>1.5</target>
+	    <source>1.6</source>
+	    <target>1.6</target>
 	  </configuration>
 	</plugin>
     

@@ -9,7 +9,6 @@ import org.apache.maven.reporting.AbstractMavenReport;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
@@ -19,11 +18,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Server;
 import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
 import org.codehaus.swizzle.confluence.Attachment;
-import org.jfrog.maven.annomojo.annotations.MojoComponent;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
@@ -35,78 +35,101 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 //@MojoThreadSafe
 public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	
-    @MojoParameter(description = "additional properties pass to template processor")
+    
+    /**
+     * additional properties pass to template processor
+     */
+    //@MojoParameter(description = "additional properties pass to template processor")
+    @Parameter()
     private java.util.Map properties;
     /**
      * Confluence end point url 
      */
-    @MojoParameter(expression = "${confluence.endPoint}", defaultValue = "http://localhost:8080/rpc/xmlrpc")
+    //@MojoParameter(expression = "${confluence.endPoint}", defaultValue = "http://localhost:8080/rpc/xmlrpc")
+    @Parameter(property = "confluence.endPoint", defaultValue = "http://localhost:8080/rpc/xmlrpc")
     private String endPoint;
     /**
      * Confluence target confluence's spaceKey 
      */
-    @MojoParameter(expression = "${confluence.spaceKey}", required = true)
+    //@MojoParameter(expression = "${confluence.spaceKey}", required = true)
+    @Parameter(property = "confluence.spaceKey", required = true)
     private String spaceKey;
     /**
      * Confluence target confluence's spaceKey 
      */
-    @MojoParameter(expression = "${confluence.parentPage}", defaultValue = "Home")
+    //@MojoParameter(expression = "${confluence.parentPage}", defaultValue = "Home")
+    @Parameter(property = "confluence.parentPage", defaultValue = "Home")
     private String parentPageTitle;
     /**
      * Confluence username 
      */
-    @MojoParameter(expression = "${confluence.userName}", required = false )
+    //@MojoParameter(expression = "${confluence.userName}", required = false )
+    @Parameter(property = "confluence.userName", required = false)
     private String username;
     /**
      * Confluence password 
      */
-    @MojoParameter(expression = "${confluence.password}", required = false)
+    //@MojoParameter(expression = "${confluence.password}", required = false)
+    @Parameter(property = "confluence.password", required = false)
     private String password;
     
     /**
      * 
      */
-    @MojoParameter(expression = "${project}", readonly = true, required = true)
+    //@MojoParameter(expression = "${project}", readonly = true, required = true)
+    @Parameter(property = "project", readonly = true, required = true)
     protected MavenProject project;
     
     /**
-     * 
+     * Home page template source. Template name will be used also as template source for children
      */
-    @MojoParameter(defaultValue = "${basedir}/src/site/confluence/template.wiki", 
-                   description = "Home page template source. Template name will be used also as template source for children" )
+    //@MojoParameter(defaultValue = "${basedir}/src/site/confluence/template.wiki", 
+    //               description = "Home page template source. Template name will be used also as template source for children" )
+    @Parameter(defaultValue = "${basedir}/src/site/confluence/template.wiki")
     protected java.io.File templateWiki;
     
     /**
+     * child pages - 
+     * <pre>&lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt</pre>
      * 
+     * @deprecated use children folder instead
      */
-    @MojoParameter( deprecated="use children folder instead", 
-                    description = "child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
+    //@MojoParameter( deprecated="use children folder instead", 
+    //                description = "child pages - &lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt")
+    @Parameter()
     private java.util.List children;
     
     /**
-     * 
+     * attachment folder
      */
-    @MojoParameter(description = "attachment folder", defaultValue = "${basedir}/src/site/confluence/attachments")
+    //@MojoParameter(description = "attachment folder", defaultValue = "${basedir}/src/site/confluence/attachments")
+    @Parameter(defaultValue = "${basedir}/src/site/confluence/attachments")
     private java.io.File attachmentFolder;
     
     /**
-     * 
+     * children folder
      */
-    @MojoParameter(description = "children folder", defaultValue = "${basedir}/src/site/confluence/children")
+    //@MojoParameter(description = "children folder", defaultValue = "${basedir}/src/site/confluence/children")
+    @Parameter(defaultValue = "${basedir}/src/site/confluence/children")
     private java.io.File childrenFolder;
     
     /**
-     * 
+     * During publish of documentation related to a new release, if it's true, the pages related to SNAPSHOT will be removed 
      */
-    @MojoParameter(expression = "${confluence.removeSnapshots}",
-                   required = false,
-                   defaultValue = "false",
-                   description = "During publish of documentation related to a new release, if it's true, the pages related to SNAPSHOT will be removed ")
+    //@MojoParameter(expression = "${confluence.removeSnapshots}",
+    //               required = false,
+    //               defaultValue = "false",
+    //               description = "During publish of documentation related to a new release, if it's true, the pages related to SNAPSHOT will be removed ")
+    @Parameter(property = "confluence.removeSnapshots", required = false,  defaultValue = "false")
     protected boolean removeSnapshots = false;
     
     
-    @MojoParameter(description="Labels to add")
-    java.util.List/*<String>*/ labels;
+    /**
+     * Labels to add
+     */
+    //@MojoParameter(description="Labels to add")
+    @Parameter()
+    java.util.List<String> labels;
     
     
     /**
@@ -114,28 +137,30 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * @readonly
      * @since 3.1.1
      */
-    @MojoParameter(readonly = true, expression = "${settings}")
+    //@MojoParameter(readonly = true, expression = "${settings}")
+    @Parameter(readonly = true, property = "settings")
     protected org.apache.maven.settings.Settings mavenSettings;
 
     /**
-     * 
+     * Confluence Page Title
      * @since 3.1.3
      */
     
-    @MojoParameter(expression = "${project.build.finalName}",
-                   required = false,
-                   description = "Confluence Page Title - since 3.1.3")
+    //@MojoParameter(expression = "${project.build.finalName}",
+    //               required = false,
+    //               description = "Confluence Page Title - since 3.1.3")
+    @Parameter(property = "project.build.finalName", required = false)
     private String title;
 
     /**
-     * 
+     * Children files extension
      * @since 3.2.1
-     */
-    
-    @MojoParameter(expression = "${wikiFilesExt}",
-                   required = false,
-                   defaultValue=".wiki",
-                   description = "Children files extension - since 3.2.1")
+     */   
+    //@MojoParameter(expression = "${wikiFilesExt}",
+    //               required = false,
+    //               defaultValue=".wiki",
+    //               description = "Children files extension - since 3.2.1")
+    @Parameter(property = "wikiFilesExt", required = false, defaultValue=".wiki")
     private String wikiFilesExt;
     
     
@@ -146,12 +171,11 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * Defaults to <code>${url}</code> if not given.
      *
      * @since 1.0
-     * @parameter expression="${settingsKey}"
      */
-    @MojoParameter( 
-            expression="${confluence.serverId}",
-            description="Server's <code>id</code> in <code>settings.xml</code> to look up username and password"
-    )
+    //MojoParameter( 
+    //        expression="${confluence.serverId}",
+    //        description="Server's <code>id</code> in <code>settings.xml</code> to look up username and password" )
+    @Parameter(property="confluence.serverId")
     private String serverId;
     
     /**
@@ -160,10 +184,9 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * MNG-4384
      * 
      * @since 1.5
-     * @component role="hidden.org.sonatype.plexus.components.sec.dispatcher.SecDispatcher"
-     * @required  
      */
-    @MojoComponent(role="org.sonatype.plexus.components.sec.dispatcher.SecDispatcher",roleHint="default")
+    //@MojoComponent(role="org.sonatype.plexus.components.sec.dispatcher.SecDispatcher",roleHint="default")
+    @Component(role=org.sonatype.plexus.components.sec.dispatcher.SecDispatcher.class,hint="default")
     private SecDispatcher securityDispatcher;    
     
     /**
@@ -256,7 +279,11 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
     }
 
     public List<String> getLabels() {
-        return (labels==null) ? Collections.emptyList() : labels;
+        
+        if( labels==null ) {
+            return Collections.emptyList();
+        }
+        return labels;
     }
 
     
@@ -588,8 +615,11 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
             
             try {
                 
-                java.net.URI uri = new java.net.URI( e.getValue() );
+                final java.net.URI uri = new java.net.URI( e.getValue() );
                 
+                if( uri.getScheme() == null ) {
+                    continue;
+                }
                 getProperties().put( e.getKey(), processUri( uri ));
                 
             } catch (ProcessUriException ex) {

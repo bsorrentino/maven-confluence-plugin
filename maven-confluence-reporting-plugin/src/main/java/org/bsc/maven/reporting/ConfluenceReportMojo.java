@@ -33,13 +33,14 @@ import org.bsc.maven.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
-import org.jfrog.maven.annomojo.annotations.MojoComponent;
-import org.jfrog.maven.annomojo.annotations.MojoGoal;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
-import org.jfrog.maven.annomojo.annotations.MojoPhase;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import org.apache.maven.artifact.factory.DefaultArtifactFactory;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.bsc.maven.reporting.model.Site;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
@@ -47,73 +48,91 @@ import org.codehaus.swizzle.confluence.ConfluenceFactory;
 /**
  * Generate Project's documentation in confluence's wiki format
  */
-@MojoPhase("site")
-@MojoGoal("confluence-summary")
+//@MojoPhase("site")
+//@MojoGoal("confluence-summary")
+@Mojo( name="confluence-summary", defaultPhase = LifecyclePhase.SITE )
 public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
 
     private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
     private static final String PROJECT_SCM_MANAGER_VAR = "project.scmManager";
     private static final String PROJECT_SUMMARY_VAR = "project.summary";
+    
     /**
      * Local Repository.
      *
      */
-    @MojoParameter(expression = "${localRepository}", required = true, readonly = true)
+    //@MojoParameter(expression = "${localRepository}", required = true, readonly = true)
+    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     protected ArtifactRepository localRepository;
     /**
      */
-    @MojoComponent
+    //@MojoComponent
+    @Component
     protected ArtifactMetadataSource artifactMetadataSource;
     /**
      */
-    @MojoComponent
+    //@MojoComponent
+    @Component
     private ArtifactCollector collector;
     /**
      *
      */
-    @MojoComponent
+    //@MojoComponent
+    @Component(role=org.apache.maven.artifact.factory.ArtifactFactory.class)
     protected ArtifactFactory factory;
     /**
      * Maven Project Builder.
      *
      */
-    @MojoComponent
+    //@MojoComponent
+    @Component
     private MavenProjectBuilder mavenProjectBuilder;
-    @MojoComponent
+
+    //@MojoComponent
+    @Component
     protected I18N i18n;
+    
     //@MojoComponent()
     //protected Renderer siteRenderer;
-    @MojoParameter(expression = "${project.reporting.outputDirectory}")
+    //@MojoParameter(expression = "${project.reporting.outputDirectory}")
+    @Parameter(property = "project.reporting.outputDirectory")
     protected java.io.File outputDirectory;
     /**
      * Maven SCM Manager.
      *
      */
-    @MojoParameter(expression = "${component.org.apache.maven.scm.manager.ScmManager}", required = true, readonly = true)
+    //@MojoParameter(expression = "${component.org.apache.maven.scm.manager.ScmManager}", required = true, readonly = true)
+    //@Parameter(defaultValue = "${component.org.apache.maven.scm.manager.ScmManager}", required = true, readonly = true)
+    @Component(role=ScmManager.class)
     protected ScmManager scmManager;
+    
     /**
      * The directory name to checkout right after the scm url
      *
      */
-    @MojoParameter(expression = "${project.artifactId}", required = true)
+    //@MojoParameter(expression = "${project.artifactId}", required = true)
+    @Parameter(defaultValue = "${project.artifactId}", required = true)
     private String checkoutDirectoryName;
     /**
      * The scm anonymous connection url.
      *
      */
-    @MojoParameter(defaultValue = "${project.scm.connection}")
+    //@MojoParameter(defaultValue = "${project.scm.connection}")
+    @Parameter(defaultValue = "${project.scm.connection}")
     private String anonymousConnection;
     /**
      * The scm developer connection url.
      *
      */
-    @MojoParameter(defaultValue = "${project.scm.developerConnection}")
+    //@MojoParameter(defaultValue = "${project.scm.developerConnection}")
+    @Parameter(defaultValue = "${project.scm.developerConnection}")
     private String developerConnection;
     /**
      * The scm web access url.
      *
      */
-    @MojoParameter(defaultValue = "${project.scm.url}")
+    //@MojoParameter(defaultValue = "${project.scm.url}")
+    @Parameter(defaultValue = "${project.scm.url}")
     private String webAccessUrl;
 
     //private Writer confluenceWriter;

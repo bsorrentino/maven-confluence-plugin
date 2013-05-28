@@ -14,14 +14,14 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.reporting.MavenReportException;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
-
+import org.apache.maven.tools.plugin.PluginToolsRequest;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
 
 /**
  * 
@@ -65,12 +65,13 @@ public class PluginConfluenceDocGenerator implements Generator {
 	/**
 	 * 
 	 */
-	public void execute(File destinationDirectory, PluginToolsRequest request) throws IOException {
+        @Override
+	public void execute(File destinationDirectory, PluginToolsRequest request) throws GeneratorException {
         try {
 			processMojoDescriptors(request.getPluginDescriptor());
 		} catch (Exception e) {
 			
-			throw new IOException( e.getMessage() );
+			throw new GeneratorException( e.getMessage(), e );
 		}
 		
 	}
