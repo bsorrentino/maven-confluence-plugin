@@ -2,12 +2,12 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.3.0-rc1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-core</artifactId>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.3.0-rc1</version>
   <name>maven confluence plugin core - ${project.version}</name>
 
   <scm>
