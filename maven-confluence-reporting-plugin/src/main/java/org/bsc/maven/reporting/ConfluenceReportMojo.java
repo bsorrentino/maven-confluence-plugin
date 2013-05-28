@@ -36,7 +36,6 @@ import org.codehaus.swizzle.confluence.Page;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import org.apache.maven.artifact.factory.DefaultArtifactFactory;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;

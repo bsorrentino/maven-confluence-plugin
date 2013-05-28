@@ -40,6 +40,7 @@
     
     <mavenVersion>3.0.1</mavenVersion>
     <pluginToolsVersion>3.1</pluginToolsVersion>
+    <reports-plugin-version>2.4</reports-plugin-version>
   
   </properties>
 

@@ -32,7 +32,6 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
  * 
  * @author bsorrentino
  */
-//@MojoThreadSafe
 public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 	
     

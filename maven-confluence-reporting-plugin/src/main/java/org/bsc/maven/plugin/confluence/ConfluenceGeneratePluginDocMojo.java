@@ -1,11 +1,12 @@
 package org.bsc.maven.plugin.confluence;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.doxia.siterenderer.Renderer;
 
 import org.apache.maven.model.Dependency;
@@ -28,6 +29,8 @@ import org.codehaus.swizzle.confluence.Page;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.GeneratorUtils;
+import org.apache.maven.tools.plugin.scanner.DefaultMojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 
 /**
@@ -38,7 +41,7 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
  */
 //@MojoExecute(phase="compile")
 //@MojoGoal("plugin-confluence-summary")
-@Mojo(name="plugin-confluence-summary",threadSafe=true,requiresDependencyResolution= ResolutionScope.COMPILE,defaultPhase= LifecyclePhase.COMPILE)
+@Mojo(name="plugin-confluence-summary",threadSafe=true,requiresDependencyResolution= ResolutionScope.COMPILE,defaultPhase= LifecyclePhase.SITE)
 public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMojo {
 
     /**
@@ -51,6 +54,30 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
 
 
     /**
+      * Location of the local repository.
+      *
+      * @since 3.0
+      */
+     @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+     protected ArtifactRepository local;    
+     
+     /**
+      * The set of dependencies for the current project
+      *
+      * @since 3.0
+      */
+     @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
+     protected Set<Artifact> dependencies;
+ 
+     /**
+      * List of Remote Repositories used by the resolver
+      *
+      * @since 3.0
+      */
+     @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
+     protected List<ArtifactRepository> remoteRepos;
+     
+     /**
      * Mojo scanner tools.
      *
      */
@@ -80,7 +107,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
      protected static List<ComponentDependency>  toComponentDependencies(List<Dependency>   dependencies)
      {
          //return PluginUtils.toComponentDependencies( dependencies )
-         
+         return GeneratorUtils.toComponentDependencies(dependencies);
+         /*
          List<ComponentDependency>   componentDeps = new LinkedList<ComponentDependency>();
  
          for ( Iterator<Dependency> it = dependencies.iterator(); it.hasNext(); )
@@ -98,6 +126,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
          }
          
          return componentDeps;
+         */ 
      }
  
 
@@ -129,22 +158,28 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
         pluginDescriptor.setGroupId( project.getGroupId() );
         pluginDescriptor.setArtifactId( project.getArtifactId() );
         pluginDescriptor.setVersion( project.getVersion() );
-
         pluginDescriptor.setGoalPrefix( goalPrefix );
 
         try
         {
-            java.util.List dependencies = new java.util.ArrayList();
+            java.util.List deps = new java.util.ArrayList();
             
-            dependencies.addAll(toComponentDependencies( project.getRuntimeDependencies() ));
-            dependencies.addAll(toComponentDependencies( project.getCompileDependencies() ));
+            deps.addAll(toComponentDependencies( project.getRuntimeDependencies() ));
+            deps.addAll(toComponentDependencies( project.getCompileDependencies() ));
 
-            pluginDescriptor.setDependencies( dependencies );
+            pluginDescriptor.setDependencies( deps );
+            pluginDescriptor.setDescription( project.getDescription() );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
             request.setEncoding( encoding );
-                    
+            request.setLocal(local);
+            request.setRemoteRepos(remoteRepos);
+            request.setSkipErrorNoDescriptorsFound(false);
+            request.setDependencies( dependencies );
+
+            
             try {
+                
                 mojoScanner.populatePluginDescriptor(request);
                 
             } catch (InvalidPluginDescriptorException e) {
@@ -153,8 +188,6 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
 
             }
             
-            pluginDescriptor.setDescription( project.getDescription() );
-
             // Generate the plugin's documentation
             generatePluginDocumentation( pluginDescriptor );
 

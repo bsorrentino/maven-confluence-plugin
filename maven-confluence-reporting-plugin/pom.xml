@@ -91,7 +91,6 @@
                     </execution>
                 </executions>
             </plugin>  
-                                          
         </plugins>
     </build>
   
@@ -101,13 +100,7 @@
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.4</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>maven-reporting-api</artifactId>
-                    <groupId>org.apache.maven.reporting</groupId>
-                </exclusion>
-            </exclusions>
+            <version>${reports-plugin-version}</version>
         </dependency>
         
         
@@ -203,13 +196,66 @@ TEST
         </dependency>
                
    </dependencies>
-  
+
+    
 <profiles>
+    
     <profile>
         <id>report</id>
+        
+        <build>
+            <plugins>
+                
+                <!--
+                =====================================================
+                MAVEN3 SITE GENERATION
+                =====================================================
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.0</version>
 
-        <dependencies>
-        </dependencies>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.plugin-tools</groupId>
+                            <artifactId>maven-plugin-annotations</artifactId>
+                            <version>${pluginToolsVersion}</version>
+                            <scope>runtime</scope>
+                        </dependency>
+
+                        <dependency>
+                            <groupId>org.apache.maven.reporting</groupId>
+                            <artifactId>maven-reporting-exec</artifactId>
+                            <version>1.1</version>
+                        </dependency>
+
+                    </dependencies>
+                    <configuration>
+                        <reportPlugins>
+
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-plugin-plugin</artifactId>
+                                <version>${pluginToolsVersion}</version>
+                            </plugin>
+
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-project-info-reports-plugin</artifactId>
+                                <version>${reports-plugin-version}</version>
+                            </plugin>
+                        </reportPlugins>
+                    </configuration>
+                </plugin>     
+                                                         
+            </plugins>
+            
+        </build>
+    </profile>
+    
+    <profile>
+        <id>codehaus</id>
 
         <build>
 
@@ -219,21 +265,37 @@ TEST
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.0</version>
 
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.plugin-tools</groupId>
+                            <artifactId>maven-plugin-annotations</artifactId>
+                            <version>${pluginToolsVersion}</version>
+                            <scope>runtime</scope>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>org.apache.maven.reporting</groupId>
+                                <artifactId>maven-reporting-exec</artifactId>
+                                <version>1.1</version>
+                        </dependency>
+
+                        
+                    </dependencies>    
                     <configuration>
                         <reportPlugins>
+                            
                             <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-plugin-plugin</artifactId>
-                                <version>2.9</version>
+                                <version>${pluginToolsVersion}</version>
                             </plugin>
-
+                                
                             <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                                <version>2.2</version>
+                                <version>${reports-plugin-version}</version>
                             </plugin>
-
-
+                            
                             <plugin>
                                 <groupId>org.bsc.maven</groupId>
                                 <artifactId>maven-confluence-reporting-plugin</artifactId>

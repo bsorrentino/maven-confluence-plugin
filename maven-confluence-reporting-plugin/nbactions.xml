@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-codehaus</actionName>
+            <displayName>codehaus</displayName>
+            <recursive>false</recursive>
+            <goals>
+                <goal>site:site</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>report</activatedProfile>
+            </activatedProfiles>
+        </action>
+    </actions>
