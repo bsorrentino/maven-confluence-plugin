@@ -30,7 +30,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
-import org.apache.maven.tools.plugin.scanner.DefaultMojoScanner;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 
 /**
