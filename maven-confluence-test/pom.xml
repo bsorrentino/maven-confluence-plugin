@@ -1,156 +1,214 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>maven-confluence-parent</artifactId>
-    <groupId>org.bsc.maven</groupId>
-    <version>3.3.0-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <artifactId>maven-confluence-parent</artifactId>
+        <groupId>org.bsc.maven</groupId>
+        <version>3.3.0-SNAPSHOT</version>
+    </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>maven-confluence-test</artifactId>
-  <name>maven confluence plugin test - ${project.version}</name>
-  <description>description</description>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>maven-confluence-test</artifactId>
+    <name>maven confluence plugin test - ${project.version}</name>
+    <description>description</description>
   
   
-  <properties>
-  	<confluence.home>http://localhost:8090</confluence.home>
-  </properties> 
+    <properties>
+        <confluence.home>http://localhost:8099</confluence.home>
+    </properties> 
 
 
-<build>
-    <finalName>site-generation-test</finalName>
-</build>
+    <build>
+        <finalName>site-generation-test</finalName>
+    </build>
 
-  <scm>
-	<connection>scm:git:https://code.google.com/p/maven-confluence-plugin/</connection>
-	<developerConnection>scm:git:https://code.google.com/p/maven-confluence-plugin/</developerConnection>
-	<url>https://code.google.com/p/maven-confluence-plugin/</url>
-  </scm>
+    <scm>
+        <connection>scm:git:https://code.google.com/p/maven-confluence-plugin/</connection>
+        <developerConnection>scm:git:https://code.google.com/p/maven-confluence-plugin/</developerConnection>
+        <url>https://code.google.com/p/maven-confluence-plugin/</url>
+    </scm>
 
-<profiles>
+    <profiles>
 
-<!--
-===========================================
-MAVEN 3
-===========================================
--->
-<profile>
-<id>maven3</id>
-<activation>
-<activeByDefault>true</activeByDefault>
-</activation>
+        <!--
+        ===========================================
+        STANDALONEs
+        ===========================================
+        -->
+        <profile>
+            <id>direct</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.0</version>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.bsc.maven</groupId>
+                        <artifactId>maven-confluence-reporting-plugin</artifactId>
+                        <version>${project.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+
+                        <configuration>
+                            <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+
+                            <spaceKey>DS</spaceKey>
+                            <parentPageTitle>Home</parentPageTitle>
+                            <title>my-site-generation-test ver3.2.1</title>
+                            <labels>
+                                <label>test</label>
+                                <label>confluence</label>                                           
+                            </labels> 
+                            <!--
+                            <childrenFolder>${basedir}/src/site/confluence/children.wiki</childrenFolder>
+                            -->
+                            <!-- TEST ISSUE 40 -->
+                            <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <!-- TEST ISSUE 39 -->
+                            <serverId>confluence-local</serverId>
+
+                            <properties>
+                                <evaluation>(y)</evaluation>
+                                <page>classpath:plugin-report.properties</page>
+                                <page1>file://${basedir}/src/main/resources/confluence.html</page1>
+                            </properties>
+
+                        </configuration>
+  
+                    </plugin>
+                </plugins>
+            </build>  
+
+        </profile>
+    
+        <!--
+        ===========================================
+        MAVEN 3
+        ===========================================
+        -->
+        <profile>
+            <id>maven3</id>
+            <activation>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.0</version>
         
-        <dependencies>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-        </dependencies>
-        <configuration>
-          <reportPlugins>
-  		<plugin>
-  			<groupId>org.bsc.maven</groupId>
-  			<artifactId>maven-confluence-reporting-plugin</artifactId>
-  			<version>${project.version}</version>
-  			<reportSets>
-  				<reportSet>
-  					<id>confluence</id>
-  					<configuration>
-                                            <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+                        <dependencies>
+                            <dependency>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <reportPlugins>
+                                <plugin>
+                                    <groupId>org.bsc.maven</groupId>
+                                    <artifactId>maven-confluence-reporting-plugin</artifactId>
+                                    <version>${project.version}</version>
+                                    <reportSets>
+                                        <reportSet>
+                                            <id>confluence</id>
+                                            <configuration>
+                                                <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
 
-                                            <spaceKey>TEST</spaceKey>
-                                            <parentPageTitle>Home</parentPageTitle>
-                                            <title>my-site-generation-test ver3.2.1</title>
-                                            <labels>
-                                                <label>test</label>
-                                                <label>confluence</label>                                           
-                                            </labels> 
-                                            <!--
-                                            <childrenFolder>${basedir}/src/site/confluence/children.wiki</childrenFolder>
-                                            -->
-                                            <!-- TEST ISSUE 40 -->
-                                            <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
-                                            <wikiFilesExt>.confluence</wikiFilesExt>
-                                            <!-- TEST ISSUE 39 -->
-                                            <serverId>confluence-local</serverId>
+                                                <spaceKey>TEST</spaceKey>
+                                                <parentPageTitle>Home</parentPageTitle>
+                                                <title>my-site-generation-test ver3.2.1</title>
+                                                <labels>
+                                                    <label>test</label>
+                                                    <label>confluence</label>                                           
+                                                </labels> 
+                                                <!--
+                                                <childrenFolder>${basedir}/src/site/confluence/children.wiki</childrenFolder>
+                                                -->
+                                                <!-- TEST ISSUE 40 -->
+                                                <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                                                <wikiFilesExt>.confluence</wikiFilesExt>
+                                                <!-- TEST ISSUE 39 -->
+                                                <serverId>confluence-local</serverId>
                                             
-                                            <properties>
-                                                <evaluation>(y)</evaluation>
-                                                <page>classpath:plugin-report.properties</page>
-                                                <page1>file://${basedir}/src/main/resources/confluence.html</page1>
-                                            </properties>
+                                                <properties>
+                                                    <evaluation>(y)</evaluation>
+                                                    <page>classpath:plugin-report.properties</page>
+                                                    <page1>file://${basedir}/src/main/resources/confluence.html</page1>
+                                                </properties>
                                             
-  					</configuration>
-  					<reports>
-  						<report>confluence-summary</report>				
-  					</reports>
-  				</reportSet>
-  			</reportSets>			
+                                            </configuration>
+                                            <reports>
+                                                <report>confluence-summary</report>				
+                                            </reports>
+                                        </reportSet>
+                                    </reportSets>			
   
-  		</plugin>
-          </reportPlugins>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>  
+                                </plugin>
+                            </reportPlugins>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>  
 
-</profile>
+        </profile>
 
     
-<!--
-===========================================
-MAVEN 2
-===========================================
---> 
-<profile>
-<id>maven2</id>
+        <!--
+        ===========================================
+        MAVEN 2
+        ===========================================
+        --> 
+        <profile>
+            <id>maven2</id>
 
-  <reporting>
-  	<plugins>
-  		<plugin>
-  			<groupId>org.bsc.maven</groupId>
-  			<artifactId>maven-confluence-reporting-plugin</artifactId>
-  			<version>1.3.2</version>
-  			<reportSets>
-  				<reportSet>
-  					<id>confluence</id>
-  					<configuration>
-  						<endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.bsc.maven</groupId>
+                        <artifactId>maven-confluence-reporting-plugin</artifactId>
+                        <version>1.3.2</version>
+                        <reportSets>
+                            <reportSet>
+                                <id>confluence</id>
+                                <configuration>
+                                    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
   						
-  						<spaceKey>DEV</spaceKey>
-						<parentPageTitle>TEST</parentPageTitle>
+                                    <spaceKey>DEV</spaceKey>
+                                    <parentPageTitle>TEST</parentPageTitle>
 						 
-						<children>
-							<child>
-								<name>child1</name>
-								<source>${basedir}/src/site/confluence/child1.wiki</source>
-							</child>
-							<child>
-								<name>child2</name>
-							</child>
-						</children>
-  					</configuration>
-  					<reports>
-  						<report>confluence-summary</report>				
-  					</reports>
-  				</reportSet>
-  			</reportSets>			
+                                    <children>
+                                        <child>
+                                            <name>child1</name>
+                                            <source>${basedir}/src/site/confluence/child1.wiki</source>
+                                        </child>
+                                        <child>
+                                            <name>child2</name>
+                                        </child>
+                                    </children>
+                                </configuration>
+                                <reports>
+                                    <report>confluence-summary</report>				
+                                </reports>
+                            </reportSet>
+                        </reportSets>			
   
-  		</plugin>
-  	</plugins>
-  </reporting>
+                    </plugin>
+                </plugins>
+            </reporting>
 
-</profile>
+        </profile>
 
 
-</profiles>  
+    </profiles>  
 
 </project>
