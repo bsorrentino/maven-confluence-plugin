@@ -24,12 +24,14 @@ public class ReportingResolutionListener implements ResolutionListener {
 
     private Node rootNode;
 
+    @Override
     public void testArtifact( Artifact artifact )
     {
         // intentionally blank
     }
 
     
+    @Override
     public void startProcessChildren( Artifact artifact )
     {
         Node node = (Node) artifacts.get( artifact.getDependencyConflictId() );
@@ -41,12 +43,14 @@ public class ReportingResolutionListener implements ResolutionListener {
         parents.push( node );
     }
 
+    @Override
     public void endProcessChildren( Artifact artifact )
     {
         Node check = (Node) parents.pop();
         assert artifact.equals( check.artifact );
     }
 
+    @Override
     public void omitForNearer( Artifact omitted, Artifact kept )
     {
         assert omitted.getDependencyConflictId().equals( kept.getDependencyConflictId() );
@@ -64,11 +68,13 @@ public class ReportingResolutionListener implements ResolutionListener {
         includeArtifact( kept );
     }
 
+    @Override
     public void omitForCycle( Artifact artifact )
     {
         // intentionally blank
     }
 
+    @Override
     public void includeArtifact( Artifact artifact )
     {
         if ( artifacts.containsKey( artifact.getDependencyConflictId() ) )
@@ -91,6 +97,7 @@ public class ReportingResolutionListener implements ResolutionListener {
         artifacts.put( artifact.getDependencyConflictId(), node );
     }
 
+    @Override
     public void updateScope( Artifact artifact, String scope )
     {
         Node node = (Node) artifacts.get( artifact.getDependencyConflictId() );
@@ -98,6 +105,7 @@ public class ReportingResolutionListener implements ResolutionListener {
         node.artifact.setScope( scope );
     }
 
+    @Override
     public void manageArtifact( Artifact artifact, Artifact replacement )
     {
         Node node = (Node) artifacts.get( artifact.getDependencyConflictId() );
@@ -115,16 +123,19 @@ public class ReportingResolutionListener implements ResolutionListener {
         }
     }
 
+    @Override
     public void updateScopeCurrentPom( Artifact artifact, String key )
     {
         // intentionally blank
     }
 
+    @Override
     public void selectVersionFromRange( Artifact artifact )
     {
         // intentionally blank
     }
 
+    @Override
     public void restrictRange( Artifact artifact, Artifact artifact1, VersionRange versionRange )
     {
         // intentionally blank
