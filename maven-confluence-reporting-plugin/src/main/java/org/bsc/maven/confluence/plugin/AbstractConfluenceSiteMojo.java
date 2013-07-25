@@ -269,7 +269,6 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         result.setHome( home );
         
-        result.getHome().getChildren().addAll( super.getChildren() );
 
         navigateAttachments(getAttachmentFolder(), home);
         

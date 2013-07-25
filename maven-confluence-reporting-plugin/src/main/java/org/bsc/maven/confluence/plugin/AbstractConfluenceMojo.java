@@ -1,19 +1,15 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.bsc.maven.reporting.*;
-import org.bsc.maven.reporting.model.Child;
 import java.io.File;
 import java.util.Collections;
 
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.reporting.AbstractMavenReport;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -25,7 +21,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Server;
 import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
-import org.codehaus.swizzle.confluence.Attachment;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
@@ -79,16 +74,7 @@ public abstract class AbstractConfluenceMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${basedir}/src/site/confluence/template.wiki")
     protected java.io.File templateWiki;
-    
-    /**
-     * child pages - 
-     * <pre>&lt;child&gt;&lt;name/&gt;[&lt;source/&gt]&lt;/child&gt</pre>
-     * 
-     * @deprecated use children folder instead
-     */
-    @Parameter()
-    private java.util.List children;
-    
+        
     /**
      * attachment folder
      */
@@ -164,12 +150,8 @@ public abstract class AbstractConfluenceMojo extends AbstractMojo {
      * 
      */
     public AbstractConfluenceMojo() {
-        children = Collections.emptyList();
     }
 
-    protected List<Child> getChildren() {
-        return children;
-    }
 
     protected File getChildrenFolder() {
         return childrenFolder;
@@ -398,181 +380,6 @@ public abstract class AbstractConfluenceMojo extends AbstractMojo {
             //throw new MavenReportException(msg, e);
 
             return null;
-        }
-
-    }
-
-    @Deprecated
-    protected <T extends Site.Page> void generateChildrenFromChild(final Confluence confluence, final java.io.File folder, final String spaceKey, final T parentChild ) /*throws MavenReportException*/ {
-
-        getLog().info(String.format("generateChildrenFromChild [%s]", folder.getAbsolutePath()) );
-
-        if (folder.exists() && folder.isDirectory()) {
-
-            folder.listFiles(new FileFilter() {
-
-                @Override
-                public boolean accept(File file) {
-
-                    getLog().info(String.format("generateChildrenFromChild\n\t process file [%s]", file.getPath()) );
-
-                    if( file.isHidden() || file.getName().charAt(0)=='.') return false ;
-                    
-                    if( file.isDirectory() ) {
-                        Child child = new Child();
-
-                        child.setName(file.getName());
-                        child.setSource( new java.io.File(file,templateWiki.getName()));
-
-                        if( generateChild(confluence,child,  spaceKey, parentChild.getName(), parentChild.getName()) != null ) {
- 
-                            generateChildrenFromChild(confluence, file, spaceKey, child );    
-                        }
-                       return true;
-                    }
-                    
-                    final String fileName = file.getName();
-
-                    if (!file.isFile() || !file.canRead() || !fileName.endsWith( getFileExt() ) || fileName.equals(templateWiki.getName())) {
-                        return false;
-                    }
-
-                    Child child = new Child();
-                    final int extensionLen = getFileExt().length();
-
-                    child.setName(fileName.substring(0, fileName.length() - extensionLen));
-                    child.setSource(file);
-                    
-
-                    generateChild(confluence, child, spaceKey, parentChild.getName(), parentChild.getName() );
-                    return false;
-
-                }
-            });
-        }
-
-    }
-    
-    /**
-     * 
-     * 
-     */
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    protected void generateChildren(final Confluence confluence, final String spaceKey, final String parentPageTitle, final String titlePrefix) /*throws MavenReportException*/ {
-
-        getLog().info(String.format("generateChildren # [%d]", children.size()));
-
-        for (Child child : (java.util.List<Child>) children) {
-
-            generateChild(confluence, child, spaceKey, parentPageTitle, titlePrefix );
-        }
-
-        if (childrenFolder.exists() && childrenFolder.isDirectory()) {
-
-            childrenFolder.listFiles(new FileFilter() {
-
-                @Override
-                public boolean accept(File file) {
-
-                    getLog().info(String.format("generateChildren\n\t process file [%s]", file.getPath()) );
-
-                    if( file.isHidden() || file.getName().charAt(0)=='.') return false ;
-
-                    if( file.isDirectory() ) {
-                       
-                        Child parentChild = new Child();
-
-                        parentChild.setName(file.getName());
-                        parentChild.setSource( new java.io.File(file,templateWiki.getName()));
-
-                        if( generateChild(confluence, parentChild, spaceKey, parentPageTitle, titlePrefix) != null ) {
- 
-                            generateChildrenFromChild(confluence, file, spaceKey, parentChild );    
-                        }
-                        
-                        return false;
-                    }
-                     
-                    final String fileName = file.getName();
-
-                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(getFileExt()) || fileName.equals(templateWiki.getName())) {
-                        return false;
-                    }
-
-                    Child child = new Child();
-                    
-                    final int extensionLen = getFileExt().length();
-                    
-                    child.setName(fileName.substring(0, fileName.length() - extensionLen));
-                    child.setSource(file);
-
-                    generateChild(confluence, child, spaceKey, parentPageTitle, titlePrefix);
-                    return false;
-
-                }
-            });
-        }
-
-    }
-
-    @Deprecated
-    protected void generateAttachments(Confluence confluence, Page page) /*throws MavenReportException*/ {
-
-        getLog().info(String.format("generateAttachments pageId [%s]", page.getId()));
-
-        java.io.File[] files = attachmentFolder.listFiles();
-
-        if (files == null || files.length == 0) {
-            getLog().info(String.format("No attachments found in folder [%s] ", attachmentFolder.getPath()));
-            return;
-        }
-
-        final String version = "0";
-        for (java.io.File f : files) {
-
-            if (f.isDirectory() || f.isHidden()) {
-                continue;
-            }
-
-            Attachment a = null;
-
-            try {
-                a = confluence.getAttachment(page.getId(), f.getName(), version);
-            } catch (Exception e) {
-                getLog().warn(String.format("Error getting attachment [%s] from confluence: [%s]", f.getName(), e.getMessage()));
-            }
-
-            if (a != null) {
-
-
-                java.util.Date date = a.getCreated();
-
-                if (date == null) {
-                    getLog().warn(String.format("creation date of attachments [%s] is undefined. It will be replaced! ", a.getFileName()));
-                } else {
-                    if (f.lastModified() > date.getTime()) {
-                        getLog().info(String.format("attachment [%s] is more recent than the remote one. It will be replaced! ", a.getFileName()));
-                    } else {
-                        getLog().info(String.format("attachment [%s] skipped! no updated detected", a.getFileName()));
-                        continue;
-
-                    }
-                }
-            } else {
-                a = new Attachment();
-                a.setComment(String.format( "%s - attached by maven-confluence-plugin", f.getName()));
-                a.setFileName(f.getName());
-                a.setContentType("application/octet-stream");
-
-            }
-
-            try {
-                ConfluenceUtils.addAttchment(confluence, page, a, f);
-            } catch (Exception e) {
-                getLog().error(String.format("Error uploading attachment [%s] ", f.getName()), e);
-            }
-
         }
 
     }
