@@ -72,7 +72,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
                     
                     for( PageSummary descendent : descendents) {
                         
-                        getLog().debug( String.format("Page [%s]/[%s]/[%s]  has been removed!", getParentPageTitle(),pageTitle, descendent.getTitle()) );
+                        getLog().info( String.format("Page [%s]/[%s]/[%s]  has been removed!", getParentPageTitle(),pageTitle, descendent.getTitle()) );
                         confluence.removePage(descendent.getId());
                         
                     }
