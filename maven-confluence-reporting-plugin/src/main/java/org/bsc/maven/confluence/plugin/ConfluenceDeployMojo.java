@@ -210,7 +210,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
        /////////////////////////////////////////////////////////////////
         {
             generateProjectReport(site, locale);
-            return;
         }
        
     }
