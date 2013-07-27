@@ -58,7 +58,7 @@ import org.codehaus.swizzle.confluence.ConfluenceFactory;
  * Generate Project's documentation in confluence's wiki format and deploy it
  * 
  */
-@Mojo( name="deploy", threadSafe = true,requiresDependencyResolution = ResolutionScope.RUNTIME  )
+@Mojo( name="deploy", threadSafe = true )
 public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
