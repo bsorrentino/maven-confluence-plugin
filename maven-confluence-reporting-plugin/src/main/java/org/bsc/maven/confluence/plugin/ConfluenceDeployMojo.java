@@ -567,6 +567,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     
     private void generatePluginDocumentation( PluginDescriptor pluginDescriptor, Site site )  throws MojoExecutionException
     {
+        Confluence confluence = null;
+        
         try
         {
     		      
@@ -586,7 +588,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                                 activeProxy.getPassword()
                                 );
             }
-            final Confluence confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
+            
+            confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
 
             getLog().info( ConfluenceUtils.getVersion(confluence) );
 
@@ -609,13 +612,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             
             generateChildren( confluence, site.getHome(), confluencePage, getSpaceKey(), title, title);
             //generateChildren(confluence, getSpaceKey(), title, title);
-
             
-            confluence.logout();
         }
         catch ( Exception e )
         {
             throw new MojoExecutionException( "Error writing plugin documentation", e );
+        }
+        finally {
+            confluenceLogout(confluence);
         }
 
     }
