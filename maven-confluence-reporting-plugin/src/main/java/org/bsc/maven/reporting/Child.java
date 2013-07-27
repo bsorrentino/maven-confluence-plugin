@@ -1,7 +1,7 @@
 package org.bsc.maven.reporting;
 
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.jfrog.maven.annomojo.annotations.MojoParameter;
 
 /**
  * 
@@ -12,7 +12,7 @@ public class Child {
 
 	private String name;
 	
-	@MojoParameter(defaultValue="${basedir}/src/site/confluence")
+	@Parameter(defaultValue="${basedir}/src/site/confluence")
 	private java.io.File source;
 	
 	@Override
