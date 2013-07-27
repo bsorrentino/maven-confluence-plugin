@@ -41,8 +41,6 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.settings.Proxy;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
@@ -51,7 +49,6 @@ import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.bsc.maven.reporting.model.Site;
 import org.codehaus.plexus.component.repository.ComponentDependency;
-import org.codehaus.swizzle.confluence.ConfluenceFactory;
 
 /**
  * 
@@ -143,28 +140,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         super();
     }
     
-    
-    /**
-     * 
-     * @param confluence
-     */
-    private void confluenceLogout(Confluence confluence) {
-
-        if (null == confluence) {
-            return;
-        }
-
-        try {
-            if (!confluence.logout()) {
-                getLog().warn("confluence logout has failed!");
-            }
-        } catch (Exception e) {
-            getLog().warn("confluence logout has failed due exception ", e);
-        }
-
-
-    }
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         
@@ -215,7 +190,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     }
     
     
-    private void generateProjectReport( Site site, Locale locale ) throws MojoExecutionException
+    private void generateProjectReport( final Site site, Locale locale ) throws MojoExecutionException
     {
         // Issue 32
         final String title = getTitle();
@@ -325,38 +300,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
         }
 
-        String wiki = t.generateOutput();
+        final String wiki = t.generateOutput();
 
-        //
-        // write in confluence
-        // 
-        Confluence confluence = null;
+        super.confluenceExecute(  new ConfluenceTask() {
 
-        try {
-            //confluence = new Confluence(getEndPoint());
-
-            //confluence.login(getUsername(), getPassword());
-            
-            Confluence.ProxyInfo proxyInfo = null;
-
-            final Proxy activeProxy = mavenSettings.getActiveProxy();
-
-            if( activeProxy!=null ) {
-                
-                proxyInfo = 
-                        new Confluence.ProxyInfo( 
-                                activeProxy.getHost(),
-                                activeProxy.getPort(), 
-                                activeProxy.getUsername(), 
-                                activeProxy.getPassword()
-                                );
-            }
-            
-            confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
-
-            getLog().info(ConfluenceUtils.getVersion(confluence));
-
-            if (!isSnapshot() && isRemoveSnapshots()) {
+            @Override
+            public void execute(Confluence confluence) throws Exception {
+        
+             if (!isSnapshot() && isRemoveSnapshots()) {
                 final String snapshot = title.concat("-SNAPSHOT");
                 getLog().info(String.format("removing page [%s]!", snapshot));
                 boolean deleted = ConfluenceUtils.removePage(confluence, getSpaceKey(), getParentPageTitle(), snapshot);
@@ -379,14 +330,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
                                
             generateChildren( confluence, site.getHome(), confluencePage, getSpaceKey(), title, title);
-
-        } catch (Exception e) {
-            getLog().warn("has been imposssible connect to confluence due exception", e);
-        } finally {
-            confluenceLogout(confluence);
-        }
-
-
+           
+            
+            }
+        });
          
     }
 
@@ -510,117 +457,92 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
          return GeneratorUtils.toComponentDependencies(dependencies);
      }
      
-    private void generatePluginReport( Site site, Locale locale )  throws MojoExecutionException
+    private void generatePluginReport( final Site site, Locale locale )  throws MojoExecutionException
     {
         
-        String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
-        PluginDescriptor pluginDescriptor = new PluginDescriptor();
-        pluginDescriptor.setGroupId( project.getGroupId() );
-        pluginDescriptor.setArtifactId( project.getArtifactId() );
-        pluginDescriptor.setVersion( project.getVersion() );
-        pluginDescriptor.setGoalPrefix( goalPrefix );
+        String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId(project.getArtifactId());
+        final PluginDescriptor pluginDescriptor = new PluginDescriptor();
+        pluginDescriptor.setGroupId(project.getGroupId());
+        pluginDescriptor.setArtifactId(project.getArtifactId());
+        pluginDescriptor.setVersion(project.getVersion());
+        pluginDescriptor.setGoalPrefix(goalPrefix);
 
-        try
-        {
+        try {
             java.util.List deps = new java.util.ArrayList();
-            
-            deps.addAll(toComponentDependencies( project.getRuntimeDependencies() ));
-            deps.addAll(toComponentDependencies( project.getCompileDependencies() ));
 
-            pluginDescriptor.setDependencies( deps );
-            pluginDescriptor.setDescription( project.getDescription() );
+            deps.addAll(toComponentDependencies(project.getRuntimeDependencies()));
+            deps.addAll(toComponentDependencies(project.getCompileDependencies()));
 
-            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-            request.setEncoding( encoding );
+            pluginDescriptor.setDependencies(deps);
+            pluginDescriptor.setDescription(project.getDescription());
+
+            PluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
+            request.setEncoding(encoding);
             request.setLocal(local);
             request.setRemoteRepos(remoteRepos);
             request.setSkipErrorNoDescriptorsFound(false);
-            request.setDependencies( dependencies );
+            request.setDependencies(dependencies);
 
-            
+
             try {
-                
+
                 mojoScanner.populatePluginDescriptor(request);
-                
+
             } catch (InvalidPluginDescriptorException e) {
                 // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
-                getLog().warn( String.format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
+                getLog().warn(String.format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
 
             }
-            
+
             // Generate the plugin's documentation
-            generatePluginDocumentation( pluginDescriptor, site );
+            super.confluenceExecute(new ConfluenceTask() {
+                
+                @Override
+                public void execute(Confluence confluence) throws Exception {
+
+                    outputDirectory.mkdirs();
+
+                    getLog().info("speceKey=" + getSpaceKey() + " parentPageTitle=" + getParentPageTitle());
+
+                    Page confluencePage = confluence.getPage(getSpaceKey(), getParentPageTitle());
+
+                    Generator generator =
+                            new PluginConfluenceDocGenerator(ConfluenceDeployMojo.this,
+                            confluence,
+                            confluencePage,
+                            templateWiki); /*PluginXdocGenerator()*/;
+
+                    PluginToolsRequest request = 
+                            new DefaultPluginToolsRequest(project, pluginDescriptor);
+
+                    generator.execute(outputDirectory, request);
+
+                    // Issue 32
+                    final String title = getTitle();
+                    //String title = project.getArtifactId() + "-" + project.getVersion();
+
+                    generateChildren(   confluence, 
+                                        site.getHome(), 
+                                        confluencePage, 
+                                        getSpaceKey(), 
+                                        title, 
+                                        title);
+                    //generateChildren(confluence, getSpaceKey(), title, title);
+
+
+                }
+            });
 
             // Write the overview
             //PluginOverviewRenderer r = new PluginOverviewRenderer( getSink(), pluginDescriptor, locale );
             //r.render();
-        }
-        catch ( ExtractionException e )
-        {
-            throw new MojoExecutionException( 
-                    String.format("Error extracting plugin descriptor: %s", 
-                                e.getLocalizedMessage()),
-                                            e );
+        } catch (ExtractionException e) {
+            throw new MojoExecutionException(
+                    String.format("Error extracting plugin descriptor: %s",
+                    e.getLocalizedMessage()),
+                    e);
         }
     }
     
-    private void generatePluginDocumentation( PluginDescriptor pluginDescriptor, Site site )  throws MojoExecutionException
-    {
-        Confluence confluence = null;
-        
-        try
-        {
-    		      
-            //Confluence confluence = new Confluence( getEndPoint() );
-            //confluence.login(getUsername(), getPassword());
-            Confluence.ProxyInfo proxyInfo = null;
-
-            final Proxy activeProxy = mavenSettings.getActiveProxy();
-
-            if( activeProxy!=null ) {
-                
-                proxyInfo = 
-                        new Confluence.ProxyInfo( 
-                                activeProxy.getHost(),
-                                activeProxy.getPort(), 
-                                activeProxy.getUsername(), 
-                                activeProxy.getPassword()
-                                );
-            }
-            
-            confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
-
-            getLog().info( ConfluenceUtils.getVersion(confluence) );
-
-            outputDirectory.mkdirs();
-
-            getLog().info( "speceKey=" + getSpaceKey() + " parentPageTitle=" + getParentPageTitle());
-            
-            Page confluencePage = confluence.getPage(getSpaceKey(), getParentPageTitle());
-           
-            Generator generator =
-            		new PluginConfluenceDocGenerator( this, confluence, confluencePage, templateWiki ); /*PluginXdocGenerator()*/;
-
-            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-            		
-            generator.execute( outputDirectory, request );
-
-            // Issue 32
-            final String title = getTitle();
-            //String title = project.getArtifactId() + "-" + project.getVersion();
-            
-            generateChildren( confluence, site.getHome(), confluencePage, getSpaceKey(), title, title);
-            //generateChildren(confluence, getSpaceKey(), title, title);
-            
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( "Error writing plugin documentation", e );
-        }
-        finally {
-            confluenceLogout(confluence);
-        }
-
-    }
     
 }

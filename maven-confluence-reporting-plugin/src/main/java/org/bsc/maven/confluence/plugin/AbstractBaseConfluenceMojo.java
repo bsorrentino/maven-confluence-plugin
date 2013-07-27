@@ -134,8 +134,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     protected void confluenceExecute( ConfluenceTask task  ) throws MojoExecutionException {
         
-        loadUserInfoFromSettings();
-        
         Confluence confluence = null;
 
         try {
@@ -179,7 +177,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * 
      * @throws MojoExecutionException
      */
-    private void loadUserInfoFromSettings() throws MojoExecutionException
+    protected void loadUserInfoFromSettings() throws MojoExecutionException
     {
 
         if ( ( getUsername() == null || getPassword() == null ) && ( mavenSettings != null ) )
