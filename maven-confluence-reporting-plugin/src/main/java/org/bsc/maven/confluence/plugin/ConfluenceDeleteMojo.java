@@ -9,7 +9,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
-import static org.bsc.maven.plugin.confluence.ConfluenceUtils.findPageByTitle;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
@@ -29,7 +28,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
      * 
      * @since 3.4.0
      */
-    @Parameter(property = "confluence.page", required = true)
+    @Parameter(alias = "title", property = "confluence.page", defaultValue = "${project.build.finalName}")
     private String pageTitle;
 
     /**
@@ -42,6 +41,8 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        
+        super.loadUserInfoFromSettings();
         
         super.confluenceExecute( new ConfluenceTask() {
 
@@ -62,19 +63,20 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
                     return;
                 }
                 
-                
-                final java.util.List<PageSummary> descendents = confluence.getDescendents(root.getId());
+                if( recursive ) {
+                    final java.util.List<PageSummary> descendents = confluence.getDescendents(root.getId());
 
-                if( descendents==null || descendents.isEmpty() ) {
-                    getLog().warn(String.format("Page [%s]/[%s] in [%s] has not descendents!", getParentPageTitle(),pageTitle, getSpaceKey()));                    
-                }
-                else {
-                    
-                    for( PageSummary descendent : descendents) {
-                        
-                        getLog().info( String.format("Page [%s]/[%s]/[%s]  has been removed!", getParentPageTitle(),pageTitle, descendent.getTitle()) );
-                        confluence.removePage(descendent.getId());
-                        
+                    if( descendents==null || descendents.isEmpty() ) {
+                        getLog().warn(String.format("Page [%s]/[%s] in [%s] has not descendents!", getParentPageTitle(),pageTitle, getSpaceKey()));                    
+                    }
+                    else {
+
+                        for( PageSummary descendent : descendents) {
+
+                            getLog().info( String.format("Page [%s]/[%s]/[%s]  has been removed!", getParentPageTitle(),pageTitle, descendent.getTitle()) );
+                            confluence.removePage(descendent.getId());
+
+                        }
                     }
                 }
                 
