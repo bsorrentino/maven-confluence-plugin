@@ -22,7 +22,6 @@ import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.scm.manager.ScmManager;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
@@ -34,12 +33,24 @@ import org.codehaus.swizzle.confluence.Page;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import java.util.List;
+import java.util.Set;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.settings.Proxy;
+import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.extractor.ExtractionException;
+import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.GeneratorUtils;
+import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.bsc.maven.reporting.model.Site;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
 
 /**
@@ -47,7 +58,7 @@ import org.codehaus.swizzle.confluence.ConfluenceFactory;
  * Generate Project's documentation in confluence's wiki format and deploy it
  * 
  */
-@Mojo( name="push", threadSafe = true  )
+@Mojo( name="deploy", threadSafe = true,requiresDependencyResolution = ResolutionScope.RUNTIME  )
 public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
@@ -85,8 +96,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      */
     @Component
     protected I18N i18n;
-    
-    @Parameter(property = "project.reporting.outputDirectory")
+
+    /**
+     * 
+     */
+    //@Parameter(property = "project.reporting.outputDirectory")
+    @Parameter( property="project.build.directory/generated-site/confluence",required=true )
     protected java.io.File outputDirectory;
 
     /**
@@ -180,6 +195,29 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         
         super.initTemplateProperties();
         
+ 
+        
+        if ( project.getPackaging().equals( "maven-plugin" ) )
+       /////////////////////////////////////////////////////////////////
+       // PLUGIN
+       /////////////////////////////////////////////////////////////////
+        {
+            generatePluginReport(site, locale);
+        }
+        else
+       /////////////////////////////////////////////////////////////////
+       // PROJECT
+       /////////////////////////////////////////////////////////////////
+        {
+            generateProjectReport(site, locale);
+            return;
+        }
+       
+    }
+    
+    
+    private void generateProjectReport( Site site, Locale locale ) throws MojoExecutionException
+    {
         // Issue 32
         final String title = getTitle();
         //String title = project.getArtifactId() + "-" + project.getVersion();
@@ -350,9 +388,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }
 
 
-
+         
     }
-
 
    /**
      * 
@@ -421,4 +458,166 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     public String getName(Locale locale) {
         return "confluence";
     }
+    
+    
+    
+    
+/////////////////////////////////////////////////////////
+///    
+/// PLUGIN SECTION
+///    
+/////////////////////////////////////////////////////////
+     //@Parameter( defaultValue="${project.build.directory}/generated-site/confluence",required=true )
+     //private String outputDirectory;
+
+     @Parameter( defaultValue = "${localRepository}", required = true, readonly = true )
+     private ArtifactRepository local;    
+     
+     /**
+      * The set of dependencies for the current project
+      *
+      * @since 3.0
+      */
+     @Parameter( defaultValue = "${project.artifacts}", required = true, readonly = true )
+     private Set<Artifact> dependencies;
+ 
+     /**
+      * List of Remote Repositories used by the resolver
+      *
+      * @since 3.0
+      */
+     @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
+     private List<ArtifactRepository> remoteRepos;
+    
+    /**
+    * The file encoding of the source files.
+    *
+    */
+    @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
+    private String encoding;    
+  
+     /**
+     * Mojo scanner tools.
+     *
+     */
+    //@MojoComponent
+    @Component
+    protected MojoScanner mojoScanner;
+    
+    
+     private static List<ComponentDependency>  toComponentDependencies(List<Dependency>   dependencies)
+     {
+         //return PluginUtils.toComponentDependencies( dependencies )
+         return GeneratorUtils.toComponentDependencies(dependencies);
+     }
+     
+    private void generatePluginReport( Site site, Locale locale )  throws MojoExecutionException
+    {
+        
+        String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId( project.getArtifactId() );
+        PluginDescriptor pluginDescriptor = new PluginDescriptor();
+        pluginDescriptor.setGroupId( project.getGroupId() );
+        pluginDescriptor.setArtifactId( project.getArtifactId() );
+        pluginDescriptor.setVersion( project.getVersion() );
+        pluginDescriptor.setGoalPrefix( goalPrefix );
+
+        try
+        {
+            java.util.List deps = new java.util.ArrayList();
+            
+            deps.addAll(toComponentDependencies( project.getRuntimeDependencies() ));
+            deps.addAll(toComponentDependencies( project.getCompileDependencies() ));
+
+            pluginDescriptor.setDependencies( deps );
+            pluginDescriptor.setDescription( project.getDescription() );
+
+            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            request.setEncoding( encoding );
+            request.setLocal(local);
+            request.setRemoteRepos(remoteRepos);
+            request.setSkipErrorNoDescriptorsFound(false);
+            request.setDependencies( dependencies );
+
+            
+            try {
+                
+                mojoScanner.populatePluginDescriptor(request);
+                
+            } catch (InvalidPluginDescriptorException e) {
+                // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
+                getLog().warn( String.format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
+
+            }
+            
+            // Generate the plugin's documentation
+            generatePluginDocumentation( pluginDescriptor, site );
+
+            // Write the overview
+            //PluginOverviewRenderer r = new PluginOverviewRenderer( getSink(), pluginDescriptor, locale );
+            //r.render();
+        }
+        catch ( ExtractionException e )
+        {
+            throw new MojoExecutionException( 
+                    String.format("Error extracting plugin descriptor: %s", 
+                                e.getLocalizedMessage()),
+                                            e );
+        }
+    }
+    
+    private void generatePluginDocumentation( PluginDescriptor pluginDescriptor, Site site )  throws MojoExecutionException
+    {
+        try
+        {
+    		      
+            //Confluence confluence = new Confluence( getEndPoint() );
+            //confluence.login(getUsername(), getPassword());
+            Confluence.ProxyInfo proxyInfo = null;
+
+            final Proxy activeProxy = mavenSettings.getActiveProxy();
+
+            if( activeProxy!=null ) {
+                
+                proxyInfo = 
+                        new Confluence.ProxyInfo( 
+                                activeProxy.getHost(),
+                                activeProxy.getPort(), 
+                                activeProxy.getUsername(), 
+                                activeProxy.getPassword()
+                                );
+            }
+            final Confluence confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
+
+            getLog().info( ConfluenceUtils.getVersion(confluence) );
+
+            outputDirectory.mkdirs();
+
+            getLog().info( "speceKey=" + getSpaceKey() + " parentPageTitle=" + getParentPageTitle());
+            
+            Page confluencePage = confluence.getPage(getSpaceKey(), getParentPageTitle());
+           
+            Generator generator =
+            		new PluginConfluenceDocGenerator( this, confluence, confluencePage, templateWiki ); /*PluginXdocGenerator()*/;
+
+            PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
+            		
+            generator.execute( outputDirectory, request );
+
+            // Issue 32
+            final String title = getTitle();
+            //String title = project.getArtifactId() + "-" + project.getVersion();
+            
+            generateChildren( confluence, site.getHome(), confluencePage, getSpaceKey(), title, title);
+            //generateChildren(confluence, getSpaceKey(), title, title);
+
+            
+            confluence.logout();
+        }
+        catch ( Exception e )
+        {
+            throw new MojoExecutionException( "Error writing plugin documentation", e );
+        }
+
+    }
+    
 }

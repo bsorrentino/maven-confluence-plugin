@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>3.4.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -12,7 +12,7 @@
   
   
     <properties>
-        <confluence.home>http://localhost:8099</confluence.home>
+        <confluence.home>http://localhost:8090</confluence.home>
     </properties> 
 
 
@@ -57,16 +57,13 @@
                         <configuration>
                             <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
 
-                            <spaceKey>DS</spaceKey>
+                            <spaceKey>TEST</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
                             <title>my-site-generation-test ver3.2.1</title>
                             <labels>
                                 <label>test</label>
                                 <label>confluence</label>                                           
                             </labels> 
-                            <!--
-                            <childrenFolder>${basedir}/src/site/confluence/children.wiki</childrenFolder>
-                            -->
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
