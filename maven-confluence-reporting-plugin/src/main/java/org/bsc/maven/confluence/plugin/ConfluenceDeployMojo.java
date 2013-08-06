@@ -155,14 +155,17 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             site = super.createFromModel();
         }
         
-        if( site == null ) {
-            site = super.createFromFolder();
-        }
-        else {
+        if( site != null ) {
             site.setBasedir(getSiteDescriptor());
             if( site.getHome().getName()!=null ) {
                 setTitle( site.getHome().getName() );
             }
+            else {
+                site.getHome().setName(getTitle());
+            }
+        }
+        else {
+            site = super.createFromFolder();
 
         }
         site.print( System.out );
@@ -324,7 +327,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             confluencePage = confluence.storePage(confluencePage);
 
-            for( String label : site.getLabels() ) {
+            for( String label : site.getHome().getComputedLabels() ) {
                 
                 confluence.addLabelByName(label, Long.parseLong(confluencePage.getId()) );
             }
@@ -516,6 +519,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                             new DefaultPluginToolsRequest(project, pluginDescriptor);
 
                     generator.execute(outputDirectory, request);
+
+                    for( String label : site.getHome().getComputedLabels() ) {
+
+                        confluence.addLabelByName(label, Long.parseLong(confluencePage.getId()) );
+                    }
 
                     // Issue 32
                     final String title = getTitle();

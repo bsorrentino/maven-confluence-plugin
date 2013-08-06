@@ -12,7 +12,8 @@
   
   
     <properties>
-        <confluence.home>http://localhost:8090</confluence.home>
+        <!--confluence.home>http://localhost:8090</confluence.home-->
+        <confluence.home>http://docs.codehaus.org</confluence.home>
     </properties> 
 
 
@@ -57,9 +58,9 @@
                         <configuration>
                             <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
 
-                            <spaceKey>TEST</spaceKey>
+                            <spaceKey>MVNCONFSITE</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
-                            <title>my-site-generation-test ver3.2.1</title>
+                            <title>my-site-generation-test ${project.version}</title>
                             <labels>
                                 <label>test</label>
                                 <label>confluence</label>                                           
@@ -68,8 +69,8 @@
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>confluence-local</serverId>
-
+                            <!--serverId>confluence-local</serverId-->
+                            <serverId>codehaus</serverId>    
                             <properties>
                                 <evaluation>(y)</evaluation>
                                 <page>classpath:plugin-report.properties</page>

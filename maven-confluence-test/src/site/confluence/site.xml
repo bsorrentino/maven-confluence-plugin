@@ -9,7 +9,7 @@ and open the template in the editor.
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:ns1='http://code.google.com/p/maven-confluence-plugin'
     xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
-    <home name="Descriptor1" uri="classpath:template1.confluence">
+    <home  uri="classpath:template1.confluence">
 <!--        
         <attachment name="" uri="" comment="" contentType="" version=""></attachment>
         <attachment name="" uri="" comment="" contentType="" version=""></attachment>
@@ -18,16 +18,18 @@ and open the template in the editor.
         <child name="" uri="">
         </child>
 -->
+        <label>label_home</label>
+        
         <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
         <child name="child1" >
+            <label>label_child_1</label>
             
             <child name="child1.1" uri="children/child1.confluence">
                 
+            <label>label_child_1_1</label>
             </child>
         </child>
     </home>
-    <label>label1</label>
-    <label>labe2</label>
-    <label>label3</label>
+    <label>label_site</label>
 
 </ns1:site>

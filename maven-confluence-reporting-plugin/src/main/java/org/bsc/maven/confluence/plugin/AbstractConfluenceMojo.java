@@ -73,7 +73,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @since 3.1.3
      */
     
-    @Parameter(property = "project.build.finalName", required = false)
+    @Parameter(alias="title", property = "project.build.finalName", required = false)
     private String title;
 
     /**
@@ -236,7 +236,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             p = confluence.storePage(p);
             
-            for( String label : child.getLabels() ) {
+            for( String label : child.getComputedLabels() ) {
                 
                 confluence.addLabelByName(label, Long.parseLong(p.getId()) );
             }

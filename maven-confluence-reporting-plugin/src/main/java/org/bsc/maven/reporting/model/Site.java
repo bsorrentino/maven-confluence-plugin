@@ -127,12 +127,7 @@ public class Site {
         public void setName(String name) {
             this.name = name;
         }
-        
-        @XmlTransient
-        public java.util.List<String> getLabels() {
-            return (site!=null) ? site.getLabels() : Collections.emptyList();
-        }
-        
+
         public Source() {
             this.site = _SITE.peek();
         }
@@ -236,10 +231,9 @@ public class Site {
     public static class Page extends Source {
 
         
-        java.util.List<Page> children;
         java.util.List<Attachment> attachments;
         String name;
-
+        
         @Deprecated
         public File getSource() {
             validateSource();
@@ -253,12 +247,60 @@ public class Site {
             return new java.io.File(_uri);
         }
 
+        private java.util.List<String> labels;
+
+        @XmlElement(name="label")
+        public java.util.List<String> getLabels() {
+            if (null == labels) {
+                synchronized (this) {
+                    labels = new java.util.ArrayList<String>();
+                }
+            }
+            return labels;
+        }
+
+        public void setLabels(java.util.List<String> labels) {
+            this.labels = labels;
+        }
+
+        private Page parent;
+        
+        @XmlTransient
+        public final void setParent( Page p ) {
+            parent = p;
+        }
+
+        @XmlTransient
+        public final java.util.List<String> getComputedLabels() {
+            java.util.List<String> _labels ;
+            if (site!=null ) {
+                
+                _labels = site.getLabels();
+                
+                if( _labels!=null && !_labels.isEmpty()) {
+                    
+                    _labels = new java.util.ArrayList<String>(_labels);
+                    _labels.addAll( getLabels() );
+                    
+                    return _labels;
+                }
+            }
+            else {
+                _labels = getLabels();
+            }
+            
+            return _labels;
+        }
+        
+        java.util.List<Page> children;
+
         @XmlElement(name = "child")
         public java.util.List<Page> getChildren() {
 
             if (null == children) {
                 synchronized (this) {
-                    children = new java.util.ArrayList<Page>();
+                    children = ChildListProxy.newInstance(this);
+                    /*children = new java.util.ArrayList<Page>();*/
                 }
             }
             return children;
@@ -328,6 +370,7 @@ public class Site {
 
     Page home;
 
+    @XmlElement(name="home",required = true)
     public Page getHome() {
         return home;
     }

@@ -412,7 +412,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
 
             p = confluence.storePage(p);
             
-            for( String label : child.getLabels() ) {
+            for( String label : child.getComputedLabels() ) {
                 
                 confluence.addLabelByName(label, Long.parseLong(p.getId()) );
             }

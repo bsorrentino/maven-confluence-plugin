@@ -362,8 +362,8 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
 
             confluencePage = confluence.storePage(confluencePage);
 
-            for( String label : site.getLabels() ) {
-                
+            for( String label : site.getHome().getComputedLabels() ) {
+
                 confluence.addLabelByName(label, Long.parseLong(confluencePage.getId()) );
             }
                                
