@@ -163,6 +163,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             else {
                 site.getHome().setName(getTitle());
             }
+            
+            java.util.List<String> _labels = getLabels();
+            if( !_labels.isEmpty() ) {
+                site.getLabels().addAll(_labels);
+            }
         }
         else {
             site = super.createFromFolder();

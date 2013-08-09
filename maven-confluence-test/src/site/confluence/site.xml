@@ -30,6 +30,7 @@ and open the template in the editor.
             </child>
         </child>
     </home>
+    
     <label>label_site</label>
-
+    
 </ns1:site>

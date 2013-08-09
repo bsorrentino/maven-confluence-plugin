@@ -184,7 +184,33 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
             
             throw new MavenReportException("error reading credential", ex);
         }
+        
+        Site site = null;
+        
+        if( isSiteDescriptorValid() ) {
+            site = super.createFromModel();
+        }
+        
+        if( site != null ) {
+            site.setBasedir(getSiteDescriptor());
+            if( site.getHome().getName()!=null ) {
+                setTitle( site.getHome().getName() );
+            }
+            else {
+                site.getHome().setName(getTitle());
+            }
+            
+            java.util.List<String> _labels = getLabels();
+            if( !_labels.isEmpty() ) {
+                site.getLabels().addAll(_labels);
+            }
+        }
+        else {
+            site = super.createFromFolder();
 
+        }
+        
+/*
         Site site = null;
         
         if( isSiteDescriptorValid() ) {
@@ -201,6 +227,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
             }
 
         }
+*/
         site.print( System.out );
 
         

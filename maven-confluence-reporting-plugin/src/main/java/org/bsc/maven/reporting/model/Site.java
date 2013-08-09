@@ -272,24 +272,22 @@ public class Site {
 
         @XmlTransient
         public final java.util.List<String> getComputedLabels() {
-            java.util.List<String> _labels ;
+            
             if (site!=null ) {
                 
-                _labels = site.getLabels();
+                java.util.List<String> _labels = site.getLabels();
                 
                 if( _labels!=null && !_labels.isEmpty()) {
                     
                     _labels = new java.util.ArrayList<String>(_labels);
                     _labels.addAll( getLabels() );
-                    
+                
                     return _labels;
                 }
-            }
-            else {
-                _labels = getLabels();
+                
             }
             
-            return _labels;
+            return getLabels();
         }
         
         java.util.List<Page> children;
