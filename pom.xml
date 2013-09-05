@@ -29,9 +29,9 @@
     SONATYPE REPO 
     ================
     -->
-    <snapshot.repo.id>sonatype-repo</snapshot.repo.id>
+    <snapshot.repo.id>sonatype-server</snapshot.repo.id>
     <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
-    <release.repo.id>sonatype-repo</release.repo.id>
+    <release.repo.id>sonatype-server</release.repo.id>
     <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</release.repo.url>
     
     <!-- SCM properties  -->
