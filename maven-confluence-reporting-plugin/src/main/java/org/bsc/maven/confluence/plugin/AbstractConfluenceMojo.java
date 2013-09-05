@@ -265,7 +265,12 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             
             try {
                 
-                final java.net.URI uri = new java.net.URI( e.getValue() );
+                String v = e.getValue();
+                if( v == null ) {
+                    getLog().warn( String.format("property [%s] has null value!", e.getKey()));
+                    continue;
+                }
+                final java.net.URI uri = new java.net.URI( v );
                 
                 if( uri.getScheme() == null ) {
                     continue;
