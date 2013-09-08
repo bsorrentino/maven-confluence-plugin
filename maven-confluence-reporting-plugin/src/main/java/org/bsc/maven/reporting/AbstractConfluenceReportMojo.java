@@ -285,6 +285,26 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         return labels;
     }
 
+    /**
+     * 
+     * @param confluence
+     */
+    protected final void confluenceLogout(Confluence confluence) {
+
+        if (null == confluence) {
+            return;
+        }
+
+        try {
+            if (!confluence.logout()) {
+                getLog().warn("confluence logout has failed!");
+            }
+        } catch (Exception e) {
+            getLog().warn("confluence logout has failed due exception ", e);
+        }
+
+
+    }
     
     /**
      * Issue 39

@@ -183,7 +183,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
                 
             } catch (InvalidPluginDescriptorException e) {
                 // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
-                getLog().warn("Plugin without mojos. " + e.getMessage());
+                getLog().warn(String.format("Plugin without mojos. %s", e.getMessage()));
 
             }
             
@@ -196,7 +196,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
         }
         catch ( ExtractionException e )
         {
-            throw new MavenReportException( "Error extracting plugin descriptor: \'" + e.getLocalizedMessage() + "\'",
+            throw new MavenReportException( 
+                    String.format("Error extracting plugin descriptor: '%s'", e.getLocalizedMessage()),
                                             e );
         }
     }
@@ -212,6 +213,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
     /**
      * @see org.apache.maven.reporting.MavenReport#getName(java.util.Locale)
      */
+    @Override
     public String getName( Locale locale )
     {
         return "confluence-plugin-report";
@@ -220,6 +222,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
     /**
      * @see org.apache.maven.reporting.MavenReport#getOutputName()
      */
+    @Override
     public String getOutputName()
     {
         return "confluence-plugin-report";
@@ -227,6 +230,8 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
 
     private void generatePluginDocumentation( PluginDescriptor pluginDescriptor )  throws MavenReportException
     {
+        Confluence confluence = null;
+
         try
         {
     		
@@ -247,7 +252,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
                                 activeProxy.getPassword()
                                 );
             }
-            final Confluence confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
+            confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
 
             getLog().info( ConfluenceUtils.getVersion(confluence) );
 
@@ -278,7 +283,9 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
         {
             throw new MavenReportException( "Error writing plugin documentation", e );
         }
-
+        finally {
+            confluenceLogout(confluence);
+        }
     }
 
     private static ResourceBundle getBundle( Locale locale )

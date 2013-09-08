@@ -155,26 +155,6 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
         }
     }
 
-    /**
-     * 
-     * @param confluence
-     */
-    private void confluenceLogout(Confluence confluence) {
-
-        if (null == confluence) {
-            return;
-        }
-
-        try {
-            if (!confluence.logout()) {
-                getLog().warn("confluence logout has failed!");
-            }
-        } catch (Exception e) {
-            getLog().warn("confluence logout has failed due exception ", e);
-        }
-
-
-    }
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {
         getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
@@ -397,7 +377,9 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
             generateChildren( confluence, site.getHome(), confluencePage, getSpaceKey(), title, title);
 
         } catch (Exception e) {
-            getLog().warn("has been imposssible connect to confluence due exception", e);
+            final String msg = "has been imposssible connect to confluence due exception";
+            getLog().warn(msg, e);
+            throw new MavenReportException(msg, e);
         } finally {
             confluenceLogout(confluence);
         }
