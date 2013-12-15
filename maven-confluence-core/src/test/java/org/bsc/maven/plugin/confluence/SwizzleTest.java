@@ -27,21 +27,21 @@ import static org.hamcrest.core.IsNull.*;
 @Ignore
 public class SwizzleTest {
 
+    public static final String PASSWORD = "admin";
+    public static final String USER = "admin";
+    public static final String URL = "http://localhost:8090/";
+
     Confluence confluence = null;
 
     @Before
     public void connect() throws Exception  {
         
-        //confluence = new Confluence( "http://localhost:8090/" );
-        //confluence.login("admin", "admin");
-
         Confluence.ProxyInfo proxyInfo = null;
         
-        confluence = ConfluenceFactory.createInstanceDetectingVersion( "http://localhost:8090/", proxyInfo, "admin", "admin" );
+        confluence = ConfluenceFactory.createInstanceDetectingVersion( URL, proxyInfo, USER, PASSWORD);
         
 
     }
-
     @After
     public void disconnect() throws Exception {
 
@@ -51,7 +51,8 @@ public class SwizzleTest {
         }
     }
 
-    @Ignore public void dummy() {}
+    @Test @Ignore 
+    public void fakeTest() {}
     
     @Test
     public void showInfo() throws Exception {
@@ -62,7 +63,8 @@ public class SwizzleTest {
         
     }
     
-    @Test
+    @Test 
+    @Ignore
     public void addAttachment() throws Exception {
 
         Page page = ConfluenceUtils.getOrCreatePage(confluence, "ds", "Tutorial", "test");
@@ -84,7 +86,8 @@ public class SwizzleTest {
 
     }
 
-    @Test //@Ignore
+    @Test 
+    @Ignore
     public void findAttachment() throws Exception {
         Page page = ConfluenceUtils.getOrCreatePage(confluence, "ds", "Tutorial", "test");
 
