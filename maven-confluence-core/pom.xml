@@ -99,8 +99,8 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
-            <scope>test</scope>
         </dependency>
+        
     <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>

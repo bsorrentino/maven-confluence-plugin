@@ -22,7 +22,9 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
+import org.codehaus.swizzle.confluence.ExportFormat;
 import org.codehaus.swizzle.confluence.Page;
 
 /**
@@ -31,146 +33,17 @@ import org.codehaus.swizzle.confluence.Page;
  */
 public class SwizzleApp {
 
-    static enum Format {
-
-        PDF("spaces/flyingpdf/pdfpageexport.action"), DOC("exportword");
-
-        private String url;
-
-        private Format(String url) {
-            this.url = url;
-        }
-
-    }
-
     @Parameter(names="-h", description="confluence url", required = true)
     private String url;
     @Parameter( names = "-u", description ="confluence username", required = true)
     private String username ;
     @Parameter( names="-p", description = "confluence password", password = true, required = true)
     private String password ;
-
-    /**
-     * 
-     * @param client
-     * @param redirectUrl
-     * @throws Exception 
-     */
-    public void login( HttpClient client, String redirectUrl ) throws Exception {
-        java.io.InputStream is = null;
-        java.io.FileOutputStream fos = null;
+    @Parameter( names="--space", description = "confluence site", required = true)
+    private String space ;
+    @Parameter( names="--page", description = "confluence page")
+    private String page = "Home";
  
-        PostMethod post = null;
-        try {
-            final String login = String.format("%s/%s", url, "login.action");
-
-            System.out.println(login);
-            
-            post = new PostMethod(login);
-            
-            post.setDoAuthentication(true);
-            post.addParameter("os_username", username);
-            post.addParameter("os_password", password);
-            post.addParameter("os_destination", redirectUrl);
-            post.addParameter("login", "Log+In");
- 
-            int statusCode = client.executeMethod(post);
-            if (statusCode != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + post.getStatusLine());
-            }
-
-            for( Header h : post.getResponseHeaders() ) {
-                 System.out.printf("header [%s]=[%s]\n", h.getName(), h.getValue() );
-               
-            }
-            
-            String redirectLocation;
-            Header locationHeader = post.getResponseHeader("Location");
-            if (locationHeader != null) {
-                redirectLocation = locationHeader.getValue();
-                System.out.printf("redirect to [%s]\n", redirectLocation );
-                
-                exportpdf(client, redirectLocation);
-
-            } else {
-                // The response is invalid and did not provide the new location for
-                // the resource.  Report an error or possibly handle the response
-                // like a 404 Not Found error.
-                is = post.getResponseBodyAsStream();
-
-                fos = new java.io.FileOutputStream("target/login.html");
-
-                IOUtils.copy(is, fos);
-            }
-        } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(fos);
-
-            if (post != null) {
-                post.releaseConnection();
-            }
-        }
-        
-    }
-    
-    /**
-     * 
-     * @param client
-     * @param url
-     * @throws Exception 
-     */
-    public void exportpdf( HttpClient client, String url/*, String pageId*/ ) throws Exception {
-        java.io.InputStream is = null;
-        java.io.FileOutputStream fos = null;
-        GetMethod get = null;
-        try {
-            //final String req = String.format("%s/%s?pageId=%s", url, Format.PDF.url, pageId);
-            //System.out.println(req);
-
-            get = new GetMethod(url);
-            get.setRequestHeader("X-Atlassian-Token", "no-check");
-            int statusCode = client.executeMethod(get);
-
-            
-            if (statusCode != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + get.getStatusLine());
-            }
-
-            for( Header h : get.getResponseHeaders() ) {
-                System.out.printf("header [%s]=[%s]\n", h.getName(), h.getValue() );
-                
-            }
-            
-            String redirectLocation;
-            Header locationHeader = get.getResponseHeader("Location");
-            if (locationHeader != null) {
-                redirectLocation = locationHeader.getValue();
-                            System.out.printf("redirect to [%s]\n", redirectLocation );
-
-            } else {
-                // The response is invalid and did not provide the new location for
-                // the resource.  Report an error or possibly handle the response
-                // like a 404 Not Found error.
-            }
-            // Read the response body.
-            //final byte[] responseBody = get.getResponseBody();
-            is = get.getResponseBodyAsStream();
-            
-            fos = new java.io.FileOutputStream("target/out.pdf");
-
-            IOUtils.copy(is, fos);
-        } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(fos);
-
-            if (get != null) {
-                get.releaseConnection();
-            }
-        }
-        
-    }
-    
-    
     /**
      * 
      * @param args
@@ -185,8 +58,7 @@ public class SwizzleApp {
         }
         
         new JCommander(app,args);
-        
-        
+               
         Confluence.ProxyInfo proxyInfo = null;
 
         Confluence confluence = null;
@@ -197,32 +69,20 @@ public class SwizzleApp {
                 app.username, 
                 app.password);
 
-        Page page = confluence.getPage("CIRC", "Best Movies");
-
-        HttpClient client = new HttpClient();
-        /*
-        client.getState().setCredentials(
-                    new AuthScope("support.softphone.it", 80, "realm"),
-                    new UsernamePasswordCredentials(username, password)
-            );
-            
-        */    
-       client.getParams().setCookiePolicy( CookiePolicy.BROWSER_COMPATIBILITY);
-       client.getParams().setParameter(
-    	            CredentialsProvider.PROVIDER, new CredentialsProvider() {
-
-            @Override
-            public Credentials getCredentials(AuthScheme as, String string, int i, boolean bln) throws CredentialsNotAvailableException {
-                return new UsernamePasswordCredentials(app.username, app.password);
-            }
-                        
-        }); 
-
-        app.login( client, String.format( "%s?pageId=%s", Format.PDF.url, page.getId()));
-        
+        ConfluenceExportDecorator exporter = 
+                new ConfluenceExportDecorator(  confluence, 
+                                                app.url, 
+                                                app.username, 
+                                                app.password);
+        exporter.exportPage(app.space, app.page, ExportFormat.DOC, new java.io.File("target", app.page.concat(".pdf")));
+      
     }
     
-    public void usingHttp( ) throws Exception {
+    /**
+     * 
+     * @throws Exception 
+     */
+    private void usingHttp( ) throws Exception {
 
         Confluence.ProxyInfo proxyInfo = null;
 
@@ -237,7 +97,7 @@ public class SwizzleApp {
         java.io.InputStream is = null;
         java.io.FileOutputStream fos = null;
         try {
-            final String req = String.format("%s/%s?pageId=%s", url, Format.PDF.url, page.getId());
+            final String req = String.format("%s/%s?pageId=%s", url, ExportFormat.PDF.url, page.getId());
             System.out.println(req);
             java.net.URL _url = new java.net.URL(req);
 
