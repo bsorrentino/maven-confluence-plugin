@@ -20,9 +20,9 @@ public class FileIOTest {
     @Test
     public void forceMkdir() throws Exception  {
         
-        FileUtils.deleteDirectory( new java.io.File("target"));
+        FileUtils.deleteDirectory( new java.io.File("target/test"));
         
-        java.io.File outputFile = new java.io.File( "target/io", "test.txt");
+        java.io.File outputFile = new java.io.File( "target/test/io", "test.txt");
         
         java.io.File folder = new java.io.File(outputFile.getParent());
 

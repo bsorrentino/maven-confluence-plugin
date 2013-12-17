@@ -70,8 +70,6 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
             public void execute(Confluence confluence) throws Exception {
                 final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
                 
-                FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
-                
                 if( outputFile == null ) {
                     
                     outputFile = ( outputDirectory == null ) ? 
@@ -79,10 +77,14 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
                                         new java.io.File( outputDirectory, String.format("%s.%s", pageTitle, exfmt.name().toLowerCase())) 
                             ;
                 }
+
+                FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
                 
+                
+                final String url = ConfluenceExportMojo.super.getEndPoint().replace("/rpc/xmlrpc", "");  // /rpc/xmlrpc
                 final ConfluenceExportDecorator exporter = 
                     new ConfluenceExportDecorator(  confluence, 
-                                                    ConfluenceExportMojo.super.getEndPoint(), 
+                                                    url, 
                                                     ConfluenceExportMojo.super.getUsername(), 
                                                     ConfluenceExportMojo.super.getPassword());
                 
