@@ -5,6 +5,8 @@
  */
 package org.bsc.maven.plugin.confluence;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import java.net.HttpURLConnection;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.Credentials;
@@ -29,11 +31,6 @@ import org.codehaus.swizzle.confluence.Page;
  */
 public class SwizzleApp {
 
-    public static final String PASSWORD = "admin";
-    public static final String USERNAME = "admin";
-    public static final String URL = "http://localhost:8080/confluence";
-
-
     static enum Format {
 
         PDF("spaces/flyingpdf/pdfpageexport.action"), DOC("exportword");
@@ -46,7 +43,20 @@ public class SwizzleApp {
 
     }
 
-    public static void login( HttpClient client,  String url, String username, String password, String redirectUrl ) throws Exception {
+    @Parameter(names="-h", description="confluence url", required = true)
+    private String url;
+    @Parameter( names = "-u", description ="confluence username", required = true)
+    private String username ;
+    @Parameter( names="-p", description = "confluence password", password = true, required = true)
+    private String password ;
+
+    /**
+     * 
+     * @param client
+     * @param redirectUrl
+     * @throws Exception 
+     */
+    public void login( HttpClient client, String redirectUrl ) throws Exception {
         java.io.InputStream is = null;
         java.io.FileOutputStream fos = null;
  
@@ -103,7 +113,13 @@ public class SwizzleApp {
         
     }
     
-    public static void exportpdf( HttpClient client, String url/*, String pageId*/ ) throws Exception {
+    /**
+     * 
+     * @param client
+     * @param url
+     * @throws Exception 
+     */
+    public void exportpdf( HttpClient client, String url/*, String pageId*/ ) throws Exception {
         java.io.InputStream is = null;
         java.io.FileOutputStream fos = null;
         GetMethod get = null;
@@ -154,21 +170,32 @@ public class SwizzleApp {
         
     }
     
+    
+    /**
+     * 
+     * @param args
+     * @throws Exception 
+     */
     public static void main(String args[]) throws Exception {
 
-        final String url = URL;
-        final String username = USERNAME;
-        final String password = PASSWORD;
-
+        final SwizzleApp app = new SwizzleApp();
+        
+        for( String arg : args ) {
+            System.out.println( arg );
+        }
+        
+        new JCommander(app,args);
+        
+        
         Confluence.ProxyInfo proxyInfo = null;
 
         Confluence confluence = null;
 
         confluence = ConfluenceFactory.createInstanceDetectingVersion(
-                url.concat("/rpc/xmlrpc"), //args[0], 
+                app.url.concat("/rpc/xmlrpc"),
                 proxyInfo,
-                username, //args[1], 
-                password); //args[2]);
+                app.username, 
+                app.password);
 
         Page page = confluence.getPage("CIRC", "Best Movies");
 
@@ -186,20 +213,16 @@ public class SwizzleApp {
 
             @Override
             public Credentials getCredentials(AuthScheme as, String string, int i, boolean bln) throws CredentialsNotAvailableException {
-                return new UsernamePasswordCredentials(username, password);
+                return new UsernamePasswordCredentials(app.username, app.password);
             }
                         
         }); 
 
-        login( client, url, username, password, String.format( "%s?pageId=%s", Format.PDF.url, page.getId()));
+        app.login( client, String.format( "%s?pageId=%s", Format.PDF.url, page.getId()));
         
     }
     
-    public static void usingHttp() throws Exception {
-
-        final String url = URL;
-        final String username = USERNAME;
-        final String password = PASSWORD;
+    public void usingHttp( ) throws Exception {
 
         Confluence.ProxyInfo proxyInfo = null;
 

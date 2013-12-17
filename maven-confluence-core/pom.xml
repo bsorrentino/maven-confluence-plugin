@@ -101,8 +101,14 @@
             <version>1.4</version>
             <scope>test</scope>
         </dependency>
-
-   </dependencies>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.32</version>
+      <type>jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 
    <build>
