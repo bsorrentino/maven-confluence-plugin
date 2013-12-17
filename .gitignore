@@ -2,3 +2,5 @@
 /maven-confluence-reporting-plugin/target/
 target/
 .DS_Store
+.forge_settings
+

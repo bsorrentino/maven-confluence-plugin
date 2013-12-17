@@ -4,7 +4,6 @@
  */
 package org.bsc.maven.reporting.model;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;

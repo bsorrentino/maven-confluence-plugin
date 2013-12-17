@@ -6,7 +6,6 @@
 package org.bsc.maven.plugin.confluence;
 
 import org.codehaus.swizzle.confluence.ServerInfo;
-import org.codehaus.swizzle.confluence.Confluence2;
 import org.junit.Ignore;
 import org.codehaus.swizzle.confluence.Attachment;
 import org.codehaus.swizzle.confluence.Confluence;

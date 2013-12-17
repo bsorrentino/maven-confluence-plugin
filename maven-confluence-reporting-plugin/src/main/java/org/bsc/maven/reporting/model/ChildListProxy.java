@@ -17,7 +17,7 @@ public class ChildListProxy implements InvocationHandler {
     final java.util.List<Site.Page> children; 
     final Site.Page parent;
 
-    static java.util.List<Site.Page> newInstance( final Site.Page parent ) {
+    public static java.util.List<Site.Page> newInstance( final Site.Page parent ) {
         return (java.util.List<Site.Page>)Proxy.newProxyInstance(
                 ChildListProxy.class.getClassLoader(), 
                 new Class[]{java.util.List.class}, 

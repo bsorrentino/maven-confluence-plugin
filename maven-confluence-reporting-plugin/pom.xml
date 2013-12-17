@@ -81,7 +81,7 @@
                         <goals>
                             <goal>schemagen</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>compile</phase>
                         <configuration>
                             <includes>
                                 <include>org/bsc/maven/reporting/model/Site.java</include>
