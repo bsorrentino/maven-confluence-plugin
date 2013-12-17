@@ -133,9 +133,9 @@
 			<plugins>
 
 				<!-- 
-				============================================================ 
+				====================================================================== 
 				mvn -Prelease release:perform -Darguments=-Dgpg.passphrase=thephrase 
-				============================================================ 
+				======================================================================
 				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -154,6 +154,29 @@
 
 				</plugin>
 
+				<!-- 
+				====================================================================== 
+				CLOSE 
+				mvn org.sonatype.plugins:nexus-staging-maven-plugin:1.5.1:close \
+					-DstagingRepositoryId= \
+				PROMOTE
+				mvn org.sonatype.plugins:nexus-staging-maven-plugin:1.5.1:release \
+					-DstagingRepositoryId=
+				======================================================================
+				-->
+				<plugin>
+					  <groupId>org.sonatype.plugins</groupId>
+					  <artifactId>nexus-staging-maven-plugin</artifactId>
+					  <version>1.5.1</version>
+					  <extensions>true</extensions>
+					  <configuration>
+						<serverId>sonatype-server</serverId>
+						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+						<stagingProfileId></stagingProfileId>
+					  </configuration>
+				</plugin>
+				
+	
 
 			</plugins>
 		</build>
