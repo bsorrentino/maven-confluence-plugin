@@ -142,7 +142,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        
         final Locale locale = Locale.getDefault();
         
         getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
@@ -207,6 +206,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         MiniTemplator t = null;
         try {
             t = new MiniTemplator.Builder()
+                    .setCharset( getCharset() )
                     .setSkipUndefinedVars(true)
                     .build( Site.processUri(site.getHome().getUri()) );
             
@@ -443,13 +443,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      @Parameter( defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true )
      private List<ArtifactRepository> remoteRepos;
     
-    /**
-    * The file encoding of the source files.
-    *
-    */
-    @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
-    private String encoding;    
-  
      /**
      * Mojo scanner tools.
      *
@@ -485,7 +478,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             pluginDescriptor.setDescription(project.getDescription());
 
             PluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
-            request.setEncoding(encoding);
+            request.setEncoding(getEncoding());
             request.setLocal(local);
             request.setRemoteRepos(remoteRepos);
             request.setSkipErrorNoDescriptorsFound(false);

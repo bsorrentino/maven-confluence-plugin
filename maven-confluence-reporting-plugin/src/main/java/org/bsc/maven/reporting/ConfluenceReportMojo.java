@@ -220,6 +220,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
         MiniTemplator t = null;
         try {
             t = new MiniTemplator.Builder()
+                    .setCharset( getCharset() )
                     .setSkipUndefinedVars(true)
                     .build( Site.processUri(site.getHome().getUri()) );
             
@@ -419,6 +420,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
 
             try {
                 t = new MiniTemplator.Builder()
+                        .setCharset( getCharset() )
                         .setSkipUndefinedVars(true)
                         .build( sourceUrl );
             } catch (Exception e) {
@@ -449,6 +451,7 @@ public class ConfluenceReportMojo extends AbstractConfluenceSiteReportMojo {
             try {
                 
                   t = new MiniTemplator.Builder()
+                    .setCharset( getCharset() )
                     .setSkipUndefinedVars(true)
                     .build( Site.processUri(templateWiki.toURI()) );
 

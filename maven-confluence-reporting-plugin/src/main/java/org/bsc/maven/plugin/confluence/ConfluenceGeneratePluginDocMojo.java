@@ -86,14 +86,6 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
 
 
     /**
-    * The file encoding of the source files.
-    *
-    */
-    //@MojoParameter( expression="${encoding}", defaultValue="${project.build.sourceEncoding}")
-    @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
-    private String encoding;    
-
-    /**
      * @see org.apache.maven.reporting.AbstractMavenReport#getOutputDirectory()
      */
     @Override
@@ -170,7 +162,7 @@ public class ConfluenceGeneratePluginDocMojo extends AbstractConfluenceReportMoj
             pluginDescriptor.setDescription( project.getDescription() );
 
             PluginToolsRequest request = new DefaultPluginToolsRequest( project, pluginDescriptor );
-            request.setEncoding( encoding );
+            request.setEncoding( getEncoding() );
             request.setLocal(local);
             request.setRemoteRepos(remoteRepos);
             request.setSkipErrorNoDescriptorsFound(false);

@@ -15,6 +15,8 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -189,6 +191,15 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
     private SecDispatcher securityDispatcher;    
     
     /**
+    * The file encoding of the source files.
+    *
+    */
+    //@MojoParameter( expression="${encoding}", defaultValue="${project.build.sourceEncoding}")
+    @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
+    private String encoding;    
+
+    
+    /**
      * 
      */
     public AbstractConfluenceReportMojo() {
@@ -207,6 +218,43 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
         return attachmentFolder;
     }
 
+   /**
+     * 
+     * @return 
+     */
+    public String getEncoding() {
+        return encoding;
+    }
+
+    /**
+     * 
+     * @param encoding 
+     */
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public final Charset getCharset() {
+        
+        if( encoding == null ) {
+            getLog().warn("encoding is null! default charset will be used");
+            return Charset.defaultCharset();
+        }
+        
+        try {
+            Charset result = Charset.forName(encoding);
+            return result;
+            
+        } catch (UnsupportedCharsetException e) {
+            getLog().warn( String.format("encoding [%s] is not valid! default charset will be used", encoding));
+            return Charset.defaultCharset();
+            
+        }
+    }
     
     /**
      * 
@@ -421,6 +469,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
             if( source != null /*&& source.isFile() && source.exists() */) {
 
                 final MiniTemplator t = new MiniTemplator.Builder()
+                    .setCharset( getCharset() )                        
                     .setSkipUndefinedVars(true)
                     .build( Site.processUri(source) );
             

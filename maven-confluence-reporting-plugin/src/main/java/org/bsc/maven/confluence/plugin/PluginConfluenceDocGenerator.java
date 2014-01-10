@@ -117,6 +117,7 @@ public class PluginConfluenceDocGenerator implements Generator {
                 
                 
                 t = new MiniTemplator.Builder()
+                        .setCharset( mojo.getCharset() )
                         .setSkipUndefinedVars(true)
                         .build( sourceUrl );
                 
@@ -147,6 +148,7 @@ public class PluginConfluenceDocGenerator implements Generator {
         else {
                 try {
                       t = new MiniTemplator.Builder()
+                        .setCharset( mojo.getCharset() )
                         .setSkipUndefinedVars(true)
                         .build( templateWiki.toURI().toURL() );
 
