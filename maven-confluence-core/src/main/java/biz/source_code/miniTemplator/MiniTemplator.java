@@ -126,7 +126,7 @@ public static class Builder {                // template specification
          * {@link #generateOutput(String outputFileName)}. If this field is
          * null, the default charset of the Java VM is used.
          */
-        private Charset charset = Charset.defaultCharset();
+        private Charset charset = null;
         /**
          * Flags for the conditional commands ($if, $elseIf). A set of flag
          * names, that can be used with the $if and $elseIf commands. The flag
@@ -233,9 +233,9 @@ private void init( Builder builder, java.io.Reader content )
     
    this.skipUndefinedVars = builder.skipUndefinedVars;
    
-   charset = builder.charset;
-   if (charset == null) {
-      charset = Charset.defaultCharset(); }
+   this.charset = (builder.charset==null) ? 
+           Charset.defaultCharset() : 
+           builder.charset ;
 
    try {
     final String templateText = readStreamIntoString( content );
@@ -560,7 +560,7 @@ public void generateOutput (String outputFileName)
    OutputStreamWriter writer = null;
    try {
       stream = new FileOutputStream(outputFileName);
-      writer = new OutputStreamWriter(stream, charset);
+      writer = new OutputStreamWriter(stream);
       generateOutput(writer); }
     finally {
       if (writer != null) {
@@ -577,7 +577,8 @@ public void generateOutput (String outputFileName)
 public void generateOutput (Writer outputWriter)
       throws IOException {
    String s = generateOutput();
-   outputWriter.write(s); }
+   outputWriter.write( s ); 
+}
 
 /**
 * Generates the HTML page and returns it as a string.
@@ -591,7 +592,8 @@ public String generateOutput() {
       bdtr.currBlockInstNo = bdtr.firstBlockInstNo; }
    StringBuilder out = new StringBuilder();
    writeBlockInstances(out, 0, -1);
-   return out.toString(); }
+   return new String( out.toString().getBytes(charset) ); 
+}
 
 // Writes all instances of a block that are contained within a specific
 // parent block instance.
