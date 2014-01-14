@@ -32,7 +32,7 @@ public class Site {
      * @return
      * @throws Exception 
      */
-    public static java.io.Reader processUri( java.net.URI uri ) throws /*ProcessUri*/Exception {
+    public static java.io.InputStream processUri( java.net.URI uri ) throws /*ProcessUri*/Exception {
             if( uri == null ) {
                 throw new IllegalArgumentException( "uri is null!" );
             }
@@ -45,28 +45,25 @@ public class Site {
 
             String source = uri.getRawSchemeSpecificPart();
 
-            java.io.Reader result = null;
+            java.io.InputStream result = null;
 
             if ("classpath".equalsIgnoreCase(scheme)) {
-                java.io.InputStream is = null;
                 ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-                is = cl.getResourceAsStream(source);
+                result = cl.getResourceAsStream(source);
 
-                if (is == null) {
+                if (result == null) {
                     //getLog().warn(String.format("resource [%s] doesn't exist in context classloader", source));
 
                     cl = Site.class.getClassLoader();
 
-                    is = cl.getResourceAsStream(source);
+                    result = cl.getResourceAsStream(source);
 
-                    if (is == null) {
+                    if (result == null) {
                         throw new /*ProcessUri*/Exception(String.format("resource [%s] doesn't exist in classloader", source));
                     }
 
                 }
-
-                result = new java.io.InputStreamReader(is);
 
             } else {
 
@@ -74,12 +71,10 @@ public class Site {
                     java.net.URL url = uri.toURL();
 
 
-                    result = new java.io.InputStreamReader(url.openStream());
+                    result = url.openStream();
 
                 } catch (IOException e) {
                     throw new /*ProcessUri*/Exception(String.format("error opening url [%s]!", source), e);
-                } catch (Exception e) {
-                    throw new /*ProcessUri*/Exception(String.format("url [%s] is not valid!", source), e);
                 }
             }
 
@@ -131,7 +126,7 @@ public class Site {
             this.site = _SITE.peek();
         }
 
-        public java.io.Reader getContentAsStream() throws /*ProcessUri*/Exception {
+        public java.io.InputStream getContentAsStream() throws /*ProcessUri*/Exception {
             return Site.processUri( uri );
         }
         

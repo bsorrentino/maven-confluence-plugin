@@ -469,9 +469,8 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
             if( source != null /*&& source.isFile() && source.exists() */) {
 
                 final MiniTemplator t = new MiniTemplator.Builder()
-                    .setCharset( getCharset() )                        
                     .setSkipUndefinedVars(true)
-                    .build( Site.processUri(source) );
+                    .build( Site.processUri(source), getCharset() );
             
                 addProperties(t);
 
@@ -690,7 +689,7 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
                 if( uri.getScheme() == null ) {
                     continue;
                 }
-                getProperties().put( e.getKey(), processUri( uri ));
+                getProperties().put( e.getKey(), processUri( uri , getCharset()));
                 
             } catch (ProcessUriException ex) {
                 getLog().warn( String.format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
@@ -712,10 +711,10 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * @return
      * @throws org.bsc.maven.reporting.AbstractConfluenceReportMojo.ProcessUriException 
      */
-    private String processUri( java.net.URI uri ) throws ProcessUriException {
+    private String processUri( java.net.URI uri, Charset charset ) throws ProcessUriException {
     
         try {
-            return toString( Site.processUri(uri) );
+            return toString( Site.processUri(uri), charset );
         } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
         }
@@ -727,22 +726,17 @@ public abstract class AbstractConfluenceReportMojo extends AbstractMavenReport {
      * @return
      * @throws IOException
      */
-    private String toString(java.io.Reader reader) throws IOException {
-        if (reader == null) {
-            throw new IllegalArgumentException("reader");
+    private String toString(java.io.InputStream stream, Charset charset) throws IOException {
+        if (stream == null) {
+            throw new IllegalArgumentException("stream");
         }
 
         java.io.Reader r = null;
         
         try {
 
-            if (reader instanceof java.io.BufferedReader) {
-                r = reader;
-            } else {
-
-                r = new java.io.BufferedReader(reader);
-            }
-
+            r = new java.io.InputStreamReader(stream, charset);
+            
             StringBuilder contents = new StringBuilder(4096);
 
             int c;

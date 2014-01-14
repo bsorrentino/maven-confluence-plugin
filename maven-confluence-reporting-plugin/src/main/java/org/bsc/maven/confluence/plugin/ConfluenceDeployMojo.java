@@ -206,9 +206,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         MiniTemplator t = null;
         try {
             t = new MiniTemplator.Builder()
-                    .setCharset( getCharset() )
                     .setSkipUndefinedVars(true)
-                    .build( Site.processUri(site.getHome().getUri()) );
+                    .build( Site.processUri(site.getHome().getUri()), getCharset() );
             
         } catch (Exception e) {
             final String msg = "error loading template";

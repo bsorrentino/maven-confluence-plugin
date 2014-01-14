@@ -2,6 +2,14 @@
 <!--
 To change this template, choose Tools | Templates
 and open the template in the editor.
+
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <child name="" uri="">
+        </child>
+        <child name="" uri="">
+        </child>
+
 -->
 
 
@@ -9,15 +17,15 @@ and open the template in the editor.
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:ns1='http://code.google.com/p/maven-confluence-plugin'
     xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
+
+    <home  uri="encoding.confluence">
+    </home>
+    
+    <label>encoding</label>
+    <label>test</label>
+        
+<!--    
     <home  uri="classpath:template1.confluence">
-<!--        
-        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
-        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
-        <child name="" uri="">
-        </child>
-        <child name="" uri="">
-        </child>
--->
         <label>label_home</label>
         
         <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
@@ -32,5 +40,5 @@ and open the template in the editor.
     </home>
     
     <label>label_site</label>
-    
+-->    
 </ns1:site>

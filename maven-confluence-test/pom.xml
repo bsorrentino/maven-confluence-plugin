@@ -57,6 +57,8 @@
                         </dependencies>
 
                         <configuration>
+                            <!--encoding>ISO-8859-1</encoding-->
+                            <encoding>UTF-8</encoding>
                             <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
 
                             <spaceKey>MVNCONFSITE</spaceKey>

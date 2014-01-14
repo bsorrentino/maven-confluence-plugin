@@ -117,9 +117,8 @@ public class PluginConfluenceDocGenerator implements Generator {
                 
                 
                 t = new MiniTemplator.Builder()
-                        .setCharset( mojo.getCharset() )
                         .setSkipUndefinedVars(true)
-                        .build( sourceUrl );
+                        .build( sourceUrl, mojo.getCharset() );
                 
             } catch (Exception e) {
                 final String msg = "error loading template";
@@ -148,9 +147,8 @@ public class PluginConfluenceDocGenerator implements Generator {
         else {
                 try {
                       t = new MiniTemplator.Builder()
-                        .setCharset( mojo.getCharset() )
                         .setSkipUndefinedVars(true)
-                        .build( templateWiki.toURI().toURL() );
+                        .build( templateWiki.toURI().toURL(), mojo.getCharset() );
 
                         //t = new MiniTemplator(templateWiki);
                 } catch (Exception e) {
