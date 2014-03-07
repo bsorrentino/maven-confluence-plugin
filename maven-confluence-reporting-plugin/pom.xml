@@ -5,7 +5,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>confluence-reporting-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0-beta1</version>
     <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
     </description>
@@ -19,7 +19,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.0-beta1</version>
     </parent>
 
     <properties>
@@ -29,7 +29,7 @@
 	<connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
 	<developerConnection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</developerConnection>
 	<url>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</url>
-    <tag>HEAD</tag>
+    <tag>maven-confluence-parent-4.0.0-SNAPSHOT</tag>
   </scm>
 
     <developers>
@@ -106,7 +106,7 @@
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-core</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <version>4.0.0-beta1</version>
         </dependency>
         
 <!--
