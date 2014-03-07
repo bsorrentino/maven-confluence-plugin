@@ -35,7 +35,7 @@ Usage
 
  <plugin>
   <groupId>org.bsc.maven</groupId>
-  <artifactId>maven-confluence-reporting-plugin</artifactId>
+  <artifactId>confluence-reporting-maven-plugin</artifactId>
   <configuration>
         <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
         <spaceKey>TEST</spaceKey>
