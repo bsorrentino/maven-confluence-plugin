@@ -18,7 +18,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
-import org.bsc.maven.reporting.ReportingResolutionListener;
+import org.bsc.maven.confluence.plugin.ReportingResolutionListener;
 import org.codehaus.plexus.i18n.I18N;
 
 

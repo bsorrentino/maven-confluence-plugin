@@ -1,6 +1,5 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.bsc.maven.reporting.*;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashMap;
