@@ -19,6 +19,19 @@ and open the template in the editor.
     xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
 
     <home  uri="encoding.confluence">
+        
+        <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
+        <child name="child1" >
+            <label>label_child_1</label>
+            
+            <child name="child1.1" uri="children/child1.confluence">
+                
+            <label>label_child_1_1</label>
+            </child>
+        </child>
+        
+        <child name="from classpath" uri="classpath:template1.confluence"></child>
+
     </home>
     
     <label>encoding</label>
