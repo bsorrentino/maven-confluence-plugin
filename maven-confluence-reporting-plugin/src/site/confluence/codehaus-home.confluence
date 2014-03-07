@@ -1,12 +1,7 @@
 
 
-h2. Index
-{panel}
+h2. Table Of Contents
 {toc}
-{panel}
-
-
-${plugin.summary}
 
 
 h3. Repository
@@ -208,9 +203,8 @@ ${project.scmManager}
 
 
 ${project.dependencies}
-  
+    
 {noformat}  
  
-
-${plugin.goals}
   
+

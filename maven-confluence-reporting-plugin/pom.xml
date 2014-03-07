@@ -298,7 +298,7 @@ TEST
                     </dependencies>
                     
                     <groupId>org.bsc.maven</groupId>
-                    <artifactId>maven-confluence-reporting-plugin</artifactId>
+                    <artifactId>confluence-reporting-maven-plugin</artifactId>
                     <version>${project.version}</version>
                                 
                     <configuration>
@@ -306,12 +306,15 @@ TEST
                         <spaceKey>MVNCONFSITE</spaceKey>
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>codehaus</serverId>
-                        <templateWiki>${basedir}/src/site/confluence/codehaus-home.wiki</templateWiki>
+                        <wikiFilesExt>.confluence</wikiFilesExt>
+                        <templateWiki>${basedir}/src/site/confluence/codehaus-home.confluence</templateWiki>
+                        <!--
                         <labels>
                             <label>maven</label>
                             <label>confluence</label>
                             <label>report</label>
                         </labels>
+                        -->
                     </configuration>
                 </plugin>
                      
