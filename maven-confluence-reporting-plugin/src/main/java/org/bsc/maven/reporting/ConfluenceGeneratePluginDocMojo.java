@@ -1,4 +1,4 @@
-package org.bsc.maven.plugin.confluence;
+package org.bsc.maven.reporting;
 
 import java.io.File;
 import java.util.List;
@@ -30,6 +30,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
+import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 
 /**

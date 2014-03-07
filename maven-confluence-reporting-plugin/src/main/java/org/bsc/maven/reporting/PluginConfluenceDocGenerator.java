@@ -1,4 +1,4 @@
-package org.bsc.maven.plugin.confluence;
+package org.bsc.maven.reporting;
 
 import static org.bsc.maven.plugin.confluence.ConfluenceUtils.decode;
 
@@ -22,6 +22,8 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
+import org.bsc.maven.confluence.plugin.ConfluenceWikiWriter;
+import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 
 /**
  * 
