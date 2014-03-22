@@ -75,11 +75,17 @@ public class PluginConfluenceDocGenerator implements Generator {
             writeParameterTable( w);
 
         }
+        
+        public String getPageName( String parentName ) {
+            final String goalName = String.format( "%s - %s", parentName, descriptor.getGoal());
+            
+            return goalName;
+        }
 
-        public Page generatePage( Page parent, String parentName, F<Void,String> onSuccess )  {
+        public Page generatePage( Page parent, String parentName ) {
             
             try {
-                final String goalName = String.format( "%s - %s", parentName, descriptor.getGoal());
+                final String goalName = getPageName( parentName );
                 
                 Page result = ConfluenceUtils.getOrCreatePage(confluence, parent, goalName);
                 
@@ -89,14 +95,11 @@ public class PluginConfluenceDocGenerator implements Generator {
                 
                 write( w );
                 
-                w.flush();
+                writer.flush();
                 
-                result .setContent(w.toString());
+                result.setContent(writer.toString());
                 
                 result  = confluence.storePage(result);
-                
-                if( onSuccess!=null )
-                    onSuccess.f( goalName );
                 
                 return result;
                 
@@ -346,11 +349,12 @@ public class PluginConfluenceDocGenerator implements Generator {
 
         }
 
+        java.util.List<Goal> goals;
         {
             StringWriter writer = new StringWriter(100 * 1024);
 
             //writeGoals(writer, mojos);
-            writeGoalsAsChildren(writer, page, title, mojos);
+            goals = writeGoalsAsChildren(writer, page, title, mojos);
 
             writer.flush();
 
@@ -374,6 +378,10 @@ public class PluginConfluenceDocGenerator implements Generator {
 
         page = confluence.storePage(page);
 
+        // GENERATE GOAL
+        for( Goal goal : goals ) {
+            goal.generatePage(page, title);
+        }
     }
 
     /**
@@ -397,31 +405,28 @@ public class PluginConfluenceDocGenerator implements Generator {
 
     }
     
-    private void writeGoalsAsChildren( Writer writer, Page parent, String parentName, List<MojoDescriptor> mojos ) {
+    private java.util.List<Goal> writeGoalsAsChildren( Writer writer, Page parent, String parentName, List<MojoDescriptor> mojos ) {
 
+        final java.util.List<Goal> result = new java.util.ArrayList<Goal>(mojos.size());
+        
         final ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 
         w.printBiggerHeading("Plugin Goals");
 
         for (MojoDescriptor descriptor : mojos) {
             final Goal goal = new Goal(descriptor);
-
-            goal.generatePage( parent, parentName, new F<Void,String>() {
-
-                @Override
-                public Void f(String pageName) {
-                    w.appendBullet()
-                     .printLinkToAnchor(goal.descriptor.getGoal(), pageName);
-                    return null;
-                }
-                
-            });
+            
+            w.appendBullet()
+                     .printLink/*ToAnchor*/(goal.getPageName(parentName),goal.descriptor.getGoal() );
+            
+            result.add(goal);
+            
             
         }
 
         w.printNewParagraph();
 
-
+        return result;
     }
     
 

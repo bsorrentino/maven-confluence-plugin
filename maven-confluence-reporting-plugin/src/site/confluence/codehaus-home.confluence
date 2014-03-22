@@ -3,6 +3,7 @@
 h2. Table Of Contents
 {toc}
 
+${plugin.goals}
 
 h3. Repository
 
@@ -206,5 +207,4 @@ ${project.dependencies}
     
 {noformat}  
  
-  
 

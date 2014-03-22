@@ -20,11 +20,12 @@ and open the template in the editor.
 
     <home  uri="codehaus-home.confluence">
         
+        <!--
         <child name="goals" uri="goals.confluence">
         </child>
         <child name="dependencies" uri="dependencies.confluence">
         </child>
-
+        -->
     </home>
     
     <label>maven</label>

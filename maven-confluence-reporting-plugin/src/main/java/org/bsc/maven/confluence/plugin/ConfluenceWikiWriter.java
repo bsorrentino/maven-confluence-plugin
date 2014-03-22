@@ -109,6 +109,9 @@ public class ConfluenceWikiWriter extends PrintWriter {
 	public void printLinkToAnchor( String anchorName, String value  ) {
 		printf( "[%s|#%s]\n", value, anchorName );		
 	}
+	public void printLink( String link, String value  ) {
+		printf( "[%s|%s]\n", value, link );		
+	}
 	
 	public ConfluenceWikiWriter appendAnchor(String anchorName, String value ) {
 		printAnchor( anchorName, value );
