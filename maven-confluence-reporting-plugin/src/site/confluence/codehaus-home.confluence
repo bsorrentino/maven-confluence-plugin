@@ -1,11 +1,20 @@
 
 
-h2. Table Of Contents
+h2. Index
+{panel}
 {toc}
+{panel}
+
+
+${plugin.summary}
+
+----
 
 ${plugin.goals}
 
-h3. Repository
+----
+
+h2. Repository
 
 {quote}
 
@@ -32,14 +41,14 @@ If you want stay tune over modification, includes the following repository decla
 
 {quote}
 
-h3. Usage 
+h2. Usage 
 
 {quote}
 
 Below examples of plugin declarations
 
 
-h4. Basic Declaration 
+h3. Basic Declaration 
 
 {code:xml}
 <plugin>
@@ -73,7 +82,7 @@ h4. Basic Declaration
 </plugin>
 {code}
 
-h4. Add labels 
+h3. Add labels 
 
 {code:xml}
  <configuration>
@@ -90,7 +99,7 @@ h4. Add labels
  </configuration>
 {code}
 
-h4. Inject custom properties within template 
+h3. Inject custom properties within template 
 
 {code:xml}
  <configuration>
@@ -113,7 +122,7 @@ h4. Inject custom properties within template
 
  </configuration>{code}
 
-h4. Change wiki files extension 
+h3. Change wiki files extension 
 
 {code:xml}
  <configuration>
@@ -148,13 +157,13 @@ Take note that also [maven ecryption|http://maven.apache.org/guides/mini/guide-e
 {tip}
 
 
-h3. Use template variables
+h2. Use template variables
 
 {quote}
 By default the plugin use an internal template to generate confluence page. You can customize the generated page creating a personal template into  folder *$\{basedir\}/src/site/confluence* named *template.wiki*.
 The template can include all valid confluence contents plus the following built-in variables 
 
-h4. Built-In template variables 
+h3. Built-In template variables 
 
 || variable || description || example || 
 | $\{project.summary}      | project summary | |
@@ -175,7 +184,7 @@ h4. Built-In template variables
     bq. *\[$\{pageTitle}\^attachment_name]*.
 {tip}
 
-h3. Template example
+h2. Template example
 
 {noformat} 
 
@@ -204,7 +213,8 @@ ${project.scmManager}
 
 
 ${project.dependencies}
-    
+  
 {noformat}  
  
 
+  

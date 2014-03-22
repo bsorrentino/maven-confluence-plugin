@@ -413,11 +413,19 @@ public class PluginConfluenceDocGenerator implements Generator {
 
         w.printBiggerHeading("Plugin Goals");
 
+        w.println("|| Name || Description ||");
+        
         for (MojoDescriptor descriptor : mojos) {
             final Goal goal = new Goal(descriptor);
             
-            w.appendBullet()
-                     .printLink/*ToAnchor*/(goal.getPageName(parentName),goal.descriptor.getGoal() );
+            w.print( '|' );
+            w.printf( "[%s|%s]",goal.descriptor.getGoal(), goal.getPageName(parentName) );		
+            w.print('|');
+            w.print(goal.descriptor.getDescription());
+            w.println('|');
+            
+            //w.appendBullet()
+            //         .printLink(goal.getPageName(parentName),goal.descriptor.getGoal() );
             
             result.add(goal);
             
