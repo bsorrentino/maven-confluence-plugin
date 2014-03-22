@@ -419,7 +419,8 @@ public class PluginConfluenceDocGenerator implements Generator {
             final Goal goal = new Goal(descriptor);
             
             w.print( '|' );
-            w.printf( "[%s|%s]",goal.descriptor.getGoal(), goal.getPageName(parentName) );		
+            w.printf( "[%s|%s]",goal.descriptor.getFullGoalName(),
+                                  goal.getPageName(parentName) );		
             w.print('|');
             w.print(goal.descriptor.getDescription());
             w.println('|');
