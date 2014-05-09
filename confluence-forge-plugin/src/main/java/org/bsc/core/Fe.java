@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.bsc.commands;
+package org.bsc.core;
 
 public interface Fe<P,R> {
     

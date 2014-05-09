@@ -1,4 +1,4 @@
-package org.bsc.commands;
+package org.bsc.core;
 
 public interface F<P,R> {
     
