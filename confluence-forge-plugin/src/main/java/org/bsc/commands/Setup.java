@@ -40,24 +40,8 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 
-public class Setup extends AbstractProjectCommand 
+public class Setup extends AbstractProjectCommand implements Constants
 {
-	public static final String PROP_CONFLUENCE_HOME = "confluence.home";
-	public static final String CFGELEM_SERVERID = "serverId";
-	public static final String CFGELEM_ENDPOINT = "endPoint";
-	public static final String CFGELEM_SPACEKEY = "spaceKey";
-	public static final String CFGELEM_PARENTPAGETITLE = "parentPageTitle";
-	public static final String MSG_SETUP_INTERRUPTED = "setup interrupted!";
-	public static final String MESG_FOLDER_CREATED = "folder created!";
-
-	public static final String PLUGIN_GROUPID = "org.bsc.maven";
-	public static final String PLUGIN_ARTIFACTID = "confluence-reporting-maven-plugin";
-	public static final String PLUGIN_VERSION = "4.0.0";
-
-	public static final String PLUGIN_KEY_2 = PLUGIN_GROUPID + ":"
-			+ PLUGIN_ARTIFACTID;
-	public static final String PLUGIN_KEY_3 = PLUGIN_GROUPID + ":"
-			+ PLUGIN_ARTIFACTID + ":" + PLUGIN_VERSION;
 
 	@Inject @WithAttributes(label = "ServerId", required = true )
 	UISelectOne<Server> serverIds;
