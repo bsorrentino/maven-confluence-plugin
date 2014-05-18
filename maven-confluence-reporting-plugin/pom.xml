@@ -17,7 +17,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.0</version>
     </parent>
 
     <properties>
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-core</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <version>4.0.0</version>
         </dependency>
         
 <!--

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.0.0</version>
   <packaging>pom</packaging>
   <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
   <description>maven confluence plugin - parent project</description>
@@ -26,7 +26,7 @@
     <module>maven-confluence-core</module>
     <module>maven-confluence-reporting-plugin</module>
     <module>maven-confluence-test</module>
-    <module>confluence-forge-plugin</module>
+    
     <module>confluence-forge-plugin</module>
   </modules>
   <scm>
