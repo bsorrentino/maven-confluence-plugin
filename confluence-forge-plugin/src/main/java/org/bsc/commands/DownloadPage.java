@@ -20,6 +20,8 @@ import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.Projects;
 import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
 import org.jboss.forge.addon.resource.DirectoryResource;
+import org.jboss.forge.addon.resource.FileResource;
+import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
@@ -45,9 +47,17 @@ public class DownloadPage extends AbstractProjectCommand implements Constants {
 	@WithAttributes(label = "Target", required = true, type = InputType.DIRECTORY_PICKER)
 	private UIInput<DirectoryResource> target;
 
+	@Inject @WithAttributes(label = "Title", required = true )
+	UIInput<String> title;
+
 	@Inject
 	ProjectFactory projectFactory;
 
+	@Inject
+	ResourceFactory resourceFactory;
+	
+	private final CoordinateBuilder confluencePluginDep = CoordinateBuilder.create(PLUGIN_KEY_3);
+	
 	@Override
 	protected boolean isProjectRequired() {
 		return true;
@@ -70,25 +80,41 @@ public class DownloadPage extends AbstractProjectCommand implements Constants {
 		final Project project = Projects.getSelectedProject(getProjectFactory(),
 				builder.getUIContext());
 		
-		target.setDefaultValue((DirectoryResource) project.getRoot());
+		DirectoryResource ds = (DirectoryResource) project.getRoot();
 		
+		DirectoryResource siteDir = ds.getChildDirectory("src/site/confluence");
+		
+		target.setDefaultValue(siteDir.exists() ? siteDir : ds );
+
+		final MavenPluginFacet pluginFacet = project.getFacet(MavenPluginFacet.class);
+
+		if (pluginFacet.hasPlugin(confluencePluginDep)) {
+			final MavenPlugin plugin = pluginFacet.getPlugin(confluencePluginDep);
+
+			final Configuration conf = plugin.getConfig();
+			
+			if( conf.hasConfigurationElement("title") ) {
+				title.setDefaultValue( conf.getConfigurationElement("title").getText() );
+			}
+
+		}
+
+
 		builder.add(username);
 		builder.add(password);
 		builder.add(target);
-		
+		builder.add(title);
 	}
 
 	@Override
 	public Result execute(UIExecutionContext context) {
-
+		
 		final UIPrompt prompt = context.getPrompt();
 		final PrintStream out = context.getUIContext().getProvider().getOutput().out();
 
 		final Project project = super.getSelectedProject(context);
 
 		final MavenFacet facet = project.getFacet(MavenFacet.class);
-
-		final CoordinateBuilder confluencePluginDep = CoordinateBuilder.create(PLUGIN_KEY_3);
 
 		final MavenPluginFacet pluginFacet = project.getFacet(MavenPluginFacet.class);
 
@@ -106,26 +132,38 @@ public class DownloadPage extends AbstractProjectCommand implements Constants {
 		final String space = conf.getConfigurationElement(CFGELEM_SPACEKEY)
 				.getText();
 
-		final String title = conf.getConfigurationElement("title").getText();
+		try {
+			confluenceExecute(facet.resolveProperties(endPoint), 
+								username.getValue(),
+								password.getValue(), 
+					new Fe<Confluence, Void>() {
 
-		confluenceExecute(facet.resolveProperties(endPoint), 
-							username.getValue(),
-							password.getValue(), 
-				new Fe<Confluence, Void>() {
+						@Override
+						public Void f(Confluence c) throws Exception {
 
-					@Override
-					public Void f(Confluence c) throws Exception {
+							final Page page = c.getPage(space, title.getValue());
 
-						final Page page = c.getPage(space, title);
+							final String targetPath = String.format("%s/%s.confluence", target.getValue().getFullyQualifiedName(), title );
 
-						out.println();
-						out.print(page.getContent());
-						out.println();
+							FileResource<?> file =  (FileResource<?>) resourceFactory.create( new java.io.File(targetPath) );
+							
+							if( !file.exists() ) {
+								
+								if(!file.createNewFile()) {
+									
+									throw new Exception( String.format("error creating file [%s]", file.getName()) );
+								}
+							}
 
-						return null;
-					}
+							file.setContents(page.getContent());
+							out.printf( "set donloaded content to [%s]\n", file.getName());
+							return null;
+						}
 
-				});
+					});
+		} catch (Exception e) {
+			return Results.fail("error!", e);
+		}
 		
 		return Results.success("completed!");
 
@@ -139,7 +177,7 @@ public class DownloadPage extends AbstractProjectCommand implements Constants {
 	 * @param task
 	 */
 	protected void confluenceExecute(String endpoint, String username,
-			String password, Fe<Confluence, Void> task) {
+			String password, Fe<Confluence, Void> task) throws Exception  {
 
 		Confluence confluence = null;
 
@@ -169,9 +207,7 @@ public class DownloadPage extends AbstractProjectCommand implements Constants {
 			// getLog().error("has been imposssible connect to confluence due exception",
 			// e);
 
-			throw new Error(
-					"has been imposssible connect to confluence due exception",
-					e);
+			throw e;
 		} finally {
 			confluenceLogout(confluence);
 		}
