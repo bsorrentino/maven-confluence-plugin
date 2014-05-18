@@ -2,10 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.bsc.maven</groupId>
     <artifactId>confluence-reporting-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>4.0.1-SNAPSHOT</version>
     <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
     </description>
@@ -106,7 +104,7 @@
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-core</artifactId>
-            <version>4.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         
 <!--

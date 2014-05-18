@@ -4,10 +4,9 @@
     <groupId>org.bsc.maven</groupId>
     <version>4.0.1-SNAPSHOT</version>
   </parent>
+  
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-core</artifactId>
-  <version>4.0.1-SNAPSHOT</version>
   <name>CONFLUENCE-REPORTING::Core - ${project.version}</name>
 
   <scm>
