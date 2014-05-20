@@ -9,6 +9,7 @@
 
 ## Install from eclipse
 
+<img src="https://raw.github.com/bsorrentino/maven-confluence-reporting-plugin/v4/confluence-forge-plugin/src/site/install-addon-1.png">
 
 ## Goals
 
