@@ -1,7 +1,7 @@
 
-# confluence-forge-plugin
+# confluence-forge-plugin (a Forge2 Addon)
 
-[Forge2](https://github.com/forge/core#jboss-forge-20) plugin to work with [confluence-maven-plugin](https://code.google.com/p/maven-confluence-plugin/)
+[Forge2](https://github.com/forge/core#jboss-forge-20) Addon to work with [confluence-maven-plugin](https://code.google.com/p/maven-confluence-plugin/)
 
 ## Install from command line interface
 
