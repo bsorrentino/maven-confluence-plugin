@@ -1,5 +1,5 @@
 
-# confluence-forge-plugin (a Forge2 Addon)
+# confluence-forge-plugin (a [Forge2](https://github.com/forge/core#jboss-forge-20) Addon)
 
 [Forge2](https://github.com/forge/core#jboss-forge-20) Addon to work with [confluence-maven-plugin](https://code.google.com/p/maven-confluence-plugin/)
 
