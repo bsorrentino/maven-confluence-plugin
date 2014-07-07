@@ -6,12 +6,19 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
+import org.bsc.maven.confluence.plugin.ssl.SSLFactories;
+import org.bsc.maven.confluence.plugin.ssl.YesHostnameVerifier;
+import org.bsc.maven.confluence.plugin.ssl.YesTrustManager;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.TrustManager;
 
 /**
  * 
@@ -78,7 +85,28 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @since 1.5
      */
     @Component(role=org.sonatype.plexus.components.sec.dispatcher.SecDispatcher.class,hint="default")
-    private SecDispatcher securityDispatcher;    
+    private SecDispatcher securityDispatcher;
+
+    /**
+     * if using a https url configure if the plugin accepts every certifactes or respects hostnameVerifierClass and trustManagerClass if configured
+     * @since 4.0.1
+     */
+    @Parameter(defaultValue = "true")
+    protected boolean ignoreSslCertificate;
+
+    /**
+     * if ignoreSslCertificate is true which HostnameVerifier to use
+     * @since 4.0.1
+     */
+    @Parameter
+    protected String hostnameVerifierClass;
+
+    /**
+     * if ignoreSslCertificate is true which trustManager to use
+     * @since 4.0.1
+     */
+    @Parameter
+    protected String trustManagerClass;
     
     /**
      * 
@@ -133,6 +161,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @throws MojoExecutionException 
      */
     protected void confluenceExecute( ConfluenceTask task  ) throws MojoExecutionException {
+        if ((ignoreSslCertificate || hostnameVerifierClass != null || trustManagerClass != null)
+                && getEndPoint().startsWith("https://")) {
+            try {
+                HttpsURLConnection.setDefaultSSLSocketFactory(
+                        SSLFactories.newInstance(trustManagerClass != null ?
+                                newClass(trustManagerClass, TrustManager.class) : new YesTrustManager()));
+            } catch (final Exception e) {
+                throw new IllegalStateException(e);
+            }
+            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifierClass != null ?
+                    newClass(hostnameVerifierClass, HostnameVerifier.class) : new YesHostnameVerifier());
+        }
         
         Confluence confluence = null;
 
@@ -169,7 +209,15 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         }
         
     }
-    
+
+    private static <T> T newClass(final String clazz, final Class<T> type) {
+        try {
+            return type.cast(Thread.currentThread().getContextClassLoader().loadClass(clazz));
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     /**
      * Issue 39
      * 
