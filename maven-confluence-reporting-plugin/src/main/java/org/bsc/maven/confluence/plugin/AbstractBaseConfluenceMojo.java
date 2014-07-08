@@ -13,6 +13,7 @@ import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
+
 /**
  * 
  * @author bsorrentino
@@ -78,8 +79,29 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @since 1.5
      */
     @Component(role=org.sonatype.plexus.components.sec.dispatcher.SecDispatcher.class,hint="default")
-    private SecDispatcher securityDispatcher;    
-    
+    private SecDispatcher securityDispatcher;
+
+    /**
+     * if using a https url, configure if the plugin accepts every certifactes or 
+     * respects hostnameVerifierClass and trustManagerClass (if set).
+     * 
+     * Below the Template
+     * 
+     *<pre>
+     *
+     * &lt;sslCertificate>
+     *  &lt;ignore>true|false</ignore>  // default true
+     *  &lt;hostnameVerifierClass>FQN</hostnameVerifierClass> //default null
+     *  &lt;trustManagerClass>FQN</trustManagerClass> // default null 
+     * &lt;/sslCertificate>
+     *
+     *</pre>
+     * 
+     * @since 4.1.0
+     */
+    @Parameter
+    protected SSLCertificateInfo sslCertificate ;
+
     /**
      * 
      */
@@ -134,6 +156,12 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     protected void confluenceExecute( ConfluenceTask task  ) throws MojoExecutionException {
         
+        if( sslCertificate != null ) {
+            getLog().debug(String.valueOf(sslCertificate));
+        
+            sslCertificate.setup(this);
+        }
+        
         Confluence confluence = null;
 
         try {
@@ -169,7 +197,15 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         }
         
     }
-    
+
+    protected static <T> T newClass(final String clazz, final Class<T> type) {
+        try {
+            return type.cast(Thread.currentThread().getContextClassLoader().loadClass(clazz));
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     /**
      * Issue 39
      * 
