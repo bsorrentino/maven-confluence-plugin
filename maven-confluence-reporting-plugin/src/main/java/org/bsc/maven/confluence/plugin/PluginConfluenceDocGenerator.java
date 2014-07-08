@@ -22,10 +22,7 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
-import org.bsc.functional.F;
 
 /**
  *
