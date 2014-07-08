@@ -2,7 +2,7 @@
   <parent>
     <artifactId>maven-confluence-parent</artifactId>
     <groupId>org.bsc.maven</groupId>
-    <version>4.1.0</version>
+    <version>4.1.1-SNAPSHOT</version>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
 	<connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
 	<developerConnection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</developerConnection>
 	<url>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</url>
-    <tag>maven-confluence-parent-4.1.0-SNAPSHOT</tag>
+    <tag>HEAD</tag>
   </scm>
  
   <description>maven confluence plugin - core project</description>
