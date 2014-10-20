@@ -88,7 +88,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * Below the Template
      * 
      *<pre>
-     *
+     * 
      * &lt;sslCertificate>
      *  &lt;ignore>true|false</ignore>  // default true
      *  &lt;hostnameVerifierClass>FQN</hostnameVerifierClass> //default null
@@ -96,7 +96,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * &lt;/sslCertificate>
      *
      *</pre>
-     * 
      * @since 4.1.0
      */
     @Parameter

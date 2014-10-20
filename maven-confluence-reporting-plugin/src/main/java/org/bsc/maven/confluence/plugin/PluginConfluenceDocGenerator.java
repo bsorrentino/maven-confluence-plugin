@@ -578,7 +578,8 @@ public class PluginConfluenceDocGenerator implements Generator {
                 description = "Deprecated. " + description;
             }
 
-            w.print(decode(description.replace('\n', ' ')));
+          
+            w.print(decode(description).replace("\n\n", "\n"));
 
             if (StringUtils.isNotEmpty(parameter.getDefaultValue())) {
                 w.printf(" Default value is %s", decode(parameter.getDefaultValue()));
