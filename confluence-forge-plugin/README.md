@@ -1,11 +1,12 @@
 
-# confluence-forge-plugin (a [Forge2](https://github.com/forge/core#jboss-forge-20) Addon)
+# confluence-forge-plugin (a [Forge2](http://forge.jboss.org/) Addon)
 
-[Forge2](https://github.com/forge/core#jboss-forge-20) Addon to work with [confluence-maven-plugin](https://code.google.com/p/maven-confluence-plugin/)
+[Forge2](http://forge.jboss.org/) Addon to work with [confluence-maven-plugin](https://code.google.com/p/maven-confluence-plugin/)
 
 ## Install from command line interface
 
 `` > forge --install org.bsc.maven:confluence-forge-plugin,4.1.0``
+
 Support Forge 2.10.1
 
 ## Install from eclipse
