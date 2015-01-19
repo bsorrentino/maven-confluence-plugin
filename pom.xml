@@ -25,8 +25,8 @@
     <module>maven-confluence-core</module>
     <module>maven-confluence-reporting-plugin</module>
     <module>maven-confluence-test</module>
-    
-    <module>confluence-forge-plugin</module>
+
+    <!--module>confluence-forge-plugin</module-->
   </modules>
   <scm>
     <connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
@@ -186,10 +186,10 @@
       <id>release</id>
       <build>
         <plugins>
-         <!-- 
-         ==================================================================================== 
-         mvn -Prelease release:perform -Dgoals=deploy -Darguments=-Dgpg.passphrase=thephrase 
-         ==================================================================================== 
+         <!--
+         ====================================================================================
+         mvn -Prelease release:perform -Dgoals=deploy -Darguments=-Dgpg.passphrase=thephrase
+         ====================================================================================
          -->
           <plugin>
             <artifactId>maven-gpg-plugin</artifactId>
