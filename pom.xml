@@ -4,7 +4,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.1.1-SNAPSHOT</version>
+  <version>4.2-SNAPSHOT</version>
   <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
   <description>maven confluence plugin - parent project</description>
   <url>http://code.google.com/p/maven-confluence-plugin/</url>

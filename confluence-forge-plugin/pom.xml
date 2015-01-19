@@ -4,9 +4,10 @@
   <parent>
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
-    <version>4.1.0</version>
+    <version>4.2-SNAPSHOT</version>
   </parent>
   <artifactId>confluence-forge-plugin</artifactId>
+  <version>4.2-SNAPSHOT</version>
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,7 +47,7 @@
     <dependency>
       <groupId>org.bsc.maven</groupId>
       <artifactId>maven-confluence-core</artifactId>
-      <version>${project.version}</version>
+      <version>4.2-SNAPSHOT</version>
     </dependency>
       
     </dependencies>

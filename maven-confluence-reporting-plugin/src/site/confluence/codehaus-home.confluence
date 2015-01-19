@@ -73,7 +73,7 @@ h3. Basic Declaration
         </properties>
   </configuration>
  </plugin>
- {code}
+{code}
 
 h3. Add labels
 
@@ -96,20 +96,20 @@ h3. Inject custom properties within template
 
 {code:xml}
  <configuration>
-    <endPoint>{confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-    <title>custom_title</title><!-- PAGE TITLE (default {project.build.finalName})  - SINCE 3.1.3 -->
+    <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName})  - SINCE 3.1.3 -->
 
     <properties>
 
-       <scm-url>{project.scm.url}</scm-url>
-       <version>{project.version}</version>
-       <build>{build.number}</build>
+       <scm-url>${project.scm.url}</scm-url>
+       <version>${project.version}</version>
+       <build>${build.number}</build>
 
         <myprop>classpath:plugin-report.properties</myprop><!-- SINCE 3.2.4 -->
-        <htmlpage>file://{basedir}/src/main/resources/confluence.html</htmlpage><!-- SINCE 3.2.4 -->
+        <htmlpage>file://${basedir}/src/main/resources/confluence.html</htmlpage><!-- SINCE 3.2.4 -->
 
      </properties>
 
