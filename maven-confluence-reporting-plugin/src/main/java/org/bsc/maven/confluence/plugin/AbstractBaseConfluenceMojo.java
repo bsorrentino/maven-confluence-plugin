@@ -13,43 +13,44 @@ import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
+
 /**
- * 
+ *
  * @author bsorrentino
  */
 public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
-	
+
     protected interface ConfluenceTask {
-        
-        void execute( Confluence confluence ) throws Exception;
+
+        void execute(Confluence confluence) throws Exception;
     }
-    
+
     /**
-     * Confluence end point url 
+     * Confluence end point url
      */
     @Parameter(property = "confluence.endPoint", defaultValue = "http://localhost:8080/rpc/xmlrpc")
     private String endPoint;
     /**
-     * Confluence target confluence's spaceKey 
+     * Confluence target confluence's spaceKey
      */
     @Parameter(property = "confluence.spaceKey", required = true)
     private String spaceKey;
     /**
-     * Confluence target confluence's spaceKey 
+     * Confluence target confluence's spaceKey
      */
     @Parameter(property = "confluence.parentPage", defaultValue = "Home")
     private String parentPageTitle;
     /**
-     * Confluence username 
+     * Confluence username
      */
     @Parameter(property = "confluence.userName", required = false)
     private String username;
     /**
-     * Confluence password 
+     * Confluence password
      */
     @Parameter(property = "confluence.password", required = false)
     private String password;
-        
+
     /**
      * @parameter expression="${settings}"
      * @readonly
@@ -58,30 +59,50 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Parameter(readonly = true, property = "settings")
     protected org.apache.maven.settings.Settings mavenSettings;
 
-        
+
     /**
      * Issue 39
-     * 
+     *
      * Server's <code>id</code> in <code>settings.xml</code> to look up username and password.
      * Defaults to <code>${url}</code> if not given.
      *
      * @since 3.1.1
      */
-    @Parameter(property="confluence.serverId")
+    @Parameter(property = "confluence.serverId")
     private String serverId;
-    
+
     /**
      * Issue 39
-     * 
+     *
      * MNG-4384
-     * 
+     *
      * @since 1.5
      */
-    @Component(role=org.sonatype.plexus.components.sec.dispatcher.SecDispatcher.class,hint="default")
-    private SecDispatcher securityDispatcher;    
-    
+    @Component(role = org.sonatype.plexus.components.sec.dispatcher.SecDispatcher.class, hint = "default")
+    private SecDispatcher securityDispatcher;
+
     /**
-     * 
+     * if using a https url, configure if the plugin accepts every certifactes or
+     * respects hostnameVerifierClass and trustManagerClass (if set).
+     *
+     * Below the Template
+     *
+     * <pre>
+     *
+     * &lt;sslCertificate>
+     *  &lt;ignore>true|false</ignore>  // default true
+     *  &lt;hostnameVerifierClass>FQN</hostnameVerifierClass> //default null
+     *  &lt;trustManagerClass>FQN</trustManagerClass> // default null
+     * &lt;/sslCertificate>
+     *
+     * </pre>
+     * @since 4.1.0
+     */
+    @Parameter
+    protected SSLCertificateInfo sslCertificate;
+
+    /**
+     *
      */
     public AbstractBaseConfluenceMojo() {
     }
@@ -106,8 +127,8 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         return password;
     }
 
-   /**
-     * 
+    /**
+     *
      * @param confluence
      */
     private void confluenceLogout(Confluence confluence) {
@@ -126,33 +147,39 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
 
     }
-    
+
     /**
-     * 
+     *
      * @param task
-     * @throws MojoExecutionException 
+     * @throws MojoExecutionException
      */
-    protected void confluenceExecute( ConfluenceTask task  ) throws MojoExecutionException {
-        
+    protected void confluenceExecute(ConfluenceTask task) throws MojoExecutionException {
+
+        if (sslCertificate != null) {
+            getLog().debug(String.valueOf(sslCertificate));
+
+            sslCertificate.setup(this);
+        }
+
         Confluence confluence = null;
 
         try {
-            
+
             Confluence.ProxyInfo proxyInfo = null;
 
             final Proxy activeProxy = mavenSettings.getActiveProxy();
 
-            if( activeProxy!=null ) {
-                
-                proxyInfo = 
-                        new Confluence.ProxyInfo( 
+            if (activeProxy != null) {
+
+                proxyInfo =
+                        new Confluence.ProxyInfo(
                                 activeProxy.getHost(),
-                                activeProxy.getPort(), 
-                                activeProxy.getUsername(), 
+                                activeProxy.getPort(),
+                                activeProxy.getUsername(),
                                 activeProxy.getPassword()
-                                );
+                        );
             }
-            
+
             confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
 
             getLog().info(ConfluenceUtils.getVersion(confluence));
@@ -160,61 +187,76 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             task.execute(confluence);
             
         } catch (Exception e) {
-            
+
             getLog().error("has been imposssible connect to confluence due exception", e);
-            
-            throw new MojoExecutionException( "has been imposssible connect to confluence due exception",e);
+
+            throw new MojoExecutionException("has been imposssible connect to confluence due exception", e);
         } finally {
             confluenceLogout(confluence);
         }
-        
+
     }
-    
+
+    protected static <T> T newClass(final String clazz, final Class<T> type) {
+        try {
+            final Class<?> loadedClass = Thread.currentThread().getContextClassLoader().loadClass(clazz);
+            //create an instance of loaded class i.e. with newInstance (just works for classes with non-arg const).
+            final Object initClass = loadedClass.newInstance();
+            return type.cast(initClass);
+        } catch (final ClassNotFoundException e) {
+            final String msg = String.format("Could not found Class with name %s", clazz);
+            throw new IllegalStateException( msg, e);
+        } catch (final InstantiationException e){
+            final String msg = String.format("Could create Instance of Class with name %s. Class must be concrete.",clazz);
+            throw new IllegalStateException(msg, e);
+        }catch (final IllegalAccessException e){
+            final String msg = String.format("Could create Instance of Class with name %s. Class must have a no-arg constructor.",clazz);
+            throw new IllegalStateException(msg, e);
+        }
+    }
+
     /**
      * Issue 39
-     * 
+     *
      * Load username password from settings if user has not set them in JVM properties
-     * 
+     *
      * @throws MojoExecutionException
      */
-    protected void loadUserInfoFromSettings() throws MojoExecutionException
-    {
+    protected void loadUserInfoFromSettings() throws MojoExecutionException {
 
-        if ( ( getUsername() == null || getPassword() == null ) && ( mavenSettings != null ) )
-        {
-            if ( this.serverId == null ) throw new MojoExecutionException("SettingKey must be set! (username and/or password are not provided)");
+        if ((getUsername() == null || getPassword() == null) && (mavenSettings != null)) {
+            if (this.serverId == null)
+                throw new MojoExecutionException("SettingKey must be set! (username and/or password are not provided)");
 
-            Server server = this.mavenSettings.getServer( this.serverId );
+            Server server = this.mavenSettings.getServer(this.serverId);
 
-            if ( server == null ) throw new MojoExecutionException( String.format("server with id [%s] not found in settings!", this.serverId ));
+            if (server == null)
+                throw new MojoExecutionException(String.format("server with id [%s] not found in settings!", this.serverId));
 
-            if ( getUsername() == null && server.getUsername() !=null  ) username = server.getUsername();
+            if (getUsername() == null && server.getUsername() != null) username = server.getUsername();
 
-            if( getPassword() == null && server.getPassword() != null ) {
-                    try
-                    {
-                        //
-                        // FIX to resolve
-                        // org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException: 
-                        // java.io.FileNotFoundException: ~/.settings-security.xml (No such file or directory)
-                        //
-                        if( securityDispatcher instanceof DefaultSecDispatcher ) {
-                        
-                            
-                            //System.setProperty( DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION, sb.toString() );
-                                
-                            ((DefaultSecDispatcher)securityDispatcher).setConfigurationFile("~/.m2/settings-security.xml");
-                        }
-                        
-                        password = securityDispatcher.decrypt( server.getPassword() );
+            if (getPassword() == null && server.getPassword() != null) {
+                try {
+                    //
+                    // FIX to resolve
+                    // org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException:
+                    // java.io.FileNotFoundException: ~/.settings-security.xml (No such file or directory)
+                    //
+                    if (securityDispatcher instanceof DefaultSecDispatcher) {
+
+
+                        //System.setProperty( DefaultSecDispatcher.SYSTEM_PROPERTY_SEC_LOCATION, sb.toString() );
+
+                        ((DefaultSecDispatcher) securityDispatcher).setConfigurationFile("~/.m2/settings-security.xml");
                     }
-                    catch ( SecDispatcherException e )
-                    {
-                        throw new MojoExecutionException( e.getMessage() );
-                    }
+
+                    password = securityDispatcher.decrypt(server.getPassword());
+                } catch (SecDispatcherException e) {
+                    throw new MojoExecutionException(e.getMessage());
+                }
             }
         }
     }
-    
-       
+
+
 }

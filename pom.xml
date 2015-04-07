@@ -1,261 +1,44 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.4.4-SNAPSHOT</version>
+  <version>4.2-SNAPSHOT</version>
   <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
-  
-  <properties>
-  
-    <!-- 
-    ================
-    GOOGLE REPO 
-    ================
-    <snapshot.repo.id>google-project</snapshot.repo.id>
-    <snapshot.repo.url>svn:https://maven-confluence-plugin.googlecode.com/svn/mavenrepo</snapshot.repo.url>
-    -->
-
-    <!-- 
-    ================
-    JAVANET REPO 
-    ================
-    <release.repo.id>java.net-m2-repository</release.repo.id>
-    <release.repo.url>java-net:/maven2-repository/trunk/repository/</release.repo.url>
-    -->
-
-    <!-- 
-    ================
-    SONATYPE REPO 
-    ================
-    -->
-    <snapshot.repo.id>sonatype-server</snapshot.repo.id>
-    <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
-    <release.repo.id>sonatype-server</release.repo.id>
-    <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</release.repo.url>
-    
-    <!-- SCM properties  -->
-    <addTimestamp>true</addTimestamp>
-    <tag>${project.artifactId}-${project.version}</tag>
-    
-    <mavenVersion>3.0.1</mavenVersion>
-    <pluginToolsVersion>3.1</pluginToolsVersion>
-    <reports-plugin-version>2.4</reports-plugin-version>
-  
-  </properties>
-
-<dependencyManagement>
-<dependencies>
-
-  <dependency>
-    <groupId>org.apache.maven</groupId>
-    <artifactId>maven-plugin-api</artifactId>
-    <version>${mavenVersion}</version>
-  </dependency>
- 
-  <dependency>
-    <groupId>org.apache.maven</groupId>
-    <artifactId>maven-core</artifactId>
-    <version>${mavenVersion}</version>
-  </dependency>
-
-    <!-- dependencies to annotations -->
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
-      <version>${pluginToolsVersion}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-tools-generators</artifactId>
-      <version>${pluginToolsVersion}</version>
-    </dependency>    
-    
-    <!-- generated help mojo has a dependency to plexus-utils -->
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0.8</version>
-    </dependency>
-    
-   <dependency>
-        <groupId>org.apache.maven.plugin-tools</groupId>
-        <artifactId>maven-plugin-tools-api</artifactId>
-      <version>${pluginToolsVersion}</version>
-   </dependency>
-
-    <dependency>
-        <groupId>org.apache.maven.plugin-testing</groupId>
-        <artifactId>maven-plugin-testing-harness</artifactId>
-        <version>2.1</version>
-        <scope>test</scope>
-    </dependency>
-
-    <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-aether-provider</artifactId>
-        <version>${mavenVersion}</version>
-        <scope>test</scope>
-    </dependency>
-     
-</dependencies>
-</dependencyManagement>
-
-    
-<profiles>
-<!--    
-      <profile>
-          <id>macosx</id>
-          <activation>
-              <os>
-                  <family>mac</family>
-              </os>
-          </activation>
-			<properties>
-			  	<java.rt.systemPath>/System/Library/Frameworks/JavaVM.Framework/Versions/CurrentJDK/Home/lib/dt.jar</java.rt.systemPath>
-			</properties>
- 	 </profile>
- 	   
-     <profile>
-        <id>other-so</id>
-        <activation>
-          <activeByDefault>true</activeByDefault>
-        </activation>
-		<properties>
-	  		<java.rt.systemPath />
-		</properties>
-	</profile>
--->
-	<profile>
-		<id>release</id>
-		<build>
-			<plugins>
-
-				<!-- 
-				====================================================================== 
-				mvn -Prelease release:perform -Darguments=-Dgpg.passphrase=thephrase 
-				======================================================================
-				-->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>1.3</version>
-
-					<executions>
-						<execution>
-							<id>sign-artifacts</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>sign</goal>
-							</goals>
-						</execution>
-					</executions>
-
-				</plugin>
-
-				<!-- 
-				====================================================================== 
-				CLOSE 
-				mvn org.sonatype.plugins:nexus-staging-maven-plugin:1.5.1:close \
-					-DstagingRepositoryId= \
-				PROMOTE
-				mvn org.sonatype.plugins:nexus-staging-maven-plugin:1.5.1:release \
-					-DstagingRepositoryId=
-				======================================================================
-				-->
-				<plugin>
-					  <groupId>org.sonatype.plugins</groupId>
-					  <artifactId>nexus-staging-maven-plugin</artifactId>
-					  <version>1.5.1</version>
-					  <extensions>true</extensions>
-					  <configuration>
-						<serverId>sonatype-server</serverId>
-						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<stagingProfileId />
-					  </configuration>
-				</plugin>
-				
-	
-
-			</plugins>
-		</build>
-	</profile>
-	
-</profiles>			
-
-<description>maven confluence plugin - parent project</description>
-<url>http://code.google.com/p/maven-confluence-plugin/</url>
-<issueManagement>
-	<system>googlecode</system>
-	<url>http://code.google.com/p/maven-confluence-plugin/issues</url>
-</issueManagement>
-
-<developers>
-	<developer>
-		<id>bsorrentino</id>
-		<name>Bartolomeo Sorrentino</name>
-		<email>bartolomeo.sorrentino@gmail.com</email>
-	</developer>
-</developers>
-<licenses>
+  <description><![CDATA[
+    Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
+    ]]></description>
+  <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
+  <licenses>
     <license>
       <name>Apache License Version 2</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
-  
+  <developers>
+    <developer>
+      <id>bsorrentino</id>
+      <name>Bartolomeo Sorrentino</name>
+      <email>bartolomeo.sorrentino@gmail.com</email>
+    </developer>
+  </developers>
+  <modules>
+    <module>maven-confluence-core</module>
+    <module>maven-confluence-reporting-plugin</module>
+    <module>maven-confluence-test</module>
+  </modules>
   <scm>
-	<connection>scm:git:https://code.google.com/p/maven-confluence-plugin/</connection>
-	<developerConnection>scm:git:https://code.google.com/p/maven-confluence-plugin/</developerConnection>
-	<url>https://code.google.com/p/maven-confluence-plugin/</url>
+    <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
+    <developerConnection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</developerConnection>
+    <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
     <tag>HEAD</tag>
   </scm>
-
-
-<build>
-    <pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>${pluginToolsVersion}</version>
-            </plugin>
-
-        </plugins>
-    </pluginManagement>
-    
-  	<plugins>
-	<plugin>
-	  <artifactId>maven-compiler-plugin</artifactId>
-	  <version>2.3.2</version>
-	  <configuration>
-	    <source>1.6</source>
-	    <target>1.6</target>
-	  </configuration>
-	</plugin>
-    
-  	</plugins>
-  	
-	<extensions>
-	
-	      <extension>
-	        <groupId>org.jvnet.wagon-svn</groupId>
-	        <artifactId>wagon-svn</artifactId>
-	        <version>1.8</version>	
-	      </extension>
-	
-	</extensions>  	
-  </build>
-  <modules>
-  	<module>maven-confluence-core</module>
-  	<!--module>maven-confluence-reporting-plugin-plugin</module-->
-  	<module>maven-confluence-reporting-plugin</module>
-  	<module>maven-confluence-test</module>
-  </modules>
-  
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/bsorrentino/maven-confluence-plugin/issues</url>
+  </issueManagement>
   <distributionManagement>
-  	
     <repository>
       <id>${release.repo.id}</id>
       <name>central</name>
@@ -266,11 +49,176 @@
       <name>snapshots</name>
       <url>${snapshot.repo.url}</url>
     </snapshotRepository>
+    <!--
     <site>
-    	<id>google-project</id>
-    	<url>svn:https://bsc-documentation-repo.googlecode.com/svn/trunk/maven-confluence-plugin/</url>
+      <id>google-project</id>
+      <url>svn:https://bsc-documentation-repo.googlecode.com/svn/trunk/maven-confluence-plugin/</url>
     </site>
-
+    -->
   </distributionManagement>
-  
+  <properties>
+    <release.repo.id>sonatype-server</release.repo.id>
+    <pluginToolsVersion>3.1</pluginToolsVersion>
+    <addTimestamp>true</addTimestamp>
+    <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
+    <mavenVersion>3.0.1</mavenVersion>
+    <reports-plugin-version>2.4</reports-plugin-version>
+    <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</release.repo.url>
+    <tag>${project.artifactId}-${project.version}</tag>
+    <snapshot.repo.id>sonatype-server</snapshot.repo.id>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>${pluginToolsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-tools-generators</artifactId>
+        <version>${pluginToolsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.8</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-tools-api</artifactId>
+        <version>${pluginToolsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bsc.util</groupId>
+        <artifactId>minitemplator-repackaged</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-testing</groupId>
+        <artifactId>maven-plugin-testing-harness</artifactId>
+        <version>2.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>${mavenVersion}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.jvnet.wagon-svn</groupId>
+        <artifactId>wagon-svn</artifactId>
+        <version>1.8</version>
+      </extension>
+    </extensions>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${pluginToolsVersion}</version>
+        </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+        	<groupId>org.eclipse.m2e</groupId>
+        	<artifactId>lifecycle-mapping</artifactId>
+        	<version>1.0.0</version>
+        	<configuration>
+        		<lifecycleMappingMetadata>
+        			<pluginExecutions>
+        				<pluginExecution>
+        					<pluginExecutionFilter>
+        						<groupId>
+        							org.apache.maven.plugins
+        						</groupId>
+        						<artifactId>
+        							maven-plugin-plugin
+        						</artifactId>
+        						<versionRange>[3.1,)</versionRange>
+        						<goals>
+        							<goal>descriptor</goal>
+        							<goal>helpmojo</goal>
+        						</goals>
+        					</pluginExecutionFilter>
+        					<action>
+        						<ignore />
+        					</action>
+        				</pluginExecution>
+        			</pluginExecutions>
+        		</lifecycleMappingMetadata>
+        	</configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.9.1</version>
+    <configuration>
+   <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
+    </configuration>
+</plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+         <!--
+         ====================================================================================
+         mvn -Prelease release:perform -Dgoals=deploy -Darguments=-Dgpg.passphrase=thephrase
+         ====================================================================================
+         -->
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.3</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.5.1</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>sonatype-server</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <stagingProfileId />
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

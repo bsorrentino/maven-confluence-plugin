@@ -8,8 +8,13 @@ h2. Index
 
 ${plugin.summary}
 
+----
 
-h3. Repository
+${plugin.goals}
+
+----
+
+h2. Repository
 
 {quote}
 
@@ -36,108 +41,102 @@ If you want stay tune over modification, includes the following repository decla
 
 {quote}
 
-h3. Usage 
+h2. Usage
 
 {quote}
 
 Below examples of plugin declarations
 
 
-h4. Basic Declaration 
+h3. Basic Declaration
 
 {code:xml}
 <plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-site-plugin</artifactId>
-<version>3.0</version>
-<configuration>
-<reportPlugins>
-    <plugin>
-        <groupId>org.bsc.maven</groupId>
-        <artifactId>maven-confluence-reporting-plugin</artifactId>
-        <version>${plugin.version}</version>
-        <reportSets>
-            <reportSet>
-                <id>confluence</id>
-                <configuration>
-                <endPoint>{confluence.home}/rpc/xmlrpc</endPoint>
-                <spaceKey>DOCS</spaceKey>
-                <serverId>server_id_configured_in_settings_xml</serverId>
-                <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-                <title>custom_title</title><!-- PAGE TITLE (default {project.build.finalName}) - SINCE 3.1.3 -->
-                </configuration>
-                <reports>
-                    <report>confluence-summary</report>                         
-                </reports>
-            </reportSet>
-        </reportSets>                     
-    </plugin>
-</reportPlugins>
-</configuration>
-</plugin>
+  <groupId>org.bsc.maven</groupId>
+  <artifactId>confluence-reporting-maven-plugin</artifactId>
+  <configuration>
+        <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+        <spaceKey>TEST</spaceKey>
+        <parentPageTitle>Home</parentPageTitle>
+        <title>my-site-generation-test</title>
+        <labels>
+                <label>test</label>
+                <label>confluence</label>
+        </labels>
+        <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+        <wikiFilesExt>.confluence</wikiFilesExt>
+        <serverId>confluence-server-id</serverId>
+        <properties>
+                <prop>the_text_value</prop><!-- SIMPLE TEXT -->
+                <prop1>classpath:plugin-report.properties</prop1><!-- FROM CLASSPATH -->
+                <prop2>file://${basedir}/confluence.html</prop2><!-- FROM FILE SYSTEM -->
+        </properties>
+  </configuration>
+ </plugin>
 {code}
 
-h4. Add labels 
+h3. Add labels
 
 {code:xml}
- <configuration>
-    <endPoint>{confluence.home}/rpc/xmlrpc</endPoint>
+<configuration>
+    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-    <title>custom_title</title><!-- PAGE TITLE (default {project.build.finalName}) - SINCE 3.1.3 -->
+    <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName}) - SINCE 3.1.3 -->
 
     <labels>
         <label>label_value_1</label>
-        <label>label_value_2</label>                                           
-    </labels> 
+        <label>label_value_2</label>
+    </labels>
  </configuration>
-{code}
+ {code}
 
-h4. Inject custom properties within template 
+h3. Inject custom properties within template
 
 {code:xml}
  <configuration>
-    <endPoint>{confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-    <title>custom_title</title><!-- PAGE TITLE (default {project.build.finalName})  - SINCE 3.1.3 -->
+    <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName})  - SINCE 3.1.3 -->
 
     <properties>
 
-       <scm-url>{project.scm.url}</scm-url>
-       <version>{project.version}</version>
-       <build>{build.number}</build> 
+       <scm-url>${project.scm.url}</scm-url>
+       <version>${project.version}</version>
+       <build>${build.number}</build>
 
         <myprop>classpath:plugin-report.properties</myprop><!-- SINCE 3.2.4 -->
-        <htmlpage>file://{basedir}/src/main/resources/confluence.html</htmlpage><!-- SINCE 3.2.4 -->
+        <htmlpage>file://${basedir}/src/main/resources/confluence.html</htmlpage><!-- SINCE 3.2.4 -->
 
      </properties>
 
- </configuration>{code}
+ </configuration>
+ {code}
 
-h4. Change wiki files extension 
+h3. Change wiki files extension
 
 {code:xml}
  <configuration>
-    <endPoint>{confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-    <title>custom_title</title><!-- PAGE TITLE (default {project.build.finalName} )- SINCE 3.1.3 -->
+    <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName} )- SINCE 3.1.3 -->
 
-    <templateWiki>{basedir}/src/site/confluence/template.confluence</templateWiki>
+    <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
     <wikiFilesExt>.confluence</wikiFilesExt>
 
  </configuration>
-{code}
+ {code}
 
 {quote}
 
 {tip:title=Authentication}
 
-Put yours confluence credential within settings.xml as server 
+Put yours confluence credential within settings.xml as server
 
 {noformat}
 <server>
@@ -145,22 +144,22 @@ Put yours confluence credential within settings.xml as server
     <username>my_user</username>
     <password>my_password</password>
 </server>
-{noformat}  
+{noformat}
 
 Take note that also [maven ecryption|http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords ] is supported
 
 {tip}
 
 
-h3. Use template variables
+h2. Use template variables
 
 {quote}
 By default the plugin use an internal template to generate confluence page. You can customize the generated page creating a personal template into  folder *$\{basedir\}/src/site/confluence* named *template.wiki*.
-The template can include all valid confluence contents plus the following built-in variables 
+The template can include all valid confluence contents plus the following built-in variables
 
-h4. Built-In template variables 
+h3. Built-In template variables
 
-|| variable || description || example || 
+|| variable || description || example ||
 | $\{project.summary}      | project summary | |
 | $\{project.scmManager}   | scm information | |
 | $\{project.dependencies} | dependencies    | |
@@ -179,9 +178,9 @@ h4. Built-In template variables
     bq. *\[$\{pageTitle}\^attachment_name]*.
 {tip}
 
-h3. Template example
+h2. Template example
 
-{noformat} 
+{noformat}
 
 {info:title=Useful Information}
 This page has been generated by [maven-confluence-plugin|http://code.google.com/p/maven-confluence-plugin/]
@@ -192,7 +191,7 @@ This page has been generated by [maven-confluence-plugin|http://code.google.com/
 h1. Introduction
 
 {panel}
-project description 
+project description
 {panel}
 
 h1. Usage
@@ -208,9 +207,5 @@ ${project.scmManager}
 
 
 ${project.dependencies}
-  
-{noformat}  
- 
 
-${plugin.goals}
-  
+{noformat}

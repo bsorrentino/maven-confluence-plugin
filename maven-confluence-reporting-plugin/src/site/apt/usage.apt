@@ -33,35 +33,28 @@ Usage
   
 +-------------------------------------------+
 
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-site-plugin</artifactId>
-<version>3.0</version>
-<configuration>
-<reportPlugins>
-    <plugin>
-        <groupId>org.bsc.maven</groupId>
-        <artifactId>maven-confluence-reporting-plugin</artifactId>
-        <version>${plugin.version}</version>
-        <reportSets>
-            <reportSet>
-                <id>confluence</id>
-                <configuration>
-                <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
-                <spaceKey>DOCS</spaceKey>
-                <serverId>server_id_configured_in_settings_xml</serverId>
-                <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-                <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName}) - SINCE 3.1.3 -->
-                </configuration>
-                <reports>
-                    <report>confluence-summary</report>                         
-                </reports>
-            </reportSet>
-        </reportSets>                     
-    </plugin>
-</reportPlugins>
-</configuration>
-</plugin>
+ <plugin>
+  <groupId>org.bsc.maven</groupId>
+  <artifactId>confluence-reporting-maven-plugin</artifactId>
+  <configuration>
+        <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+        <spaceKey>TEST</spaceKey>
+        <parentPageTitle>Home</parentPageTitle>
+        <title>my-site-generation-test</title>
+        <labels>
+                <label>test</label>
+                <label>confluence</label>                                           
+        </labels> 
+        <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+        <wikiFilesExt>.confluence</wikiFilesExt>
+        <serverId>confluence-server-id</serverId>
+        <properties>
+                <prop>the_text_value</prop><!-- SIMPLE TEXT -->
+                <prop1>classpath:plugin-report.properties</prop1><!-- FROM CLASSPATH -->
+                <prop2>file://${basedir}/confluence.html</prop2><!-- FROM FILE SYSTEM -->
+        </properties>
+  </configuration>
+ </plugin>
 
 +-------------------------------------------+
 
