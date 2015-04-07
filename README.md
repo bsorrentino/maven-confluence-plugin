@@ -3,7 +3,6 @@ Maven's  plugin that allow to generate "project's documentation" directly to con
 originally hosted to [google code](https://code.google.com/p/maven-confluence-plugin/) from release 4.0.0 has been moved to github
 
 [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-reporting-plugin/Notation%20Guide%20-%20Confluence.html)
->>>>>>> v4
 
 |Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6) |
 |:------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
