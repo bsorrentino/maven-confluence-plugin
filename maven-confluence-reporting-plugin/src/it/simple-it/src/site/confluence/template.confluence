@@ -6,3 +6,17 @@ h2. Index
 {panel}
 
 hello again!
+
+{noformat}
+${gitlog.jiraIssues}
+{noformat}
+
+
+--------
+
+${gitlog.jiraIssues}
+
+---------
+
+
+${project.summary}

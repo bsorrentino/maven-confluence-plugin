@@ -24,6 +24,7 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.scm.manager.ScmManager;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
+import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
 import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
 import org.bsc.maven.reporting.renderer.ScmRenderer;
 import org.codehaus.plexus.i18n.I18N;
@@ -60,7 +61,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
     private static final String PROJECT_SCM_MANAGER_VAR = "project.scmManager";
     private static final String PROJECT_SUMMARY_VAR = "project.summary";
-    
+    private static final String GITLOG_JIRA_ISSUES_VAR = "gitlog.jiraIssues";
+
     /**
      * Local Repository.
      *
@@ -306,6 +308,31 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
         }
 
+
+        /////////////////////////////////////////////////////////////////
+        // CHANGELOG JIRA ISSUES
+        /////////////////////////////////////////////////////////////////
+
+        {
+
+            final StringWriter w = new StringWriter(10 * 1024);
+            final Sink sink = new ConfluenceSink(w);
+            //final Sink sink = getSink();
+
+            new GitLogJiraIssuesRenderer(sink).render();
+
+            try {
+                final String gitlog_jiraissues_var = w.toString();
+
+                getProperties().put(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var); // to share with children
+
+                t.setVariable(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var );
+
+            } catch (VariableNotDefinedException e) {
+                getLog().warn(String.format("variable %s not defined in template", GITLOG_JIRA_ISSUES_VAR));
+            }
+        }
+
         final String wiki = t.generateOutput();
 
         super.confluenceExecute(  new ConfluenceTask() {
@@ -340,6 +367,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             
             }
         });
+
          
     }
 

@@ -501,7 +501,7 @@ public class ConfluenceSink extends org.apache.maven.doxia.sink.AbstractSink {
 	@Override
 	public void rawText(String text) {
 		
-		_w.printf("rawText(%s)", text);
+		_w.print(text);
 	}
 
 	@Override
