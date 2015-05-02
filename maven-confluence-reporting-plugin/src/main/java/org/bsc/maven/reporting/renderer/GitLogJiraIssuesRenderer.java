@@ -1,10 +1,15 @@
 package org.bsc.maven.reporting.renderer;
 
+import com.github.danielflower.mavenplugins.gitlog.Generator;
+import com.github.danielflower.mavenplugins.gitlog.NoGitRepositoryException;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.model.Scm;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.util.StringUtils;
+
+import java.io.IOException;
 
 /**
  * @author ar
@@ -12,13 +17,16 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
 
+    private final Log log;
+
     /**
      * Default constructor.
      *
      * @param sink the sink to use.
      */
-    public GitLogJiraIssuesRenderer(Sink sink) {
+    public GitLogJiraIssuesRenderer(Sink sink, Log log) {
         super(sink);
+        this.log = log;
     }
 
     @Override
@@ -30,11 +38,20 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
     protected void renderBody() {
 
 
-            startSection( getTitle() );
+        //    startSection( getTitle() );
 
-            sink.rawText("{jira:TST-66458}");
+        Generator generator  = new Generator(log);
+        try {
+            generator.openRepository();
+        } catch (Exception e) {
+            log.warn("cannot open git repository " , e);
+        }
 
-            endSection();
+        String report = generator.generateIssuesReport();
+
+        sink.rawText(report);
+
+        //    endSection();
 
             return;
 

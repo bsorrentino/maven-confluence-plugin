@@ -319,7 +319,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             final Sink sink = new ConfluenceSink(w);
             //final Sink sink = getSink();
 
-            new GitLogJiraIssuesRenderer(sink).render();
+            new GitLogJiraIssuesRenderer(sink, getLog()).render();
 
             try {
                 final String gitlog_jiraissues_var = w.toString();
