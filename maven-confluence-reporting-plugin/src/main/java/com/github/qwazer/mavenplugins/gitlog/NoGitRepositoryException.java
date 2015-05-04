@@ -1,4 +1,4 @@
-package com.github.danielflower.mavenplugins.gitlog;
+package com.github.qwazer.mavenplugins.gitlog;
 
 public class NoGitRepositoryException extends Exception {
 

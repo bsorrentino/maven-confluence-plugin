@@ -1,4 +1,4 @@
-package com.github.danielflower.mavenplugins.gitlog;
+package com.github.qwazer.mavenplugins.gitlog;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
@@ -17,8 +17,8 @@ import java.util.List;
 public class VersionUtil {
 
 
-    public static List<String> calculateTagNamesOfVersions(Collection<String> versions, String currentVersion, SinceVersionRule sinceVersionRule) {
-        String tagNamePart = calculateSinceVersionTagNamePart(currentVersion, sinceVersionRule);
+    public static List<String> calculateTagNamesOfVersions(Collection<String> versions, String currentVersion, SinceVersion sinceVersion) {
+        String tagNamePart = calculateSinceVersionTagNamePart(currentVersion, sinceVersion);
         List<String> resList = new ArrayList<String>();
 
         for (String s : versions) {
@@ -31,9 +31,9 @@ public class VersionUtil {
     }
 
 
-    public static String calculateSinceVersionTagNamePart(String version, SinceVersionRule sinceVersionRule) {
+    public static String calculateSinceVersionTagNamePart(String version, SinceVersion sinceVersion) {
 
-        if (sinceVersionRule.equals(SinceVersionRule.SINCE_BEGINNING)) {
+        if (sinceVersion.equals(SinceVersion.SINCE_BEGINNING)) {
             return null;
         }
         ArtifactVersion artifactVersion = new DefaultArtifactVersion(version);
@@ -48,7 +48,7 @@ public class VersionUtil {
         int minor = artifactVersion.getMinorVersion();
         int patch = artifactVersion.getIncrementalVersion();
 
-        switch (sinceVersionRule) {
+        switch (sinceVersion) {
             case SINCE_PREV_MAJOR_RELEASE:
                 major = major == 0 ? 0 : major - 1;
                 minor = 0;
@@ -62,7 +62,7 @@ public class VersionUtil {
                 patch = patch == 0 ? 0 : patch - 1;
                 break;
             default:
-                throw new RuntimeException("cannot parse " + sinceVersionRule);
+                throw new RuntimeException("cannot parse " + sinceVersion);
         }
 
         return major + "." + minor + "." + patch;

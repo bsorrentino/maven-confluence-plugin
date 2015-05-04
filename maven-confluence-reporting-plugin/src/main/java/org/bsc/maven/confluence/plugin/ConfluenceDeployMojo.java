@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import com.github.danielflower.mavenplugins.gitlog.SinceVersionRule;
+import com.github.qwazer.mavenplugins.gitlog.SinceVersion;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -19,7 +19,6 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
-import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
@@ -153,7 +152,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * </ul>
      */
     @Parameter(defaultValue="SINCE_BEGINNING")
-    private SinceVersionRule gitLogSinceTagNameVersionRule;
+    private SinceVersion gitLogSinceTagNameVersionRule;
 
     /**
      * 
