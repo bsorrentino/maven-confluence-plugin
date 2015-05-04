@@ -50,27 +50,29 @@ public class GitLogHelper {
 
 
     public String generateIssuesReport(){
-        Set<String> jiraIssues = extractJiraIssues(walk, "ROO-\\d+");
+        Set<String> jiraIssues = extractJiraIssues(walk, "ROO-\\d+", new Date(115, 1, 1));
         return formatJiraIssuesToString(jiraIssues);
     }
 
     public String formatJiraIssuesToString(Collection<String> jiraIssues){
 
-        String res = "";
+        StringBuilder output = new StringBuilder(100);
 
         for (String jiraIssueKey : jiraIssues){
-            res += "{jira:" + jiraIssueKey + "}\n";
+            output.append("{jira:" + jiraIssueKey + "}\\\\\n");
         }
-        return res;
+        return output.toString();
 
     }
 
 
-    public static Set<String> extractJiraIssues(RevWalk revWalk, String jiraIssuePattern){
+    public static Set<String> extractJiraIssues(RevWalk revWalk, String jiraIssuePattern, Date sinceTime){
         HashSet jiraIssues = new HashSet();
-
+        final long sinceTimeInSec = sinceTime.getTime() / 1000;
         for (RevCommit commit : revWalk){
-             jiraIssues.addAll(extractJiraIssuesFromString(commit.getFullMessage(), jiraIssuePattern));
+            if (commit.getCommitTime() >= sinceTimeInSec) {
+                jiraIssues.addAll(extractJiraIssuesFromString(commit.getFullMessage(), jiraIssuePattern));
+            }
         }
 
         return jiraIssues;
