@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
+import com.github.danielflower.mavenplugins.gitlog.SinceVersionRule;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -18,6 +19,7 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
@@ -133,6 +135,25 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      */
     @Parameter(defaultValue = "${project.scm.url}")
     private String webAccessUrl;
+
+    /**
+     * Parse git log commits since specified tag name
+     */
+    @Parameter(defaultValue = "")
+    private String gitLogSinceTagName;
+
+    /**
+     * If specified, plugin will try to calculate actual gitLogSinceTagName based on current project version
+     * Possible values are
+     * <ul>
+     *     <li>SINCE_BEGINNING</li>
+     *     <li>SINCE_PREV_MAJOR_RELEASE</li>
+     *     <li>SINCE_PREV_MINOR_RELEASE</li>
+     *     <li>SINCE_PREV_PATCH_RELEASE</li>
+     * </ul>
+     */
+    @Parameter(defaultValue="SINCE_BEGINNING")
+    private SinceVersionRule gitLogSinceTagNameVersionRule;
 
     /**
      * 
@@ -318,8 +339,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             final StringWriter w = new StringWriter(10 * 1024);
             final Sink sink = new ConfluenceSink(w);
             //final Sink sink = getSink();
+            String currentVersion = project.getVersion();
 
-            new GitLogJiraIssuesRenderer(sink, getLog()).render();
+            new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, currentVersion, gitLogSinceTagNameVersionRule, getLog()).render();
 
             try {
                 final String gitlog_jiraissues_var = w.toString();
