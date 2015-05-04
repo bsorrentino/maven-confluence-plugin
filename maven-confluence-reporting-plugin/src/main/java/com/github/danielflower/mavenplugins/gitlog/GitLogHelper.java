@@ -13,27 +13,29 @@ import org.eclipse.jgit.revwalk.RevWalk;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Generator {
+public class GitLogHelper {
 
 	private RevWalk walk;
 	private Map<String, List<RevTag>> commitIDToTagsMap;
 	private final List<CommitFilter> commitFilters;
 	private final Log log;
+	private Repository repository;
 
-	public Generator(List<CommitFilter> commitFilters, Log log) {
+	public GitLogHelper(List<CommitFilter> commitFilters, Log log) {
 		this.commitFilters = (commitFilters == null) ? new ArrayList<CommitFilter>() : commitFilters;
 		this.log = log;
 	}
 
-	public Generator( Log log) {
+	public GitLogHelper(Log log) {
 		this.commitFilters =  Defaults.DEFAULT_COMMIT_FILTERS;
 		this.log = log;
 	}
 
 	public void openRepository() throws IOException, NoGitRepositoryException {
 		log.debug("About to open git repository.");
-		Repository repository;
 		try {
 			repository = new RepositoryBuilder().findGitDir().build();
 		} catch (IllegalArgumentException iae) {
@@ -48,10 +50,57 @@ public class Generator {
 
 
     public String generateIssuesReport(){
-        String result = null;
-        for (RevCommit commit : walk){
-            result += commit.getName() + " | " + commit.getFullMessage() + "\n";
+        Set<String> jiraIssues = extractJiraIssues(walk, "ROO-\\d+");
+        return formatJiraIssuesToString(jiraIssues);
+    }
+
+    public String formatJiraIssuesToString(Collection<String> jiraIssues){
+
+        String res = "";
+
+        for (String jiraIssueKey : jiraIssues){
+            res += "{jira:" + jiraIssueKey + "}\n";
         }
+        return res;
+
+    }
+
+
+    public static Set<String> extractJiraIssues(RevWalk revWalk, String jiraIssuePattern){
+        HashSet jiraIssues = new HashSet();
+
+        for (RevCommit commit : revWalk){
+             jiraIssues.addAll(extractJiraIssuesFromString(commit.getFullMessage(), jiraIssuePattern));
+        }
+
+        return jiraIssues;
+
+    }
+
+
+    protected static List<String> extractJiraIssuesFromString(String s, String jiraIssuePattern) {
+
+        Pattern p = Pattern.compile(jiraIssuePattern);
+        Matcher m = p.matcher(s);
+        List<String> list = new ArrayList<String>();
+        while (m.find()){
+           list.add(m.group(0));
+        }
+        return list;
+
+    }
+
+    public String generateIssuesReport(Date sinceDateTime){
+        String result = null;
+
+		for (String s : repository.getTags().keySet()){
+			result += s + "\n";
+
+		}
+
+//        for (RevCommit commit : walk){
+//            result += commit.getName() + " | " + commit.getFullMessage() + "\n";
+//        }
         return result;
     }
 
@@ -102,7 +151,7 @@ public class Generator {
 		return true;
 	}
 
-	private static RevWalk createWalk(Repository repository) throws IOException {
+	protected static RevWalk createWalk(Repository repository) throws IOException {
 		RevWalk walk = new RevWalk(repository);
 		ObjectId head = repository.resolve("HEAD");
 		if (head != null) {

@@ -1,15 +1,9 @@
 package org.bsc.maven.reporting.renderer;
 
-import com.github.danielflower.mavenplugins.gitlog.Generator;
-import com.github.danielflower.mavenplugins.gitlog.NoGitRepositoryException;
+import com.github.danielflower.mavenplugins.gitlog.GitLogHelper;
 import org.apache.maven.doxia.sink.Sink;
-import org.apache.maven.model.Scm;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
-import org.apache.maven.scm.repository.ScmRepository;
-import org.codehaus.plexus.util.StringUtils;
-
-import java.io.IOException;
 
 /**
  * @author ar
@@ -40,14 +34,14 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
 
         //    startSection( getTitle() );
 
-        Generator generator  = new Generator(log);
+        GitLogHelper gitLogHelper = new GitLogHelper(log);
         try {
-            generator.openRepository();
+            gitLogHelper.openRepository();
         } catch (Exception e) {
             log.warn("cannot open git repository " , e);
         }
 
-        String report = generator.generateIssuesReport();
+        String report = gitLogHelper.generateIssuesReport();
 
         sink.rawText(report);
 
