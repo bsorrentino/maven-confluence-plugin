@@ -81,5 +81,14 @@ public class GitLogHelperTest {
         assertThat(list, hasItem("ABC-154353"));
     }
 
+    @Test
+    public void testJiraIssuePattern5() {
+        String patternStr = "([A-Za-z]+)-\\d+";
+        List<String> list = GitLogHelper.extractJiraIssuesFromString("ROO-1 asq ABC-154353", patternStr);
+        assertThat(list.size(), is(2));
+        assertThat(list, hasItem("ROO-1"));
+        assertThat(list, hasItem("ABC-154353"));
+    }
+
 
 }

@@ -72,8 +72,8 @@ public class GitLogHelper {
     }
 
 
-    public String generateIssuesReport(Date sinceDate) {
-        Set<String> jiraIssues = extractJiraIssues(walk, "ROO-\\d+", sinceDate);
+    public String generateIssuesReport(Date sinceDate, String pattern) {
+        Set<String> jiraIssues = extractJiraIssues(walk, pattern, sinceDate);
         return formatJiraIssuesToString(jiraIssues);
     }
 

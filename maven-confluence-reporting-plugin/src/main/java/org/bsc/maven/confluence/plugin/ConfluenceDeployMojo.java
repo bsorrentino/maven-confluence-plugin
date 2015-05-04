@@ -154,6 +154,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     @Parameter(defaultValue="SINCE_BEGINNING")
     private SinceVersion gitLogSinceTagNameVersionRule;
 
+
+    /**
+     * Specify JIRA projects key to extract issues from gitlog
+     * By default it will try extract all strings that match pattern (A-Za-z+)-\d+
+     */
+    @Parameter(defaultValue="")
+    private List<String> jiraProjectKeyList;
+
     /**
      * 
      */
@@ -340,7 +348,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             //final Sink sink = getSink();
             String currentVersion = project.getVersion();
 
-            new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, currentVersion, gitLogSinceTagNameVersionRule, getLog()).render();
+            new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, jiraProjectKeyList, currentVersion, gitLogSinceTagNameVersionRule, getLog()).render();
 
             try {
                 final String gitlog_jiraissues_var = w.toString();

@@ -22,17 +22,19 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
     private String gitLogSinceTagName;
     private SinceVersion sinceVersion;
     private String currentVersion;
+    private List<String> jiraProjectKeyList;
 
     /**
      * Default constructor.
      *
      * @param sink the sink to use.
      */
-    public GitLogJiraIssuesRenderer(Sink sink, String gitLogSinceTagName,  String currentVersion, SinceVersion sinceVersion, Log log) {
+    public GitLogJiraIssuesRenderer(Sink sink, String gitLogSinceTagName, List<String> jiraProjectKeyList, String currentVersion, SinceVersion sinceVersion, Log log) {
         super(sink);
         this.gitLogSinceTagName = gitLogSinceTagName;
         this.currentVersion = currentVersion;
         this.sinceVersion = sinceVersion;
+        this.jiraProjectKeyList = jiraProjectKeyList;
         this.log = log;
     }
 
@@ -51,7 +53,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         try {
             gitLogHelper.openRepository();
         } catch (Exception e) {
-            log.warn("cannot open git repository " , e);
+            log.warn("cannot open git repository ", e);
         }
 
         Date sinceDate = new Date(0L);
@@ -62,42 +64,43 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
                 Collection<String> tagNames = gitLogHelper.getTagNames();
                 List<String> tagNamesOfVersions = VersionUtil.calculateTagNamesOfVersions(tagNames, currentVersion, sinceVersion);
 
-                for (String tagNameWithVersion : tagNamesOfVersions){
+                for (String tagNameWithVersion : tagNamesOfVersions) {
                     Date date = gitLogHelper.extractDateOfCommitWithTagName(tagNameWithVersion);
-                    if (date.after(sinceDate)){
+                    if (date.after(sinceDate)) {
                         sinceDate = date;
                     }
                 }
 
 
-            }  else {
+            } else {
                 sinceDate = gitLogHelper.extractDateOfCommitWithTagName(gitLogSinceTagName);
             }
         } catch (IOException e) {
-            log.warn("cannot extract date of commit with tag name " , e);
+            log.warn("cannot extract date of commit with tag name ", e);
         }
 
-        String report = gitLogHelper.generateIssuesReport(sinceDate);
+        String pattern = "([A-Za-z]+)-\\d+";
+        if (jiraProjectKeyList !=null && !jiraProjectKeyList.isEmpty()) {
+
+            String patternKeys = "";
+            for (String pkey : jiraProjectKeyList){
+                patternKeys += pkey + "|";
+            }
+            patternKeys = patternKeys.substring(0, patternKeys.length()-1);
+            pattern = "(" + patternKeys +")-\\d+";
+
+        }
+
+        String report = gitLogHelper.generateIssuesReport(sinceDate, pattern);
 
         sink.rawText(report);
 
         //    endSection();
 
-            return;
+        return;
 
 
     }
 
-//    public void render()
-//    {
-//
-//
-//        sink.body();
-//        renderBody();
-//        sink.body_();
-//
-//        sink.flush();
-//
-//        sink.close();
-//    }
+
 }
