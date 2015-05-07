@@ -1,7 +1,7 @@
 package org.bsc.maven.reporting.renderer;
 
 import com.github.qwazer.mavenplugins.gitlog.GitLogHelper;
-import com.github.qwazer.mavenplugins.gitlog.SinceVersion;
+import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import com.github.qwazer.mavenplugins.gitlog.VersionUtil;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.logging.Log;
@@ -20,7 +20,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
 
     private final Log log;
     private String gitLogSinceTagName;
-    private SinceVersion sinceVersion;
+    private CalculateRuleForSinceTagName calculateRuleForSinceTagName;
     private String currentVersion;
     private List<String> jiraProjectKeyList;
 
@@ -29,11 +29,11 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
      *
      * @param sink the sink to use.
      */
-    public GitLogJiraIssuesRenderer(Sink sink, String gitLogSinceTagName, List<String> jiraProjectKeyList, String currentVersion, SinceVersion sinceVersion, Log log) {
+    public GitLogJiraIssuesRenderer(Sink sink, String gitLogSinceTagName, List<String> jiraProjectKeyList, String currentVersion, CalculateRuleForSinceTagName calculateRuleForSinceTagName, Log log) {
         super(sink);
         this.gitLogSinceTagName = gitLogSinceTagName;
         this.currentVersion = currentVersion;
-        this.sinceVersion = sinceVersion;
+        this.calculateRuleForSinceTagName = calculateRuleForSinceTagName;
         this.jiraProjectKeyList = jiraProjectKeyList;
         this.log = log;
     }
@@ -59,14 +59,14 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         Date sinceDate = new Date(0L);
         try {
 
-            if (!SinceVersion.SINCE_BEGINNING.equals(sinceVersion)) {
+            if (!CalculateRuleForSinceTagName.NO_RULE.equals(calculateRuleForSinceTagName)) {
                 log.debug(String.format(
                         "Try to calculated tag name part by currentVersion %s and sinceVersion %s"
-                        , currentVersion, sinceVersion));
-                String tagNamePart = VersionUtil.calculateSinceVersionTagNamePart(currentVersion, sinceVersion);
+                        , currentVersion, calculateRuleForSinceTagName));
+                String tagNamePart = VersionUtil.calculateSinceVersionTagNamePart(currentVersion, calculateRuleForSinceTagName);
                 log.info(String.format("Calculated tag name part %s", tagNamePart));
                 Collection<String> tagNames = gitLogHelper.getTagNames();
-                List<String> tagNamesOfVersions = VersionUtil.calculateTagNamesOfVersions(tagNames, currentVersion, sinceVersion);
+                List<String> tagNamesOfVersions = VersionUtil.calculateTagNamesOfVersions(tagNames, currentVersion, calculateRuleForSinceTagName);
 
                 for (String tagNameWithVersion : tagNamesOfVersions) {
                     Date date = gitLogHelper.extractDateOfCommitWithTagName(tagNameWithVersion);

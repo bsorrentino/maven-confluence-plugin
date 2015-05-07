@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import com.github.qwazer.mavenplugins.gitlog.SinceVersion;
+import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -142,17 +142,18 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private String gitLogSinceTagName;
 
     /**
-     * If specified, plugin will try to calculate actual gitLogSinceTagName based on current project version
+     * If specified, plugin will try to calculate and replace actual gitLogSinceTagName value
+     * based on current project version ${project.version} and provided rule.
      * Possible values are
      * <ul>
-     *     <li>SINCE_BEGINNING</li>
+     *     <li>NO_RULE</li>
      *     <li>SINCE_PREV_MAJOR_RELEASE</li>
      *     <li>SINCE_PREV_MINOR_RELEASE</li>
      *     <li>SINCE_PREV_PATCH_RELEASE</li>
      * </ul>
      */
-    @Parameter(defaultValue="SINCE_BEGINNING")
-    private SinceVersion gitLogSinceTagNameVersionRule;
+    @Parameter(defaultValue="NO_RULE")
+    private CalculateRuleForSinceTagName gitLogCalculateRuleForSinceTagName;
 
 
     /**
@@ -348,7 +349,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             //final Sink sink = getSink();
             String currentVersion = project.getVersion();
 
-            new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, jiraProjectKeyList, currentVersion, gitLogSinceTagNameVersionRule, getLog()).render();
+            new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, jiraProjectKeyList, currentVersion, gitLogCalculateRuleForSinceTagName, getLog()).render();
 
             try {
                 final String gitlog_jiraissues_var = w.toString();

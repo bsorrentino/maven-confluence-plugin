@@ -17,8 +17,8 @@ import java.util.List;
 public class VersionUtil {
 
 
-    public static List<String> calculateTagNamesOfVersions(Collection<String> versions, String currentVersion, SinceVersion sinceVersion) {
-        String tagNamePart = calculateSinceVersionTagNamePart(currentVersion, sinceVersion);
+    public static List<String> calculateTagNamesOfVersions(Collection<String> versions, String currentVersion, CalculateRuleForSinceTagName calculateRuleForSinceTagName) {
+        String tagNamePart = calculateSinceVersionTagNamePart(currentVersion, calculateRuleForSinceTagName);
         List<String> resList = new ArrayList<String>();
 
         for (String s : versions) {
@@ -31,9 +31,9 @@ public class VersionUtil {
     }
 
 
-    public static String calculateSinceVersionTagNamePart(String version, SinceVersion sinceVersion) {
+    public static String calculateSinceVersionTagNamePart(String version, CalculateRuleForSinceTagName calculateRuleForSinceTagName) {
 
-        if (sinceVersion.equals(SinceVersion.SINCE_BEGINNING)) {
+        if (calculateRuleForSinceTagName.equals(CalculateRuleForSinceTagName.NO_RULE)) {
             return null;
         }
         ArtifactVersion artifactVersion = new DefaultArtifactVersion(version);
@@ -48,7 +48,7 @@ public class VersionUtil {
         int minor = artifactVersion.getMinorVersion();
         int patch = artifactVersion.getIncrementalVersion();
 
-        switch (sinceVersion) {
+        switch (calculateRuleForSinceTagName) {
             case SINCE_PREV_MAJOR_RELEASE:
                 major = major == 0 ? 0 : major - 1;
                 minor = 0;
@@ -62,7 +62,7 @@ public class VersionUtil {
                 patch = patch == 0 ? 0 : patch - 1;
                 break;
             default:
-                throw new RuntimeException("cannot parse " + sinceVersion);
+                throw new RuntimeException("cannot parse " + calculateRuleForSinceTagName);
         }
 
         return major + "." + minor + "." + patch;
