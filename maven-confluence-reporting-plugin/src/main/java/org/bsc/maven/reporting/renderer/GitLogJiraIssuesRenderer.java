@@ -53,14 +53,18 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         try {
             gitLogHelper.openRepository();
         } catch (Exception e) {
-            log.warn("cannot open git repository ", e);
+            log.warn("cannot open git repository with message " + e.getMessage());
         }
 
         Date sinceDate = new Date(0L);
         try {
 
             if (!SinceVersion.SINCE_BEGINNING.equals(sinceVersion)) {
+                log.debug(String.format(
+                        "Try to calculated tag name part by currentVersion %s and sinceVersion %s"
+                        , currentVersion, sinceVersion));
                 String tagNamePart = VersionUtil.calculateSinceVersionTagNamePart(currentVersion, sinceVersion);
+                log.info(String.format("Calculated tag name part %s", tagNamePart));
                 Collection<String> tagNames = gitLogHelper.getTagNames();
                 List<String> tagNamesOfVersions = VersionUtil.calculateTagNamesOfVersions(tagNames, currentVersion, sinceVersion);
 
@@ -79,6 +83,8 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
             log.warn("cannot extract date of commit with tag name ", e);
         }
 
+        log.debug("Date of commit with tagName " + gitLogSinceTagName + " is " + sinceDate);
+
         String pattern = "([A-Za-z]+)-\\d+";
         if (jiraProjectKeyList !=null && !jiraProjectKeyList.isEmpty()) {
 
@@ -90,7 +96,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
             pattern = "(" + patternKeys +")-\\d+";
 
         }
-
+        log.info("Extract issues from gitlog since " + sinceDate + " by pattern " + pattern);
         String report = gitLogHelper.generateIssuesReport(sinceDate, pattern);
 
         sink.rawText(report);

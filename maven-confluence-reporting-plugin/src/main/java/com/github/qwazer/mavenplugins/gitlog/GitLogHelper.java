@@ -28,15 +28,15 @@ public class GitLogHelper {
     }
 
     public void openRepository() throws IOException, NoGitRepositoryException {
-        log.debug("About to open git repository.");
+        log.debug("Try to open git repository.");
         try {
             repository = new RepositoryBuilder().findGitDir().build();
         } catch (IllegalArgumentException iae) {
             throw new NoGitRepositoryException();
         }
-        log.debug("Opened " + repository + ". About to load the commits.");
+        log.debug("Opened " + repository + ". Try to load the commits.");
         walk = createWalk(repository);
-        log.debug("Loaded commits. about to load the tags.");
+        log.debug("Loaded commits. try to load the tags.");
         tagNames = repository.getTags().keySet();
         log.debug("Loaded tag names: " + tagNames);
     }
@@ -66,6 +66,7 @@ public class GitLogHelper {
             }
 
         }
+
 
         return result;
 
