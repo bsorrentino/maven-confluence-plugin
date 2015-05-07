@@ -136,10 +136,22 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private String webAccessUrl;
 
     /**
-     * Parse git log commits since specified tag name
+     * Set to true for enabling substitution of ${gitlog.jiraIssues} build-in variable
+     */
+    @Parameter(defaultValue = "false")
+    private Boolean gitLogJiraIssuesEnable;
+
+    /**
+     * Parse git log commits since last occurrence of specified tag name
      */
     @Parameter(defaultValue = "")
     private String gitLogSinceTagName;
+
+    /**
+     * Parse git log commits untill first occurrence of specified tag name
+     */
+    @Parameter(defaultValue = "")
+    private String gitLogUntilTagName;    //todo use
 
     /**
      * If specified, plugin will try to calculate and replace actual gitLogSinceTagName value
@@ -161,7 +173,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * By default it will try extract all strings that match pattern (A-Za-z+)-\d+
      */
     @Parameter(defaultValue="")
-    private List<String> jiraProjectKeyList;
+    private List<String> gitLogJiraProjectKeyList;
+
+    /**
+     * The pattern to filter out tagName. Can be used for filter only version tags.
+     */
+    @Parameter(defaultValue="")
+    private String gitLogTagNamesPattern;   //todo
+
 
     /**
      * 
@@ -338,28 +357,31 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }
 
 
+
         /////////////////////////////////////////////////////////////////
         // CHANGELOG JIRA ISSUES
         /////////////////////////////////////////////////////////////////
+        if (gitLogJiraIssuesEnable) {
 
-        {
+            {
 
-            final StringWriter w = new StringWriter(10 * 1024);
-            final Sink sink = new ConfluenceSink(w);
-            //final Sink sink = getSink();
-            String currentVersion = project.getVersion();
+                final StringWriter w = new StringWriter(10 * 1024);
+                final Sink sink = new ConfluenceSink(w);
+                //final Sink sink = getSink();
+                String currentVersion = project.getVersion();
 
-            new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, jiraProjectKeyList, currentVersion, gitLogCalculateRuleForSinceTagName, getLog()).render();
+                new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, gitLogJiraProjectKeyList, currentVersion, gitLogCalculateRuleForSinceTagName, getLog()).render();
 
-            try {
-                final String gitlog_jiraissues_var = w.toString();
+                try {
+                    final String gitlog_jiraissues_var = w.toString();
 
-                getProperties().put(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var); // to share with children
+                    getProperties().put(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var); // to share with children
 
-                t.setVariable(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var );
+                    t.setVariable(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var);
 
-            } catch (VariableNotDefinedException e) {
-                getLog().warn(String.format("variable %s not defined in template", GITLOG_JIRA_ISSUES_VAR));
+                } catch (VariableNotDefinedException e) {
+                    getLog().warn(String.format("variable %s not defined in template", GITLOG_JIRA_ISSUES_VAR));
+                }
             }
         }
 

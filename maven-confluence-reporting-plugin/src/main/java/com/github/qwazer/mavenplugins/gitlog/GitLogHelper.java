@@ -126,6 +126,7 @@ public class GitLogHelper {
             // if head is null, it means there are no commits in the repository.  The walk will be empty.
             RevCommit mostRecentCommit = walk.parseCommit(head);
             walk.markStart(mostRecentCommit);
+            //todo  http://wiki.eclipse.org/JGit/User_Guide#Reducing_memory_usage_with_RevWalk
         }
         return walk;
     }

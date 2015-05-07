@@ -38,7 +38,6 @@ public class VersionUtil {
         }
         ArtifactVersion artifactVersion = new DefaultArtifactVersion(version);
         if (ArtifactUtils.isSnapshot(version)) {
-            //work around for MBUILDHELPER-69
             artifactVersion = new DefaultArtifactVersion(StringUtils.substring(version, 0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1));
         }
         if (version.equals(artifactVersion.getQualifier())) {
