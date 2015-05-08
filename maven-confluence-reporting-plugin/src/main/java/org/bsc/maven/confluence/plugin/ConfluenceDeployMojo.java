@@ -1,12 +1,7 @@
 package org.bsc.maven.confluence.plugin;
 
-import java.io.StringWriter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -20,36 +15,34 @@ import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
-import org.apache.maven.scm.manager.ScmManager;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
-import org.bsc.maven.reporting.renderer.DependenciesRenderer;
-import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
-import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
-import org.bsc.maven.reporting.renderer.ScmRenderer;
-import org.codehaus.plexus.i18n.I18N;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
-
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import java.util.List;
-import java.util.Set;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
+import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.bsc.maven.reporting.model.Site;
+import org.bsc.maven.reporting.renderer.DependenciesRenderer;
+import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
+import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
+import org.bsc.maven.reporting.renderer.ScmRenderer;
 import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.i18n.I18N;
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.Page;
+
+import java.io.StringWriter;
+import java.util.*;
 
 /**
  * 
@@ -63,6 +56,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private static final String PROJECT_SCM_MANAGER_VAR = "project.scmManager";
     private static final String PROJECT_SUMMARY_VAR = "project.summary";
     private static final String GITLOG_JIRA_ISSUES_VAR = "gitlog.jiraIssues";
+    private static final String GITLOG_SINCE_TAG_NAME = "gitlog.sinceTagName";
 
     /**
      * Local Repository.
@@ -370,19 +364,29 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 //final Sink sink = getSink();
                 String currentVersion = project.getVersion();
 
-                new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, gitLogJiraProjectKeyList, currentVersion, gitLogCalculateRuleForSinceTagName, getLog()).render();
+                GitLogJiraIssuesRenderer gitLogJiraIssuesRenderer = new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, gitLogJiraProjectKeyList, currentVersion,
+                        gitLogCalculateRuleForSinceTagName, gitLogTagNamesPattern, getLog());
+                gitLogJiraIssuesRenderer.render();
+
+                gitLogSinceTagName = gitLogJiraIssuesRenderer.getGitLogSinceTagName();
 
                 try {
                     final String gitlog_jiraissues_var = w.toString();
-
                     getProperties().put(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var); // to share with children
-
                     t.setVariable(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var);
 
                 } catch (VariableNotDefinedException e) {
-                    getLog().warn(String.format("variable %s not defined in template", GITLOG_JIRA_ISSUES_VAR));
+                    getLog().info(String.format("variable %s not defined in template", GITLOG_JIRA_ISSUES_VAR));
                 }
             }
+
+            try {
+                getProperties().put(GITLOG_SINCE_TAG_NAME, gitLogSinceTagName); // to share with children
+                t.setVariable(GITLOG_SINCE_TAG_NAME, gitLogSinceTagName);
+            } catch (VariableNotDefinedException e) {
+                getLog().debug(String.format("variable %s not defined in template", GITLOG_SINCE_TAG_NAME));
+            }
+
         }
 
         final String wiki = t.generateOutput();

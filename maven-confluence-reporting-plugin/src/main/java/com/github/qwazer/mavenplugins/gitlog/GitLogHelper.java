@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class GitLogHelper {
 
     private RevWalk walk;
-    private Set<String> tagNames;
+    private Set<String> versionTagList;
     private final Log log;
     private Repository repository;
 
@@ -27,7 +27,7 @@ public class GitLogHelper {
         this.log = log;
     }
 
-    public void openRepository() throws IOException, NoGitRepositoryException {
+    public void openRepositoryAndInitVersionTagList(String gitLogTagNamesPattern) throws IOException, NoGitRepositoryException {
         log.debug("Try to open git repository.");
         try {
             repository = new RepositoryBuilder().findGitDir().build();
@@ -36,9 +36,16 @@ public class GitLogHelper {
         }
         log.debug("Opened " + repository + ". Try to load the commits.");
         walk = createWalk(repository);
-        log.debug("Loaded commits. try to load the tags.");
-        tagNames = repository.getTags().keySet();
-        log.debug("Loaded tag names: " + tagNames);
+        log.debug("Loaded commits. try to load version tags.");
+        versionTagList = new HashSet<String>();
+
+        for (String tagName : repository.getTags().keySet()){
+            if (tagName.matches(gitLogTagNamesPattern)){
+                versionTagList.add(tagName);
+            }
+        }
+
+        log.debug("Loaded version tag names: " + versionTagList);
     }
 
 
@@ -132,7 +139,7 @@ public class GitLogHelper {
     }
 
 
-    public Set<String> getTagNames() {
-        return tagNames;
+    public Set<String> getVersionTagList() {
+        return versionTagList;
     }
 }

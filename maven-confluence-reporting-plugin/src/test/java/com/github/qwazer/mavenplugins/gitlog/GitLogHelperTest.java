@@ -21,6 +21,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
  * @author ar
  * @since Date: 04.05.2015
  */
+@Ignore
 public class GitLogHelperTest {
     private static final String repoFile =
             "/home/ar/projects/github/maven-confluence-plugin/maven-confluence-reporting-plugin/src/it/spring-roo/pom.xml";
