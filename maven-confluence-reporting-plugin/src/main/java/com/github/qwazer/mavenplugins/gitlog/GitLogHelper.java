@@ -37,12 +37,16 @@ public class GitLogHelper {
         log.debug("Opened " + repository + ". Try to load the commits.");
         walk = createWalk(repository);
         log.debug("Loaded commits. try to load version tags.");
-        versionTagList = new HashSet<String>();
 
-        for (String tagName : repository.getTags().keySet()){
-            if (tagName.matches(gitLogTagNamesPattern)){
-                versionTagList.add(tagName);
+        if (gitLogTagNamesPattern!=null) {
+            versionTagList  = new HashSet<String>();
+            for (String tagName : repository.getTags().keySet()) {
+                if (tagName.matches(gitLogTagNamesPattern)) {
+                    versionTagList.add(tagName);
+                }
             }
+        } else {
+            versionTagList = repository.getTags().keySet();
         }
 
         log.debug("Loaded version tag names: " + versionTagList);

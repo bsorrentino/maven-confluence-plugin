@@ -45,13 +45,41 @@ public class VersionUtil {
         return major + "." + minor + "." + patch;
     }
 
-    private static ArtifactVersion parseArtifactVersion(String version) {
+    protected static ArtifactVersion parseArtifactVersion(String version) {
+        version = version.replaceAll("\\s", "");
         version = removeNonDigitPrefix(version);
+        version = addSuffixDelimeterIfNeeded(version);
         ArtifactVersion artifactVersion = new DefaultArtifactVersion(version);
         if (ArtifactUtils.isSnapshot(version)) {
             artifactVersion = new DefaultArtifactVersion(StringUtils.substring(version, 0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1));
         }
         return artifactVersion;
+    }
+
+    /**
+     * Maven DefaultArtifactVersion use '-' sign as delimeter from project version
+     * So version like 1.2.3.RELEASE will not parsed properly without modifications
+     * @see DefaultArtifactVersion
+     * @param version
+     * @return
+     */
+    protected static String addSuffixDelimeterIfNeeded(String version) {
+        if (version.contains("-")) return version;
+        int i = 0;
+        for (; i < version.length(); i++) {
+            if (!Character.isDigit(version.charAt(i)) &&
+                    version.charAt(i) != '.') {
+                break;
+            }
+        }
+        if (i > 0) {
+            if (version.charAt(i-1) == '.') {
+                return version.substring(0, i - 1) + "-" + version.substring(i, version.length());
+            } else {
+                return version.substring(0, i) + "-" + version.substring(i, version.length());
+            }
+        } else
+            return version;
     }
 
     protected static String removeNonDigitPrefix(String version) {
@@ -60,10 +88,10 @@ public class VersionUtil {
                 Matcher matcher = Pattern.compile("\\d+").matcher(version);
                 int i = 0;
                 if (matcher.find()) {
-                    i = matcher.end();
+                    i = matcher.start();
                 }
                 if (i > 0) {
-                    version = StringUtils.substring(version, i - 1, version.length());
+                    version = StringUtils.substring(version, i, version.length());
                 }
             }
         }

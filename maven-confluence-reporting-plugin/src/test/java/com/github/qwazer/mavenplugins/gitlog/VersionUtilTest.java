@@ -1,5 +1,6 @@
 package com.github.qwazer.mavenplugins.gitlog;
 
+import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.junit.Test;
 
 import java.util.List;
@@ -45,11 +46,130 @@ public class VersionUtilTest {
         String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_CURRENT_MAJOR_VERSION);
         assertEquals("1.0.0", part);
     }
+
     @Test
     public void testCalculateVersionTagNamePartMajorZero() throws Exception {
         String version = "2.0.0";
         String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_CURRENT_MAJOR_VERSION);
         assertEquals("2.0.0", part);
+    }
+
+
+    @Test
+    public void testParseArtifactVersionSimple() throws Exception {
+        String version = "2.1.10";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(2, artifactVersion.getMajorVersion());
+        assertEquals(1, artifactVersion.getMinorVersion());
+        assertEquals(10, artifactVersion.getIncrementalVersion());
+
+    }
+
+    @Test
+    public void testParseArtifactVersionSimple2() throws Exception {
+        String version = "v25.1.9010";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(25, artifactVersion.getMajorVersion());
+        assertEquals(1, artifactVersion.getMinorVersion());
+        assertEquals(9010, artifactVersion.getIncrementalVersion());
+
+    }
+
+    public void testParseArtifactVersionSimple3() throws Exception {
+        String version = "saasa v254545.11.9010";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(254545, artifactVersion.getMajorVersion());
+        assertEquals(11, artifactVersion.getMinorVersion());
+        assertEquals(9010, artifactVersion.getIncrementalVersion());
+
+    }
+
+    @Test
+    public void testParseArtifactVersionPrefix() throws Exception {
+        String version = "asa-2.1.10";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(2, artifactVersion.getMajorVersion());
+        assertEquals(1, artifactVersion.getMinorVersion());
+        assertEquals(10, artifactVersion.getIncrementalVersion());
+
+    }
+
+    @Test
+    public void testParseArtifactVersionPrefix2() throws Exception {
+        String version = "V 2.1.10";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(2, artifactVersion.getMajorVersion());
+        assertEquals(1, artifactVersion.getMinorVersion());
+        assertEquals(10, artifactVersion.getIncrementalVersion());
+
+
+    }
+
+    @Test
+    public void testParseArtifactVersionSuffix() throws Exception {
+        String version = "2.1.10-V";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(2, artifactVersion.getMajorVersion());
+        assertEquals(1, artifactVersion.getMinorVersion());
+        assertEquals(10, artifactVersion.getIncrementalVersion());
+
+    }
+
+    @Test
+    public void testParseArtifactVersionIncomplete() throws Exception {
+        String version = "2.1";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(2, artifactVersion.getMajorVersion());
+        assertEquals(1, artifactVersion.getMinorVersion());
+        assertEquals(0, artifactVersion.getIncrementalVersion());
+
+    }
+
+    @Test
+    public void testParseArtifactVersionSuffix2() throws Exception {
+        String version = "2.1.10 v";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(2, artifactVersion.getMajorVersion());
+        assertEquals(1, artifactVersion.getMinorVersion());
+        assertEquals(10, artifactVersion.getIncrementalVersion());
+    }
+
+    @Test
+    public void testParseArtifactVersionSuffix3() throws Exception {
+        String version = "2.v";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(2, artifactVersion.getMajorVersion());
+        assertEquals(0, artifactVersion.getMinorVersion());
+        assertEquals(0, artifactVersion.getIncrementalVersion());
+    }
+
+    @Test
+    public void testParseArtifactVersionSuffix4() throws Exception {
+        String version = "25 version of progamm";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(25, artifactVersion.getMajorVersion());
+        assertEquals(0, artifactVersion.getMinorVersion());
+        assertEquals(0, artifactVersion.getIncrementalVersion());
+    }
+    @Test
+    public void testParseArtifactVersionMix() throws Exception {
+        String version = "this is version 25.9 of progamm";
+        ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
+        assertEquals(25, artifactVersion.getMajorVersion());
+        assertEquals(9, artifactVersion.getMinorVersion());
+        assertEquals(0, artifactVersion.getIncrementalVersion());
+    }
+
+    @Test
+    public void testAddSuffixIfNeeded() throws Exception {
+        String s = VersionUtil.addSuffixDelimeterIfNeeded("1.2.3v");
+        assertEquals("1.2.3-v", s);
+    }
+
+    @Test
+    public void testAddSuffixIfNeeded2() throws Exception {
+        String s = VersionUtil.addSuffixDelimeterIfNeeded("1.2.3.v");
+        assertEquals("1.2.3-v", s);
     }
 
     @Test
@@ -146,20 +266,21 @@ public class VersionUtilTest {
     public void testRemoveNonDigitPrefix() throws Exception {
         String s = "1.2.3";
         String r = VersionUtil.removeNonDigitPrefix(s);
-        assertEquals(s,r);
+        assertEquals(s, r);
     }
+
     @Test
     public void testRemoveNonDigitPrefix2() throws Exception {
         String s = "abs-1.2.3";
         String r = VersionUtil.removeNonDigitPrefix(s);
-        assertEquals("1.2.3",r);
+        assertEquals("1.2.3", r);
     }
 
     @Test
     public void testRemoveNonDigitPrefix3() throws Exception {
         String s = "";
         String r = VersionUtil.removeNonDigitPrefix(s);
-        assertEquals("",r);
+        assertEquals("", r);
     }
 
     @Test
@@ -198,6 +319,24 @@ public class VersionUtilTest {
 
         String foundVersion = VersionUtil.findNearestVersionTagsBefore(list, version);
         assertEquals("v8.2.0", foundVersion);
+
+    }
+
+    @Test
+    public void testFindNearestVersionTagsRealCase03() throws Exception {
+
+        List<String> list = asList("1.0.0.M1", "1.0.0.M2", "1.0.0.RC1", "1.0.0.RC2",
+                "1.0.0.RC3", "1.0.0.RC4", "1.0.0.RELEASE",
+                "1.0.1.RELEASE", "1.0.2.RELEASE", "1.1.0.M2",
+                "1.1.0.M3", "1.1.0.RC1", "1.1.0.RELEASE", "1.1.1.RELEASE",
+                "1.1.2.RELEASE", "1.1.3.RELEASE", "1.1.4.RELEASE", "1.1.5.RELEASE",
+                "1.2.0.M1", "1.2.0.RC1", "1.2.0.RELEASE", "1.2.1.RELEASE", "1.2.2.RELEASE",
+                "1.2.3.RELEASE", "1.2.4.RELEASE", "1.2.5.RELEASE", "1.3.0.RELEASE", "1.3.1.RC1",
+                "1.3.1.RC2", "1.3.1.RELEASE");
+        String version = "1.3.0";
+
+        String foundVersion = VersionUtil.findNearestVersionTagsBefore(list, version);
+        assertEquals("1.3.0.RELEASE", foundVersion);
 
     }
 

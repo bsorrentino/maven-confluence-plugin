@@ -381,6 +381,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
 
             try {
+                if (gitLogSinceTagName==null){
+                    gitLogSinceTagName="beginning of gitlog";
+                }
                 getProperties().put(GITLOG_SINCE_TAG_NAME, gitLogSinceTagName); // to share with children
                 t.setVariable(GITLOG_SINCE_TAG_NAME, gitLogSinceTagName);
             } catch (VariableNotDefinedException e) {

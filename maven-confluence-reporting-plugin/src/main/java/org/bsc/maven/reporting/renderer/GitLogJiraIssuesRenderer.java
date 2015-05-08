@@ -57,42 +57,47 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         try {
             gitLogHelper.openRepositoryAndInitVersionTagList(gitLogTagNamesPattern);
         } catch (Exception e) {
-            log.warn("cannot open git repository with message " + e.getMessage());
+            log.warn("cannot open git repository and init VersionTagList with error " + e);
         }
 
         Date sinceDate = new Date(0L);
 
 
-            if (!CalculateRuleForSinceTagName.NO_RULE.equals(calculateRuleForSinceTagName)) {
-                log.debug(String.format(
-                        "Try to calculate tag name part by currentVersion %s and rule %s"
-                        , currentVersion, calculateRuleForSinceTagName));
-                String tagNamePart = VersionUtil.calculateVersionTagNamePart(currentVersion, calculateRuleForSinceTagName);
-                log.info(String.format("Calculated tag name part is %s", tagNamePart));
-                Collection<String> versionTagList = gitLogHelper.getVersionTagList();
-                String nearestVersionTagName = VersionUtil.findNearestVersionTagsBefore(versionTagList, tagNamePart);
-                log.info("Nearest version tag name found: " + nearestVersionTagName);
-                gitLogSinceTagName = nearestVersionTagName;
-            }
-
-
-        try {
-            sinceDate = gitLogHelper.extractDateOfCommitWithTagName(gitLogSinceTagName);
-        } catch (IOException e) {
-            log.warn("cannot extract date of commit with tag name ", e);
+        if (!CalculateRuleForSinceTagName.NO_RULE.equals(calculateRuleForSinceTagName)) {
+            log.debug(String.format(
+                    "Try to calculate tag name part by currentVersion %s and rule %s"
+                    , currentVersion, calculateRuleForSinceTagName));
+            String tagNamePart = VersionUtil.calculateVersionTagNamePart(currentVersion, calculateRuleForSinceTagName);
+            log.info(String.format("Calculated tag name part is %s", tagNamePart));
+            Collection<String> versionTagList = gitLogHelper.getVersionTagList();
+            String nearestVersionTagName = VersionUtil.findNearestVersionTagsBefore(versionTagList, tagNamePart);
+            log.info("Nearest version tag name found: " + nearestVersionTagName);
+            gitLogSinceTagName = nearestVersionTagName;
         }
+
+        if (gitLogSinceTagName==null || gitLogSinceTagName.isEmpty()) {
+            log.warn("gitLogSinceTagName is not specified and cannot be calculated via calculateRuleForSinceTagName");
+        }
+        else {
+            try {
+                sinceDate = gitLogHelper.extractDateOfCommitWithTagName(gitLogSinceTagName);
+            } catch (IOException e) {
+                log.warn("cannot extract date of commit with tag name ", e);
+            }
+        }
+
 
         log.debug("Date of commit with tagName " + gitLogSinceTagName + " is " + sinceDate);
 
         String pattern = "([A-Za-z]+)-\\d+";
-        if (jiraProjectKeyList !=null && !jiraProjectKeyList.isEmpty()) {
+        if (jiraProjectKeyList != null && !jiraProjectKeyList.isEmpty()) {
 
             String patternKeys = "";
-            for (String pkey : jiraProjectKeyList){
+            for (String pkey : jiraProjectKeyList) {
                 patternKeys += pkey + "|";
             }
-            patternKeys = patternKeys.substring(0, patternKeys.length()-1);
-            pattern = "(" + patternKeys +")-\\d+";
+            patternKeys = patternKeys.substring(0, patternKeys.length() - 1);
+            pattern = "(" + patternKeys + ")-\\d+";
 
         }
         log.info("Extract issues from gitlog since " + sinceDate + " by pattern " + pattern);
