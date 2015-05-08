@@ -153,9 +153,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * Possible values are
      * <ul>
      *     <li>NO_RULE</li>
-     *     <li>SINCE_PREV_MAJOR_RELEASE</li>
-     *     <li>SINCE_PREV_MINOR_RELEASE</li>
-     *     <li>SINCE_PREV_PATCH_RELEASE</li>
+     *     <li>SINCE_CURRENT_MAJOR_VERSION</li>
+     *     <li>SINCE_CURRENT_MINOR_VERSION</li>
+     *     <li>SINCE_PREVIOUS_PATCH_VERSION</li>
      * </ul>
      */
     @Parameter(defaultValue="NO_RULE")

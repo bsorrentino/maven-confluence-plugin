@@ -28,21 +28,14 @@ public class VersionUtil {
         int patch = artifactVersion.getIncrementalVersion();
 
         switch (calculateRuleForSinceTagName) {
-            case SINCE_PREV_MAJOR_RELEASE:
-                if (minor == 0 && patch == 0) {
-                    major = major == 0 ? 0 : major - 1;
-                } else {
-                    minor = 0;
-                    patch = 0;
-                }
-                break;
-            case SINCE_PREV_MINOR_RELEASE:
-                if (patch == 0) {
-                    minor = minor == 0 ? 0 : minor - 1;
-                }
+            case SINCE_CURRENT_MAJOR_VERSION:
+                minor = 0;
                 patch = 0;
                 break;
-            case SINCE_PREV_PATCH_RELEASE:
+            case SINCE_CURRENT_MINOR_VERSION:
+                patch = 0;
+                break;
+            case SINCE_PREVIOUS_PATCH_VERSION:
                 patch = patch == 0 ? 0 : patch - 1;
                 break;
             default:

@@ -7,7 +7,7 @@ package com.github.qwazer.mavenplugins.gitlog;
  */
 public enum CalculateRuleForSinceTagName {
     NO_RULE,
-    SINCE_PREV_MAJOR_RELEASE,
-    SINCE_PREV_MINOR_RELEASE,
-    SINCE_PREV_PATCH_RELEASE
+    SINCE_CURRENT_MAJOR_VERSION,
+    SINCE_CURRENT_MINOR_VERSION,
+    SINCE_PREVIOUS_PATCH_VERSION
 }
