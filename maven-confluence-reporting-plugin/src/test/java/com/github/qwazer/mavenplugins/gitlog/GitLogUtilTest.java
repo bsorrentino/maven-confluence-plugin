@@ -3,19 +3,14 @@ package com.github.qwazer.mavenplugins.gitlog;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.exparity.hamcrest.date.DateMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static com.github.qwazer.mavenplugins.gitlog.GitLogUtil.fetchCommitsFromStartTagToEndTag;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.hasItem;

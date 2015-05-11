@@ -41,7 +41,6 @@ public class GitLogUtil {
         return versionTagList;
     }
 
-
     protected static RevCommit resolveCommitIdByTagName(Repository repository, String tagName) throws IOException {
         if (tagName == null || tagName.isEmpty()) return null;
         RevCommit revCommit = null;
@@ -73,7 +72,6 @@ public class GitLogUtil {
 
     }
 
-
     public static Set<String> extractJiraIssues(Repository repository,
                                                 String sinceTagName,
                                                 String untilTagName,
@@ -92,19 +90,6 @@ public class GitLogUtil {
         return extractJiraIssues(pattern, commits);
     }
 
-
-    protected static Iterable<RevCommit> fetchCommitsFromStartTagToEndTag(Repository repository, String startTagName, String endTagName) throws IOException, GitAPIException {
-        Git git = new Git(repository);
-        ObjectId startTag1 = repository.resolve("refs/tags/" + startTagName);
-        RevCommit startCommitId = resolveCommitIdByTagName(repository, startTagName);
-
-        ObjectId endTag = repository.resolve(endTagName);
-        return git.log().add(startCommitId).call();
-
-
-    }
-
-
     private static Set<String> extractJiraIssues(String pattern, Iterable<RevCommit> commits) {
         HashSet jiraIssues = new HashSet();
         for (RevCommit commit : commits) {
@@ -112,9 +97,6 @@ public class GitLogUtil {
         }
         return jiraIssues;
     }
-
-
-
 
 
     protected static List<String> extractJiraIssuesFromString(String s, String jiraIssuePattern) {
