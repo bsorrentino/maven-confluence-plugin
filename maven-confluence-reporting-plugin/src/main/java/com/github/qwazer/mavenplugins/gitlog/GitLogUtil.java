@@ -90,6 +90,24 @@ public class GitLogUtil {
         return extractJiraIssues(pattern, commits);
     }
 
+
+    public static LinkedHashMap<String, Set<String>> extractJiraIssuesByVersion(Repository repository,
+                                                                          List<String> versionTagList,
+                                                                          String pattern) throws IOException, GitAPIException {
+
+        LinkedHashMap<String, Set<String>> linkedHashMap = new LinkedHashMap<String, Set<String>>();
+
+
+        int lenght = versionTagList.size();
+        for (int i = 0; i < lenght; i++) {
+            String sinceTagName = versionTagList.get(i);
+            String untilTagName = i + 1 > lenght - 1 ? null : versionTagList.get(i + 1);
+            linkedHashMap.put(versionTagList.get(i), extractJiraIssues(repository, sinceTagName, untilTagName, pattern));
+        }
+        return linkedHashMap;
+    }
+
+
     private static Set<String> extractJiraIssues(String pattern, Iterable<RevCommit> commits) {
         HashSet jiraIssues = new HashSet();
         for (RevCommit commit : commits) {
@@ -110,6 +128,4 @@ public class GitLogUtil {
         return list;
 
     }
-
-
 }

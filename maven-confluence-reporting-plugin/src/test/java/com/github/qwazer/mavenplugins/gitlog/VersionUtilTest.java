@@ -3,10 +3,12 @@ package com.github.qwazer.mavenplugins.gitlog;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 
 public class VersionUtilTest {
@@ -362,5 +364,21 @@ public class VersionUtilTest {
 
     }
 
+    @Test
+    public void testSortAndFilter() throws Exception {
+        List<String> list = asList("1.0.0.M1", "1.1.0.M2", "1.1.1.RELEASE","1.2.5.RELEASE" );
+        LinkedList linkedList =  VersionUtil.sortAndFilter(list, "1.1.0.M2", "1.1.1.RELEASE") ;
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.contains("1.1.0.M2"));
+        assertTrue(linkedList.contains("1.1.1.RELEASE"));
 
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSortAndFilterIllegal() throws Exception {
+        List<String> list = asList("1.0.0.M1", "1.1.0.M2", "1.1.1.RELEASE","1.2.5.RELEASE" );
+        LinkedList linkedList =  VersionUtil.sortAndFilter(list, "2.1.0.M2", "1.1.1.RELEASE") ;
+
+
+    }
 }

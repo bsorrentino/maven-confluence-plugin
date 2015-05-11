@@ -1,5 +1,7 @@
 package com.github.qwazer.mavenplugins.gitlog;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -60,10 +62,11 @@ public class VersionUtil {
      * Maven DefaultArtifactVersion use '-' sign as delimeter from project version
      * So version like 1.2.3.RELEASE will not parsed properly without modifications
      * Also Maven DefaultArtifactVersion is not compatable with OSGI version format and with Semantic Versioning
-     * @see DefaultArtifactVersion
-     * @see <a href="http://semver.org/">Semantic Versioning</a>
+     *
      * @param version
      * @return
+     * @see DefaultArtifactVersion
+     * @see <a href="http://semver.org/">Semantic Versioning</a>
      */
     protected static String addSuffixDelimeterIfNeeded(String version) {
         if (version.contains("-")) return version;
@@ -75,7 +78,7 @@ public class VersionUtil {
             }
         }
         if (i > 0) {
-            if (version.charAt(i-1) == '.') {
+            if (version.charAt(i - 1) == '.') {
                 return version.substring(0, i - 1) + "-" + version.substring(i, version.length());
             } else {
                 return version.substring(0, i) + "-" + version.substring(i, version.length());
@@ -134,6 +137,67 @@ public class VersionUtil {
         } else {
             return null;
         }
+    }
+
+
+    public static LinkedList<String> sortAndFilter(Collection<String> versionNameList,
+                                                   String start,
+                                                   String end) {
+
+        final ArtifactVersion startVersion = parseArtifactVersion(start);
+        final ArtifactVersion endVersion;
+        if (end != null && !end.isEmpty()) {
+            endVersion = parseArtifactVersion(end);
+        } else {
+            endVersion = null;
+        }
+
+
+        if (endVersion!=null && startVersion.compareTo(endVersion) > 0) {
+            throw new IllegalArgumentException(
+                    String.format("startVersion %s must be less or equals to endVersion %s",
+                            startVersion, endVersion));
+
+        }
+
+        LinkedList<String> linkedList = new LinkedList<String>();
+
+        Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
+
+        for (String versionTag : versionNameList) {
+            map.put(parseArtifactVersion(versionTag), versionTag);
+        }
+
+
+        List<ArtifactVersion> artifactVersionSet = new ArrayList<ArtifactVersion>(map.keySet());
+
+
+        CollectionUtils.filter(artifactVersionSet, new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                ArtifactVersion current = (ArtifactVersion) o;
+                if (endVersion != null) {
+                    if (startVersion.compareTo(current) <= 0
+                            &&
+                            endVersion.compareTo(current) >= 0) {
+                        return true;
+                    }
+                } else {
+                    if (startVersion.compareTo(current) <= 0) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        });
+
+        Collections.sort(artifactVersionSet);
+        for (ArtifactVersion artifactVersion : artifactVersionSet) {
+            linkedList.add(map.get(artifactVersion));
+        }
+        return linkedList;
+
     }
 
 }

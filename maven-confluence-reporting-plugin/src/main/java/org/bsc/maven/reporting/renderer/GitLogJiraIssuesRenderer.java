@@ -6,13 +6,9 @@ import com.github.qwazer.mavenplugins.gitlog.VersionUtil;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author ar
@@ -27,6 +23,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
     private String currentVersion;
     private String gitLogTagNamesPattern;
     private List<String> jiraProjectKeyList;
+    private Boolean gitLogGroupByVersions;
 
     /**
      * Default constructor.
@@ -35,7 +32,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
      */
     public GitLogJiraIssuesRenderer(Sink sink, String gitLogSinceTagName, String gitLogUntilTagName, List<String> jiraProjectKeyList,
                                     String currentVersion, CalculateRuleForSinceTagName calculateRuleForSinceTagName,
-                                    String gitLogTagNamesPattern, Log log) {
+                                    String gitLogTagNamesPattern, Boolean gitLogGroupByVersions, Log log) {
         super(sink);
         this.gitLogSinceTagName = gitLogSinceTagName;
         this.gitLogUntilTagName = gitLogUntilTagName;
@@ -43,6 +40,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         this.calculateRuleForSinceTagName = calculateRuleForSinceTagName;
         this.jiraProjectKeyList = jiraProjectKeyList;
         this.gitLogTagNamesPattern = gitLogTagNamesPattern;
+        this.gitLogGroupByVersions = gitLogGroupByVersions;
         this.log = log;
     }
 
@@ -55,6 +53,20 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         }
         return output.toString();
 
+    }
+
+    private static String formatJiraIssuesByVersionToString(LinkedHashMap<String, Set<String>> map) {
+        StringBuilder output = new StringBuilder(100);
+        //print the keys in reverse insertion order
+        ListIterator<String> iter =
+                new ArrayList<String>(map.keySet()).listIterator(map.size());
+
+        while (iter.hasPrevious()) {
+            String version = iter.previous();
+            output.append(formatJiraIssuesToString(map.get(version)));
+            output.append(" \\\\ " + version + " \\\\ ");
+        }
+        return output.toString();
     }
 
     @Override
@@ -93,30 +105,60 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
 
         String pattern = "([A-Za-z]+)-\\d+";
         if (jiraProjectKeyList != null && !jiraProjectKeyList.isEmpty()) {
+            pattern = craetePatternFromJiraProjectKeyList();
+        }
 
-            String patternKeys = "";
-            for (String pkey : jiraProjectKeyList) {
-                patternKeys += pkey + "|";
+
+        String report="";
+        if (gitLogGroupByVersions){
+            LinkedHashMap<String,Set<String>> jiraIssuesByVersion = null;
+            try {
+                LinkedList<String> linkedList = VersionUtil.sortAndFilter(versionTagList,
+                        gitLogSinceTagName,
+                        gitLogUntilTagName );
+
+                jiraIssuesByVersion = GitLogUtil.extractJiraIssuesByVersion(repository,
+                        linkedList,
+                        pattern);
+            } catch (Exception e) {
+                log.error("cannot extractJiraIssues with error " + e);
             }
-            patternKeys = patternKeys.substring(0, patternKeys.length() - 1);
-            pattern = "(" + patternKeys + ")-\\d+";
 
+            if (jiraIssuesByVersion!=null) {
+                log.info(String.format("Found %d versions", jiraIssuesByVersion.keySet().size()));
+                log.debug(": " + jiraIssuesByVersion);
+                report = formatJiraIssuesByVersionToString(jiraIssuesByVersion);
+            }
+            else {
+                report = "NO JIRAISSUESBYVERSION FOUND";
+            }
         }
-
-
-        Set<String> jiraIssues = null;
-        try {
-            jiraIssues = GitLogUtil.extractJiraIssues(repository, gitLogSinceTagName, gitLogUntilTagName, pattern);
-        } catch (Exception e) {
-            log.error("cannot extractJiraIssues with error " + e);
+        else {
+            Set<String> jiraIssues = null;
+            try {
+                jiraIssues = GitLogUtil.extractJiraIssues(repository, gitLogSinceTagName, gitLogUntilTagName, pattern);
+            } catch (Exception e) {
+                log.error("cannot extractJiraIssues with error " + e);
+            }
+            log.info(String.format("Found %d jira issues", jiraIssues.size()));
+            log.debug(": " + jiraIssues);
+            report = formatJiraIssuesToString(jiraIssues);
         }
-        log.info(String.format("Found %d jira issues", jiraIssues.size()));
-        log.debug(": " + jiraIssues);
-
-        String report = formatJiraIssuesToString(jiraIssues);
 
         sink.rawText(report);
 
+    }
+
+
+    private String craetePatternFromJiraProjectKeyList() {
+        String pattern;
+        String patternKeys = "";
+        for (String pkey : jiraProjectKeyList) {
+            patternKeys += pkey + "|";
+        }
+        patternKeys = patternKeys.substring(0, patternKeys.length() - 1);
+        pattern = "(" + patternKeys + ")-\\d+";
+        return pattern;
     }
 
     private void overrideGitLogSinceTagNameIfNeeded(Set<String> versionTagList) {

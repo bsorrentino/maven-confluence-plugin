@@ -175,6 +175,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     @Parameter(defaultValue="")
     private String gitLogTagNamesPattern;
 
+    /**
+     * Enable grouping by versions tag
+     */
+    @Parameter(defaultValue="false")
+    private Boolean gitLogGroupByVersions;
+
 
     /**
      * 
@@ -371,6 +377,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         currentVersion,
                         gitLogCalculateRuleForSinceTagName,
                         gitLogTagNamesPattern,
+                        gitLogGroupByVersions,
                         getLog());
                 gitLogJiraIssuesRenderer.render();
 

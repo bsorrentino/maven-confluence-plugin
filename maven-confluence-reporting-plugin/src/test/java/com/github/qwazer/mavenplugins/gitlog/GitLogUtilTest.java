@@ -8,9 +8,12 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -86,4 +89,20 @@ public class GitLogUtilTest {
     }
 
 
+    @Test
+    public void testExtractJiraIssuesByVersion() throws Exception {
+        List<String> list = asList("1.0.0.M1", "1.0.0.M2", "1.0.0.RC1", "1.0.0.RC2",
+                "1.0.0.RC3", "1.0.0.RC4", "1.0.0.RELEASE",
+                "1.0.1.RELEASE", "1.0.2.RELEASE", "1.1.0.M2",
+                "1.1.0.M3", "1.1.0.RC1", "1.1.0.RELEASE", "1.1.1.RELEASE",
+                "1.1.2.RELEASE", "1.1.3.RELEASE", "1.1.4.RELEASE", "1.1.5.RELEASE",
+                "1.2.0.M1", "1.2.0.RC1", "1.2.0.RELEASE", "1.2.1.RELEASE", "1.2.2.RELEASE",
+                "1.2.3.RELEASE", "1.2.4.RELEASE", "1.2.5.RELEASE", "1.3.0.RELEASE", "1.3.1.RC1",
+                "1.3.1.RC2", "1.3.1.RELEASE");
+     //   LinkedList linkedList =
+        HashMap<String, Set<String>> map =  GitLogUtil.extractJiraIssuesByVersion(repository, list, pattern);
+        assertEquals(list.size(), map.size());
+//        System.out.println("map = " + map);
+
+    }
 }
