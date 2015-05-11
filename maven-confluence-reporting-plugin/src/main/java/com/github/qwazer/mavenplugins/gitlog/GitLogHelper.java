@@ -1,6 +1,7 @@
 package com.github.qwazer.mavenplugins.gitlog;
 
 import org.apache.maven.plugin.logging.Log;
+import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -84,20 +85,8 @@ public class GitLogHelper {
     }
 
 
-    public String generateIssuesReport(Date sinceDate, String pattern) {
-        Set<String> jiraIssues = extractJiraIssues(walk, pattern, sinceDate);
-        return formatJiraIssuesToString(jiraIssues);
-    }
-
-    public String formatJiraIssuesToString(Collection<String> jiraIssues) {
-
-        StringBuilder output = new StringBuilder(100);
-
-        for (String jiraIssueKey : jiraIssues) {
-            output.append("{jira:" + jiraIssueKey + "}\\\\\n");
-        }
-        return output.toString();
-
+    public Set<String> extractJiraIssues(Date sinceDate, String pattern) {
+        return  extractJiraIssues(walk, pattern, sinceDate);
     }
 
 

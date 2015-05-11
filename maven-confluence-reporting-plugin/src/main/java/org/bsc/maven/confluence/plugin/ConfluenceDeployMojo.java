@@ -173,7 +173,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * The pattern to filter out tagName. Can be used for filter only version tags.
      */
     @Parameter(defaultValue="")
-    private String gitLogTagNamesPattern;   //todo
+    private String gitLogTagNamesPattern;
 
 
     /**

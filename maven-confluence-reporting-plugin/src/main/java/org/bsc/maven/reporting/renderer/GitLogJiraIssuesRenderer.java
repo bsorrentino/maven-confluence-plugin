@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author ar
@@ -40,6 +41,17 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         this.jiraProjectKeyList = jiraProjectKeyList;
         this.gitLogTagNamesPattern = gitLogTagNamesPattern;
         this.log = log;
+    }
+
+    public static String formatJiraIssuesToString(Collection<String> jiraIssues) {
+
+        StringBuilder output = new StringBuilder(100);
+
+        for (String jiraIssueKey : jiraIssues) {
+            output.append("{jira:" + jiraIssueKey + "}\\\\\n");
+        }
+        return output.toString();
+
     }
 
     @Override
@@ -101,7 +113,12 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
 
         }
         log.info("Extract issues from gitlog since " + sinceDate + " by pattern " + pattern);
-        String report = gitLogHelper.generateIssuesReport(sinceDate, pattern);
+
+        Set<String> jiraIssues = gitLogHelper.extractJiraIssues(sinceDate, pattern);
+        log.info(String.format("Found %d jira issues", jiraIssues.size()));
+        log.debug(": " + jiraIssues);
+
+        String report = formatJiraIssuesToString(jiraIssues);
 
         sink.rawText(report);
 
