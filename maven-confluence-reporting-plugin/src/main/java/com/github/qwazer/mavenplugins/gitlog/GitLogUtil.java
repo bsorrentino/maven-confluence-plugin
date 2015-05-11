@@ -109,7 +109,7 @@ public class GitLogUtil {
 
 
     private static Set<String> extractJiraIssues(String pattern, Iterable<RevCommit> commits) {
-        HashSet jiraIssues = new HashSet();
+        HashSet jiraIssues = new LinkedHashSet();  //preserve insertion order
         for (RevCommit commit : commits) {
             jiraIssues.addAll(extractJiraIssuesFromString(commit.getFullMessage(), pattern));
         }
