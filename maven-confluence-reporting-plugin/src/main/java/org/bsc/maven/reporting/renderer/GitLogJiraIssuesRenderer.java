@@ -64,7 +64,9 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         while (iter.hasPrevious()) {
             String version = iter.previous();
             output.append(formatJiraIssuesToString(map.get(version)));
-            output.append(" \\\\ " + version + " \\\\ ");
+            if (iter.hasPrevious()) {
+                output.append("\n \\\\ " + version + " \\\\ \n");
+            }
         }
         return output.toString();
     }
