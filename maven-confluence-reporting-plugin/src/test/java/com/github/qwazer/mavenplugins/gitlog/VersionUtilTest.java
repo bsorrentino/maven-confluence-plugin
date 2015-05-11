@@ -75,6 +75,7 @@ public class VersionUtilTest {
 
     }
 
+    @Test
     public void testParseArtifactVersionSimple3() throws Exception {
         String version = "saasa v254545.11.9010";
         ArtifactVersion artifactVersion = VersionUtil.parseArtifactVersion(version);
@@ -260,6 +261,27 @@ public class VersionUtilTest {
         assertEquals("tagName", foundVersion);
 
 
+    }
+
+    @Test
+    public void testFindNearestVersionTagsBeforeLeadingZero() throws Exception {
+
+        List<String> list = asList("01.05", "01.03", "01.01");
+        String version = "01.02";
+
+        String foundVersion = VersionUtil.findNearestVersionTagsBefore(list, version);
+        assertEquals("01.01", foundVersion);
+    }
+
+
+    @Test
+    public void testFindNearestVersionTagsBeforeLeadingZeroPrefix() throws Exception {
+
+        List<String> list = asList("v01.05", "v01.03", "v01.01");
+        String version = "01.02";
+
+        String foundVersion = VersionUtil.findNearestVersionTagsBefore(list, version);
+        assertEquals("v01.01", foundVersion);
     }
 
     @Test
