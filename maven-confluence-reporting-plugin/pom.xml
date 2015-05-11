@@ -193,13 +193,17 @@ TEST
         </dependency>
 
         <dependency>
-            <groupId>com.madgag</groupId>
+            <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>2.99.99.2.0-UNOFFICIAL-ROBERTO-RELEASE</version>
+            <version>4.0.0.201505050340-m2</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.jcraft</groupId>
                     <artifactId>jsch</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
