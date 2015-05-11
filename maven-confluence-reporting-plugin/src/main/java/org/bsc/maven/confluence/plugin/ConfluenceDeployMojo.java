@@ -145,7 +145,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * Parse git log commits untill first occurrence of specified tag name
      */
     @Parameter(defaultValue = "")
-    private String gitLogUntilTagName;    //todo use
+    private String gitLogUntilTagName;
 
     /**
      * If specified, plugin will try to calculate and replace actual gitLogSinceTagName value
@@ -364,8 +364,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 //final Sink sink = getSink();
                 String currentVersion = project.getVersion();
 
-                GitLogJiraIssuesRenderer gitLogJiraIssuesRenderer = new GitLogJiraIssuesRenderer(sink, gitLogSinceTagName, gitLogJiraProjectKeyList, currentVersion,
-                        gitLogCalculateRuleForSinceTagName, gitLogTagNamesPattern, getLog());
+                GitLogJiraIssuesRenderer gitLogJiraIssuesRenderer = new GitLogJiraIssuesRenderer(sink,
+                        gitLogSinceTagName,
+                        gitLogUntilTagName,
+                        gitLogJiraProjectKeyList,
+                        currentVersion,
+                        gitLogCalculateRuleForSinceTagName,
+                        gitLogTagNamesPattern,
+                        getLog());
                 gitLogJiraIssuesRenderer.render();
 
                 gitLogSinceTagName = gitLogJiraIssuesRenderer.getGitLogSinceTagName();
