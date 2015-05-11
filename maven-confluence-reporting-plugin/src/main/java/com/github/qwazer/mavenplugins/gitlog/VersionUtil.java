@@ -59,7 +59,9 @@ public class VersionUtil {
     /**
      * Maven DefaultArtifactVersion use '-' sign as delimeter from project version
      * So version like 1.2.3.RELEASE will not parsed properly without modifications
+     * Also Maven DefaultArtifactVersion is not compatable with OSGI version format and with Semantic Versioning
      * @see DefaultArtifactVersion
+     * @see <a href="http://semver.org/">Semantic Versioning</a>
      * @param version
      * @return
      */
@@ -110,31 +112,25 @@ public class VersionUtil {
 
     public static String findNearestVersionTagsBefore(Collection<String> versionTagList, String versionTagNamePart) {
 
-        Map<ArtifactVersion, String> artifactVersionStringMap = new HashMap<ArtifactVersion, String>();
+        Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
 
         for (String versionTag : versionTagList) {
-            artifactVersionStringMap.put(parseArtifactVersion(versionTag), versionTag);
+            map.put(parseArtifactVersion(versionTag), versionTag);
         }
 
         ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
 
-        List<ArtifactVersion> sortedList = new ArrayList<ArtifactVersion>(artifactVersionStringMap.keySet());
+        List<ArtifactVersion> sortedList = new ArrayList<ArtifactVersion>(map.keySet());
 
         Collections.sort(sortedList);
-
-//        Comparator<ArtifactVersion> comparator = new Comparator<ArtifactVersion>() {
-//            public int compare(ArtifactVersion a1, ArtifactVersion a2) {
-//                return a1.compareTo(a2);
-//            }
-//        };
 
         int index = Collections.binarySearch(sortedList, currentVersion, null);
 
         if (index >= 0) {
-            return artifactVersionStringMap.get(sortedList.get(index));
+            return map.get(sortedList.get(index));
         }
         if (sortedList.size() > 0) {
-            return artifactVersionStringMap.get(sortedList.get(-index - 2));
+            return map.get(sortedList.get(-index - 2));
         } else {
             return null;
         }
