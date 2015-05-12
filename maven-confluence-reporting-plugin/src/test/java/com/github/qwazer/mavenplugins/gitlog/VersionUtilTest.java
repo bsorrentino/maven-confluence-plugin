@@ -17,42 +17,42 @@ public class VersionUtilTest {
     @Test
     public void testCalculateVersionTagNamePartPatch() throws Exception {
         String version = "1.2.3";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_PREVIOUS_PATCH_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.PREVIOUS_PATCH_VERSION);
         assertEquals("1.2.2", part);
     }
 
     @Test
     public void testCalculateVersionTagNamePartPatchSame() throws Exception {
         String version = "1.2.0";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_PREVIOUS_PATCH_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.PREVIOUS_PATCH_VERSION);
         assertEquals("1.2.0", part);
     }
 
     @Test
     public void testCalculateVersionTagNamePartMinor() throws Exception {
         String version = "1.2.1";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_CURRENT_MINOR_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.CURRENT_MINOR_VERSION);
         assertEquals("1.2.0", part);
     }
 
     @Test
     public void testCalculateVersionTagNamePartMinorZeroPatch() throws Exception {
         String version = "1.2.0";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_CURRENT_MINOR_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.CURRENT_MINOR_VERSION);
         assertEquals("1.2.0", part);
     }
 
     @Test
     public void testCalculateVersionTagNamePartMajor() throws Exception {
         String version = "1.2.0";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_CURRENT_MAJOR_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.CURRENT_MAJOR_VERSION);
         assertEquals("1.0.0", part);
     }
 
     @Test
     public void testCalculateVersionTagNamePartMajorZero() throws Exception {
         String version = "2.0.0";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.SINCE_CURRENT_MAJOR_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.CURRENT_MAJOR_VERSION);
         assertEquals("2.0.0", part);
     }
 

@@ -49,7 +49,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         StringBuilder output = new StringBuilder(100);
 
         for (String jiraIssueKey : jiraIssues) {
-            output.append("{jira:" + jiraIssueKey + "}\\\\\n");
+            output.append("{jira:").append(jiraIssueKey).append("}\\\\\n");
         }
         return output.toString();
 
@@ -64,8 +64,12 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         while (iter.hasPrevious()) {
             String version = iter.previous();
             output.append(formatJiraIssuesToString(map.get(version)));
+            boolean hasIssues = map.get(version).isEmpty();
             if (iter.hasPrevious()) {
-                output.append("\n \\\\ " + version + " \\\\ \n");
+                if (!hasIssues) {
+                    output.append(" \\\\ ");
+                }
+                output.append(version).append(" \\\\ ");
             }
         }
         return output.toString();

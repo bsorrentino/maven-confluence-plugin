@@ -30,14 +30,14 @@ public class VersionUtil {
         int patch = artifactVersion.getIncrementalVersion();
 
         switch (calculateRuleForSinceTagName) {
-            case SINCE_CURRENT_MAJOR_VERSION:
+            case CURRENT_MAJOR_VERSION:
                 minor = 0;
                 patch = 0;
                 break;
-            case SINCE_CURRENT_MINOR_VERSION:
+            case CURRENT_MINOR_VERSION:
                 patch = 0;
                 break;
-            case SINCE_PREVIOUS_PATCH_VERSION:
+            case PREVIOUS_PATCH_VERSION:
                 patch = patch == 0 ? 0 : patch - 1;
                 break;
             default:

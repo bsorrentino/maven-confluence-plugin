@@ -1,9 +1,9 @@
 package com.github.qwazer.mavenplugins.gitlog;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;

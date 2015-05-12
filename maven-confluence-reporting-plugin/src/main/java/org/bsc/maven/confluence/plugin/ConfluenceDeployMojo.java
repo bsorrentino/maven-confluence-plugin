@@ -142,7 +142,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private String gitLogSinceTagName;
 
     /**
-     * Parse git log commits untill first occurrence of specified tag name
+     * Parse git log commits until first occurrence of specified tag name
      */
     @Parameter(defaultValue = "")
     private String gitLogUntilTagName;
@@ -153,9 +153,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * Possible values are
      * <ul>
      *     <li>NO_RULE</li>
-     *     <li>SINCE_CURRENT_MAJOR_VERSION</li>
-     *     <li>SINCE_CURRENT_MINOR_VERSION</li>
-     *     <li>SINCE_PREVIOUS_PATCH_VERSION</li>
+     *     <li>CURRENT_MAJOR_VERSION</li>
+     *     <li>CURRENT_MINOR_VERSION</li>
+     *     <li>PREVIOUS_PATCH_VERSION</li>
      * </ul>
      */
     @Parameter(defaultValue="NO_RULE")
