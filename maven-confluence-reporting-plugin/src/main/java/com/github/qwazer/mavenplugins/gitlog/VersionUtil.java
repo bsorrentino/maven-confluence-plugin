@@ -37,7 +37,7 @@ public class VersionUtil {
             case CURRENT_MINOR_VERSION:
                 patch = 0;
                 break;
-            case PREVIOUS_PATCH_VERSION:
+            case LATEST_RELEASE_VERSION:
                 patch = patch == 0 ? 0 : patch - 1;
                 break;
             default:

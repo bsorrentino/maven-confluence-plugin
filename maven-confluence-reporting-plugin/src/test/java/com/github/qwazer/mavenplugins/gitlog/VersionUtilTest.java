@@ -17,14 +17,14 @@ public class VersionUtilTest {
     @Test
     public void testCalculateVersionTagNamePartPatch() throws Exception {
         String version = "1.2.3";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.PREVIOUS_PATCH_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.LATEST_RELEASE_VERSION);
         assertEquals("1.2.2", part);
     }
 
     @Test
     public void testCalculateVersionTagNamePartPatchSame() throws Exception {
         String version = "1.2.0";
-        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.PREVIOUS_PATCH_VERSION);
+        String part = VersionUtil.calculateVersionTagNamePart(version, CalculateRuleForSinceTagName.LATEST_RELEASE_VERSION);
         assertEquals("1.2.0", part);
     }
 

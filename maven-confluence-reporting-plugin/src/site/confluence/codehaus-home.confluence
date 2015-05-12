@@ -182,7 +182,7 @@ h4. Git log configuration
      * NO_RULE
      * CURRENT_MAJOR_VERSION
      * CURRENT_MINOR_VERSION
-     * PREVIOUS_PATCH_VERSION
+     * LATEST_RELEASE_VERSION
  * gitLogJiraProjectKeyList JIRA projects key to extract issues from gitlog. By default it will try extract all strings that match pattern (A-Za-z+)-\d+
  * gitLogTagNamesPattern The pattern to filter out tagName. Can be used for filter only version tags
  * gitLogGroupByVersions Enable grouping by versions tag

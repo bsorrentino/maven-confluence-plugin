@@ -9,5 +9,5 @@ public enum CalculateRuleForSinceTagName {
     NO_RULE,
     CURRENT_MAJOR_VERSION,
     CURRENT_MINOR_VERSION,
-    PREVIOUS_PATCH_VERSION
+    LATEST_RELEASE_VERSION
 }
