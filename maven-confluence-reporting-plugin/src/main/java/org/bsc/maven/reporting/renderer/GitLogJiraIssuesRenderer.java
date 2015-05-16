@@ -98,11 +98,11 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         Set<String> versionTagList = GitLogUtil.loadVersionTagList(repository, gitLogTagNamesPattern);
 
         if (!CalculateRuleForSinceTagName.NO_RULE.equals(calculateRuleForSinceTagName)) {
-            log.debug(String.format(
+            log.info(String.format(
                     "Try to calculate tag name part by currentVersion %s and rule %s"
                     , currentVersion, calculateRuleForSinceTagName));
             overrideGitLogSinceTagNameIfNeeded(versionTagList);
-            log.info("Nearest version tag name found: " + gitLogSinceTagName);
+            log.info("Override gitLogSinceTagName by nearest version tag name found: " + gitLogSinceTagName);
         }
 
         if (gitLogSinceTagName==null || gitLogSinceTagName.isEmpty()) {
@@ -127,11 +127,11 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
                         linkedList,
                         pattern);
             } catch (Exception e) {
-                log.error("cannot extractJiraIssues with error " + e);
+                log.error("cannot extractJiraIssues with error " + e, e);
             }
 
             if (jiraIssuesByVersion!=null) {
-                log.info(String.format("Found %d versions", jiraIssuesByVersion.keySet().size()));
+                log.info(String.format("Found %d version tags", jiraIssuesByVersion.keySet().size()));
                 log.debug(": " + jiraIssuesByVersion);
                 report = formatJiraIssuesByVersionToString(jiraIssuesByVersion);
             }
@@ -144,9 +144,9 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
             try {
                 jiraIssues = GitLogUtil.extractJiraIssues(repository, gitLogSinceTagName, gitLogUntilTagName, pattern);
             } catch (Exception e) {
-                log.error("cannot extractJiraIssues with error " + e);
+                log.error("cannot extractJiraIssues with error " + e, e);
             }
-            log.info(String.format("Found %d jira issues", jiraIssues.size()));
+            log.info(String.format("Found %d JIRA issues", jiraIssues.size()));
             log.debug(": " + jiraIssues);
             report = formatJiraIssuesToString(jiraIssues);
         }

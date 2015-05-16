@@ -41,7 +41,7 @@ public class GitLogUtil {
         return versionTagList;
     }
 
-    protected static RevCommit resolveCommitIdByTagName(Repository repository, String tagName) throws IOException {
+    protected static RevCommit resolveCommitIdByTagName(Repository repository, String tagName) throws IOException, GitAPIException {
         if (tagName == null || tagName.isEmpty()) return null;
         RevCommit revCommit = null;
         Map<String, Ref> tagMap = repository.getTags();
@@ -50,8 +50,19 @@ public class GitLogUtil {
             RevWalk walk = new RevWalk(repository);
             //some reduce memory effors as described in jgit user guide
             walk.setRetainBody(false);
-            ObjectId from = repository.resolve("refs/heads/master");
+            ObjectId from;
+
+            from = repository.resolve("refs/heads/master");
+            if (from == null) {
+                Git git = new Git(repository);
+                String lastTagName = git.describe().call();
+                from = repository.resolve("refs/tags/" + lastTagName);
+            }
             ObjectId to = repository.resolve("refs/remotes/origin/master");
+
+            if (from==null){
+                throw new IllegalStateException("cannot determinate start commit");
+            }
             walk.markStart(walk.parseCommit(from));
             walk.markUninteresting(walk.parseCommit(to));
             try {
@@ -63,7 +74,7 @@ public class GitLogUtil {
                 }
 
             } finally {
-                walk.release();
+                walk.close();
             }
 
         }
