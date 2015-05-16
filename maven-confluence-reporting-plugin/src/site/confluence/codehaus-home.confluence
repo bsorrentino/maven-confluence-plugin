@@ -187,7 +187,7 @@ h4. Git log configuration options
  * {{gitLogTagNamesPattern}} The pattern to filter out tagName. Can be used for filter only version tags
  * {{gitLogGroupByVersions}} Enable grouping by versions tag
 
- h4. Sample produced output of $\{gitlog.jiraIssues}
+ h4. Sample produced output of $\{gitlog.jiraIssues}  with  gitLogGroupByVersions=true
 
 !gitlog-sample02.png!
 
