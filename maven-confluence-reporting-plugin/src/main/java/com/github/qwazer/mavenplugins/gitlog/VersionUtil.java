@@ -133,7 +133,12 @@ public class VersionUtil {
             return map.get(sortedList.get(index));
         }
         if (sortedList.size() > 0) {
-            return map.get(sortedList.get(-index - 2));
+            if (-index-2>=0) {
+                return map.get(sortedList.get(-index - 2));
+            }
+            else {
+                return null;
+            }
         } else {
             return null;
         }
