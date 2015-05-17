@@ -8,6 +8,13 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 |:------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 ### News ###
+
+May 2015 (in development) 
+
+  * New build-in variables for automated release version publishing in Confluence of your maven project that managed under GIT and JIRA
+  Plugin will automaticaly extract list of resolved JIRA issues since previous version. Thanks to [Anton Reshetnikov](mailto:resheto@gmail.com) for pull request.
+  
+
 |Jan 20,2015 | **Release 4.1.1**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.1.1%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
