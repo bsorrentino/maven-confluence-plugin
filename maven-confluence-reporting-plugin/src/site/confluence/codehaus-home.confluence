@@ -165,7 +165,7 @@ h3. Built-In template variables
 | $\{artifactId}           | artifactId      | ${artifactId} |
 | $\{version}              | version         | ${version} |
 | $\{gitlog.jiraIssues}    | list of JIRA issuses, extracted from gitlog since start tag   | |
-| $\{gitlog.sinceTagName}  | name of version tag to start extract jira issues   | |
+| $\{gitlog.sinceTagName}  | name of version tag to start extract JIRA issues   | |
 
 h3. Git log template variables
 Main idea is automated creating of release notes with list of resolved JIRA issues utilizing integration between JIRA and Confluence.

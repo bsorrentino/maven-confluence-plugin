@@ -127,6 +127,7 @@ public class VersionUtil {
 
         Collections.sort(sortedList);
 
+        //the index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1).
         int index = Collections.binarySearch(sortedList, currentVersion, null);
 
         if (index >= 0) {

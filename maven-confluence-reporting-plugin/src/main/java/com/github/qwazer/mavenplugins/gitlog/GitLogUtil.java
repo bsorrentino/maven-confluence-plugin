@@ -12,6 +12,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Util methods for work with GIT repo
+ * @author ar
+ * @since Date: 04.05.2015
+ */
 public class GitLogUtil {
 
 

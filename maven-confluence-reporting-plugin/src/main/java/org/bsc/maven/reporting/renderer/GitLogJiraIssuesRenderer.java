@@ -77,16 +77,12 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
 
     @Override
     public String getTitle() {
-        return "GitLogJiraIssuesRendererTitle";  //todo implement getTitle in GitLogJiraIssuesRenderer
+        return "";
     }
 
     @Override
     protected void renderBody() {
 
-
-        //    startSection( getTitle() );
-
-        //GitLogUtil gitLogUtil = new GitLogUtil(log);
         Repository repository = null;
         try {
             log.debug("Try to open git repository.");
