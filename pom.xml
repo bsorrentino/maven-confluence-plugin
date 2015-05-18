@@ -4,7 +4,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.2-SNAPSHOT</version>
+  <version>4.3-SNAPSHOT</version>
   <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
   <description><![CDATA[
     Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
@@ -178,7 +178,8 @@
     <artifactId>maven-javadoc-plugin</artifactId>
     <version>2.9.1</version>
     <configuration>
-   <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
+        <additionalparam>-Xdoclint:none</additionalparam>
+       <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
     </configuration>
 </plugin>
     </plugins>
