@@ -7,7 +7,7 @@
     <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
     </description>
-    <url>http://code.google.com/p/maven-confluence-plugin/</url>
+    <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
     <name>CONFLUENCE-REPORTING::Plugin - ${project.version}</name>
     <organization>
         <name>Bartolomeo Sorrentino</name>
@@ -24,9 +24,9 @@
     </properties>
 
   <scm>
-	<connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
-	<developerConnection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</developerConnection>
-	<url>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</url>
+	<connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
+	<developerConnection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</developerConnection>
+	<url>https://github.com/bsorrentino/maven-confluence-plugin.git</url>
     <tag>HEAD</tag>
   </scm>
 
