@@ -131,18 +131,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     /**
      * Set to true for enabling substitution of ${gitlog.jiraIssues} build-in variable
+     *      
+     * @since 4.2
      */
     @Parameter(defaultValue = "false")
     private Boolean gitLogJiraIssuesEnable;
 
     /**
      * Parse git log commits since last occurrence of specified tag name
+     *      
+     * @since 4.2
      */
     @Parameter(defaultValue = "")
     private String gitLogSinceTagName;
 
     /**
      * Parse git log commits until first occurrence of specified tag name
+     * 
+     * @since 4.2
      */
     @Parameter(defaultValue = "")
     private String gitLogUntilTagName;
@@ -157,6 +163,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      *     <li>CURRENT_MINOR_VERSION</li>
      *     <li>LATEST_RELEASE_VERSION</li>
      * </ul>
+     *      
+     * @since 4.2
      */
     @Parameter(defaultValue="NO_RULE")
     private CalculateRuleForSinceTagName gitLogCalculateRuleForSinceTagName;
@@ -165,18 +173,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     /**
      * Specify JIRA projects key to extract issues from gitlog
      * By default it will try extract all strings that match pattern (A-Za-z+)-\d+
+     * 
+     * @since 4.2
      */
     @Parameter(defaultValue="")
     private List<String> gitLogJiraProjectKeyList;
 
     /**
      * The pattern to filter out tagName. Can be used for filter only version tags.
+     * 
+     * @since 4.2
      */
     @Parameter(defaultValue="")
     private String gitLogTagNamesPattern;
 
     /**
      * Enable grouping by versions tag
+     *      
+     * @since 4.2
      */
     @Parameter(defaultValue="false")
     private Boolean gitLogGroupByVersions;

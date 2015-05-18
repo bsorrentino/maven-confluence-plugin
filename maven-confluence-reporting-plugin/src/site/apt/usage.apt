@@ -154,8 +154,48 @@ Use template variables
 *---------------------------+-----------------+
 | $\{version\}              | version         |
 *---------------------------+-----------------+
+| $\{gitlog.jiraIssues}     | list of JIRA issuses, extracted from gitlog since start tag   |
+*---------------------------+-----------------+
+| $\{gitlog.sinceTagName}   | name of version tag to start extract JIRA issues   |
+*---------------------------+-----------------+
 Built-In template variables
 
+* Git log template variables
+  
+  Main idea is automated creating of release notes with list of resolved JIRA issues utilizing integration between JIRA and Confluence.
+  Prerequrements:
+   
+  * Include JIRA issue key in git commit message
+
+  * Using git as SCM and using version tags in git
+
+* Git log configuration options
+
+ * <<<gitLogJiraIssuesEnable>>>.  Set it to true for enabling substitution of $\{gitlog.jiraIssues} build-in variable. Default value is  false.
+
+ * <<<gitLogSinceTagName>>>      Parse git log commits since last occurrence of specified tag name.
+
+ * <<<gitLogUntilTagName>>>     Parse git log commits until first occurrence of specified tag name.
+
+ * <<<gitLogCalculateRuleForSinceTagName>>>    If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version $\{project.version} and provided rule. Possible values are
+      
+      * <<NO_RULE>>
+
+      * <<CURRENT_MAJOR_VERSION>>. For example 1.2.3 will be resolved to 1.0.0
+
+      * <<CURRENT_MINOR_VERSION>>. For example 1.2.3 will be resolved to 1.2.0
+
+      * <<LATEST_RELEASE_VERSION>>. For example, if latest known version from version tags is 1.0.1 and current artifact (not released) version is 2.0.0, it will be resolved to 1.0.1
+
+ * <<<gitLogJiraProjectKeyList>>> JIRA projects keys to extract issues from gitlog. By default it will try extract all strings that match pattern (A-Za-z+)-\d+
+
+ * <<<gitLogTagNamesPattern>>> The pattern to filter out tagName. Can be used for filter only version tags
+
+ * <<<gitLogGroupByVersions>>> Enable grouping by versions tag
+
+** Sample produced output of <<<$\{gitlog.jiraIssues\}>>>  with  <<<gitLogGroupByVersions=true>>>
+
+[./images/gitlog-sample02.png] 
 
 Tips & Tricks
 
