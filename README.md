@@ -9,6 +9,11 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|Jun 5,2015 | [All Codehaus services have been terminated](http://www.codehaus.org/termination/) |
+|:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Refer to [Issue 77] - http://docs.codehaus.org/display/MVNCONFSITE is dead
+
 |May 18,2015 | **Release 4.2**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.2%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
