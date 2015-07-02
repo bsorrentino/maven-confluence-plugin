@@ -91,7 +91,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      *
      * &lt;sslCertificate>
      *  &lt;ignore>true|false</ignore>  // default true
-     *  &lt;hostnameVerifierClass>FQN</hostnameVerifierClass> //default null
+     *  &lt;hostNameVerifierClass>FQN</hostNameVerifierClass> //default null
      *  &lt;trustManagerClass>FQN</trustManagerClass> // default null
      * &lt;/sslCertificate>
      *
@@ -99,7 +99,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @since 4.1.0
      */
     @Parameter
-    protected SSLCertificateInfo sslCertificate;
+    protected SSLCertificateInfo sslCertificate = new SSLCertificateInfo();
 
     /**
      *

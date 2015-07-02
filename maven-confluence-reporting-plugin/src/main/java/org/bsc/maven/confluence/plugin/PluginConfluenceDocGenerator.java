@@ -317,7 +317,7 @@ public class PluginConfluenceDocGenerator implements Generator {
 
         }
 
-        mojo.addProperties(t);
+        mojo.addStdProperties(t);
 
         Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
 

@@ -278,7 +278,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             throw new MojoExecutionException(msg, e);
         }
         
-        super.addProperties(t);
+        super.addStdProperties(t);
 
        /////////////////////////////////////////////////////////////////
        // SUMMARY

@@ -228,7 +228,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         
     }
     
-    public void addProperties(MiniTemplator t) {
+    public void addStdProperties(MiniTemplator t) {
         java.util.Map<String, String> props = getProperties();
 
         if (props == null || props.isEmpty()) {
@@ -273,9 +273,11 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
                     .build( Site.processUri(source), getCharset() );
-            
-                addProperties(t);
+                            
+                addStdProperties(t);
 
+                t.setVariableOpt("childTitle", pageName);
+                
                 p.setContent(t.generateOutput());
             }
             
