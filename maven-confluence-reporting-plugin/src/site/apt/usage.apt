@@ -133,7 +133,7 @@ Authentication Tip
     </server>
 ------------------------------------------
   
-  Take note that also [http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords maven ecryption] is supported
+  Take note that also {{{http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords} maven encryption}} is supported
 
 
 Use template variables
@@ -206,7 +206,7 @@ Git log configuration options
 
  * <<<gitLogGroupByVersions>>> Enable grouping by versions tag
 
-** Sample produced output of <<<$\{gitlog.jiraIssues\}>>>  with  <<<gitLogGroupByVersions=true>>>
+ ** Sample produced output of <<<$\{gitlog.jiraIssues\}>>>  with  <<<gitLogGroupByVersions=true>>>
 
 [./images/gitlog-sample02.png] 
 
