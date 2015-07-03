@@ -167,6 +167,19 @@ h3. Built-In template variables
 | $\{gitlog.jiraIssues}    | list of JIRA issuses, extracted from gitlog since start tag   | |
 | $\{gitlog.sinceTagName}  | name of version tag to start extract JIRA issues   | |
 
+
+{tip:title=Tips & Tricks}
+
+ * How to refer to an image
+    bq. *\!$\{pageTitle}\^image_name!*.
+ * How to refer to a child's image within child page
+    bq. *\!$\{childTitle}\^image_name!*.
+ * How to refer to an attachment
+    bq. *\[$\{pageTitle}\^attachment_name]*.
+ * How to refer to a  child's attachment within child page
+    bq. *\[$\{childTitle}\^attachment_name]*.
+{tip}
+
 h3. Git log template variables
 Main idea is automated creating of release notes with list of resolved JIRA issues utilizing integration between JIRA and Confluence.
 Prerequrements:
@@ -193,14 +206,6 @@ h4. Git log configuration options
 
 {quote}
 
-
-{tip:title=Tips & Tricks}
-
- * How to refer to an image
-    bq. *\!$\{pageTitle}\^image_name!*.
- * How to refer to an attachment
-    bq. *\[$\{pageTitle}\^attachment_name]*.
-{tip}
 
 h2. Template example
 
