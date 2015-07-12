@@ -61,7 +61,7 @@ public class SwizzleTest {
         System.out.printf( "majorVersion=[%s]\n", si.getMajorVersion());
         
     }
-    
+       
     @Test 
     @Ignore
     public void addAttachment() throws Exception {
