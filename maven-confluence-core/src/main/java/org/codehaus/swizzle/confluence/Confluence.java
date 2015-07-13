@@ -6,6 +6,10 @@ import org.apache.xmlrpc.client.XmlRpcClientException;
 
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.Proxy.Type;
+import java.net.ProxySelector;
+import java.net.URISyntaxException;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,12 +43,14 @@ public class Confluence {
         
         final public String userName;
         final public String password;
+        final public String nonProxyHosts;
 
-        public ProxyInfo(String host, int port, String userName, String password) {
+        public ProxyInfo(String host, int port, String userName, String password, String nonProxyHosts) {
             this.host = host;
             this.port = port;
             this.userName = userName;
             this.password = password;
+            this.nonProxyHosts = nonProxyHosts;
         }
         
         
@@ -80,8 +86,38 @@ public class Confluence {
         if( v == null ) return true;
         return ( v.trim().length() == 0 );
     }
+        
+    private boolean isProxyEnabled( final ProxyInfo proxyInfo, final java.net.URI serviceURI ) {
+        
+        if( proxyInfo ==null || isNullOrEmpty(proxyInfo.host) ) return false;
+
+        boolean result = true;
+        
+        if( !isNullOrEmpty(proxyInfo.nonProxyHosts)) {
+            final String proxyHost           = System.setProperty("http.proxyHost", proxyInfo.host);
+            final String proxyPort           = System.setProperty("http.proxyPort", String.valueOf(proxyInfo.port));
+            final String nonProxyHosts  = System.setProperty("http.nonProxyHosts",proxyInfo.nonProxyHosts );
+            
+            final List<Proxy> proxyList = ProxySelector.getDefault().select(serviceURI);
+            
+            if( proxyList!=null && proxyList.size()==1 ) {
+                
+                final Proxy proxy = proxyList.get(0);
+                
+                result = (proxy.type()!=Type.DIRECT && proxy.address()!=null);
+
+            }    
+            
+            if( proxyHost!=null ) System.setProperty("http.proxyHost", proxyHost);
+            if( proxyPort!=null ) System.setProperty("http.proxyPort", proxyPort);
+            if( nonProxyHosts!=null ) System.setProperty("http.nonProxyHosts",nonProxyHosts );
+                 
+        }
+        
+        return result;
+    }
     
-    protected Confluence(String endpoint, ProxyInfo proxyInfo ) throws MalformedURLException {
+    protected Confluence(String endpoint, ProxyInfo proxyInfo ) throws URISyntaxException, MalformedURLException {
         this(new XmlRpcClient());
 	if (endpoint.endsWith("/")) {
             endpoint = endpoint.substring(0, endpoint.length() - 1);
@@ -91,22 +127,23 @@ public class Confluence {
             endpoint += "/rpc/xmlrpc";
         }
     
-        final java.net.URL serviceURL = new java.net.URL(endpoint);
+        final java.net.URI serviceURI = new java.net.URI(endpoint);
 
         XmlRpcClientConfigImpl clientConfig = new XmlRpcClientConfigImpl();
-        clientConfig.setServerURL( serviceURL );
+        clientConfig.setServerURL(serviceURI.toURL() );
 
         clientConfig.setEnabledForExtensions(true); // add this to support attachment upload
 
         client.setConfig( clientConfig );
 
-        if( proxyInfo !=null && !isNullOrEmpty(proxyInfo.host) ) {
-            XmlRpcCommonsTransportFactory transportFactory = new XmlRpcCommonsTransportFactory( client );
+        if( isProxyEnabled(proxyInfo, serviceURI) ) {
+            
+            final XmlRpcCommonsTransportFactory transportFactory = new XmlRpcCommonsTransportFactory( client );
 
-            HttpClient httpClient = new HttpClient();
-            HostConfiguration hostConfiguration = httpClient.getHostConfiguration();
+            final HttpClient httpClient = new HttpClient();
+            final HostConfiguration hostConfiguration = httpClient.getHostConfiguration();
             hostConfiguration.setProxy( proxyInfo.host, proxyInfo.port );
-            hostConfiguration.setHost(serviceURL.getHost(), serviceURL.getPort(), serviceURL.getProtocol());
+            hostConfiguration.setHost(serviceURI.getHost(), serviceURI.getPort(), serviceURI.toURL().getProtocol());
 
             if( !isNullOrEmpty(proxyInfo.userName) && !isNullOrEmpty(proxyInfo.password) ) {
                 Credentials cred = new UsernamePasswordCredentials(proxyInfo.userName,proxyInfo.password);

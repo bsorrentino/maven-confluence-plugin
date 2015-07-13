@@ -12,8 +12,11 @@
   
   
     <properties>
-        <!--confluence.home>http://localhost:8090</confluence.home-->
+        <!--
+        <confluence.home>http://localhost:8090</confluence.home>
         <confluence.home>http://docs.codehaus.org</confluence.home>
+        -->
+        <confluence.home>http://support.softphone.it/confluence/</confluence.home>
     </properties> 
 
 
@@ -39,7 +42,7 @@
                     <encoding>UTF-8</encoding>
                     <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
 
-                    <spaceKey>MVNCONFSITE</spaceKey>
+                    <spaceKey>~bsorrentino</spaceKey>
                     <parentPageTitle>Home</parentPageTitle>
                     <title>my-site-generation-test ${project.version}</title>
 
@@ -50,8 +53,12 @@
                     <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                     <wikiFilesExt>.confluence</wikiFilesExt>
                     <!-- TEST ISSUE 39 -->
-                    <!--serverId>confluence-local</serverId-->
+                    <!--
+                    <serverId>confluence-local</serverId>
                     <serverId>codehaus</serverId>    
+                    -->
+                    <serverId>softphone-server</serverId>    
+                    
                     <properties>
                         <evaluation>(y)</evaluation>
                         <page>classpath:plugin-report.properties</page>

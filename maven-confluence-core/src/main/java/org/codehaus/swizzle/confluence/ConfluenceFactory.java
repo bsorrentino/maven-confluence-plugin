@@ -5,6 +5,7 @@
 package org.codehaus.swizzle.confluence;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 /**
  *
@@ -15,19 +16,19 @@ public class ConfluenceFactory {
     protected ConfluenceFactory() {}
     
     
-    public static Confluence createInstanceVersion3x( String url, Confluence.ProxyInfo proxyInfo ) throws MalformedURLException {
+    public static Confluence createInstanceVersion3x( String url, Confluence.ProxyInfo proxyInfo ) throws MalformedURLException, URISyntaxException {
         
         return new Confluence( url, proxyInfo );
         
     }
 
-    public static Confluence createInstanceVersion4x( String url, Confluence.ProxyInfo proxyInfo ) throws MalformedURLException {
+    public static Confluence createInstanceVersion4x( String url, Confluence.ProxyInfo proxyInfo ) throws MalformedURLException, URISyntaxException {
         
         return new Confluence2( url, proxyInfo );
         
     }
 
-    public static Confluence createInstanceDetectingVersion( String url, Confluence.ProxyInfo proxyInfo, String login, String password ) throws MalformedURLException, SwizzleException {
+    public static Confluence createInstanceDetectingVersion( String url, Confluence.ProxyInfo proxyInfo, String login, String password ) throws MalformedURLException, SwizzleException, URISyntaxException {
         
         Confluence c = new Confluence(url, proxyInfo);
         c.login(login, password);

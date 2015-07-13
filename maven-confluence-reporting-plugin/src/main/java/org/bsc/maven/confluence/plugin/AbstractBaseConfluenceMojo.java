@@ -176,7 +176,8 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                                 activeProxy.getHost(),
                                 activeProxy.getPort(),
                                 activeProxy.getUsername(),
-                                activeProxy.getPassword()
+                                activeProxy.getPassword(),
+                                activeProxy.getNonProxyHosts()
                         );
             }
 

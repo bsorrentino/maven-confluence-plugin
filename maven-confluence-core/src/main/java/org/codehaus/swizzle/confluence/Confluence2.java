@@ -5,6 +5,7 @@
 package org.codehaus.swizzle.confluence;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 /**
  *
@@ -22,7 +23,7 @@ public class Confluence2 extends Confluence {
         super(endpoint);
     }
 */
-    protected Confluence2(String endpoint, ProxyInfo proxyInfo) throws MalformedURLException {
+    protected Confluence2(String endpoint, ProxyInfo proxyInfo) throws MalformedURLException, URISyntaxException {
         super(endpoint, proxyInfo);
     }
     
