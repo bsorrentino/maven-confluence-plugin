@@ -9,6 +9,22 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|Jul 18,2015 | **Release 4.3**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.3%7Cmaven-plugin)**  |
+|:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Refer to [Issue 80](https://github.com/bsorrentino/maven-confluence-plugin/issues/80) - Add macro to manage child page title
+  * Refer to [Issue 82](https://github.com/bsorrentino/maven-confluence-plugin/issues/82) - nonProxyHosts Settings not respected
+
+ >  form 4.3 I've updated the XML's namespace, so goes in your site xml file  and update the namespace from 
+
+ ` http://code.google.com/p/maven-confluence-plugin `
+
+ to 
+
+ ` https://github.com/bsorrentino/maven-confluence-plugin `
+
+
+
 |Jun 5,2015 | [All Codehaus services have been terminated](http://www.codehaus.org/termination/) |
 |:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
