@@ -15,7 +15,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
   * Refer to [Issue 80](https://github.com/bsorrentino/maven-confluence-plugin/issues/80) - Add macro to manage child page title
   * Refer to [Issue 82](https://github.com/bsorrentino/maven-confluence-plugin/issues/82) - nonProxyHosts Settings not respected
 
- > Note:
+ Note:
 
  >  form 4.3 I've updated the XML's namespace, so goes in your site xml file  and update the namespace from 
 
