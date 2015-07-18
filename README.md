@@ -18,7 +18,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
  >  form 4.3 I've updated the XML's namespace, so goes in your site xml file  and update the namespace from 
  > ` http://code.google.com/p/maven-confluence-plugin `
  > to 
- >` https://github.com/bsorrentino/maven-confluence-plugin `
+ > ` https://github.com/bsorrentino/maven-confluence-plugin `
 
 
 
