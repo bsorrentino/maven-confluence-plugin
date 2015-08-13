@@ -195,7 +195,7 @@ TEST
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
-            <version>4.0.0.201505050340-m2</version>
+            <version>4.0.1.201506240215-r</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.jcraft</groupId>

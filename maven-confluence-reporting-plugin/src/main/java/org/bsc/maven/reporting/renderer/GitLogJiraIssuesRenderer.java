@@ -163,11 +163,12 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         return pattern;
     }
 
-    private void overrideGitLogSinceTagNameIfNeeded(Set<String> versionTagList) {
-            String tagNamePart = VersionUtil.calculateVersionTagNamePart(currentVersion, calculateRuleForSinceTagName);
-            log.info(String.format("Calculated tag name part is %s", tagNamePart));
-            String nearestVersionTagName = VersionUtil.findNearestVersionTagsBefore(versionTagList, tagNamePart);
-            gitLogSinceTagName = nearestVersionTagName;
+    protected void overrideGitLogSinceTagNameIfNeeded(Collection<String> versionTagList) {
+        String tagNamePart = VersionUtil.calculateVersionTagNamePart(currentVersion, calculateRuleForSinceTagName);
+        log.info(String.format("Calculated tag name part is %s", tagNamePart));
+        versionTagList = VersionUtil.removeTagWithVersion(versionTagList, currentVersion);
+        String nearestVersionTagName = VersionUtil.findNearestVersionTagsBefore(versionTagList, tagNamePart);
+        gitLogSinceTagName = nearestVersionTagName;
 
     }
 
