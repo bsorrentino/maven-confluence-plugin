@@ -88,6 +88,20 @@
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-generators</artifactId>
         <version>${pluginToolsVersion}</version>
+        <!-- 
+        SUCH EXCLUSIONS HAVE NEEDED FOR 'ASM' CLASH BETWEEN 
+        3.3.1 CONTAINED HERE AND 5.0.3 REQUIRED BY PEGDOWN        
+        -->     
+        <exclusions>
+            <exclusion>
+                <groupId>asm</groupId>
+                <artifactId>asm</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>asm</groupId>
+                <artifactId>asm-tree</artifactId>
+            </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>

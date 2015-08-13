@@ -160,6 +160,11 @@ NEEDS FOR PLUGIN DOCUMENTATION
             <artifactId>maven-plugin-tools-generators</artifactId>
         </dependency>
 
+        <dependency>
+          <groupId>org.pegdown</groupId>
+          <artifactId>pegdown</artifactId>
+      </dependency>
+
 <!--
 ================
 TEST
@@ -223,11 +228,6 @@ TEST
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-          <groupId>org.pegdown</groupId>
-          <artifactId>pegdown</artifactId>
-          <scope>test</scope>
-      </dependency>
 
    </dependencies>
 
