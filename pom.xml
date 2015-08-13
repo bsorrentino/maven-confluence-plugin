@@ -58,7 +58,7 @@
   </distributionManagement>
   <properties>
     <release.repo.id>sonatype-server</release.repo.id>
-    <pluginToolsVersion>3.1</pluginToolsVersion>
+    <pluginToolsVersion>3.4</pluginToolsVersion>
     <addTimestamp>true</addTimestamp>
     <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
     <mavenVersion>3.0.1</mavenVersion>
@@ -91,7 +91,6 @@
         <!-- 
         SUCH EXCLUSIONS HAVE NEEDED FOR 'ASM' CLASH BETWEEN 
         3.3.1 CONTAINED HERE AND 5.0.3 REQUIRED BY PEGDOWN        
-        -->     
         <exclusions>
             <exclusion>
                 <groupId>asm</groupId>
@@ -102,6 +101,7 @@
                 <artifactId>asm-tree</artifactId>
             </exclusion>
         </exclusions>
+        -->     
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
