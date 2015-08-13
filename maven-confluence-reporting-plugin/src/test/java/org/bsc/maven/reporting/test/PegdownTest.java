@@ -42,7 +42,7 @@ public class PegdownTest {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 
                 for( int i = 0; i <indent ; ++i ) System.out.print('\t');               
-                System.out.printf( "invoked [%s] args [%s]\n", method.getName(), String.valueOf(args[0]) );
+                System.out.printf( "[%s]\n", args[0].getClass().getSimpleName() );
                 
                 Object n = args[0];
                 
