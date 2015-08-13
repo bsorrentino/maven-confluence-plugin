@@ -116,6 +116,11 @@
         <version>${mavenVersion}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+          <groupId>org.pegdown</groupId>
+          <artifactId>pegdown</artifactId>
+          <version>1.5.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>

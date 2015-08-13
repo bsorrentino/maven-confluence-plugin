@@ -223,6 +223,12 @@ TEST
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+          <groupId>org.pegdown</groupId>
+          <artifactId>pegdown</artifactId>
+          <scope>test</scope>
+      </dependency>
+
    </dependencies>
 
 
