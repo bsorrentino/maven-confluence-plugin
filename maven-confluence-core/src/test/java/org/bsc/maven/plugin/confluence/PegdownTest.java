@@ -64,9 +64,10 @@ public class PegdownTest {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 
                 for( int i = 0; i <indent ; ++i ) System.out.print('\t');               
-                System.out.printf( "[%s]\n", args[0].getClass().getSimpleName() );
+                final Object n = args[0];
+
+                System.out.printf( "[%s]\n", n );
                 
-                Object n = args[0];
                 
                 if( n instanceof Node ) {
                     ++indent;

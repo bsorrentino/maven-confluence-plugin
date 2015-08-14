@@ -119,9 +119,18 @@ public class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(CodeNode cn) {
-        sb.append( "{code}")
-           .append(cn.getText())
-           .append( "{code}");
+        
+        String lines[] = cn.getText().split("\n");
+        if( lines.length == 1 || lines[0].isEmpty() ) {
+            sb.append( "{noformat}").append(cn.getText()).append( "{noformat}");
+            return;
+        }
+        
+        sb.append( format("{code:%s}", lines[0])).append('\n');
+        for( int i =  1 ; i < lines.length; ++i ) {
+            sb.append(lines[i]).append('\n');
+        }
+        sb.append( "{code}");
     }
 
     @Override
