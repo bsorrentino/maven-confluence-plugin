@@ -1,14 +1,15 @@
 package org.bsc.maven.plugin.confluence;
 
+import org.bsc.markdown.ToConfluenceSerializer;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
-import org.pegdown.ast.SuperNode;
 import org.pegdown.ast.Visitor;
 
 /*
@@ -23,12 +24,33 @@ import org.pegdown.ast.Visitor;
  */
 public class PegdownTest {
     
+    private static final String FILES[] = { "README.md", "TEST1.md" };
+    
+    private char[] loadResource( String name ) throws IOException {
+        
+        final ClassLoader cl = PegdownTest.class.getClassLoader();
+
+        final java.io.InputStream is = cl.getResourceAsStream(name);
+        try {
+            
+            java.io.CharArrayWriter caw = new java.io.CharArrayWriter();
+            
+            for( int c = is.read(); c!=-1; c = is.read() ) {
+                caw.write( c );
+            }
+            
+            return caw.toCharArray();
+            
+        }
+        finally {
+            IOUtils.closeQuietly(is);
+        }
+        
+    }
     
     @Test
     public void parseTest() throws IOException {
-        
-        
-        
+                
         InvocationHandler handler = new InvocationHandler() {
         
             int indent = 0;
@@ -63,19 +85,29 @@ public class PegdownTest {
                             new Class[] { Visitor.class },
                             handler);
         
-        java.io.InputStream is = cl.getResourceAsStream("README.md");
-                
-        java.io.CharArrayWriter caw = new java.io.CharArrayWriter();
-        
-        for( int c = is.read(); c!=-1; c = is.read() ) {
-            caw.write( c );
-        }
         
         final PegDownProcessor p = new PegDownProcessor();
         
-        final RootNode root = p.parseMarkdown(caw.toCharArray());
+        final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
         
         root.accept(proxy);
+        
+    }
+    
+    @Test
+    public void serializerTest() throws IOException {
+                
+        final ClassLoader cl = PegdownTest.class.getClassLoader();
+        
+        final PegDownProcessor p = new PegDownProcessor();
+        
+        final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
+        
+        ToConfluenceSerializer ser =  new ToConfluenceSerializer();
+        
+        root.accept( ser );
+        
+        System.out.println( ser.toString() );
         
     }
 }
