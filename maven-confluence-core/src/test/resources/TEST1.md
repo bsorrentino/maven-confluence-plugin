@@ -44,7 +44,8 @@ Example:
 yo polymerts:gen polymer-element [--path ] [--elpath ]
 ```
 
-**Note:**
+> **Note:** *Behaviors*
+
 > It generates also the related **Polymer Behaviors** but only if they are in the same element's folder (eg. iron-selector).
 
 > In other cases you have to generate each requested Behavior. So find it and rerun the generator.
@@ -56,3 +57,4 @@ yo polymerts:gen polymer-element [--path ] [--elpath ]
 --path, element output path. By default generated element (and dependencies) will put  in folder 'typings/polymer'.
 --elpath, element source path. Just in case (eg. Behaviors ) the element folder hasn't the same name of the element
 ```
+

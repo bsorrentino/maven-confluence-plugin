@@ -43,6 +43,7 @@ import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
 
 import static java.lang.String.format;
+import org.bsc.functional.F;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -56,17 +57,145 @@ import static java.lang.String.format;
  */
 public class ToConfluenceSerializer implements Visitor {
 
-    private StringBuilder sb = new StringBuilder( 500 * 1024 );
+    private StringBuilder _buffer = new StringBuilder( 500 * 1024 );
 
     @Override
     public String toString() {
-        return sb.toString();
+        return _buffer.toString();
     }
+    
+    protected StringBuilder bufferVisit( F<Void,Void> closure  ) {
+        
+        final StringBuilder _sb = new StringBuilder();
+        
+        final StringBuilder _original = _buffer;
+        _buffer = _sb;
+        try {
+            closure.f(null);
+        }
+        finally {
+            _buffer = _original;
+        }
+        
+        return _sb;
+    } 
+    
+    protected interface FindPredicate<T extends Node> {
+        
+        boolean f( T node, Node parent, int index );
+        
+    }
+    
+    /**
+    * process:
+    *  note,warning,info,tip
+    */
+    protected class SpecialPanelProcessor {
+        private String element;
+        private String title;
+        
+        boolean apply( BlockQuoteNode bqn ) {
+            element = null;
+            title = null;
+            
+            final boolean result = 
+                    findByClass(bqn.getChildren().get(0), 
+                        StrongEmphSuperNode.class, 
+                        new FindPredicate<StrongEmphSuperNode>() {
 
+                @Override
+                public boolean f(StrongEmphSuperNode p, final Node parent, final int index) {
+                    if( index!=0 || !p.isStrong() ) return false;
+
+                    boolean found =  findByClass(p, 
+                                    TextNode.class, 
+                                    new FindPredicate<TextNode>() {
+
+                        @Override
+                        public boolean f(TextNode p, Node parent, int index ) {
+                            if( index != 0 ) return false;
+                            
+                            if( "note:".equalsIgnoreCase(p.getText()) ) {
+                                element = "note"; // SET ELEMENT TAG
+                                return true;
+                            }
+                            if( "warning:".equalsIgnoreCase(p.getText()) ) {
+                                element = "warning"; // SET ELEMENT TAG
+                                return true;
+                            }
+                            if( "info:".equalsIgnoreCase(p.getText()) ) {
+                                element = "info"; // SET ELEMENT TAG
+                                return true;
+                            }
+                            if( "tip:".equalsIgnoreCase(p.getText()) ) {
+                                element = "tip"; // SET ELEMENT TAG
+                                return true;
+                            }
+
+
+                            return false;
+                        }
+                    });
+
+                    if( found ) { // GET ELEMENT TITLE
+
+                        final StringBuilder _sb = bufferVisit(new F<Void,Void>() {
+
+                            @Override
+                            public Void f(Void p) {
+                               parent.getChildren().remove(0);
+                               visitChildren(parent);
+                               return null;
+                            }
+
+                        });
+                        title = _sb.toString().trim();
+
+                    }
+
+                    return found;
+
+                }
+
+            });
+            
+            if( result ) {
+                bqn.getChildren().remove(0);
+            
+                _buffer.append( format("{%s:title=%s}", element, title));
+                visitChildren(bqn);
+                _buffer.append( format("{%s}", element) ).append('\n');;
+            }
+            
+            return result;
+
+        }
+    }
+    
     protected <T extends Node> void visitChildren(T node) {
         for (Node child : node.getChildren()) {
             child.accept(this);
         }
+    }
+
+    protected <T extends Node, R extends Node> boolean findByClass(T node, Class<R> clazz, FindPredicate<R> predicate ) {
+        boolean result = false;
+        final java.util.List<Node> children = node.getChildren();
+        
+        for (int index = 0 ; index < children.size() ; ++index) {
+            
+            final Node child = children.get(index);
+            
+            if( clazz.isInstance(child) && predicate.f(clazz.cast(child), node, index)) {
+                result = true;
+            } else {
+                result = findByClass( child, clazz, predicate);
+            }
+            if( result ) break;
+            
+        }
+        
+        return result;
     }
 
     @Override
@@ -83,38 +212,44 @@ public class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(ParaNode pn) {
-        sb.append('\n');
+        _buffer.append('\n');
         visitChildren(pn);
-        sb.append('\n');
+        _buffer.append('\n');
     }
 
 
     @Override
     public void visit(HeaderNode hn) {
-        sb.append( format( "h%s.", hn.getLevel()) );
+        _buffer.append( format( "h%s.", hn.getLevel()) );
         visitChildren(hn);
-        sb.append('\n');
+        _buffer.append('\n');
     }
 
 
+    final SpecialPanelProcessor specialPanelProcessor = new SpecialPanelProcessor();
+
     @Override
     public void visit(BlockQuoteNode bqn) {
-        sb.append( "{quote}" );
-        visitChildren(bqn);
-        sb.append( "{quote}" ).append('\n');
+        
+        if( !specialPanelProcessor.apply(bqn) ) {
+            
+            _buffer.append( "{quote}" );
+            visitChildren(bqn);
+            _buffer.append( "{quote}" ).append('\n');            
+        }
         
     }
 
     @Override
     public void visit(TextNode tn) {
-        sb.append( tn.getText() );
+        _buffer.append( tn.getText() );
     }
 
     @Override
     public void visit(ExpLinkNode eln) {  
-        sb.append( '[');
+        _buffer.append( '[');
         visitChildren(eln);
-        sb.append( format( "|%s|%s]", eln.url, eln.title));
+        _buffer.append( format( "|%s|%s]", eln.url, eln.title));
     }
 
     @Override
@@ -122,22 +257,28 @@ public class ToConfluenceSerializer implements Visitor {
         
         String lines[] = cn.getText().split("\n");
         if( lines.length == 1 || lines[0].isEmpty() ) {
-            sb.append( "{noformat}").append(cn.getText()).append( "{noformat}");
+            _buffer.append( "{noformat}").append(cn.getText()).append( "{noformat}");
             return;
         }
         
-        sb.append( format("{code:%s}", lines[0])).append('\n');
+        _buffer.append( format("{code:%s}", lines[0])).append('\n');
         for( int i =  1 ; i < lines.length; ++i ) {
-            sb.append(lines[i]).append('\n');
+            _buffer.append(lines[i]).append('\n');
         }
-        sb.append( "{code}");
+        _buffer.append( "{code}");
     }
 
     @Override
     public void visit(StrongEmphSuperNode sesn) {
-        sb.append( '*');
+        char sym = '*';
+        if( !sesn.isStrong() ) {
+            final String chars = sesn.getChars();
+            if( chars.equals("*")) sym = '_';
+        }
+        _buffer.append( sym);
         visitChildren(sesn);
-        sb.append( '*');
+        _buffer.append( sym );
+        
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
+import org.pegdown.ast.StrongEmphSuperNode;
 import org.pegdown.ast.Visitor;
 
 /*
@@ -65,9 +66,14 @@ public class PegdownTest {
                 
                 for( int i = 0; i <indent ; ++i ) System.out.print('\t');               
                 final Object n = args[0];
-
-                System.out.printf( "[%s]\n", n );
                 
+                System.out.printf( "[%s]", n );
+                if( n instanceof StrongEmphSuperNode ) {
+                    final StrongEmphSuperNode sesn = (StrongEmphSuperNode) n;
+                    System.out.printf( " chars=[%s], strong=%b, closed=%b", sesn.getChars(), sesn.isStrong(), sesn.isClosed() );
+                    
+                }
+                System.out.println();
                 
                 if( n instanceof Node ) {
                     ++indent;

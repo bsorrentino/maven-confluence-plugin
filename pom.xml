@@ -147,6 +147,7 @@
     </extensions>
     <pluginManagement>
       <plugins>
+          
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
@@ -155,18 +156,28 @@
             <tagNameFormat>v@{project.version}</tagNameFormat>
           </configuration>
         </plugin>
-  
+
+        <!--
+            jgitflow:feature-start Starts a feature branch
+            jgitflow:feature-finish Finishes a feature branch
+            jgitflow:release-start Starts a release
+            jgitflow:release-finish Finishes a release
+            jgitflow:hotfix-start Starts a hotfix
+            jgitflow:hotfix-finish Finishes a hotfix
+            jgitflow:build-number Updates the pom versions in the current branch by adding a build number label
+        -->
+        <plugin>
+           <groupId>external.atlassian.jgitflow</groupId>
+           <artifactId>jgitflow-maven-plugin</artifactId>
+           <version>1.0-m5.1</version>
+           <configuration>
+             <versionTagPrefix>v</versionTagPrefix>
+           </configuration>
+       </plugin>
+   
         <plugin>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>${pluginToolsVersion}</version>
-        </plugin>
-        
-        <plugin>
-            <groupId>external.atlassian.jgitflow</groupId>
-            <artifactId>jgitflow-maven-plugin</artifactId>
-            <version>1.0-m5.1</version>
-            <configuration>
-            </configuration>
         </plugin>
 
       </plugins>
