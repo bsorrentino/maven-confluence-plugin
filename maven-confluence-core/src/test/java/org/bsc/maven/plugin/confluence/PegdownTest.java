@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.pegdown.PegDownProcessor;
+import org.pegdown.ast.ExpLinkNode;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 import org.pegdown.ast.StrongEmphSuperNode;
@@ -24,6 +25,11 @@ import org.pegdown.ast.Visitor;
  * @author softphone
  */
 public class PegdownTest {
+
+    
+    interface F<P extends Node> {
+        void f( P node );
+    }
     
     private static final String FILES[] = { "README.md", "TEST1.md" };
     
@@ -49,6 +55,54 @@ public class PegdownTest {
         
     }
     
+    static class IfContext {
+        
+        static final IfContext isTrue = new IfContext(true);
+        static final IfContext isFalse = new IfContext(false);
+        
+        final boolean condition ;
+
+        public IfContext(boolean condition) {
+            this.condition = condition;
+        }
+        
+        
+        <T extends Node> IfContext elseIf( Object n, Class<T> clazz, F<T> cb ) {           
+            return ( condition ) ? isTrue : iF( n, clazz, cb );
+        } 
+        
+        static <T extends Node> IfContext iF( Object n, Class<T> clazz, F<T> cb ) {
+
+            if( clazz.isInstance(n)) {
+
+                cb.f( clazz.cast(n));
+                return isTrue;
+            }
+            return isFalse;
+        } 
+        
+    }
+    
+    final F<StrongEmphSuperNode> sesn = new F<StrongEmphSuperNode>() {
+
+        @Override
+        public void f(StrongEmphSuperNode node) {
+           System.out.printf( " chars=[%s], strong=%b, closed=%b", node.getChars(), node.isStrong(), node.isClosed() );
+           
+        }
+        
+    };
+    
+    final F<ExpLinkNode> eln = new F<ExpLinkNode>() {
+
+        @Override
+        public void f(ExpLinkNode node) {
+           System.out.printf( " title=[%s], url=[%s]", node.title, node.url );
+           
+        }
+        
+    };
+    
     @Test
     public void parseTest() throws IOException {
                 
@@ -68,11 +122,8 @@ public class PegdownTest {
                 final Object n = args[0];
                 
                 System.out.printf( "[%s]", n );
-                if( n instanceof StrongEmphSuperNode ) {
-                    final StrongEmphSuperNode sesn = (StrongEmphSuperNode) n;
-                    System.out.printf( " chars=[%s], strong=%b, closed=%b", sesn.getChars(), sesn.isStrong(), sesn.isClosed() );
-                    
-                }
+                IfContext.iF(n, StrongEmphSuperNode.class, sesn)
+                            .elseIf(n, ExpLinkNode.class, eln);
                 System.out.println();
                 
                 if( n instanceof Node ) {

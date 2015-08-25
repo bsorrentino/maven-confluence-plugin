@@ -94,6 +94,54 @@ public class ToConfluenceSerializer implements Visitor {
         private String element;
         private String title;
         
+        
+        final FindPredicate<TextNode> isSpecialPanelText = new FindPredicate<TextNode>() {
+
+            @Override
+            public boolean f(TextNode p, Node parent, int index ) {
+                if( index != 0 ) return false;
+
+                if( "note:".equalsIgnoreCase(p.getText()) ) {
+                    element = "note"; // SET ELEMENT TAG
+                    return true;
+                }
+                if( "warning:".equalsIgnoreCase(p.getText()) ) {
+                    element = "warning"; // SET ELEMENT TAG
+                    return true;
+                }
+                if( "info:".equalsIgnoreCase(p.getText()) ) {
+                    element = "info"; // SET ELEMENT TAG
+                    return true;
+                }
+                if( "tip:".equalsIgnoreCase(p.getText()) ) {
+                    element = "tip"; // SET ELEMENT TAG
+                    return true;
+                }
+
+
+                return false;
+            }
+        };
+
+        boolean findSpecialPanel( ParaNode pn ) {
+            final boolean result = 
+                    findByClass(pn.getChildren().get(0), 
+                        StrongEmphSuperNode.class, 
+                        new FindPredicate<StrongEmphSuperNode>() {
+
+                            @Override
+                            public boolean f(StrongEmphSuperNode node, Node parent, int index) {
+                                if( index!=0 || !node.isStrong() ) return false;
+                                boolean found =  findByClass(node, 
+                                    TextNode.class, isSpecialPanelText );
+                                
+                                return found;
+                            }
+                            
+                        });
+            return result;
+        }
+        
         boolean apply( BlockQuoteNode bqn ) {
             element = null;
             title = null;
@@ -108,34 +156,7 @@ public class ToConfluenceSerializer implements Visitor {
                     if( index!=0 || !p.isStrong() ) return false;
 
                     boolean found =  findByClass(p, 
-                                    TextNode.class, 
-                                    new FindPredicate<TextNode>() {
-
-                        @Override
-                        public boolean f(TextNode p, Node parent, int index ) {
-                            if( index != 0 ) return false;
-                            
-                            if( "note:".equalsIgnoreCase(p.getText()) ) {
-                                element = "note"; // SET ELEMENT TAG
-                                return true;
-                            }
-                            if( "warning:".equalsIgnoreCase(p.getText()) ) {
-                                element = "warning"; // SET ELEMENT TAG
-                                return true;
-                            }
-                            if( "info:".equalsIgnoreCase(p.getText()) ) {
-                                element = "info"; // SET ELEMENT TAG
-                                return true;
-                            }
-                            if( "tip:".equalsIgnoreCase(p.getText()) ) {
-                                element = "tip"; // SET ELEMENT TAG
-                                return true;
-                            }
-
-
-                            return false;
-                        }
-                    });
+                                    TextNode.class, isSpecialPanelText );
 
                     if( found ) { // GET ELEMENT TITLE
 
@@ -198,8 +219,35 @@ public class ToConfluenceSerializer implements Visitor {
         return result;
     }
 
+    final SpecialPanelProcessor specialPanelProcessor = new SpecialPanelProcessor();
+
+
     @Override
     public void visit(RootNode rn) {
+        
+        java.util.List<Node> children = rn.getChildren();
+        
+        for( int index = 0; index < children.size() ; ++index ) {
+            
+            final Node child = children.get(index);
+            
+            if( child instanceof ParaNode ) {
+                boolean result = specialPanelProcessor.findSpecialPanel((ParaNode) child);
+                if( result ) {
+                    final Node nextChild = children.get( index + 1 );
+                    
+                    if( nextChild instanceof BlockQuoteNode ) {
+                        System.out.printf( "FIND SPECIAL PANEL [%s]\n", specialPanelProcessor.element);
+                        
+                        nextChild.getChildren().add(0, children.remove(index));
+                        
+                        ++index;
+                        
+                    }
+                }
+            }
+            
+        }
         visitChildren(rn);
     }
     
@@ -225,8 +273,6 @@ public class ToConfluenceSerializer implements Visitor {
         _buffer.append('\n');
     }
 
-
-    final SpecialPanelProcessor specialPanelProcessor = new SpecialPanelProcessor();
 
     @Override
     public void visit(BlockQuoteNode bqn) {
@@ -283,11 +329,37 @@ public class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(BulletListNode bln) {
+        
+        for (Node child : bln.getChildren()) {
+            _buffer.append("* ");
+            child.accept(this);
+            _buffer.append('\n');
+        }
+        
+    }
+    @Override
+    public void visit(ListItemNode lin) {
+        visitChildren(lin);
+    }
+
+    @Override
+    public void visit(ExpImageNode ein) {
+        //visitChildren(ein);
+        _buffer.append( format( "!%s!", ein.url, ein.title));
+    }
+
+    @Override
+    public void visit(HtmlBlockNode hbn) {
+    }
+
+    @Override
+    public void visit(InlineHtmlNode ihn) {
     }
 
     @Override
     public void visit(SpecialTextNode stn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        throw new UnsupportedOperationException( format("SpecialTextNode is not supported yet. [%s] ", stn )); //To change body of generated methods, choose Tools | Templates.
     }
 
     
@@ -322,26 +394,8 @@ public class ToConfluenceSerializer implements Visitor {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void visit(ExpImageNode ein) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
 
-    @Override
-    public void visit(HtmlBlockNode hbn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(InlineHtmlNode ihn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(ListItemNode lin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void visit(MailLinkNode mln) {
