@@ -1,5 +1,12 @@
 <!-- {TOC} -->
 
+## table
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
 ## Yeoman generator to scaffold out [Polymer 1.0](http://www.polymer-project.org/)'s elements using Typescript based on [PolymerTS](https://github.com/nippur72/PolymerTS) project
 
 ## Introduction
@@ -60,4 +67,7 @@ yo polymerts:gen polymer-element [--path ] [--elpath ]
 --elpath, element source path. Just in case (eg. Behaviors ) the element folder hasn't the same name of the element
 ```
 
+
 ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+
+

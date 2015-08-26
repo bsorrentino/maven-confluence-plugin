@@ -123,7 +123,7 @@ public class ToConfluenceSerializer implements Visitor {
             }
         };
 
-        boolean findSpecialPanel( ParaNode pn ) {
+        boolean find( ParaNode pn ) {
             final boolean result = 
                     findByClass(pn.getChildren().get(0), 
                         StrongEmphSuperNode.class, 
@@ -193,13 +193,26 @@ public class ToConfluenceSerializer implements Visitor {
         }
     }
     
+    protected <T extends Node> void forEachChild( T node, FindPredicate<T> cb ) {
+        final java.util.List<Node> children = node.getChildren();
+        
+        for (int index = 0 ; index < children.size() ; ++index) {
+            
+            final Node child = children.get(index);
+            
+            if( !cb.f( (T)child, node, index ) ) {
+                return ;
+            }
+        }
+    }
+    
     protected <T extends Node> void visitChildren(T node) {
         for (Node child : node.getChildren()) {
             child.accept(this);
         }
     }
 
-    protected <T extends Node, R extends Node> boolean findByClass(T node, Class<R> clazz, FindPredicate<R> predicate ) {
+    protected <T extends Node, R extends Node> boolean findByClass(T node, final Class<R> clazz, final FindPredicate<R> predicate ) {
         boolean result = false;
         final java.util.List<Node> children = node.getChildren();
         
@@ -224,30 +237,34 @@ public class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(RootNode rn) {
-        
-        java.util.List<Node> children = rn.getChildren();
-        
-        for( int index = 0; index < children.size() ; ++index ) {
-            
-            final Node child = children.get(index);
-            
-            if( child instanceof ParaNode ) {
-                boolean result = specialPanelProcessor.findSpecialPanel((ParaNode) child);
-                if( result ) {
-                    final Node nextChild = children.get( index + 1 );
+   
+        forEachChild(rn, new FindPredicate<Node>() {
+
+            @Override
+            public boolean f(Node child, Node parent, int index) {
+
+                if( child instanceof ParaNode ) {
                     
-                    if( nextChild instanceof BlockQuoteNode ) {
-                        System.out.printf( "FIND SPECIAL PANEL [%s]\n", specialPanelProcessor.element);
-                        
-                        nextChild.getChildren().add(0, children.remove(index));
-                        
-                        ++index;
-                        
+                    boolean result = specialPanelProcessor.find((ParaNode) child);
+                    if( result ) {
+                        final java.util.List<Node> children = parent.getChildren();
+    
+                        final Node nextChild = children.get( index + 1 );
+
+                        if( nextChild instanceof BlockQuoteNode ) {
+                            System.out.printf( "FIND SPECIAL PANEL [%s]\n", specialPanelProcessor.element);
+
+                            nextChild.getChildren().add(0, children.remove(index));
+
+                            ++index;
+
+                        }
                     }
                 }
-            }
-            
-        }
+                return true;
+            }            
+        });
+
         visitChildren(rn);
     }
     
@@ -356,6 +373,42 @@ public class ToConfluenceSerializer implements Visitor {
     public void visit(InlineHtmlNode ihn) {
     }
 
+
+    @Override
+    public void visit(TableBodyNode tbn) {
+        visitChildren(tbn);
+    }
+
+    @Override
+    public void visit(TableCaptionNode tcn) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void visit(TableCellNode tcn) {
+        visitChildren(tcn);
+    }
+
+    @Override
+    public void visit(TableColumnNode tcn) {
+        visitChildren(tcn);
+    }
+
+    @Override
+    public void visit(TableHeaderNode thn) {
+        visitChildren(thn);
+    }
+
+    @Override
+    public void visit(TableNode tn) {
+        visitChildren(tn);
+    }
+
+    @Override
+    public void visit(TableRowNode trn) {
+        visitChildren(trn);
+    }
+    
     @Override
     public void visit(SpecialTextNode stn) {
         
@@ -435,41 +488,6 @@ public class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(StrikeNode sn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(TableBodyNode tbn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(TableCaptionNode tcn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(TableCellNode tcn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(TableColumnNode tcn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(TableHeaderNode thn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(TableNode tn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void visit(TableRowNode trn) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

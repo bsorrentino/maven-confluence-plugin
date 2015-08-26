@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.ExpLinkNode;
 import org.pegdown.ast.Node;
@@ -144,12 +145,12 @@ public class PegdownTest {
                             handler);
         
         
-        final PegDownProcessor p = new PegDownProcessor();
+        final PegDownProcessor p = new PegDownProcessor(Extensions.TABLES );
+        
         
         final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
         
         root.accept(proxy);
-        
     }
     
     @Test
@@ -157,7 +158,7 @@ public class PegdownTest {
                 
         final ClassLoader cl = PegdownTest.class.getClassLoader();
         
-        final PegDownProcessor p = new PegDownProcessor();
+        final PegDownProcessor p = new PegDownProcessor(Extensions.TABLES);
         
         final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
         
