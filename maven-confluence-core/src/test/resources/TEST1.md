@@ -6,6 +6,7 @@
 | ------------- | ------------- |
 | Content Cell  | Content Cell  |
 | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 
 ## Yeoman generator to scaffold out [Polymer 1.0](http://www.polymer-project.org/)'s elements using Typescript based on [PolymerTS](https://github.com/nippur72/PolymerTS) project
 

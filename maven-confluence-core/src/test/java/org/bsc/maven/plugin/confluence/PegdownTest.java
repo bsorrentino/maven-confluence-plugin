@@ -156,13 +156,18 @@ public class PegdownTest {
     @Test
     public void serializerTest() throws IOException {
                 
-        final ClassLoader cl = PegdownTest.class.getClassLoader();
-        
         final PegDownProcessor p = new PegDownProcessor(Extensions.TABLES);
         
         final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
         
-        ToConfluenceSerializer ser =  new ToConfluenceSerializer();
+        ToConfluenceSerializer ser =  new ToConfluenceSerializer() {
+
+            @Override
+            protected void notImplementedYet(Node node) {
+                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet.", node.getClass().getSimpleName()) ); 
+            }
+            
+        };
         
         root.accept( ser );
         

@@ -55,14 +55,18 @@ import org.bsc.functional.F;
  *
  * @author bsorrentino
  */
-public class ToConfluenceSerializer implements Visitor {
+public abstract class ToConfluenceSerializer implements Visitor {
 
     private StringBuilder _buffer = new StringBuilder( 500 * 1024 );
+
+    private final java.util.Stack<Node> nodeStack = new java.util.Stack<Node>();
 
     @Override
     public String toString() {
         return _buffer.toString();
     }
+    
+    protected abstract void notImplementedYet( Node node );
     
     protected StringBuilder bufferVisit( F<Void,Void> closure  ) {
         
@@ -142,6 +146,37 @@ public class ToConfluenceSerializer implements Visitor {
             return result;
         }
         
+        void init(RootNode rn) {
+   
+            forEachChild(rn, new FindPredicate<Node>() {
+
+                @Override
+                public boolean f(Node child, Node parent, int index) {
+
+                    if( child instanceof ParaNode ) {
+
+                        boolean result = specialPanelProcessor.find((ParaNode) child);
+                        if( result ) {
+                            final java.util.List<Node> children = parent.getChildren();
+
+                            final Node nextChild = children.get( index + 1 );
+
+                            if( nextChild instanceof BlockQuoteNode ) {
+                                //System.out.printf( "FIND SPECIAL PANEL [%s]\n", specialPanelProcessor.element);
+
+                                nextChild.getChildren().add(0, children.remove(index));
+
+                                ++index;
+
+                            }
+                        }
+                    }
+                    return true;
+                }            
+            });
+
+        }
+
         boolean apply( BlockQuoteNode bqn ) {
             element = null;
             title = null;
@@ -236,35 +271,8 @@ public class ToConfluenceSerializer implements Visitor {
 
 
     @Override
-    public void visit(RootNode rn) {
-   
-        forEachChild(rn, new FindPredicate<Node>() {
-
-            @Override
-            public boolean f(Node child, Node parent, int index) {
-
-                if( child instanceof ParaNode ) {
-                    
-                    boolean result = specialPanelProcessor.find((ParaNode) child);
-                    if( result ) {
-                        final java.util.List<Node> children = parent.getChildren();
-    
-                        final Node nextChild = children.get( index + 1 );
-
-                        if( nextChild instanceof BlockQuoteNode ) {
-                            System.out.printf( "FIND SPECIAL PANEL [%s]\n", specialPanelProcessor.element);
-
-                            nextChild.getChildren().add(0, children.remove(index));
-
-                            ++index;
-
-                        }
-                    }
-                }
-                return true;
-            }            
-        });
-
+    public void visit(RootNode rn) {   
+        //specialPanelProcessor.init(rn);
         visitChildren(rn);
     }
     
@@ -294,12 +302,11 @@ public class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(BlockQuoteNode bqn) {
         
-        if( !specialPanelProcessor.apply(bqn) ) {
-            
-            _buffer.append( "{quote}" );
-            visitChildren(bqn);
-            _buffer.append( "{quote}" ).append('\n');            
-        }
+        //if( specialPanelProcessor.apply(bqn) ) return;
+        
+        _buffer.append( "{quote}" );
+        visitChildren(bqn);
+        _buffer.append( "{quote}" ).append('\n');            
         
     }
 
@@ -373,78 +380,104 @@ public class ToConfluenceSerializer implements Visitor {
     public void visit(InlineHtmlNode ihn) {
     }
 
-
+    @Override
+    public void visit(TableHeaderNode thn) {
+        nodeStack.push(thn);
+        try {
+            visitChildren(thn);            
+        }
+        finally {
+            assert thn == nodeStack.pop();
+        }
+    }
+    
     @Override
     public void visit(TableBodyNode tbn) {
-        visitChildren(tbn);
+       nodeStack.push(tbn);
+        try {
+            visitChildren(tbn);            
+        }
+        finally {
+            assert tbn == nodeStack.pop();
+        }
+     }
+    @Override
+    public void visit(TableRowNode trn) {
+        final Node n = nodeStack.peek();
+
+        if( n instanceof TableHeaderNode )
+            _buffer.append("||");
+        else if( n instanceof TableBodyNode ) 
+            _buffer.append('|');
+        
+        visitChildren(trn);
+        _buffer.append('\n');
     }
 
     @Override
     public void visit(TableCaptionNode tcn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(tcn);
     }
 
     @Override
     public void visit(TableCellNode tcn) {
+        
+        final Node n = nodeStack.peek();
+        
         visitChildren(tcn);
+ 
+        if( n instanceof TableHeaderNode )
+            _buffer.append("||");
+        else if( n instanceof TableBodyNode ) 
+            _buffer.append('|');
+            
     }
 
     @Override
     public void visit(TableColumnNode tcn) {
-        visitChildren(tcn);
-    }
-
-    @Override
-    public void visit(TableHeaderNode thn) {
-        visitChildren(thn);
+        notImplementedYet(tcn);
     }
 
     @Override
     public void visit(TableNode tn) {
         visitChildren(tn);
     }
-
-    @Override
-    public void visit(TableRowNode trn) {
-        visitChildren(trn);
-    }
     
     @Override
     public void visit(SpecialTextNode stn) {
-        
-        throw new UnsupportedOperationException( format("SpecialTextNode is not supported yet. [%s] ", stn )); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(stn);
     }
 
     
     @Override
     public void visit(AbbreviationNode an) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(an);
     }
 
     @Override
     public void visit(AnchorLinkNode aln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(aln);
     }
 
     @Override
     public void visit(AutoLinkNode aln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(aln);
     }
 
 
     @Override
     public void visit(DefinitionListNode dln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(dln);
     }
 
     @Override
     public void visit(DefinitionNode dn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(dn);
     }
 
     @Override
     public void visit(DefinitionTermNode dtn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(dtn);
     }
 
 
@@ -452,58 +485,58 @@ public class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(MailLinkNode mln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(mln);
     }
 
     @Override
     public void visit(OrderedListNode oln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(oln);
     }
 
     @Override
     public void visit(QuotedNode qn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(qn);
     }
 
     @Override
     public void visit(ReferenceNode rn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(rn);
     }
 
     @Override
     public void visit(RefImageNode rin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(rin);
     }
 
     @Override
     public void visit(RefLinkNode rln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(rln);
     }
 
 
     @Override
     public void visit(SimpleNode sn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(sn);
     }
 
     @Override
     public void visit(StrikeNode sn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(sn);
     }
 
     @Override
     public void visit(VerbatimNode vn) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(vn);
     }
 
     @Override
     public void visit(WikiLinkNode wln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(wln);
     }
 
     @Override
     public void visit(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        notImplementedYet(node);
     }
     
 }
