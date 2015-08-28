@@ -44,6 +44,7 @@ import org.pegdown.ast.WikiLinkNode;
 
 import static java.lang.String.format;
 import org.bsc.functional.F;
+import org.pegdown.Extensions;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -61,6 +62,17 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     private final java.util.Stack<Node> nodeStack = new java.util.Stack<Node>();
 
+    public static int extensions() {
+    
+        int EXT = Extensions.NONE;
+
+        EXT |= Extensions.FENCED_CODE_BLOCKS;
+        EXT |= Extensions.TABLES;
+        EXT |= Extensions.STRIKETHROUGH;
+
+        return EXT;
+    }
+    
     @Override
     public String toString() {
         return _buffer.toString();
@@ -126,60 +138,18 @@ public abstract class ToConfluenceSerializer implements Visitor {
                 return false;
             }
         };
-
-        boolean find( ParaNode pn ) {
-            final boolean result = 
-                    findByClass(pn.getChildren().get(0), 
-                        StrongEmphSuperNode.class, 
-                        new FindPredicate<StrongEmphSuperNode>() {
-
-                            @Override
-                            public boolean f(StrongEmphSuperNode node, Node parent, int index) {
-                                if( index!=0 || !node.isStrong() ) return false;
-                                boolean found =  findByClass(node, 
-                                    TextNode.class, isSpecialPanelText );
-                                
-                                return found;
-                            }
-                            
-                        });
-            return result;
-        }
         
-        void init(RootNode rn) {
-   
-            forEachChild(rn, new FindPredicate<Node>() {
-
-                @Override
-                public boolean f(Node child, Node parent, int index) {
-
-                    if( child instanceof ParaNode ) {
-
-                        boolean result = specialPanelProcessor.find((ParaNode) child);
-                        if( result ) {
-                            final java.util.List<Node> children = parent.getChildren();
-
-                            final Node nextChild = children.get( index + 1 );
-
-                            if( nextChild instanceof BlockQuoteNode ) {
-                                //System.out.printf( "FIND SPECIAL PANEL [%s]\n", specialPanelProcessor.element);
-
-                                nextChild.getChildren().add(0, children.remove(index));
-
-                                ++index;
-
-                            }
-                        }
-                    }
-                    return true;
-                }            
-            });
-
-        }
-
         boolean apply( BlockQuoteNode bqn ) {
             element = null;
             title = null;
+            
+            java.util.List<Node> children = bqn.getChildren();
+            
+            if( children.size() != 2 ) return false;
+            
+            Node node1 = bqn.getChildren().get(1);
+            
+            if( !(node1 instanceof BlockQuoteNode ) ) return false;
             
             final boolean result = 
                     findByClass(bqn.getChildren().get(0), 
@@ -216,10 +186,9 @@ public abstract class ToConfluenceSerializer implements Visitor {
             });
             
             if( result ) {
-                bqn.getChildren().remove(0);
-            
+                
                 _buffer.append( format("{%s:title=%s}", element, title));
-                visitChildren(bqn);
+                visitChildren(node1);
                 _buffer.append( format("{%s}", element) ).append('\n');;
             }
             
@@ -302,7 +271,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(BlockQuoteNode bqn) {
         
-        //if( specialPanelProcessor.apply(bqn) ) return;
+        if( specialPanelProcessor.apply(bqn) ) return;
         
         _buffer.append( "{quote}" );
         visitChildren(bqn);
@@ -349,6 +318,31 @@ public abstract class ToConfluenceSerializer implements Visitor {
         visitChildren(sesn);
         _buffer.append( sym );
         
+    }
+
+    @Override
+    public void visit(VerbatimNode vn) {
+        
+        String lines[] = vn.getText().split("\n");
+        if( lines.length == 1 || lines[0].isEmpty() ) {
+            _buffer.append( "{{").append(lines[0]).append( "}}");
+            return;
+        }
+        
+        _buffer.append( "{noformat}").append('\n');
+        for( int i =  1 ; i < lines.length; ++i ) {
+            _buffer.append(lines[i]).append('\n');
+        }
+        _buffer.append( "{noformat}");
+        
+    }
+
+
+    @Override
+    public void visit(StrikeNode sn) {
+        _buffer.append("-");
+        visitChildren(sn);
+        _buffer.append("-");
     }
 
     @Override
@@ -442,7 +436,12 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(TableNode tn) {
         visitChildren(tn);
     }
-    
+
+    @Override
+    public void visit(AnchorLinkNode aln) {
+        _buffer.append( aln.getText() );
+    }
+
     @Override
     public void visit(SpecialTextNode stn) {
         notImplementedYet(stn);
@@ -454,10 +453,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
         notImplementedYet(an);
     }
 
-    @Override
-    public void visit(AnchorLinkNode aln) {
-        notImplementedYet(aln);
-    }
 
     @Override
     public void visit(AutoLinkNode aln) {
@@ -517,16 +512,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(SimpleNode sn) {
         notImplementedYet(sn);
-    }
-
-    @Override
-    public void visit(StrikeNode sn) {
-        notImplementedYet(sn);
-    }
-
-    @Override
-    public void visit(VerbatimNode vn) {
-        notImplementedYet(vn);
     }
 
     @Override

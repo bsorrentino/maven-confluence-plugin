@@ -9,10 +9,12 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
+import org.pegdown.ast.AnchorLinkNode;
 import org.pegdown.ast.ExpLinkNode;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 import org.pegdown.ast.StrongEmphSuperNode;
+import org.pegdown.ast.VerbatimNode;
 import org.pegdown.ast.Visitor;
 
 /*
@@ -21,13 +23,31 @@ import org.pegdown.ast.Visitor;
  * and open the template in the editor.
  */
 
+/*
+    public static final int NONE = 0;
+    public static final int SMARTS = 1;
+    public static final int QUOTES = 2;
+    public static final int SMARTYPANTS = 3;
+    public static final int ABBREVIATIONS = 4;
+    public static final int HARDWRAPS = 8;
+    public static final int AUTOLINKS = 16;
+    public static final int TABLES = 32;
+    public static final int DEFINITIONS = 64;
+    public static final int FENCED_CODE_BLOCKS = 128;
+    public static final int WIKILINKS = 256;
+    public static final int STRIKETHROUGH = 512;
+    public static final int ANCHORLINKS = 768;
+    public static final int ALL = 65535;
+    public static final int SUPPRESS_HTML_BLOCKS = 65536;
+    public static final int SUPPRESS_INLINE_HTML = 131072;
+    public static final int SUPPRESS_ALL_HTML = 196608;
+*/
 /**
  *
  * @author softphone
  */
 public class PegdownTest {
 
-    
     interface F<P extends Node> {
         void f( P node );
     }
@@ -58,8 +78,8 @@ public class PegdownTest {
     
     static class IfContext {
         
-        static final IfContext isTrue = new IfContext(true);
-        static final IfContext isFalse = new IfContext(false);
+        static final IfContext IsTrue = new IfContext(true);
+        static final IfContext IsFalse = new IfContext(false);
         
         final boolean condition ;
 
@@ -69,7 +89,7 @@ public class PegdownTest {
         
         
         <T extends Node> IfContext elseIf( Object n, Class<T> clazz, F<T> cb ) {           
-            return ( condition ) ? isTrue : iF( n, clazz, cb );
+            return ( condition ) ? IsTrue : iF( n, clazz, cb );
         } 
         
         static <T extends Node> IfContext iF( Object n, Class<T> clazz, F<T> cb ) {
@@ -77,9 +97,9 @@ public class PegdownTest {
             if( clazz.isInstance(n)) {
 
                 cb.f( clazz.cast(n));
-                return isTrue;
+                return IsTrue;
             }
-            return isFalse;
+            return IsFalse;
         } 
         
     }
@@ -99,6 +119,24 @@ public class PegdownTest {
         @Override
         public void f(ExpLinkNode node) {
            System.out.printf( " title=[%s], url=[%s]", node.title, node.url );
+           
+        }
+        
+    };
+    final F<AnchorLinkNode> aln = new F<AnchorLinkNode>() {
+
+        @Override
+        public void f(AnchorLinkNode node) {
+           System.out.printf( " name=[%s], text=[%s]", node.getName(), node.getText());
+           
+        }
+        
+    };
+    final F<VerbatimNode> vln = new F<VerbatimNode>() {
+
+        @Override
+        public void f(VerbatimNode node) {
+           System.out.printf( " text=[%s], type=[%s]", node.getText(), node.getType());
            
         }
         
@@ -124,7 +162,11 @@ public class PegdownTest {
                 
                 System.out.printf( "[%s]", n );
                 IfContext.iF(n, StrongEmphSuperNode.class, sesn)
-                            .elseIf(n, ExpLinkNode.class, eln);
+                            .elseIf(n, ExpLinkNode.class, eln)
+                            .elseIf(n, AnchorLinkNode.class, aln)
+                            .elseIf(n, VerbatimNode.class, vln)
+                        
+                        ;
                 System.out.println();
                 
                 if( n instanceof Node ) {
@@ -145,7 +187,7 @@ public class PegdownTest {
                             handler);
         
         
-        final PegDownProcessor p = new PegDownProcessor(Extensions.TABLES );
+        final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions() );
         
         
         final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
@@ -156,7 +198,7 @@ public class PegdownTest {
     @Test
     public void serializerTest() throws IOException {
                 
-        final PegDownProcessor p = new PegDownProcessor(Extensions.TABLES);
+        final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions());
         
         final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
         
