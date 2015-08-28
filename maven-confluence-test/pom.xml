@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>maven-confluence-parent</artifactId>
+        <groupId>org.bsc.maven</groupId>
+        <version>4.4-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>maven-confluence-test</artifactId>
+    <name>CONFLUENCE-REPORTING::Test - ${project.version}</name>
+    <description>description</description>
+  
+  
+    <properties>
+        <!--
+        <confluence.home>http://localhost:8090</confluence.home>
+        <confluence.home>http://docs.codehaus.org</confluence.home>
+        -->
+        <confluence.home>http://support.softphone.it/confluence/</confluence.home>
+    </properties> 
+
+
+    <build>
+        <finalName>site-generation-test</finalName>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>confluence-reporting-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <!--encoding>ISO-8859-1</encoding-->
+                    <encoding>UTF-8</encoding>
+                    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+
+                    <spaceKey>~bsorrentino</spaceKey>
+                    <parentPageTitle>Home</parentPageTitle>
+                    <title>my-site-generation-test ${project.version}</title>
+
+                    <labels>
+                        <label>maven</label>
+                    </labels> 
+                    <!-- TEST ISSUE 40 -->
+                    <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                    <wikiFilesExt>.confluence</wikiFilesExt>
+                    <!-- TEST ISSUE 39 -->
+                    <!--
+                    <serverId>confluence-local</serverId>
+                    <serverId>codehaus</serverId>    
+                    -->
+                    <serverId>softphone-server</serverId>    
+                    
+                    <properties>
+                        <evaluation>(y)</evaluation>
+                        <page>classpath:plugin-report.properties</page>
+                        <page1>file://${basedir}/src/main/resources/confluence.html</page1>
+                    </properties>
+                    
+                    <sslCertificate />
+
+                    <!--                    
+                    <sslCertificate>
+                        <ignore>true</ignore>
+                    </sslCertificate>
+                    -->
+                    
+                </configuration>
+
+            </plugin>
+        </plugins>
+        
+    </build>
+
+    <scm>
+        <connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
+        <developerConnection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</developerConnection>
+        <url>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</url>
+      <tag>HEAD</tag>
+  </scm>
+
+  
+</project>
