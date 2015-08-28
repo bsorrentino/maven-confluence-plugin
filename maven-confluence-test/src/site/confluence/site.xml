@@ -21,7 +21,7 @@ and open the template in the editor.
     <home  uri="encoding.confluence">
         
         <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
-        <child name="child1" >
+        <child name="child1" uri="child1.md" >
             <label>label_child_1</label>
             
             <child name="child1.1" uri="children/child1.confluence">
