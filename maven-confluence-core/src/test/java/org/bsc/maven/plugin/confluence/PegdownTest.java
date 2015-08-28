@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.AnchorLinkNode;
 import org.pegdown.ast.ExpLinkNode;
