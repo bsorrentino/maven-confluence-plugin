@@ -145,6 +145,15 @@ public class VersionUtil {
         }
     }
 
+    public static Collection<String>  removeTagWithVersion(Collection<String> versionTagList, String versionTagNamePart){
+        Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
+        for (String versionTag : versionTagList) {
+            map.put(parseArtifactVersion(versionTag), versionTag);
+        }
+        ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
+        map.remove(currentVersion);
+        return map.values();
+    }
 
     public static LinkedList<String> sortAndFilter(Collection<String> versionNameList,
                                                    String start,
