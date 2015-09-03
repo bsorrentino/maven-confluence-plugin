@@ -1,5 +1,7 @@
 
-<macro name="toc"/>
+### Child 1
+
+This is in markdown
 
 ## strikethrough
 
@@ -36,10 +38,11 @@ It is thought to work joined with [Polymer Starter Kit](https://developers.googl
 
 
 ### Element (alias: El)
+
 Generates a polymer element in `app/elements` and optionally appends an import to `app/elements/elements.html`.
 
 Example:
-```bash
+```
 yo polymerts:el my-element [--path ]
 ```
 
@@ -55,7 +58,7 @@ yo polymerts:el my-element [--path ]
 Generates a Typescript definition (.d.ts) from an installed Polymer element present in `bower_components`.
 
 Example:
-```bash
+```
 yo polymerts:gen polymer-element [--path ] [--elpath ]
 ```
 
