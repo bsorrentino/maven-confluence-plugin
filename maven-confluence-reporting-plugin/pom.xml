@@ -160,6 +160,7 @@ NEEDS FOR PLUGIN DOCUMENTATION
             <artifactId>maven-plugin-tools-generators</artifactId>
         </dependency>
 
+
 <!--
 ================
 TEST
@@ -222,6 +223,7 @@ TEST
             <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
+
 
    </dependencies>
 
