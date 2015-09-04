@@ -1,4 +1,4 @@
-package org.bsc.maven.confluence.plugin.ssl;
+package org.bsc.ssl;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;

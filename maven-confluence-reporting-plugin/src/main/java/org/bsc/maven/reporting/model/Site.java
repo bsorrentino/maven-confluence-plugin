@@ -12,7 +12,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.project.MavenProject;
+import org.bsc.markdown.ToConfluenceSerializer;
+import org.pegdown.PegDownProcessor;
+import org.pegdown.ast.Node;
+import org.pegdown.ast.RootNode;
 
 /**
  *
@@ -26,6 +31,33 @@ public class Site {
      */
     protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
 
+
+    /**
+     * 
+     * @param is
+     * @return 
+     */
+    private static java.io.InputStream processMarkdown( final java.io.InputStream is ) throws IOException {
+        
+        final char[] contents = IOUtils.toCharArray(is);
+        
+        final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions());
+        
+        final RootNode root = p.parseMarkdown(contents);
+        
+        ToConfluenceSerializer ser =  new ToConfluenceSerializer() {
+
+            @Override
+            protected void notImplementedYet(Node node) {
+                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet.", node.getClass().getSimpleName()) ); 
+            }
+
+        };
+        
+        root.accept( ser );
+       
+        return new java.io.ByteArrayInputStream( ser.toString().getBytes() );
+    }
     /**
      *
      * @param uri
@@ -43,7 +75,12 @@ public class Site {
                 throw new /*ProcessUri*/Exception( String.format("uri [%s] is invalid!", String.valueOf(uri) ));
             }
 
-            String source = uri.getRawSchemeSpecificPart();
+            
+            final String source = uri.getRawSchemeSpecificPart();
+
+            final String path =  uri.getRawPath();
+            
+            final boolean isMarkdown = (path !=null && path.endsWith(".md"));
 
             java.io.InputStream result = null;
 
@@ -57,7 +94,9 @@ public class Site {
 
                     cl = Site.class.getClassLoader();
 
-                    result = cl.getResourceAsStream(source);
+                    final java.io.InputStream is = cl.getResourceAsStream(source);
+                    
+                    result = (isMarkdown) ? processMarkdown(is) : is;
 
                     if (result == null) {
                         throw new /*ProcessUri*/Exception(String.format("resource [%s] doesn't exist in classloader", source));
@@ -70,8 +109,9 @@ public class Site {
                 try {
                     java.net.URL url = uri.toURL();
 
+                    final java.io.InputStream is = url.openStream();
 
-                    result = url.openStream();
+                    result =  (isMarkdown) ? processMarkdown(is) : is;
 
                 } catch (IOException e) {
                     throw new /*ProcessUri*/Exception(String.format("error opening url [%s]!", source), e);

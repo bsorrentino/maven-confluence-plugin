@@ -1,5 +1,6 @@
 package org.bsc.maven.confluence.plugin;
 
+import org.bsc.ssl.SSLCertificateInfo;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -158,7 +159,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         if (sslCertificate != null) {
             getLog().debug(String.valueOf(sslCertificate));
 
-            sslCertificate.setup(this);
+            sslCertificate.setup(this.getEndPoint());
         }
 
         Confluence confluence = null;
@@ -196,24 +197,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             confluenceLogout(confluence);
         }
 
-    }
-
-    protected static <T> T newClass(final String clazz, final Class<T> type) {
-        try {
-            final Class<?> loadedClass = Thread.currentThread().getContextClassLoader().loadClass(clazz);
-            //create an instance of loaded class i.e. with newInstance (just works for classes with non-arg const).
-            final Object initClass = loadedClass.newInstance();
-            return type.cast(initClass);
-        } catch (final ClassNotFoundException e) {
-            final String msg = String.format("Could not found Class with name %s", clazz);
-            throw new IllegalStateException( msg, e);
-        } catch (final InstantiationException e){
-            final String msg = String.format("Could create Instance of Class with name %s. Class must be concrete.",clazz);
-            throw new IllegalStateException(msg, e);
-        }catch (final IllegalAccessException e){
-            final String msg = String.format("Could create Instance of Class with name %s. Class must have a no-arg constructor.",clazz);
-            throw new IllegalStateException(msg, e);
-        }
     }
 
     /**

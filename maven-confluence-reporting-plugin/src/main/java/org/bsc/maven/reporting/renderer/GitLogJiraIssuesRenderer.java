@@ -101,7 +101,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
             log.info("Override gitLogSinceTagName by nearest version tag name found: " + gitLogSinceTagName);
         }
 
-        if (gitLogSinceTagName==null || gitLogSinceTagName.isEmpty()) {
+        if (gitLogSinceTagName == null || gitLogSinceTagName.isEmpty()) {
             log.warn("gitLogSinceTagName is not specified and cannot be calculated via calculateRuleForSinceTagName");
         }
 
@@ -111,13 +111,13 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         }
 
 
-        String report="";
-        if (gitLogGroupByVersions){
-            LinkedHashMap<String,Set<String>> jiraIssuesByVersion = null;
+        String report = "";
+        if (gitLogGroupByVersions) {
+            LinkedHashMap<String, Set<String>> jiraIssuesByVersion = null;
             try {
                 LinkedList<String> linkedList = VersionUtil.sortAndFilter(versionTagList,
                         gitLogSinceTagName,
-                        gitLogUntilTagName );
+                        gitLogUntilTagName);
 
                 jiraIssuesByVersion = GitLogUtil.extractJiraIssuesByVersion(repository,
                         linkedList,
@@ -126,16 +126,14 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
                 log.error("cannot extractJiraIssues with error " + e, e);
             }
 
-            if (jiraIssuesByVersion!=null) {
+            if (jiraIssuesByVersion != null) {
                 log.info(String.format("Found %d version tags", jiraIssuesByVersion.keySet().size()));
                 log.debug(": " + jiraIssuesByVersion);
                 report = formatJiraIssuesByVersionToString(jiraIssuesByVersion);
+            } else {
+                report = "NO_JIRA_ISSUES_BY_VERSION_FOUND";
             }
-            else {
-                report = "NO JIRAISSUESBYVERSION FOUND";
-            }
-        }
-        else {
+        } else {
             Set<String> jiraIssues = null;
             try {
                 jiraIssues = GitLogUtil.extractJiraIssues(repository, gitLogSinceTagName, gitLogUntilTagName, pattern);
@@ -167,6 +165,9 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         String tagNamePart = VersionUtil.calculateVersionTagNamePart(currentVersion, calculateRuleForSinceTagName);
         log.info(String.format("Calculated tag name part is %s", tagNamePart));
         versionTagList = VersionUtil.removeTagWithVersion(versionTagList, currentVersion);
+        if (!calculateRuleForSinceTagName.equals(CalculateRuleForSinceTagName.LATEST_RELEASE_VERSION)) {
+            versionTagList = VersionUtil.removeTagWithVersion(versionTagList, tagNamePart);
+        }
         String nearestVersionTagName = VersionUtil.findNearestVersionTagsBefore(versionTagList, tagNamePart);
         gitLogSinceTagName = nearestVersionTagName;
 
