@@ -9,6 +9,13 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|Sep 04,2015 | **Release 4.4**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4%7Cmaven-plugin)**  |
+|:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Refer to [Pull Request 85](https://github.com/bsorrentino/maven-confluence-plugin/pull/85) 
+  * Refer to [Issue 84](https://github.com/bsorrentino/maven-confluence-plugin/issues/84) - Evaluate writing documentation in Markdown
+
+
 |Jul 18,2015 | **Release 4.3**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.3%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
