@@ -266,7 +266,6 @@ public class Site {
 
 
         java.util.List<Attachment> attachments;
-        String name;
 
         @Deprecated
         public File getSource() {

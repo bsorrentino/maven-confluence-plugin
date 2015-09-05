@@ -158,11 +158,12 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         }
  
     }
-    
+
     /**
      * 
-     * @param confluence
-     * @param page 
+     * @param folder
+     * @param page
+     * @return 
      */
     protected boolean navigateAttachments( java.io.File folder,  Site.Page page) /*throws MavenReportException*/ {
 
