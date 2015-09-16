@@ -155,7 +155,6 @@ public class VersionUtil {
         return map.values();
     }
 
-
     public static LinkedList<String> sortAndFilter(Collection<String> versionNameList,
                                                    String start,
                                                    String end) {

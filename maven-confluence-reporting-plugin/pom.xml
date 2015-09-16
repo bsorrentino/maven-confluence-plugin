@@ -310,7 +310,7 @@ TEST
     </profile>
 
     <profile>
-        <id>codehaus</id>
+        <id>confluence</id>
 
         <build>
 
@@ -334,22 +334,16 @@ TEST
                     <version>${project.version}</version>
 
                     <configuration>
-                        <endPoint>http://docs.codehaus.org/rpc/xmlrpc</endPoint>
-                        <spaceKey>MVNCONFSITE</spaceKey>
+                        <endPoint>http://support.softphone.it/confluence/rpc/xmlrpc</endPoint>
+                        <spaceKey>~bsorrentino</spaceKey>
                         <parentPageTitle>Home</parentPageTitle>
-                        <serverId>codehaus</serverId>
+                        <serverId>softphone-server</serverId>
                         <wikiFilesExt>.confluence</wikiFilesExt>
                         <templateWiki>${basedir}/src/site/confluence/codehaus-home.confluence</templateWiki>
-                        <!--
-                        <labels>
-                            <label>maven</label>
-                            <label>confluence</label>
-                            <label>report</label>
-                        </labels>
-                        -->
                     </configuration>
                 </plugin>
 
+<!--
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
@@ -414,6 +408,7 @@ TEST
                         </reportPlugins>
                     </configuration>
                 </plugin>
+-->                
             </plugins>
         </build>
 
