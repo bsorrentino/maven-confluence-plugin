@@ -20,33 +20,11 @@ and open the template in the editor.
 
     <home  uri="codehaus-home.confluence">
         
-        <!--
-        <child name="goals" uri="goals.confluence">
-        </child>
-        <child name="dependencies" uri="dependencies.confluence">
-        </child>
-        -->
+        <attachment name="gitlog-sample02.png" uri="attachments/gitlog-sample02.png" comment="gitlog to jira sample" contentType="image/png" version="1"></attachment>
     </home>
     
     <label>maven</label>
     <label>confluence</label>
     <label>documentation</label>
         
-<!--    
-    <home  uri="classpath:template1.confluence">
-        <label>label_home</label>
-        
-        <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
-        <child name="child1" >
-            <label>label_child_1</label>
-            
-            <child name="child1.1" uri="children/child1.confluence">
-                
-            <label>label_child_1_1</label>
-            </child>
-        </child>
-    </home>
-    
-    <label>label_site</label>
--->    
 </ns1:site>
