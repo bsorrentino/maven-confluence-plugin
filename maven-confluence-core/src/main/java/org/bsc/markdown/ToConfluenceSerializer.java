@@ -428,6 +428,15 @@ public abstract class ToConfluenceSerializer implements Visitor {
     }
 
     @Override
+    public void visit(RefLinkNode rln) {
+        _buffer.append( '[' );
+        visitChildren(rln);
+        _buffer.append( ']' );
+    }
+
+
+
+    @Override
     public void visit(TableColumnNode tcn) {
         notImplementedYet(tcn);
     }
@@ -502,12 +511,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(RefImageNode rin) {
         notImplementedYet(rin);
     }
-
-    @Override
-    public void visit(RefLinkNode rln) {
-        notImplementedYet(rln);
-    }
-
 
     @Override
     public void visit(SimpleNode sn) {

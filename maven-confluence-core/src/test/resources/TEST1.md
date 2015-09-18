@@ -88,3 +88,5 @@ yo polymerts:gen polymer-element [--path ] [--elpath ]
 
 ![ ](${pageTitle}^image_name)
 
+[ref link node]
+

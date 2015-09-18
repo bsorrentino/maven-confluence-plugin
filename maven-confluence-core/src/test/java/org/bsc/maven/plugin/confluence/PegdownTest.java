@@ -11,6 +11,7 @@ import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.AnchorLinkNode;
 import org.pegdown.ast.ExpLinkNode;
 import org.pegdown.ast.Node;
+import org.pegdown.ast.RefLinkNode;
 import org.pegdown.ast.RootNode;
 import org.pegdown.ast.StrongEmphSuperNode;
 import org.pegdown.ast.VerbatimNode;
@@ -140,6 +141,15 @@ public class PegdownTest {
         }
         
     };
+    final F<RefLinkNode> rln = new F<RefLinkNode>() {
+
+        @Override
+        public void f(RefLinkNode node) {
+           System.out.printf( " separatorSpace=[%s]", node.separatorSpace);
+           
+        }
+        
+    };
     
     @Test
     public void parseTest() throws IOException {
@@ -164,6 +174,7 @@ public class PegdownTest {
                             .elseIf(n, ExpLinkNode.class, eln)
                             .elseIf(n, AnchorLinkNode.class, aln)
                             .elseIf(n, VerbatimNode.class, vln)
+                            .elseIf(n, RefLinkNode.class, rln)
                         
                         ;
                 System.out.println();
