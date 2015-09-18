@@ -205,7 +205,7 @@ public class PegdownTest {
 
             @Override
             protected void notImplementedYet(Node node) {
-                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet.", node.getClass().getSimpleName()) ); 
+                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. ", node.getClass().getSimpleName()) ); 
             }
             
         };
