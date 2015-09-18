@@ -73,6 +73,52 @@ public abstract class ToConfluenceSerializer implements Visitor {
         return EXT;
     }
     
+    /**
+     * 
+     * @param text
+     * @param node
+     * @return 
+     */
+    public static int lineFromNode(String text, Node node) {
+        int lastEOL = 0;
+        int prevEOL = 0;
+        int length = text.length();
+        int pos = 0;
+        int line = 0;
+        int col = 0;
+        
+        int offset = node.getStartIndex();
+        
+        if (offset > length) {
+            offset = length;
+        }
+
+        while (pos < length) {
+            pos = text.indexOf('\n', pos);
+            if (pos == -1) break; // no EOL at the end or we hit the end
+
+            prevEOL = lastEOL;
+            lastEOL = pos;
+
+            if (pos > offset) {
+                break;
+            }
+
+            line++;
+            pos++;
+        }
+
+        if (prevEOL < offset && lastEOL >= offset) {
+            // offset is on this line
+            col = offset - prevEOL;
+        }
+
+        line++;
+        //System.out.println("offset : " + offset + " = (" + String.valueOf(line) + ":" + String.valueOf(col) + ")");
+
+        return line;
+    }
+
     @Override
     public String toString() {
         return _buffer.toString();

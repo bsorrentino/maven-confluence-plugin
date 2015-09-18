@@ -49,7 +49,10 @@ public class Site {
 
             @Override
             protected void notImplementedYet(Node node) {
-                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet.", node.getClass().getSimpleName()) ); 
+                
+                final int line = ToConfluenceSerializer.lineFromNode( new String(contents), node);
+                final int col = node.getStartIndex() - node.getEndIndex();
+                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. line=[%d] col=[%d]", node.getClass().getSimpleName(), line, col) ); 
             }
 
         };
