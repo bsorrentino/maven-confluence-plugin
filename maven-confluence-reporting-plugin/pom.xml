@@ -239,7 +239,7 @@ TEST
                 =====================================================
                 DEPLOY SITE TO GITHUB
                 =====================================================
-                -->
+                
 
                 <plugin>
                     <groupId>com.github.github</groupId>
@@ -260,7 +260,8 @@ TEST
                         </execution>
                     </executions>
                 </plugin>
-
+                -->
+                
                 <!--
                 =====================================================
                 MAVEN3 SITE GENERATION
@@ -269,7 +270,7 @@ TEST
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.0</version>
+                    <version>3.4</version>
 
                     <dependencies>
                         <dependency>
@@ -282,7 +283,13 @@ TEST
                         <dependency>
                             <groupId>org.apache.maven.reporting</groupId>
                             <artifactId>maven-reporting-exec</artifactId>
-                            <version>1.1</version>
+                            <version>1.2</version>
+                        </dependency>
+
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-markdown</artifactId>
+                            <version>1.6</version>
                         </dependency>
 
                     </dependencies>
