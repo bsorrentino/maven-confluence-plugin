@@ -12,15 +12,15 @@
             </activatedProfiles>
         </action>
         <action>
-            <actionName>CUSTOM-codehaus</actionName>
-            <displayName>codehaus</displayName>
+            <actionName>CUSTOM-confluence</actionName>
+            <displayName>confluence</displayName>
             <recursive>false</recursive>
             <goals>
                 <goal>package</goal>
                 <goal>confluence-reporting:deploy</goal>
             </goals>
             <activatedProfiles>
-                <activatedProfile>codehaus</activatedProfile>
+                <activatedProfile>confluence</activatedProfile>
             </activatedProfiles>
         </action>
     </actions>

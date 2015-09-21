@@ -4,7 +4,6 @@
 ### Basic Declaration
 
 ```xml
-
  <plugin>
   <groupId>org.bsc.maven</groupId>
   <artifactId>confluence-reporting-maven-plugin</artifactId>
@@ -28,7 +27,7 @@
   </configuration>
  </plugin>
 
-```
+````
 
 ### Add labels
 
@@ -153,7 +152,8 @@ Main idea is automated creating of release notes with list of resolved JIRA issu
 > Parse git log commits until first occurrence of specified tag name.
 
 * `gitLogCalculateRuleForSinceTagName`
-> If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version`${project.version}` and provided rule. Possible values are  
+> If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version ```${project.version}``` and provided rule. Possible values are
+ 
 > * `NO_RULE`
 > * `CURRENT_MAJOR_VERSION`. For example 1.2.3 will be resolved to 1.0.0
 > * `CURRENT_MINOR_VERSION`. For example 1.2.3 will be resolved to 1.2.0
@@ -171,7 +171,7 @@ Main idea is automated creating of release notes with list of resolved JIRA issu
 
 #### Sample produced output of `${gitlog.jiraIssues}`  with  `gitLogGroupByVersions=true`
 
-![ ](./images/gitlog-sample02.png)
+![${pageTitle}^gitlog-sample02.png](./images/gitlog-sample02.png "Sample Output")
 
 
 ### Template example

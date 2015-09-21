@@ -43,6 +43,7 @@ import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
 
 import static java.lang.String.format;
+import java.net.URISyntaxException;
 import org.bsc.functional.F;
 import org.pegdown.Extensions;
 
@@ -77,9 +78,9 @@ public abstract class ToConfluenceSerializer implements Visitor {
      * 
      * @param text
      * @param node
-     * @return 
+     * @return [line,col]
      */
-    public static int lineFromNode(String text, Node node) {
+    public static int[] lineAndColFromNode(String text, Node node) {
         int lastEOL = 0;
         int prevEOL = 0;
         int length = text.length();
@@ -116,7 +117,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         line++;
         //System.out.println("offset : " + offset + " = (" + String.valueOf(line) + ":" + String.valueOf(col) + ")");
 
-        return line;
+        return new int[] {line,col};
     }
 
     @Override
@@ -336,21 +337,55 @@ public abstract class ToConfluenceSerializer implements Visitor {
         visitChildren(eln);
         _buffer.append( format( "|%s|%s]", eln.url, eln.title));
     }
+    
+    
+    @Override
+    public void visit(VerbatimNode vn) {
+        
+        final String lines[] = vn.getText().split("\n");
+        if( lines.length == 1 || lines[0].isEmpty() ) {
+            _buffer.append( "{{")
+                   .append(vn.getText())
+                   .append( "}}");
+            return;
+        }
+        
+        if( vn.getType()==null || vn.getType().isEmpty() ) {
+            _buffer.append( "{noformat}")
+                    .append('\n')
+                    .append(vn.getText())
+                    .append('\n')
+                    .append( "{noformat}")
+                    ;
+            return;
+        }
+        _buffer.append( format("{code:title=%s}", vn.getType()) )
+                .append('\n')
+                .append(vn.getText())
+                .append('\n')
+                .append( "{code}")
+                ;
+    }
 
     @Override
     public void visit(CodeNode cn) {
         
-        String lines[] = cn.getText().split("\n");
+        final String lines[] = cn.getText().split("\n");
         if( lines.length == 1 || lines[0].isEmpty() ) {
-            _buffer.append( "{noformat}").append(cn.getText()).append( "{noformat}");
+            _buffer.append( "{{")
+                   .append(cn.getText())
+                   .append( "}}");
             return;
         }
         
-        _buffer.append( format("{code:%s}", lines[0])).append('\n');
-        for( int i =  1 ; i < lines.length; ++i ) {
-            _buffer.append(lines[i]).append('\n');
-        }
-        _buffer.append( "{code}");
+        
+        _buffer
+            .append( "{code}")
+            .append('\n')
+            .append(cn.getText())
+            .append( "{code}")
+            .append('\n')
+            ;
     }
 
     @Override
@@ -366,22 +401,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
         
     }
 
-    @Override
-    public void visit(VerbatimNode vn) {
-        
-        String lines[] = vn.getText().split("\n");
-        if( lines.length == 1 || lines[0].isEmpty() ) {
-            _buffer.append( "{{").append(lines[0]).append( "}}");
-            return;
-        }
-        
-        _buffer.append( "{noformat}").append('\n');
-        for( int i =  1 ; i < lines.length; ++i ) {
-            _buffer.append(lines[i]).append('\n');
-        }
-        _buffer.append( "{noformat}");
-        
-    }
 
 
     @Override
@@ -407,9 +426,36 @@ public abstract class ToConfluenceSerializer implements Visitor {
     }
 
     @Override
-    public void visit(ExpImageNode ein) {
+    public void visit(final ExpImageNode ein) {
         //visitChildren(ein);
-        _buffer.append( format( "!%s!", ein.url, ein.title));
+        
+        try {
+            
+            final java.net.URI uri = new java.net.URI(ein.url);
+
+            final String scheme = uri.getScheme();
+
+            if( !uri.isAbsolute() 
+                     && (null==uri.getScheme() || scheme.isEmpty()) 
+                     && findByClass(ein, TextNode.class, new FindPredicate<TextNode>() {
+
+                            @Override
+                            public boolean f(TextNode node, Node parent, int index) {
+                                _buffer.append( format( "!%s!", node.getText() ));
+                                return true;
+                            }
+                        }))
+            {
+             return;
+            }
+             
+         } catch (URISyntaxException ex) {
+             // @TODO notify error
+         }
+
+                      
+        _buffer.append( format( "!%s!", ein.url));
+            
     }
 
     @Override
@@ -499,7 +545,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(SpecialTextNode stn) {
-        notImplementedYet(stn);
+        _buffer.append(stn.getText());
     }
 
     
