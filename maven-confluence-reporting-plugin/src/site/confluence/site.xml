@@ -21,7 +21,8 @@ and open the template in the editor.
     <home  uri="codehaus-home.confluence">
         
 
-        <child name="Usage" uri="../markdown/usage.md">
+        <!--child name="Usage" uri="../markdown/usage.md"-->
+        <child name="Usage" uri="usage.md">
             <attachment name="gitlog-sample02.png" uri="../resources/images/gitlog-sample02.png" comment="gitlog to jira sample" contentType="image/png" version="1"></attachment>
         </child>
 

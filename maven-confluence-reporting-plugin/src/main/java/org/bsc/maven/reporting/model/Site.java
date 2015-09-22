@@ -372,6 +372,18 @@ public class Site {
 
             return getUri();
         }
+        
+        boolean ignoreVariables = false;
+
+        @XmlAttribute(name="ignore-variables")
+        public boolean isIgnoreVariables() {
+            return ignoreVariables;
+        }
+
+        public void setIgnoreVariables(boolean value) {
+            this.ignoreVariables = value;
+        }
+        
     }
 
     public Site() {

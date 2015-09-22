@@ -239,6 +239,7 @@ TEST
                 =====================================================
                 DEPLOY SITE TO GITHUB
                 =====================================================
+                 -->                
                
                 <plugin>
                     <groupId>com.github.github</groupId>
@@ -259,7 +260,7 @@ TEST
                         </execution>
                     </executions>
                 </plugin>
-                 -->                
+                
                 <!--
                 =====================================================
                 MAVEN3 SITE GENERATION

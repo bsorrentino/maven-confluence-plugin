@@ -440,6 +440,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(BulletListNode bln) {
 
+         _buffer.append('\n');
         for (Node child : bln.getChildren()) {
             _buffer.append("* ");
             child.accept(this);

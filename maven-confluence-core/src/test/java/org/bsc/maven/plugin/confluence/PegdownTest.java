@@ -52,7 +52,7 @@ public class PegdownTest {
         void f( P node );
     }
 
-    private static final String FILES[] = { "README.md", "usage.md" };
+    private static final String FILES[] = { "README.md", "TEST1.md" };
 
     private char[] loadResource( String name ) throws IOException {
 
