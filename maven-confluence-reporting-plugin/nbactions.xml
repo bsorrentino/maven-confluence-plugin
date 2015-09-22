@@ -13,11 +13,22 @@
         </action>
         <action>
             <actionName>CUSTOM-confluence</actionName>
-            <displayName>confluence</displayName>
+            <displayName>confluence-deploy</displayName>
             <recursive>false</recursive>
             <goals>
                 <goal>package</goal>
                 <goal>confluence-reporting:deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>confluence</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-confluence-delete</actionName>
+            <displayName>confluence-delete</displayName>
+            <recursive>false</recursive>
+            <goals>
+                <goal>confluence-reporting:delete</goal>
             </goals>
             <activatedProfiles>
                 <activatedProfile>confluence</activatedProfile>

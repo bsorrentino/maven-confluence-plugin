@@ -4,6 +4,7 @@
 ### Basic Declaration
 
 ```xml
+
  <plugin>
   <groupId>org.bsc.maven</groupId>
   <artifactId>confluence-reporting-maven-plugin</artifactId>
@@ -27,7 +28,7 @@
   </configuration>
  </plugin>
 
-````
+```
 
 ### Add labels
 
@@ -103,33 +104,47 @@ Take note that also [maven encryption](http://maven.apache.org/guides/mini/guide
 
 ## Use template variables
 
-By default the plugin use an internal template to generate confluence page. You can customize the generated page creating a personal template into  folder `${basedir}/src/site/confluence` named `template.wiki`.
+By default the plugin use an internal template to generate confluence page. You can customize the generated page creating a personal template into  folder `$\{basedir}/src/site/confluence` named `template.wiki`.
 The template can include all valid confluence contents plus the following built-in variables
 
 ### Built-In template variables
 
 Variable | Description
 -----------------|-----------------
- ${project.summary}      | project summary
- ${project.scmManager}   | scm information
- ${project.dependencies} | dependencies    
- ${pageTitle}            | title of home page   
- ${childTitle}           | title of the current child page   
- ${artifactId}           | artifactId      
- ${version}              | version         
- ${gitlog.jiraIssues}     | list of JIRA issuses, extracted from gitlog since start tag
- ${gitlog.sinceTagName}   | name of version tag to start extract JIRA issues   
+ ```$\{project.summary}```| project summary
+ ```$\{project.scmManager}```   | scm information
+ ```$\{project.dependencies}``` | dependencies    
+ ```$\{pageTitle}```            | title of home page   
+ ```$\{childTitle}```           | title of the current child page   
+ ```$\{artifactId}```          | artifactId      
+ ```$\{version}```            | version         
+ ```$\{gitlog.jiraIssues}```     | list of JIRA issuses, extracted from gitlog since start tag
+ ```$\{gitlog.sinceTagName}```   | name of version tag to start extract JIRA issues   
 
 ### Tips & Tricks
 
-* How to refer to an image
-> `!${pageTitle}^image_name!`.
+* How to refer to an image 
+
+```
+!${pageTitle}^image_name!
+```
+
 * How to refer to an child's image within child page
-> `!${childTitle}^image_name!`.
+
+```
+!${childTitle}^image_name!
+```
+
 * How to refer to an attachment
-> `[${pageTitle}^attachment_name]`.
+
+```
+[${pageTitle}^attachment_name]
+```
 * How to refer to an child's attachment within child page
-> `!${childTitle}^attachment_name!`.
+
+```
+[${childTitle}^attachment_name]
+```
 
 ### Git log template variables
 
@@ -143,7 +158,7 @@ Main idea is automated creating of release notes with list of resolved JIRA issu
 #### Git log configuration options
 
 * `gitLogJiraIssuesEnable`
->  Set it to true for enabling substitution of ```${gitlog.jiraIssues}``` build-in variable.  Default value is  false.
+>  Set it to true for enabling substitution of ```$(gitlog.jiraIssues}``` build-in variable.  Default value is  false.
 
 * `gitLogSinceTagName`
 > Parse git log commits since last occurrence of specified tag name.
@@ -152,8 +167,8 @@ Main idea is automated creating of release notes with list of resolved JIRA issu
 > Parse git log commits until first occurrence of specified tag name.
 
 * `gitLogCalculateRuleForSinceTagName`
-> If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version ```${project.version}``` and provided rule. Possible values are
- 
+> If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version ```$(project.version}``` and provided rule. Possible values are
+
 > * `NO_RULE`
 > * `CURRENT_MAJOR_VERSION`. For example 1.2.3 will be resolved to 1.0.0
 > * `CURRENT_MINOR_VERSION`. For example 1.2.3 will be resolved to 1.2.0
@@ -169,9 +184,9 @@ Main idea is automated creating of release notes with list of resolved JIRA issu
  > Enable grouping by versions tag
 
 
-#### Sample produced output of `${gitlog.jiraIssues}`  with  `gitLogGroupByVersions=true`
+#### Sample produced output of `$(gitlog.jiraIssues}`  with  `gitLogGroupByVersions=true`
 
-![${pageTitle}^gitlog-sample02.png](./images/gitlog-sample02.png "Sample Output")
+![${childTitle}^gitlog-sample02.png](./images/gitlog-sample02.png "Sample Output")
 
 
 ### Template example
@@ -211,6 +226,7 @@ From Release 3.0.1 this plugin is available from [MAVEN CENTRAL REPO](http://rep
 If you want stay tune over modification, includes the following repository declaration in your POM
 
 ```xml
+
 <pluginRepositories>
 
     <!-- IF YOU WANT STAY TUNED ON UPDATE REMOVE COMMENT -->
@@ -226,4 +242,5 @@ If you want stay tune over modification, includes the following repository decla
     </pluginRepository>
 
 </pluginRepositories>
+
 ```
