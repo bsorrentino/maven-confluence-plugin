@@ -124,22 +124,17 @@ Variable | Description
 
 ### Tips & Tricks
 
-* How to refer to an image 
-```
-!${pageTitle}^image_name!
-```
+* How to refer to an image
+> ```!${pageTitle}^image_name!```
+
 * How to refer to an child's image within child page
-```
-!${childTitle}^image_name!
-```
+> ```!${childTitle}^image_name!```
+
 * How to refer to an attachment
-```
-[${pageTitle}^attachment_name]
-```
+> ```[${pageTitle}^attachment_name]```
+
 * How to refer to an child's attachment within child page
-```
-[${childTitle}^attachment_name]
-```
+> ```[${childTitle}^attachment_name]```
 
 
 ### Git log template variables
@@ -164,11 +159,11 @@ Main idea is automated creating of release notes with list of resolved JIRA issu
 
 * `gitLogCalculateRuleForSinceTagName`
 
-> If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version ```${project.version}``` and provided rule. 
+> If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version ```${project.version}``` and provided rule.
 
 > Possible values are:
 >
-> 
+>
 > * `NO_RULE`.
 > * `CURRENT_MAJOR_VERSION`. For example 1.2.3 will be resolved to 1.0.0
 > * `CURRENT_MINOR_VERSION`. For example 1.2.3 will be resolved to 1.2.0

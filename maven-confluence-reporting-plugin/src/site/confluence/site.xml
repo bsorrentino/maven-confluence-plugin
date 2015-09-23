@@ -19,17 +19,17 @@ and open the template in the editor.
     xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
 
     <home  uri="codehaus-home.confluence">
-        
+
 
         <!--child name="Usage" uri="../markdown/usage.md"-->
-        <child name="Usage" uri="usage.md">
+        <child name="Usage" uri="usage.confluence">
             <attachment name="gitlog-sample02.png" uri="../resources/images/gitlog-sample02.png" comment="gitlog to jira sample" contentType="image/png" version="1"></attachment>
         </child>
 
     </home>
-    
+
     <label>maven</label>
     <label>confluence</label>
     <label>documentation</label>
-        
+
 </ns1:site>
