@@ -4,7 +4,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.4</version>
+  <version>4.4.1</version>
   <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
   <description><![CDATA[
     Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
@@ -133,7 +133,7 @@
       <dependency>
           <groupId>org.pegdown</groupId>
           <artifactId>pegdown</artifactId>
-          <version>1.5.0</version>
+          <version>1.6.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

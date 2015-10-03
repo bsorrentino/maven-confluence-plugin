@@ -273,10 +273,14 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
                     .build( Site.processUri(source), getCharset() );
-                            
-                addStdProperties(t);
+                     
+                if( !child.isIgnoreVariables() ) {
+    
+                    addStdProperties(t);
+                    
+                    t.setVariableOpt("childTitle", pageName);
+                }
 
-                t.setVariableOpt("childTitle", pageName);
                 
                 p.setContent(t.generateOutput());
             }

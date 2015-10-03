@@ -17,7 +17,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.4</version>
+        <version>4.4.1</version>
     </parent>
 
     <properties>
@@ -239,8 +239,8 @@ TEST
                 =====================================================
                 DEPLOY SITE TO GITHUB
                 =====================================================
-                -->
-
+                 -->                
+               
                 <plugin>
                     <groupId>com.github.github</groupId>
                     <artifactId>site-maven-plugin</artifactId>
@@ -260,7 +260,7 @@ TEST
                         </execution>
                     </executions>
                 </plugin>
-
+                
                 <!--
                 =====================================================
                 MAVEN3 SITE GENERATION
@@ -269,7 +269,7 @@ TEST
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.0</version>
+                    <version>3.4</version>
 
                     <dependencies>
                         <dependency>
@@ -282,7 +282,13 @@ TEST
                         <dependency>
                             <groupId>org.apache.maven.reporting</groupId>
                             <artifactId>maven-reporting-exec</artifactId>
-                            <version>1.1</version>
+                            <version>1.2</version>
+                        </dependency>
+
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-markdown</artifactId>
+                            <version>1.6</version>
                         </dependency>
 
                     </dependencies>
@@ -316,7 +322,6 @@ TEST
 
             <plugins>
 
-
                 <plugin>
                     <dependencies>
 
@@ -343,72 +348,6 @@ TEST
                     </configuration>
                 </plugin>
 
-<!--
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.0</version>
-
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.plugin-tools</groupId>
-                            <artifactId>maven-plugin-annotations</artifactId>
-                            <version>${pluginToolsVersion}</version>
-                            <scope>runtime</scope>
-                        </dependency>
-
-                        <dependency>
-                                <groupId>org.apache.maven.reporting</groupId>
-                                <artifactId>maven-reporting-exec</artifactId>
-                                <version>1.1</version>
-                        </dependency>
-
-
-                    </dependencies>
-                    <configuration>
-                        <reportPlugins>
-
-                            <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-plugin-plugin</artifactId>
-                                <version>${pluginToolsVersion}</version>
-                            </plugin>
-
-                            <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-project-info-reports-plugin</artifactId>
-                                <version>${reports-plugin-version}</version>
-                            </plugin>
-
-                            <plugin>
-                                <groupId>org.bsc.maven</groupId>
-                                <artifactId>maven-confluence-reporting-plugin</artifactId>
-                                <version>${project.version}</version>
-                                <reportSets>
-                                    <reportSet>
-                                        <id>confluence</id>
-                                        <configuration>
-                                            <endPoint>http://docs.codehaus.org/rpc/xmlrpc</endPoint>
-                                            <spaceKey>MVNCONFSITE</spaceKey>
-                                            <parentPageTitle>Home</parentPageTitle>
-                                            <serverId>codehaus</serverId>
-                                            <templateWiki>${basedir}/src/site/confluence/codehaus-home.wiki</templateWiki>
-                                            <labels>
-                                                <label>maven</label>
-                                                <label>confluence</label>
-                                                <label>report</label>
-                                            </labels>
-                                        </configuration>
-                                        <reports>
-                                            <report>plugin-confluence-summary</report>
-                                        </reports>
-                                    </reportSet>
-                                </reportSets>
-                            </plugin>
-                        </reportPlugins>
-                    </configuration>
-                </plugin>
--->                
             </plugins>
         </build>
 

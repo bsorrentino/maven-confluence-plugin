@@ -43,6 +43,7 @@ import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
 
 import static java.lang.String.format;
+import java.net.URISyntaxException;
 import org.bsc.functional.F;
 import org.pegdown.Extensions;
 
@@ -63,7 +64,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     private final java.util.Stack<Node> nodeStack = new java.util.Stack<Node>();
 
     public static int extensions() {
-    
+
         int EXT = Extensions.NONE;
 
         EXT |= Extensions.FENCED_CODE_BLOCKS;
@@ -72,18 +73,64 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
         return EXT;
     }
-    
+
+    /**
+     *
+     * @param text
+     * @param node
+     * @return [line,col]
+     */
+    public static int[] lineAndColFromNode(String text, Node node) {
+        int lastEOL = 0;
+        int prevEOL = 0;
+        int length = text.length();
+        int pos = 0;
+        int line = 0;
+        int col = 0;
+
+        int offset = node.getStartIndex();
+
+        if (offset > length) {
+            offset = length;
+        }
+
+        while (pos < length) {
+            pos = text.indexOf('\n', pos);
+            if (pos == -1) break; // no EOL at the end or we hit the end
+
+            prevEOL = lastEOL;
+            lastEOL = pos;
+
+            if (pos > offset) {
+                break;
+            }
+
+            line++;
+            pos++;
+        }
+
+        if (prevEOL < offset && lastEOL >= offset) {
+            // offset is on this line
+            col = offset - prevEOL;
+        }
+
+        line++;
+        //System.out.println("offset : " + offset + " = (" + String.valueOf(line) + ":" + String.valueOf(col) + ")");
+
+        return new int[] {line,col};
+    }
+
     @Override
     public String toString() {
         return _buffer.toString();
     }
-    
+
     protected abstract void notImplementedYet( Node node );
-    
+
     protected StringBuilder bufferVisit( F<Void,Void> closure  ) {
-        
+
         final StringBuilder _sb = new StringBuilder();
-        
+
         final StringBuilder _original = _buffer;
         _buffer = _sb;
         try {
@@ -92,16 +139,16 @@ public abstract class ToConfluenceSerializer implements Visitor {
         finally {
             _buffer = _original;
         }
-        
+
         return _sb;
-    } 
-    
-    protected interface FindPredicate<T extends Node> {
-        
-        boolean f( T node, Node parent, int index );
-        
     }
-    
+
+    protected interface FindPredicate<T extends Node> {
+
+        boolean f( T node, Node parent, int index );
+
+    }
+
     /**
     * process:
     *  note,warning,info,tip
@@ -109,8 +156,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
     protected class SpecialPanelProcessor {
         private String element;
         private String title;
-        
-        
+
+
         final FindPredicate<TextNode> isSpecialPanelText = new FindPredicate<TextNode>() {
 
             @Override
@@ -138,29 +185,29 @@ public abstract class ToConfluenceSerializer implements Visitor {
                 return false;
             }
         };
-        
+
         boolean apply( BlockQuoteNode bqn ) {
             element = null;
             title = null;
-            
+
             java.util.List<Node> children = bqn.getChildren();
-            
+
             if( children.size() != 2 ) return false;
-            
+
             Node node1 = bqn.getChildren().get(1);
-            
+
             if( !(node1 instanceof BlockQuoteNode ) ) return false;
-            
-            final boolean result = 
-                    findByClass(bqn.getChildren().get(0), 
-                        StrongEmphSuperNode.class, 
+
+            final boolean result =
+                    findByClass(bqn.getChildren().get(0),
+                        StrongEmphSuperNode.class,
                         new FindPredicate<StrongEmphSuperNode>() {
 
                 @Override
                 public boolean f(StrongEmphSuperNode p, final Node parent, final int index) {
                     if( index!=0 || !p.isStrong() ) return false;
 
-                    boolean found =  findByClass(p, 
+                    boolean found =  findByClass(p,
                                     TextNode.class, isSpecialPanelText );
 
                     if( found ) { // GET ELEMENT TITLE
@@ -184,32 +231,32 @@ public abstract class ToConfluenceSerializer implements Visitor {
                 }
 
             });
-            
+
             if( result ) {
-                
+
                 _buffer.append( format("{%s:title=%s}", element, title));
                 visitChildren(node1);
                 _buffer.append( format("{%s}", element) ).append('\n');;
             }
-            
+
             return result;
 
         }
     }
-    
+
     protected <T extends Node> void forEachChild( T node, FindPredicate<T> cb ) {
         final java.util.List<Node> children = node.getChildren();
-        
+
         for (int index = 0 ; index < children.size() ; ++index) {
-            
+
             final Node child = children.get(index);
-            
+
             if( !cb.f( (T)child, node, index ) ) {
                 return ;
             }
         }
     }
-    
+
     protected <T extends Node> void visitChildren(T node) {
         for (Node child : node.getChildren()) {
             child.accept(this);
@@ -219,20 +266,20 @@ public abstract class ToConfluenceSerializer implements Visitor {
     protected <T extends Node, R extends Node> boolean findByClass(T node, final Class<R> clazz, final FindPredicate<R> predicate ) {
         boolean result = false;
         final java.util.List<Node> children = node.getChildren();
-        
+
         for (int index = 0 ; index < children.size() ; ++index) {
-            
+
             final Node child = children.get(index);
-            
+
             if( clazz.isInstance(child) && predicate.f(clazz.cast(child), node, index)) {
                 result = true;
             } else {
                 result = findByClass( child, clazz, predicate);
             }
             if( result ) break;
-            
+
         }
-        
+
         return result;
     }
 
@@ -240,11 +287,11 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
 
     @Override
-    public void visit(RootNode rn) {   
+    public void visit(RootNode rn) {
         //specialPanelProcessor.init(rn);
         visitChildren(rn);
     }
-    
+
     @Override
     public void visit(SuperNode sn) {
         //sb.append('\n');
@@ -254,29 +301,54 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(ParaNode pn) {
-        _buffer.append('\n');
+        //_buffer.append('\n');
         visitChildren(pn);
-        _buffer.append('\n');
+        //_buffer.append('\n');
     }
 
 
     @Override
     public void visit(HeaderNode hn) {
-        _buffer.append( format( "h%s.", hn.getLevel()) );
+        _buffer.append('\n')
+               .append( format( "h%s.", hn.getLevel()) );
         visitChildren(hn);
         _buffer.append('\n');
     }
 
 
     @Override
-    public void visit(BlockQuoteNode bqn) {
-        
-        if( specialPanelProcessor.apply(bqn) ) return;
-        
-        _buffer.append( "{quote}" );
-        visitChildren(bqn);
-        _buffer.append( "{quote}" ).append('\n');            
-        
+    public void visit(final BlockQuoteNode bqn) {
+
+      final String text = bufferVisit(new F<Void,Void>() {
+
+          @Override
+          public Void f(Void p) {
+             visitChildren(bqn);
+             return null;
+          }
+
+      }).toString();
+
+      final String lines[] = text.split("\n");
+
+      if( lines.length == 1 ) {
+        _buffer.append('\n')
+               .append( "bq. ")
+               .append( text )
+               .append('\n');
+        return;
+      }
+
+      if( specialPanelProcessor.apply(bqn) ) return;
+
+      _buffer.append('\n')
+             .append( "{quote}" )
+             .append('\n')
+             .append( text )
+             .append('\n')
+             .append( "{quote}" )
+             .append('\n');
+
     }
 
     @Override
@@ -285,26 +357,62 @@ public abstract class ToConfluenceSerializer implements Visitor {
     }
 
     @Override
-    public void visit(ExpLinkNode eln) {  
+    public void visit(ExpLinkNode eln) {
         _buffer.append( '[');
         visitChildren(eln);
         _buffer.append( format( "|%s|%s]", eln.url, eln.title));
     }
 
+
     @Override
-    public void visit(CodeNode cn) {
-        
-        String lines[] = cn.getText().split("\n");
-        if( lines.length == 1 || lines[0].isEmpty() ) {
-            _buffer.append( "{noformat}").append(cn.getText()).append( "{noformat}");
+    public void visit(VerbatimNode vn) {
+
+        final String lines[] = vn.getText().split("\n");
+        if( lines.length == 1 ) {
+            _buffer.append( "{noformat}")
+                   .append(vn.getText())
+                   .append( "{noformat}");
             return;
         }
-        
-        _buffer.append( format("{code:%s}", lines[0])).append('\n');
-        for( int i =  1 ; i < lines.length; ++i ) {
-            _buffer.append(lines[i]).append('\n');
+
+        if( vn.getType()==null || vn.getType().isEmpty() ) {
+            _buffer.append( "{noformat}")
+                    .append('\n')
+                    .append(vn.getText())
+                    .append('\n')
+                    .append( "{noformat}")
+                    .append('\n')
+                    ;
+            return;
         }
-        _buffer.append( "{code}");
+
+        _buffer.append( format("{code:%s}", vn.getType()) )
+                .append('\n')
+                .append(vn.getText())
+                .append('\n')
+                .append( "{code}")
+                .append('\n')
+                ;
+    }
+
+    @Override
+    public void visit(CodeNode cn) {
+
+        final String lines[] = cn.getText().split("\n");
+        if( lines.length == 1 ) {
+            _buffer.append( "{{")
+                   .append(cn.getText())
+                   .append( "}}");
+            return;
+        }
+
+        _buffer
+            .append( "{code}")
+            .append('\n')
+            .append(cn.getText())
+            .append( "{code}")
+            .append('\n')
+            ;
     }
 
     @Override
@@ -317,25 +425,9 @@ public abstract class ToConfluenceSerializer implements Visitor {
         _buffer.append( sym);
         visitChildren(sesn);
         _buffer.append( sym );
-        
+
     }
 
-    @Override
-    public void visit(VerbatimNode vn) {
-        
-        String lines[] = vn.getText().split("\n");
-        if( lines.length == 1 || lines[0].isEmpty() ) {
-            _buffer.append( "{{").append(lines[0]).append( "}}");
-            return;
-        }
-        
-        _buffer.append( "{noformat}").append('\n');
-        for( int i =  1 ; i < lines.length; ++i ) {
-            _buffer.append(lines[i]).append('\n');
-        }
-        _buffer.append( "{noformat}");
-        
-    }
 
 
     @Override
@@ -347,13 +439,14 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(BulletListNode bln) {
-        
+
+         _buffer.append('\n');
         for (Node child : bln.getChildren()) {
             _buffer.append("* ");
             child.accept(this);
             _buffer.append('\n');
         }
-        
+
     }
     @Override
     public void visit(ListItemNode lin) {
@@ -361,9 +454,36 @@ public abstract class ToConfluenceSerializer implements Visitor {
     }
 
     @Override
-    public void visit(ExpImageNode ein) {
+    public void visit(final ExpImageNode ein) {
         //visitChildren(ein);
-        _buffer.append( format( "!%s!", ein.url, ein.title));
+
+        try {
+
+            final java.net.URI uri = new java.net.URI(ein.url);
+
+            final String scheme = uri.getScheme();
+
+            if( !uri.isAbsolute()
+                     && (null==uri.getScheme() || scheme.isEmpty())
+                     && findByClass(ein, TextNode.class, new FindPredicate<TextNode>() {
+
+                            @Override
+                            public boolean f(TextNode node, Node parent, int index) {
+                                _buffer.append( format( "!%s!", node.getText() ));
+                                return true;
+                            }
+                        }))
+            {
+             return;
+            }
+
+         } catch (URISyntaxException ex) {
+             // @TODO notify error
+         }
+
+
+        _buffer.append( format( "!%s!", ein.url));
+
     }
 
     @Override
@@ -378,18 +498,18 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(TableHeaderNode thn) {
         nodeStack.push(thn);
         try {
-            visitChildren(thn);            
+            visitChildren(thn);
         }
         finally {
             assert thn == nodeStack.pop();
         }
     }
-    
+
     @Override
     public void visit(TableBodyNode tbn) {
        nodeStack.push(tbn);
         try {
-            visitChildren(tbn);            
+            visitChildren(tbn);
         }
         finally {
             assert tbn == nodeStack.pop();
@@ -401,9 +521,9 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
         if( n instanceof TableHeaderNode )
             _buffer.append("||");
-        else if( n instanceof TableBodyNode ) 
+        else if( n instanceof TableBodyNode )
             _buffer.append('|');
-        
+
         visitChildren(trn);
         _buffer.append('\n');
     }
@@ -415,17 +535,26 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(TableCellNode tcn) {
-        
+
         final Node n = nodeStack.peek();
-        
+
         visitChildren(tcn);
- 
+
         if( n instanceof TableHeaderNode )
             _buffer.append("||");
-        else if( n instanceof TableBodyNode ) 
+        else if( n instanceof TableBodyNode )
             _buffer.append('|');
-            
+
     }
+
+    @Override
+    public void visit(RefLinkNode rln) {
+        _buffer.append( '[' );
+        visitChildren(rln);
+        _buffer.append( ']' );
+    }
+
+
 
     @Override
     public void visit(TableColumnNode tcn) {
@@ -444,10 +573,10 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(SpecialTextNode stn) {
-        notImplementedYet(stn);
+        _buffer.append(stn.getText());
     }
 
-    
+
     @Override
     public void visit(AbbreviationNode an) {
         notImplementedYet(an);
@@ -504,12 +633,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
     }
 
     @Override
-    public void visit(RefLinkNode rln) {
-        notImplementedYet(rln);
-    }
-
-
-    @Override
     public void visit(SimpleNode sn) {
         notImplementedYet(sn);
     }
@@ -523,5 +646,5 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(Node node) {
         notImplementedYet(node);
     }
-    
+
 }

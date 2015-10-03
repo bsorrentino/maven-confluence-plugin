@@ -49,7 +49,13 @@ public class Site {
 
             @Override
             protected void notImplementedYet(Node node) {
-                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet.", node.getClass().getSimpleName()) ); 
+                
+           
+                final int lc[] = ToConfluenceSerializer.lineAndColFromNode( new String(contents), node);
+                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. line=[%d] col=[%d]", 
+                                                            node.getClass().getSimpleName(), 
+                                                            lc[0], 
+                                                            lc[1] ));        
             }
 
         };
@@ -266,7 +272,6 @@ public class Site {
 
 
         java.util.List<Attachment> attachments;
-        String name;
 
         @Deprecated
         public File getSource() {
@@ -367,6 +372,18 @@ public class Site {
 
             return getUri();
         }
+        
+        boolean ignoreVariables = false;
+
+        @XmlAttribute(name="ignore-variables")
+        public boolean isIgnoreVariables() {
+            return ignoreVariables;
+        }
+
+        public void setIgnoreVariables(boolean value) {
+            this.ignoreVariables = value;
+        }
+        
     }
 
     public Site() {
