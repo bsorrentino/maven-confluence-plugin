@@ -125,16 +125,16 @@ Variable | Description
 ### Tips & Tricks
 
 * How to refer to an image
-> ```!${pageTitle}^image_name!```
+> ``` !${pageTitle}^image_name! ```
 
 * How to refer to an child's image within child page
-> ```!${childTitle}^image_name!```
+> ``` !${childTitle}^image_name! ```
 
 * How to refer to an attachment
-> ```[${pageTitle}^attachment_name]```
+> ``` [${pageTitle}^attachment_name] ```
 
 * How to refer to an child's attachment within child page
-> ```[${childTitle}^attachment_name]```
+> ``` [${childTitle}^attachment_name] ```
 
 
 ### Git log template variables

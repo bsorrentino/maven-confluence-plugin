@@ -3,7 +3,7 @@
 <project xmlns="http://maven.apache.org/DECORATION/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
-    
+
   <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
@@ -13,27 +13,28 @@
         <fluidoSkin>
             <sideBarEnabled>true</sideBarEnabled>
         </fluidoSkin>
-    </custom>  
+    </custom>
   <body>
     <menu name="Overview">
-    
+
     	<item name="Summary" href="project-summary.html"/>
     	<item name="Goals" href="plugin-info.html"/>
-    	<item name="How to" href="usage.html"/>
-
+      <item name="Usage" href="usage.html"/>
+      <item name="Use Site Definition" href="site_guide.html"/>
+      <item name="Markdown Support" href="markdown_guide.html"/>
     </menu>
 
     <menu name="Summary" >
-    	
+
     	<item name="Dependencies" href="dependencies.html" />
     	<item name="Source" href="source-repository.html" />
-    
+
     </menu>
 
 
 
-<!-- 
-	<menu name="summary" ref="reports" />     
+<!--
+	<menu name="summary" ref="reports" />
 
     <menu name="Examples">
       <item name="Creating Content" href="/examples/creating-content.html"/>
@@ -45,7 +46,7 @@
       <item name="Excluding Document Formats" href="/examples/moduleexcludes.html"/>
       <item name="Deploying to sourceforge.net" href="/examples/site-deploy-to-sourceforge.net.html"/>
     </menu>
--->    
+-->
 
   </body>
 </project>
