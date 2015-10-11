@@ -16,10 +16,8 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 Markdown support refinements, refer to documentation from:
 
-> * [Conf luence](http://support.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
-
+> * [Confluence](http://support.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
 > * [Wiki](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown)
-
 > * [Html](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 
 |Sep 04,2015 | **Release 4.4**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4%7Cmaven-plugin)**  |
@@ -267,7 +265,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 |Apr 1,2011 | Created a branch to continue support of maven2 - the trunk now contains the 3.x code-line for support of maven3 (see [issue 15](https://github.com/bsorrentino/maven-confluence-plugin/issues/15))|
 |:----------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
-|Apr 1,2011 | **Release 1.3.2**. | Available from [internal repository|](http://maven-confluence-plugin.googlecode.com/svn/mavenrepo)  |
+|Apr 1,2011 | **Release 1.3.2**. | Available from [internal repository](http://maven-confluence-plugin.googlecode.com/svn/mavenrepo)  |
 |:----------|:-------------------|:----------------------------------------------------------------------------------------------------|
 
   * fixed [issue 8](https://github.com/bsorrentino/maven-confluence-plugin/issues/8) - add attachments support
