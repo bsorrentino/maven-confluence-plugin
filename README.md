@@ -14,13 +14,13 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 |Oct 03,2015 | **Release 4.4.1**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4.1%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
-  Markdown support refinements, refer to documentation from:
+Markdown support refinements, refer to documentation from:
 
-  > * [Conf luence](http://support.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
+> * [Conf luence](http://support.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
 
-  > * [Wiki](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown)
+> * [Wiki](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown)
 
-  > * [Html](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
+> * [Html](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 
 |Sep 04,2015 | **Release 4.4**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
