@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20151011" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>CONFLUENCE-REPORTING::Plugin - 4.4.1 - </title>
+    <title>CONFLUENCE-REPORTING::Plugin - 4.4.1 - Dependency Information</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.3.1.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -88,10 +88,12 @@
         Use Site Definition</a>
             </li>
                 
-      <li class="active">
+      <li>
   
-            <a href="#"><i class="none"></i>Markdown Support</a>
-          </li>
+                          <a href="markdown_guide.html" title="Markdown Support">
+          <i class="none"></i>
+        Markdown Support</a>
+            </li>
                               <li class="nav-header">Summary</li>
                               
       <li>
@@ -129,119 +131,44 @@
         <div id="bodyColumn"  class="span9" >
                                   
             <div class="section">
-<h2>Usage<a name="Usage"></a></h2>
-<p>To use markdown it is enough to specify a <b>.md</b> file in the <b>site&#x2019;s uri</b>.</p>
-<p>Below the supported format:</p>
+<h2>Dependency Information<a name="Dependency_Information"></a></h2><a name="Dependency_Information"></a>
 <div class="section">
-<h3>Header<a name="Header"></a></h3>
-
+<h3>Apache Maven<a name="Apache_Maven"></a></h3><a name="Apache_Maven"></a>
 <div class="source">
-<pre># h1
-## h2
-### h3
-#### h4
-</pre></div>
-<p>&#x2026;&#x2026;</p></div>
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;org.bsc.maven&lt;/groupId&gt;
+  &lt;artifactId&gt;confluence-reporting-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;4.4.1&lt;/version&gt;
+  &lt;type&gt;maven-plugin&lt;/type&gt;
+&lt;/dependency&gt;</pre></div></div>
 <div class="section">
-<h3>Text Format<a name="Text_Format"></a></h3>
-<div class="section">
-<h4>strikethrough<a name="strikethrough"></a></h4>
-
+<h3>Apache Buildr<a name="Apache_Buildr"></a></h3><a name="Apache_Buildr"></a>
 <div class="source">
-<pre>~~Mistaken text.~~
-</pre></div></div>
+<pre>'org.bsc.maven:confluence-reporting-maven-plugin:maven-plugin:4.4.1'</pre></div></div>
 <div class="section">
-<h4>bold<a name="bold"></a></h4>
-
+<h3>Apache Ant<a name="Apache_Ant"></a></h3><a name="Apache_Ant"></a>
 <div class="source">
-<pre>**Bold text**
-</pre></div></div>
+<pre>&lt;dependency org=&quot;org.bsc.maven&quot; name=&quot;confluence-reporting-maven-plugin&quot; rev=&quot;4.4.1&quot;&gt;
+  &lt;artifact name=&quot;confluence-reporting-maven-plugin&quot; type=&quot;maven-plugin&quot; /&gt;
+&lt;/dependency&gt;</pre></div></div>
 <div class="section">
-<h4>italic<a name="italic"></a></h4>
-
+<h3>Groovy Grape<a name="Groovy_Grape"></a></h3><a name="Groovy_Grape"></a>
 <div class="source">
-<pre>_Italic text_
-</pre></div></div></div>
+<pre>@Grapes(
+@Grab(group='org.bsc.maven', module='confluence-reporting-maven-plugin', version='4.4.1')
+)</pre></div></div>
 <div class="section">
-<h3>Bullet List<a name="Bullet_List"></a></h3>
-
+<h3>Grails<a name="Grails"></a></h3><a name="Grails"></a>
 <div class="source">
-<pre> * Element 1
- * Element 2
- * Element 3
-</pre></div></div>
+<pre>compile 'org.bsc.maven:confluence-reporting-maven-plugin:4.4.1'</pre></div></div>
 <div class="section">
-<h3>Links<a name="Links"></a></h3>
-<div class="section">
-<h4>external link<a name="external_link"></a></h4>
-
+<h3>Leiningen<a name="Leiningen"></a></h3><a name="Leiningen"></a>
 <div class="source">
-<pre>[this is a link](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown/)
-</pre></div></div></div>
+<pre>[org.bsc.maven/confluence-reporting-maven-plugin &quot;4.4.1&quot;]</pre></div></div>
 <div class="section">
-<h3>Image<a name="Image"></a></h3>
-<div class="section">
-<h4>external image<a name="external_image"></a></h4>
-
+<h3>SBT<a name="SBT"></a></h3><a name="SBT"></a>
 <div class="source">
-<pre>![alt](https://github.com/bsorrentino/..../raw/images/icon48.png &quot;Title&quot;)
-</pre></div></div>
-<div class="section">
-<h4>confluence specific<a name="confluence_specific"></a></h4>
-
-<div class="source">
-<pre>![ ](${pageTitle}^image-name.png )
-</pre></div></div>
-<div class="section">
-<h4>portable image (can be used for confluence and not)<a name="portable_image_can_be_used_for_confluence_and_not"></a></h4>
-
-<div class="source">
-<pre>![${pageTitle}^image-name.png](.images/image-name.png &quot;&quot;)
-</pre></div></div></div>
-<div class="section">
-<h3>Code / Verbatim<a name="Code__Verbatim"></a></h3>
-<div class="section">
-<h4>code block<a name="code_block"></a></h4>
-
-<div>
-<pre>
-```xml
-&lt;developers&gt;
-  &lt;developer&gt;
-    &lt;id&gt;bsorrentino&lt;/id&gt;
-    &lt;name&gt;Bartolomeo Sorrentino&lt;/name&gt;
-    &lt;email&gt;bartolomeo.sorrentino@gmail.com&lt;/email&gt;
-  &lt;/developer&gt;
-&lt;/developers&gt;
-```
-</pre></div></div>
-<div class="section">
-<h4>inline<a name="inline"></a></h4>
-
-<div>
-<pre>
-```this is inline```  
-</pre></div></div></div>
-<div class="section">
-<h3>table<a name="table"></a></h3>
-
-<div class="source">
-<pre>| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-</pre></div></div>
-<div class="section">
-<h3>Blockquote<a name="Blockquote"></a></h3>
-
-<div class="source">
-<pre>&gt; Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-Aenean massa. Cum sociis natoque
-
-&gt; Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus.
-Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt.
-</pre></div></div></div>
+<pre>libraryDependencies += &quot;org.bsc.maven&quot; %% &quot;confluence-reporting-maven-plugin&quot; % &quot;4.4.1&quot;</pre></div></div></div>
                   </div>
             </div>
           </div>
