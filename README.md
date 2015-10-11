@@ -19,7 +19,6 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
   > * [Wiki](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown)
   > * [Html](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 
->>>>>>> hotfix/fix-doc
 |Sep 04,2015 | **Release 4.4**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
