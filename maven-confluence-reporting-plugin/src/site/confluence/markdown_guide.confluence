@@ -1,74 +1,71 @@
-## Usage
 
-To use markdown it is enough to specify a **.md** file in the **site's uri**.
+h2.Usage
 
-Below the supported format:
+To use markdown it is enough to specify a *.md* file in the *site's uri*.Below the supported format:
 
+h3.Header
 
-### Header
-```
+{noformat}
 # h1
 ## h2
 ### h3
 #### h4
-```
-......
+{noformat}
 
-### Text Format
+----
 
-#### strikethrough
-```
+h3.Text Format
+
+h4.strikethrough
+{noformat}
 ~~Mistaken text.~~
-```
+{noformat}
 
-#### bold
-```
+h4.bold
+{noformat}
 **Bold text**
-```
+{noformat}
 
-#### italic
-```
+h4.italic
+{noformat}
 _Italic text_
-```
+{noformat}
 
-### Bullet List
-
-```
+h3.Bullet List
+{noformat}
  * Element 1
  * Element 2
  * Element 3
-```
+{noformat}
 
-### Links
+h3.Links
 
-#### external link
-
-```
+h4.external link
+{noformat}
 [this is a link](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown/)
-```
+{noformat}
 
-### Image
+h3.Image
 
-#### external image
-```
+h4.external image
+{noformat}
 ![alt](https://github.com/bsorrentino/..../raw/images/icon48.png "Title")
-```
+{noformat}
 
-#### confluence specific
-```
+h4.confluence specific
+{noformat}
 ![ ](${pageTitle}^image-name.png )
-```
+{noformat}
 
-#### portable image (can be used for confluence and not)
-```
+h4.portable image (can be used for confluence and not)
+{noformat}
 ![${pageTitle}^image-name.png](.images/image-name.png "")
-```
+{noformat}
 
-### Code / Verbatim
+h3.Code / Verbatim
 
-#### code block
-
-<pre><![CDATA[
+h4.code block
+{noformat}
 ```xml
 <developers>
   <developer>
@@ -78,29 +75,29 @@ _Italic text_
   </developer>
 </developers>
 ```
-]]></pre>
+{noformat}
 
-#### inline
-<pre><![CDATA[
-```this is inline```  
-]]></pre>
 
-### table
+h4.inline
+{noformat}
+```this is inline```
+{noformat}
 
-```
+h3.table
+{noformat}
 | First Header  | Second Header |
 | ------------- | ------------- |
 | Content Cell  | Content Cell  |
 | Content Cell  | Content Cell  |
 | Content Cell  | Content Cell  |
-```
+{noformat}
 
-### Blockquote
-
-```
+h3.Blockquote
+{noformat}
 > Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
 Aenean massa. Cum sociis natoque
 
 > Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus.
 Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt.
-```
+
+{noformat}

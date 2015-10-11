@@ -10,6 +10,10 @@
         <child name="Usage" uri="usage.confluence">
             <attachment name="gitlog-sample02.png" uri="../resources/images/gitlog-sample02.png" comment="gitlog to jira sample" contentType="image/png" version="1"></attachment>
         </child>
+        <child name="Use Markdown" uri="markdown_guide.confluence">
+        </child>
+        <child name="Use Site Definition" uri="site_guide.confluence">
+        </child>
 
     </home>
 
