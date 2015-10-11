@@ -1,9 +1,11 @@
 
 h1.Introduction
-From release 3.3.0 we can describe a complete site's layout using an xml file. Through site schema you can set root page (called home) its children's tree, add attachments and labels.Use it is pretty straightforward, put your {{site.xml}} in `{{${basedir}/src/site/confluence}} folder and describe your preferred layout following the [site schema|https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-3.4.0.xsd|].
-h2.Site template
-To simplify understanding, below there is a simple site descriptor template{code:xml}
+From release 3.3.0 we can describe a complete site's layout using an xml file. Through site schema you can set root page (called home) its children's tree, add attachments and labels.Use it is pretty straightforward, put your {{site.xml}} in `{{$\{basedir}/src/site/confluence}} folder and describe your preferred layout following the [site schema|https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-3.4.0.xsd|].
 
+h2.Site template
+To simplify understanding, below there is a simple site descriptor template
+
+{code:xml}
 <?xml version="1.0" encoding="UTF-8"?>
 
 <bsc:site
@@ -96,7 +98,7 @@ h2.Note:
 
 h3.The *URI* format
 The *uri* attribute could refer to
-* *File* resource 
+* *File* resource
 bq. We can refer to file in *absolute* way using *file* scheme (e.g. {{file:///Documents/page.confluence}}) or in *relative* way not using any scheme. In that case the path will be resolved starting from *site home*
 
 * *Classpath* resource
@@ -104,4 +106,3 @@ bq. We can refer to resource using *classpath* schema. (e.g. {{classpath:page.co
 
 * Network resource
 bq. We can refer to resource using *http* scheme. (e.g. {{http://www.thesite.com/page.confluence}})
-

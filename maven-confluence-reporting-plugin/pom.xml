@@ -69,13 +69,13 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
-===================================
-    JAXB SCHEMA GENERATION
+            <!--
+            ===================================
+                JAXB SCHEMA GENERATION
 
-    jaxb2:schemagen
-===================================
--->
+                jaxb2:schemagen
+            ===================================
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
@@ -88,6 +88,56 @@
                             <outputDirectory>${project.build.directory}/schemas</outputDirectory>
                         </configuration>
             </plugin>
+
+            <!--
+            =====================================================
+            MAVEN3 SITE GENERATION
+            =====================================================
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.plugin-tools</groupId>
+                        <artifactId>maven-plugin-annotations</artifactId>
+                        <version>${pluginToolsVersion}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.maven.reporting</groupId>
+                        <artifactId>maven-reporting-exec</artifactId>
+                        <version>1.2</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.6</version>
+                    </dependency>
+
+                </dependencies>
+                <configuration>
+                    <reportPlugins>
+
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-plugin-plugin</artifactId>
+                            <version>${pluginToolsVersion}</version>
+                        </plugin>
+
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                            <version>${reports-plugin-version}</version>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -239,8 +289,8 @@ TEST
                 =====================================================
                 DEPLOY SITE TO GITHUB
                 =====================================================
-                 -->                
-               
+                 -->
+
                 <plugin>
                     <groupId>com.github.github</groupId>
                     <artifactId>site-maven-plugin</artifactId>
@@ -260,55 +310,7 @@ TEST
                         </execution>
                     </executions>
                 </plugin>
-                
-                <!--
-                =====================================================
-                MAVEN3 SITE GENERATION
-                =====================================================
-                -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.4</version>
 
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.plugin-tools</groupId>
-                            <artifactId>maven-plugin-annotations</artifactId>
-                            <version>${pluginToolsVersion}</version>
-                            <scope>runtime</scope>
-                        </dependency>
-
-                        <dependency>
-                            <groupId>org.apache.maven.reporting</groupId>
-                            <artifactId>maven-reporting-exec</artifactId>
-                            <version>1.2</version>
-                        </dependency>
-
-                        <dependency>
-                            <groupId>org.apache.maven.doxia</groupId>
-                            <artifactId>doxia-module-markdown</artifactId>
-                            <version>1.6</version>
-                        </dependency>
-
-                    </dependencies>
-                    <configuration>
-                        <reportPlugins>
-
-                            <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-plugin-plugin</artifactId>
-                                <version>${pluginToolsVersion}</version>
-                            </plugin>
-
-                            <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-project-info-reports-plugin</artifactId>
-                                <version>${reports-plugin-version}</version>
-                            </plugin>
-                        </reportPlugins>
-                    </configuration>
-                </plugin>
 
             </plugins>
 
