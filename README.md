@@ -11,10 +11,21 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 [![Join the chat at https://gitter.im/bsorrentino/maven-confluence-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bsorrentino/maven-confluence-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+<<<<<<< HEAD
+=======
+|Oct 03,2015 | **Release 4.4.1**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4.1%7Cmaven-plugin)**  |
+|:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Markdown support refinements, refer to documentation from:
+  > * [Confluence](http://support.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
+  > * [Wiki](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown)
+  > * [Html](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
+
+>>>>>>> hotfix/fix-doc
 |Sep 04,2015 | **Release 4.4**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
-  * Refer to [Pull Request 85](https://github.com/bsorrentino/maven-confluence-plugin/pull/85) 
+  * Refer to [Pull Request 85](https://github.com/bsorrentino/maven-confluence-plugin/pull/85)
   * Refer to [Issue 84](https://github.com/bsorrentino/maven-confluence-plugin/issues/84) - Evaluate writing documentation in Markdown
 
 
@@ -26,12 +37,12 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
  Note:
 
- >  form 4.3 I've updated the XML's namespace, so goes in your site xml file  and update the namespace from 
+ >  form 4.3 I've updated the XML's namespace, so goes in your site xml file  and update the namespace from
 
  > ` http://code.google.com/p/maven-confluence-plugin `
 
  > to
- 
+
  > ` https://github.com/bsorrentino/maven-confluence-plugin `
 
 
