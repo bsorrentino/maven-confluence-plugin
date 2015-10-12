@@ -294,23 +294,19 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(SuperNode sn) {
-        //sb.append('\n');
         visitChildren(sn);
-        //sb.append('\n');
     }
 
     @Override
     public void visit(ParaNode pn) {
-        //_buffer.append('\n');
         visitChildren(pn);
-        //_buffer.append('\n');
+        _buffer.append('\n');
     }
 
 
     @Override
     public void visit(HeaderNode hn) {
-        _buffer.append('\n')
-               .append( format( "h%s.", hn.getLevel()) );
+        _buffer.append( format( "h%s.", hn.getLevel()) );
         visitChildren(hn);
         _buffer.append('\n');
     }
@@ -420,7 +416,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         char sym = '*';
         if( !sesn.isStrong() ) {
             final String chars = sesn.getChars();
-            if( chars.equals("*")) sym = '_';
+            if( chars.equals("_")) sym = '_';
         }
         _buffer.append( sym);
         visitChildren(sesn);

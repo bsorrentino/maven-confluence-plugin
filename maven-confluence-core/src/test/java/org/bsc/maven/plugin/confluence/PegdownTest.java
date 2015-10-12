@@ -52,7 +52,8 @@ public class PegdownTest {
         void f( P node );
     }
 
-    private static final String FILES[] = { "README.md", "TEST1.md" };
+    private static final String FILE0 = "TEST1.md";
+    private static final String FILE = "getting_started.md";
 
     private char[] loadResource( String name ) throws IOException {
 
@@ -200,7 +201,7 @@ public class PegdownTest {
         final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions() );
 
 
-        final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
+        final RootNode root = p.parseMarkdown(loadResource(FILE));
 
         root.accept(proxy);
     }
@@ -210,7 +211,7 @@ public class PegdownTest {
 
         final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions());
 
-        final RootNode root = p.parseMarkdown(loadResource(FILES[1]));
+        final RootNode root = p.parseMarkdown(loadResource(FILE));
 
         ToConfluenceSerializer ser =  new ToConfluenceSerializer() {
 
