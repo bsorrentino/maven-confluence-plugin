@@ -4,7 +4,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.4.1</version>
+  <version>4.4.2</version>
   <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
   <description><![CDATA[
     Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
@@ -88,9 +88,9 @@
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-tools-generators</artifactId>
         <version>${pluginToolsVersion}</version>
-        <!-- 
-        SUCH EXCLUSIONS HAVE NEEDED FOR 'ASM' CLASH BETWEEN 
-        3.3.1 CONTAINED HERE AND 5.0.3 REQUIRED BY PEGDOWN        
+        <!--
+        SUCH EXCLUSIONS HAVE NEEDED FOR 'ASM' CLASH BETWEEN
+        3.3.1 CONTAINED HERE AND 5.0.3 REQUIRED BY PEGDOWN
         <exclusions>
             <exclusion>
                 <groupId>asm</groupId>
@@ -101,7 +101,7 @@
                 <artifactId>asm-tree</artifactId>
             </exclusion>
         </exclusions>
-        -->     
+        -->
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -147,7 +147,7 @@
     </extensions>
     <pluginManagement>
       <plugins>
-          
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
@@ -171,10 +171,12 @@
            <artifactId>jgitflow-maven-plugin</artifactId>
            <version>1.0-m5.1</version>
            <configuration>
-             <versionTagPrefix>v</versionTagPrefix>
+             <flowInitContext>
+               <versionTagPrefix>v</versionTagPrefix>
+            </flowInitContext>
            </configuration>
        </plugin>
-   
+
         <plugin>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>${pluginToolsVersion}</version>
