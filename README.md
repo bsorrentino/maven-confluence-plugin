@@ -11,6 +11,11 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 [![Join the chat at https://gitter.im/bsorrentino/maven-confluence-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bsorrentino/maven-confluence-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+|Nov 21,2015 | **Release 4.4.2**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4.2%7Cmaven-plugin)**  |
+|:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+Markdown support refinements
+
 |Oct 03,2015 | **Release 4.4.1**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4.1%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
