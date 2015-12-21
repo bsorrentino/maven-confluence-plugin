@@ -436,12 +436,13 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(BulletListNode bln) {
 
-         _buffer.append('\n');
+        _buffer.append('\n');
         for (Node child : bln.getChildren()) {
             _buffer.append("* ");
             child.accept(this);
             _buffer.append('\n');
         }
+		_buffer.append('\n');
 
     }
     @Override
@@ -610,7 +611,13 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(OrderedListNode oln) {
-        notImplementedYet(oln);
+        _buffer.append('\n');
+        for (Node child : oln.getChildren()) {
+            _buffer.append("# ");
+            child.accept(this);
+            _buffer.append('\n');
+        }
+        _buffer.append('\n');
     }
 
     @Override
