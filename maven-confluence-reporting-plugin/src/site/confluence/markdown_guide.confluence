@@ -38,6 +38,13 @@ h3.Bullet List
  * Element 3
 {noformat}
 
+h3.Numbered List
+{noformat}
+ 1. Element 1
+ 1. Element 2
+ 1. Element 3
+{noformat}
+
 h3.Links
 
 h4.external link

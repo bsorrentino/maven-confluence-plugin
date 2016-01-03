@@ -39,6 +39,15 @@ _Italic text_
  * Element 3
 ```
 
+### Numbered List
+
+```
+ 1. Element 1
+ 1. Element 2
+ 1. Element 3
+```
+
+
 ### Links
 
 #### external link

@@ -9,6 +9,13 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|Dec 29,2015 | **Release 4.4.3**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4.3%7Cmaven-plugin)**  |
+|:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+* refer to [Pull Request 90](https://github.com/bsorrentino/maven-confluence-plugin/pull/90) - Fix [issue 89](https://github.com/bsorrentino/maven-confluence-plugin/issues/89) Confluence Serialization of lists is broken
+> **Thanks to [gmuecke](https://github.com/gmuecke) for providing fix**.
+
+
 [![Join the chat at https://gitter.im/bsorrentino/maven-confluence-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bsorrentino/maven-confluence-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 |Nov 21,2015 | **Release 4.4.2**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4.2%7Cmaven-plugin)**  |
