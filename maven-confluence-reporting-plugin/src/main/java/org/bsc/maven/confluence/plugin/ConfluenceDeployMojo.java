@@ -1,5 +1,6 @@
 package org.bsc.maven.confluence.plugin;
 
+import org.bsc.maven.reporting.sink.ConfluenceSink;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
@@ -316,8 +317,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             final StringWriter w = new StringWriter(10 * 1024);
             final Sink sink = new ConfluenceSink(w);
             //final Sink sink = getSink();
-
-            new ScmRenderer(scmManager,
+            final String scmTag = "";
+            
+            new ScmRenderer(getLog(),
+                    scmManager,
                     sink,
                     project.getModel(),
                     i18n,
@@ -325,7 +328,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     checkoutDirectoryName,
                     webAccessUrl,
                     anonymousConnection,
-                    developerConnection).render();
+                    developerConnection,
+                    scmTag).render();
 
             try {
                 final String project_scm_var = w.toString();
