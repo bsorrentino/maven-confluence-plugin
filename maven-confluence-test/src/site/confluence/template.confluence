@@ -31,10 +31,13 @@ h1. Usage
 How to use the project
 {panel}
 
+
 ${project.summary}
 
+----
 
 ${project.scmManager}
 
+----
 
 ${project.dependencies}

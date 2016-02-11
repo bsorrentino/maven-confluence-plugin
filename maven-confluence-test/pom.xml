@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.4.3</version>
+        <version>4.5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -12,6 +12,8 @@
   
   
     <properties>
+        <scmUrl>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</scmUrl>
+        <siteUrl>https://github.com/bsorrentino/maven-confluence-plugin</siteUrl>
         <!--
         <confluence.home>http://localhost:8090</confluence.home>
         <confluence.home>http://docs.codehaus.org</confluence.home>
@@ -81,9 +83,9 @@
     </build>
 
     <scm>
-        <connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
-        <developerConnection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</developerConnection>
-        <url>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</url>
+        <connection>scm:git:${scmUrl}</connection>
+        <developerConnection>scm:git:${scmUrl}</developerConnection>
+        <url>${siteUrl}</url>
       <tag>HEAD</tag>
   </scm>
 

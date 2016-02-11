@@ -1,35 +1,55 @@
 package org.bsc.maven.reporting.renderer;
 
-import java.util.Locale;
-
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Scm;
-import org.apache.maven.reporting.AbstractMavenReportRenderer;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.scm.manager.NoSuchScmProviderException;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.provider.cvslib.repository.CvsScmProviderRepository;
+import org.apache.maven.scm.provider.git.repository.GitScmProviderRepository;
+import org.apache.maven.scm.provider.hg.repository.HgScmProviderRepository;
 import org.apache.maven.scm.provider.perforce.repository.PerforceScmProviderRepository;
 import org.apache.maven.scm.provider.starteam.repository.StarteamScmProviderRepository;
 import org.apache.maven.scm.provider.svn.repository.SvnScmProviderRepository;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.apache.maven.scm.repository.ScmRepositoryException;
-import org.bsc.maven.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
+import org.bsc.maven.reporting.sink.ConfluenceSink;
+
 /**
- * 
- * @author Sorrentino
- *
+ * Scm renderer class
  */
-public class ScmRenderer extends AbstractMavenReportRenderer {
+public class ScmRenderer extends AbstractProjectInfoRenderer {
 
-	private Model model;
+    private Log log;
 
-    private I18N i18n;
-
-    private Locale locale;
+    private Model model;
 
     private ScmManager scmManager;
 
@@ -44,38 +64,26 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
 
     private String webAccessUrl;
 
-    
-    /**
-     * 
-     * @param scmManager
-     * @param sink
-     * @param model
-     * @param i18n
-     * @param locale
-     * @param checkoutDirName
-     * @param webAccessUrl
-     * @param anonymousConnection
-     * @param devConnection
-     */
-    public ScmRenderer( ScmManager scmManager, 
-    					Sink sink, 
-    					Model model, 
-    					I18N i18n, 
-    					Locale locale, 
-    					String checkoutDirName,
-    					String webAccessUrl, 
-    					String anonymousConnection, 
-    					String devConnection )
-    {
-        super( sink );
+    private String scmTag;
+
+    public ScmRenderer(Log log, 
+                ScmManager scmManager, 
+                Sink sink, 
+                Model model, 
+                I18N i18n, 
+                Locale locale,
+                String checkoutDirName, 
+                String webAccessUrl, 
+                String anonymousConnection, 
+                String devConnection,
+                String scmTag) {
+        super(sink, i18n, locale);
+
+        this.log = log;
 
         this.scmManager = scmManager;
 
         this.model = model;
-
-        this.i18n = i18n;
-
-        this.locale = locale;
 
         this.checkoutDirectoryName = checkoutDirName;
 
@@ -85,107 +93,92 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
 
         this.devConnection = devConnection;
 
+        this.scmTag = scmTag;
     }
 
-    /**
-     * @see org.apache.maven.reporting.MavenReportRenderer#getTitle()
-     */
-    public String getTitle()
-    {
-        return i18n.getString( "project-info-report", locale, "report.scm.title" );
+    @Override
+    protected String getI18Nsection() {
+        return "scm";
     }
 
-    /**
-     * @see org.apache.maven.reporting.AbstractMavenReportRenderer#renderBody()
-     */
-    public void renderBody()
-    {
+    @Override
+    public void renderBody() {
         Scm scm = model.getScm();
-        if ( scm == null )
-        {
+        if (scm == null || StringUtils.isEmpty(anonymousConnection)
+                && StringUtils.isEmpty(devConnection)
+                && StringUtils.isEmpty(scm.getUrl())) {
+            startSection(getTitle());
 
-            startSection( getTitle() );
-
-            paragraph( i18n.getString( "project-info-report", locale, "report.scm.noscm" ) );
-
-            endSection();
-
-            return;
-        }
-
-        if ( StringUtils.isEmpty( anonymousConnection ) && StringUtils.isEmpty( devConnection )
-            && StringUtils.isEmpty( scm.getUrl() ) )
-        {
-            startSection( getTitle() );
-
-            paragraph( i18n.getString( "project-info-report", locale, "report.scm.noscm" ) );
+            paragraph(getI18nString("noscm"));
 
             endSection();
 
             return;
         }
 
-        ScmRepository anonymousRepository = getScmRepository( anonymousConnection );
-        ScmRepository devRepository = getScmRepository( devConnection );
-
-        startSection( getTitle() );
+        ScmRepository anonymousRepository = getScmRepository(anonymousConnection);
+        ScmRepository devRepository = getScmRepository(devConnection);
 
         // Overview section
-        renderOverViewSection( anonymousRepository );
+        renderOverviewSection(anonymousRepository, devRepository);
 
         // Web access section
-        renderWebAccesSection( webAccessUrl );
+        renderWebAccessSection(webAccessUrl);
 
         // Anonymous access section if needed
-        renderAnonymousAccessSection( anonymousRepository );
+        renderAnonymousAccessSection(anonymousRepository);
 
         // Developer access section
-        renderDeveloperAccessSection( devRepository );
+        renderDeveloperAccessSection(devRepository);
 
         // Access from behind a firewall section if needed
-        renderAccessBehindFirewallSection( devRepository );
+        renderAccessBehindFirewallSection(devRepository);
 
         // Access through a proxy section if needed
-        renderAccessThroughProxySection( anonymousRepository, devRepository );
-
-        endSection();
+        renderAccessThroughProxySection(anonymousRepository, devRepository);
     }
 
     /**
      * Render the overview section
      *
      * @param anonymousRepository the anonymous repository
+     * @param devRepository the developer repository
      */
-    private void renderOverViewSection( ScmRepository anonymousRepository )
-    {
-        startSection( i18n.getString( "project-info-report", locale, "report.scm.overview.title" ) );
+    private void renderOverviewSection(ScmRepository anonymousRepository, ScmRepository devRepository) {
+        startSection(getI18nString("overview.title"));
 
-        if ( isScmSystem( anonymousRepository, "clearcase" ) )
-        {
-            linkPatternedText( i18n.getString( "project-info-report", locale, "report.scm.clearcase.intro" ) );
-        }
-        else if ( isScmSystem( anonymousRepository, "cvs" ) )
-        {
-            linkPatternedText( i18n.getString( "project-info-report", locale, "report.scm.cvs.intro" ) );
-        }
-        else if ( isScmSystem( anonymousRepository, "perforce" ) )
-        {
-            linkPatternedText( i18n.getString( "project-info-report", locale, "report.scm.perforce.intro" ) );
-        }
-        else if ( isScmSystem( anonymousRepository, "starteam" ) )
-        {
-            linkPatternedText( i18n.getString( "project-info-report", locale, "report.scm.starteam.intro" ) );
-        }
-        else if ( isScmSystem( anonymousRepository, "svn" ) )
-        {
-            linkPatternedText( i18n.getString( "project-info-report", locale, "report.scm.svn.intro" ) );
-        }
-        else
-        {
-            paragraph( i18n.getString( "project-info-report", locale, "report.scm.general.intro" ) );
+        if (isScmSystem(anonymousRepository, "clearcase") || isScmSystem(devRepository, "clearcase")) {
+            sink.paragraph();
+            linkPatternedText(getI18nString("clearcase.intro"));
+            sink.paragraph_();
+        } else if (isScmSystem(anonymousRepository, "cvs") || isScmSystem(devRepository, "cvs")) {
+            sink.paragraph();
+            linkPatternedText(getI18nString("cvs.intro"));
+            sink.paragraph_();
+        } else if (isScmSystem(anonymousRepository, "git") || isScmSystem(devRepository, "git")) {
+            sink.paragraph();
+            linkPatternedText(getI18nString("git.intro"));
+            sink.paragraph_();
+        } else if (isScmSystem(anonymousRepository, "hg") || isScmSystem(devRepository, "hg")) {
+            sink.paragraph();
+            linkPatternedText(getI18nString("hg.intro"));
+            sink.paragraph_();
+        } else if (isScmSystem(anonymousRepository, "perforce") || isScmSystem(devRepository, "perforce")) {
+            sink.paragraph();
+            linkPatternedText(getI18nString("perforce.intro"));
+            sink.paragraph_();
+        } else if (isScmSystem(anonymousRepository, "starteam") || isScmSystem(devRepository, "starteam")) {
+            sink.paragraph();
+            linkPatternedText(getI18nString("starteam.intro"));
+            sink.paragraph_();
+        } else if (isScmSystem(anonymousRepository, "svn") || isScmSystem(devRepository, "svn")) {
+            sink.paragraph();
+            linkPatternedText(getI18nString("svn.intro"));
+            sink.paragraph_();
+        } else {
+            paragraph(getI18nString("general.intro"));
         }
 
-        sink.lineBreak();
         endSection();
     }
 
@@ -194,19 +187,22 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
      *
      * @param scmUrl The URL to the project's browsable repository.
      */
-    private void renderWebAccesSection( String scmUrl )
-    {
-        startSection( i18n.getString( "project-info-report", locale, "report.scm.webaccess.title" ) );
+    private void renderWebAccessSection(final String scmUrl) {
+        startSection(getI18nString("webaccess.title"));
 
-        if ( StringUtils.isEmpty( scmUrl ) )
-        {
-            paragraph( i18n.getString( "project-info-report", locale, "report.scm.webaccess.nourl" ) );
-        }
-        else
-        {
-            paragraph( i18n.getString( "project-info-report", locale, "report.scm.webaccess.url" ) );
+        if (StringUtils.isEmpty(scmUrl)) {
+            paragraph(getI18nString("webaccess.nourl"));
+        } else {
+            paragraph(getI18nString("webaccess.url"));
+            
+            ConfluenceSink.pushCommandBlock(sink, ConfluenceSink.Command.PANEL, new Runnable() {
 
-            verbatimLink( scmUrl, scmUrl );
+                @Override
+                public void run() {
+                    verbatimLink(scmUrl, scmUrl);
+                }
+                
+            });
         }
 
         endSection();
@@ -214,45 +210,43 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
 
     /**
      * Render the anonymous access section depending the repository.
-     * <p>Note: ClearCase, Starteam et Perforce seems to have no anonymous access.</>
+     * <p>
+     * Note: ClearCase, Starteam et Perforce seems to have no anonymous access.
+     * </p>
      *
      * @param anonymousRepository the anonymous repository
      */
-    private void renderAnonymousAccessSection( ScmRepository anonymousRepository )
-    {
-        if ( isScmSystem( anonymousRepository, "clearcase" ) || isScmSystem( anonymousRepository, "perforce" )
-            || isScmSystem( anonymousRepository, "starteam" ) || StringUtils.isEmpty( anonymousConnection ) )
-        {
+    private void renderAnonymousAccessSection(ScmRepository anonymousRepository) {
+        if (isScmSystem(anonymousRepository, "clearcase") || isScmSystem(anonymousRepository, "perforce")
+                || isScmSystem(anonymousRepository, "starteam") || StringUtils.isEmpty(anonymousConnection)) {
             return;
         }
 
-        startSection( i18n.getString( "project-info-report", locale, "report.scm.anonymousaccess.title" ) );
+        startSection(getI18nString("anonymousaccess.title"));
 
-        if ( anonymousRepository != null && isScmSystem( anonymousRepository, "cvs" ) )
-        {
-            CvsScmProviderRepository cvsRepo =
-                (CvsScmProviderRepository) anonymousRepository.getProviderRepository();
+        if (anonymousRepository != null && isScmSystem(anonymousRepository, "cvs")) {
+            CvsScmProviderRepository cvsRepo
+                    = (CvsScmProviderRepository) anonymousRepository.getProviderRepository();
 
-            anonymousAccessCVS( cvsRepo );
-        }
-        else if ( anonymousRepository != null && isScmSystem( anonymousRepository, "svn" ) )
-        {
-            SvnScmProviderRepository svnRepo =
-                (SvnScmProviderRepository) anonymousRepository.getProviderRepository();
+            anonymousAccessCVS(cvsRepo);
+        } else if (anonymousRepository != null && isScmSystem(anonymousRepository, "git")) {
+            GitScmProviderRepository gitRepo
+                    = (GitScmProviderRepository) anonymousRepository.getProviderRepository();
 
-            anonymousAccessSVN( svnRepo );
-        }
-        else
-        {
-            paragraph(
-                i18n.getString( "project-info-report", locale, "report.scm.anonymousaccess.general.intro" ) );
+            anonymousAccessGit(gitRepo);
+        } else if (anonymousRepository != null && isScmSystem(anonymousRepository, "hg")) {
+            HgScmProviderRepository hgRepo = (HgScmProviderRepository) anonymousRepository.getProviderRepository();
 
-            if ( anonymousConnection.length() < 4 )
-            {
-                throw new IllegalArgumentException( "The source repository connection is too short." );
-            }
+            anonymousAccessMercurial(hgRepo);
+        } else if (anonymousRepository != null && isScmSystem(anonymousRepository, "svn")) {
+            SvnScmProviderRepository svnRepo
+                    = (SvnScmProviderRepository) anonymousRepository.getProviderRepository();
 
-            verbatimText( anonymousConnection.substring( 4 ) );
+            anonymousAccessSubversion(svnRepo);
+        } else {
+            paragraph(getI18nString("anonymousaccess.general.intro"));
+
+            verbatimText(anonymousConnection.substring(4));
         }
 
         endSection();
@@ -263,55 +257,45 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
      *
      * @param devRepository the dev repository
      */
-    private void renderDeveloperAccessSection( ScmRepository devRepository )
-    {
-        if ( StringUtils.isEmpty( devConnection ) )
-        {
+    private void renderDeveloperAccessSection(ScmRepository devRepository) {
+        if (StringUtils.isEmpty(devConnection)) {
             return;
         }
 
-        startSection( i18n.getString( "project-info-report", locale, "report.scm.devaccess.title" ) );
+        startSection(getI18nString("devaccess.title"));
 
-        if ( devRepository != null && isScmSystem( devRepository, "clearcase" ) )
-        {
+        if (devRepository != null && isScmSystem(devRepository, "clearcase")) {
             developerAccessClearCase();
-        }
-        else if ( devRepository != null && isScmSystem( devRepository, "cvs" ) )
-        {
+        } else if (devRepository != null && isScmSystem(devRepository, "cvs")) {
             CvsScmProviderRepository cvsRepo = (CvsScmProviderRepository) devRepository.getProviderRepository();
 
-            developerAccessCVS( cvsRepo );
-        }
-        else if ( devRepository != null && isScmSystem( devRepository, "perforce" ) )
-        {
-            PerforceScmProviderRepository perforceRepo =
-                (PerforceScmProviderRepository) devRepository.getProviderRepository();
+            developerAccessCVS(cvsRepo);
+        } else if (devRepository != null && isScmSystem(devRepository, "git")) {
+            GitScmProviderRepository gitRepo = (GitScmProviderRepository) devRepository.getProviderRepository();
 
-            developerAccessPerforce( perforceRepo );
-        }
-        else if ( devRepository != null && isScmSystem( devRepository, "starteam" ) )
-        {
-            StarteamScmProviderRepository starteamRepo =
-                (StarteamScmProviderRepository) devRepository.getProviderRepository();
+            developerAccessGit(gitRepo);
+        } else if (devRepository != null && isScmSystem(devRepository, "hg")) {
+            HgScmProviderRepository hgRepo = (HgScmProviderRepository) devRepository.getProviderRepository();
 
-            developerAccessStarteam( starteamRepo );
-        }
-        else if ( devRepository != null && isScmSystem( devRepository, "svn" ) )
-        {
+            developerAccessMercurial(hgRepo);
+        } else if (devRepository != null && isScmSystem(devRepository, "perforce")) {
+            PerforceScmProviderRepository perforceRepo
+                    = (PerforceScmProviderRepository) devRepository.getProviderRepository();
+
+            developerAccessPerforce(perforceRepo);
+        } else if (devRepository != null && isScmSystem(devRepository, "starteam")) {
+            StarteamScmProviderRepository starteamRepo
+                    = (StarteamScmProviderRepository) devRepository.getProviderRepository();
+
+            developerAccessStarteam(starteamRepo);
+        } else if (devRepository != null && isScmSystem(devRepository, "svn")) {
             SvnScmProviderRepository svnRepo = (SvnScmProviderRepository) devRepository.getProviderRepository();
 
-            developerAccessSVN( svnRepo );
-        }
-        else
-        {
-            paragraph( i18n.getString( "project-info-report", locale, "report.scm.devaccess.general.intro" ) );
+            developerAccessSubversion(svnRepo);
+        } else {
+            paragraph(getI18nString("devaccess.general.intro"));
 
-            if ( devConnection.length() < 4 )
-            {
-                throw new IllegalArgumentException( "The source repository connection is too short." );
-            }
-
-            verbatimText( devConnection.substring( 4 ) );
+            verbatimText(devConnection.substring(4));
         }
 
         endSection();
@@ -322,30 +306,19 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
      *
      * @param devRepository the dev repository
      */
-    private void renderAccessBehindFirewallSection( ScmRepository devRepository )
-    {
-        startSection( i18n.getString( "project-info-report", locale, "report.scm.accessbehindfirewall.title" ) );
+    private void renderAccessBehindFirewallSection(ScmRepository devRepository) {
+        startSection(getI18nString("accessbehindfirewall.title"));
 
-        if ( devRepository != null && isScmSystem( devRepository, "svn" ) )
-        {
+        if (devRepository != null && isScmSystem(devRepository, "svn")) {
             SvnScmProviderRepository svnRepo = (SvnScmProviderRepository) devRepository.getProviderRepository();
 
-            paragraph(
-                i18n.getString( "project-info-report", locale, "report.scm.accessbehindfirewall.svn.intro" ) );
+            paragraph(getI18nString("accessbehindfirewall.svn.intro"));
 
-            StringBuffer sb = new StringBuffer();
-            sb.append( "$ svn checkout " ).append( svnRepo.getUrl() ).append( " " ).append( checkoutDirectoryName );
-            verbatimText( sb.toString() );
-        }
-        else if ( devRepository != null && isScmSystem( devRepository, "cvs" ) )
-        {
-            linkPatternedText(
-                i18n.getString( "project-info-report", locale, "report.scm.accessbehindfirewall.cvs.intro" ) );
-        }
-        else
-        {
-            paragraph(
-                i18n.getString( "project-info-report", locale, "report.scm.accessbehindfirewall.general.intro" ) );
+            verbatimText("$ svn checkout " + svnRepo.getUrl() + " " + checkoutDirectoryName);
+        } else if (devRepository != null && isScmSystem(devRepository, "cvs")) {
+            linkPatternedText(getI18nString("accessbehindfirewall.cvs.intro"));
+        } else {
+            paragraph(getI18nString("accessbehindfirewall.general.intro"));
         }
 
         endSection();
@@ -355,229 +328,311 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
      * Render the access from behind a firewall section
      *
      * @param anonymousRepository the anonymous repository
-     * @param devRepository       the dev repository
+     * @param devRepository the dev repository
      */
-    private void renderAccessThroughProxySection( ScmRepository anonymousRepository, ScmRepository devRepository )
-    {
-        if ( isScmSystem( anonymousRepository, "svn" ) || isScmSystem( devRepository, "svn" ) )
-        {
-            startSection( i18n.getString( "project-info-report", locale, "report.scm.accessthroughtproxy.title" ) );
+    private void renderAccessThroughProxySection(ScmRepository anonymousRepository, ScmRepository devRepository) {
+        if (isScmSystem(anonymousRepository, "svn") || isScmSystem(devRepository, "svn")) {
+            startSection(getI18nString("accessthroughtproxy.title"));
 
-            paragraph(
-                i18n.getString( "project-info-report", locale, "report.scm.accessthroughtproxy.svn.intro1" ) );
-            paragraph(
-                i18n.getString( "project-info-report", locale, "report.scm.accessthroughtproxy.svn.intro2" ) );
-            paragraph(
-                i18n.getString( "project-info-report", locale, "report.scm.accessthroughtproxy.svn.intro3" ) );
+            paragraph(getI18nString("accessthroughtproxy.svn.intro1"));
+            paragraph(getI18nString("accessthroughtproxy.svn.intro2"));
+            paragraph(getI18nString("accessthroughtproxy.svn.intro3"));
 
-            StringBuffer sb = new StringBuffer();
-            sb.append( "[global]" );
-            sb.append( "\n" );
-            sb.append( "http-proxy-host = your.proxy.name" ).append( "\n" );
-            sb.append( "http-proxy-port = 3128" ).append( "\n" );
-            verbatimText( sb.toString() );
+            verbatimText("[global]" + SystemUtils.LINE_SEPARATOR + "http-proxy-host = your.proxy.name"
+                    + SystemUtils.LINE_SEPARATOR + "http-proxy-port = 3128" + SystemUtils.LINE_SEPARATOR);
 
             endSection();
         }
     }
 
     // Clearcase
-
     /**
-     * Create the documentation to provide an developer access with a <code>Clearcase</code> SCM.
-     * For example, generate the following command line:
-     * <p>cleartool checkout module</p>
+     * Create the documentation to provide an developer access with a
+     * <code>Clearcase</code> SCM. For example, generate the following command
+     * line:
+     * <p>
+     * cleartool checkout module
+     * </p>
      */
-    private void developerAccessClearCase()
-    {
-        paragraph( i18n.getString( "project-info-report", locale, "report.scm.devaccess.clearcase.intro" ) );
+    private void developerAccessClearCase() {
+        paragraph(getI18nString("devaccess.clearcase.intro"));
 
-        StringBuffer command = new StringBuffer();
-        command.append( "$ cleartool checkout " );
-
-        verbatimText( command.toString() );
+        verbatimText("$ cleartool checkout ");
     }
 
     // CVS
-
+    // CHECKSTYLE_OFF: LineLength
     /**
-     * Create the documentation to provide an anonymous access with a <code>CVS</code> SCM.
-     * For example, generate the following command line:
-     * <p>cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login</p>
-     * <p>cvs -z3 -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic co maven-plugins/dist</p>
+     * Create the documentation to provide an anonymous access with a
+     * <code>CVS</code> SCM. For example, generate the following command line:
+     * <p>
+     * cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
+     * </p>
+     * <p>
+     * cvs -z3 -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic co
+     * maven-plugins/dist
+     * </p>
      *
      * @param cvsRepo
-     * @see <a href="https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115">https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115</a>
+     * @see <a
+     *      href="https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115">https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115</a>
      */
-    private void anonymousAccessCVS( CvsScmProviderRepository cvsRepo )
-    {
-        paragraph( i18n.getString( "project-info-report", locale, "report.scm.anonymousaccess.cvs.intro" ) );
+    // CHECKSTYLE_ON: LineLength
+    private void anonymousAccessCVS(CvsScmProviderRepository cvsRepo) {
+        paragraph(getI18nString("anonymousaccess.cvs.intro"));
 
-        StringBuffer command = new StringBuffer();
-        command.append( "$ cvs -d " ).append( cvsRepo.getCvsRoot() ).append( " login" );
-        command.append( "\n" );
-        command.append( "$ cvs -z3 -d " ).append( cvsRepo.getCvsRoot() );
-        command.append( " co " ).append( cvsRepo.getModule() );
+        verbatimText("$ cvs -d " + cvsRepo.getCvsRoot() + " login" + SystemUtils.LINE_SEPARATOR + "$ cvs -z3 -d "
+                + cvsRepo.getCvsRoot() + " co " + cvsRepo.getModule());
+    }
 
-        verbatimText( command.toString() );
+    // Git
+    private void gitClone(String url) {
+        // in the future, git scm url should support both repository + path: at the moment, require a hack
+        // to remove path added to repository
+        int index = url.indexOf(".git/");
+        if (index > 0) {
+            url = url.substring(0, index + 4);
+        }
+
+        boolean head = StringUtils.isEmpty(scmTag) || "HEAD".equals(scmTag);
+        verbatimText("$ git clone " + (head ? "" : ("--branch " + scmTag + ' ')) + url);
     }
 
     /**
-     * Create the documentation to provide an developer access with a <code>CVS</code> SCM.
-     * For example, generate the following command line:
-     * <p>cvs -d :pserver:username@cvs.apache.org:/home/cvs login</p>
-     * <p>cvs -z3 -d :ext:username@cvs.apache.org:/home/cvs co maven-plugins/dist</p>
+     * Create the documentation to provide an anonymous access with a
+     * <code>Git</code> SCM. For example, generate the following command line:
+     * <p>
+     * git clone uri
+     * </p>
+     *
+     * @param gitRepo
+     */
+    private void anonymousAccessGit(GitScmProviderRepository gitRepo) {
+        sink.paragraph();
+        linkPatternedText(getI18nString("anonymousaccess.git.intro"));
+        sink.paragraph_();
+
+        gitClone(gitRepo.getFetchUrl());
+    }
+
+    // Mercurial
+    /**
+     * Create the documentation to provide an anonymous access with a
+     * <code>Mercurial</code> SCM. For example, generate the following command
+     * line:
+     * <p>
+     * hg clone uri
+     * </p>
+     *
+     * @param hgRepo
+     */
+    private void anonymousAccessMercurial(HgScmProviderRepository hgRepo) {
+        sink.paragraph();
+        linkPatternedText(getI18nString("anonymousaccess.hg.intro"));
+        sink.paragraph_();
+
+        verbatimText("$ hg clone " + hgRepo.getURI());
+    }
+
+    // CHECKSTYLE_OFF: LineLength
+    /**
+     * Create the documentation to provide an developer access with a
+     * <code>CVS</code> SCM. For example, generate the following command line:
+     * <p>
+     * cvs -d :pserver:username@cvs.apache.org:/home/cvs login
+     * </p>
+     * <p>
+     * cvs -z3 -d :ext:username@cvs.apache.org:/home/cvs co maven-plugins/dist
+     * </p>
      *
      * @param cvsRepo
-     * @see <a href="https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115">https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115</a>
+     * @see <a
+     *      href="https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115">https://www.cvshome.org/docs/manual/cvs-1.12.12/cvs_16.html#SEC115</a>
      */
-    private void developerAccessCVS( CvsScmProviderRepository cvsRepo )
-    {
-        paragraph( i18n.getString( "project-info-report", locale, "report.scm.devaccess.cvs.intro" ) );
+    // CHECKSTYLE_ON: LineLength
+    private void developerAccessCVS(CvsScmProviderRepository cvsRepo) {
+        paragraph(getI18nString("devaccess.cvs.intro"));
 
         // Safety: remove the username if present
-        String cvsRoot = StringUtils.replace( cvsRepo.getCvsRoot(), cvsRepo.getUser(), "username" );
+        String cvsRoot = StringUtils.replace(cvsRepo.getCvsRoot(), cvsRepo.getUser(), "username");
 
-        StringBuffer command = new StringBuffer();
-        command.append( "$ cvs -d " ).append( cvsRoot ).append( " login" );
-        command.append( "\n" );
-        command.append( "$ cvs -z3 -d " ).append( cvsRoot ).append( " co " ).append( cvsRepo.getModule() );
+        verbatimText("$ cvs -d " + cvsRoot + " login" + SystemUtils.LINE_SEPARATOR + "$ cvs -z3 -d " + cvsRoot
+                + " co " + cvsRepo.getModule());
+    }
 
-        verbatimText( command.toString() );
+    // Git
+    /**
+     * Create the documentation to provide an developer access with a
+     * <code>Git</code> SCM. For example, generate the following command line:
+     * <p>
+     * git clone repo
+     * </p>
+     *
+     * @param gitRepo
+     */
+    private void developerAccessGit(GitScmProviderRepository gitRepo) {
+        sink.paragraph();
+        linkPatternedText(getI18nString("devaccess.git.intro"));
+        sink.paragraph_();
+
+        gitClone(gitRepo.getPushUrl());
+    }
+
+    // Mercurial
+    /**
+     * Create the documentation to provide an developer access with a
+     * <code>Mercurial</code> SCM. For example, generate the following command
+     * line:
+     * <p>
+     * hg clone repo
+     * </p>
+     *
+     * @param hgRepo
+     */
+    private void developerAccessMercurial(HgScmProviderRepository hgRepo) {
+        sink.paragraph();
+        linkPatternedText(getI18nString("devaccess.hg.intro"));
+        sink.paragraph_();
+
+        verbatimText("$ hg clone " + hgRepo.getURI());
     }
 
     // Perforce
-
+    // CHECKSTYLE_OFF: LineLength
     /**
-     * Create the documentation to provide an developer access with a <code>Perforce</code> SCM.
-     * For example, generate the following command line:
-     * <p>p4 -H hostname -p port -u username -P password path</p>
-     * <p>p4 -H hostname -p port -u username -P password path submit -c changement</p>
+     * Create the documentation to provide an developer access with a
+     * <code>Perforce</code> SCM. For example, generate the following command
+     * line:
+     * <p>
+     * p4 -H hostname -p port -u username -P password path
+     * </p>
+     * <p>
+     * p4 -H hostname -p port -u username -P password path submit -c changement
+     * </p>
      *
      * @param perforceRepo
-     * @see <a href="http://www.perforce.com/perforce/doc.051/manuals/cmdref/index.html">http://www.perforce.com/perforce/doc.051/manuals/cmdref/index.html</>
+     * @see <a
+     *      href="http://www.perforce.com/perforce/doc.051/manuals/cmdref/index.html">http://www.perforce.com/
+     * perforce /doc.051/manuals/cmdref/index.html</>
      */
-    private void developerAccessPerforce( PerforceScmProviderRepository perforceRepo )
-    {
-        paragraph( i18n.getString( "project-info-report", locale, "report.scm.devaccess.perforce.intro" ) );
+    // CHECKSTYLE_ON: LineLength
+    private void developerAccessPerforce(PerforceScmProviderRepository perforceRepo) {
+        paragraph(getI18nString("devaccess.perforce.intro"));
 
-        StringBuffer command = new StringBuffer();
-        command.append( "$ p4" );
-        if ( !StringUtils.isEmpty( perforceRepo.getHost() ) )
-        {
-            command.append( " -H " ).append( perforceRepo.getHost() );
+        StringBuilder command = new StringBuilder();
+        command.append("$ p4");
+        if (!StringUtils.isEmpty(perforceRepo.getHost())) {
+            command.append(" -H ").append(perforceRepo.getHost());
         }
-        if ( perforceRepo.getPort() > 0 )
-        {
-            command.append( " -p " ).append( perforceRepo.getPort() );
+        if (perforceRepo.getPort() > 0) {
+            command.append(" -p ").append(perforceRepo.getPort());
         }
-        command.append( " -u username" );
-        command.append( " -P password" );
-        command.append( " " );
-        command.append( perforceRepo.getPath() );
-        command.append( "\n" );
-        command.append( "$ p4 submit -c \"A comment\"" );
+        command.append(" -u username");
+        command.append(" -P password");
+        command.append(" ");
+        command.append(perforceRepo.getPath());
+        command.append(SystemUtils.LINE_SEPARATOR);
+        command.append("$ p4 submit -c \"A comment\"");
 
-        verbatimText( command.toString() );
+        verbatimText(command.toString());
     }
 
     // Starteam
-
     /**
-     * Create the documentation to provide an developer access with a <code>Starteam</code> SCM.
-     * For example, generate the following command line:
-     * <p>stcmd co -x -nologo -stop -p myusername:mypassword@myhost:1234/projecturl -is</p>
-     * <p>stcmd ci -x -nologo -stop -p myusername:mypassword@myhost:1234/projecturl -f NCI -is</p>
+     * Create the documentation to provide an developer access with a
+     * <code>Starteam</code> SCM. For example, generate the following command
+     * line:
+     * <p>
+     * stcmd co -x -nologo -stop -p myusername:mypassword@myhost:1234/projecturl
+     * -is
+     * </p>
+     * <p>
+     * stcmd ci -x -nologo -stop -p myusername:mypassword@myhost:1234/projecturl
+     * -f NCI -is
+     * </p>
      *
      * @param starteamRepo
      */
-    private void developerAccessStarteam( StarteamScmProviderRepository starteamRepo )
-    {
-        paragraph( i18n.getString( "project-info-report", locale, "report.scm.devaccess.starteam.intro" ) );
+    private void developerAccessStarteam(StarteamScmProviderRepository starteamRepo) {
+        paragraph(getI18nString("devaccess.starteam.intro"));
 
-        StringBuffer command = new StringBuffer();
+        StringBuilder command = new StringBuilder();
 
         // Safety: remove the username/password if present
-        String fullUrl = StringUtils.replace( starteamRepo.getFullUrl(), starteamRepo.getUser(), "username" );
-        fullUrl = StringUtils.replace( fullUrl, starteamRepo.getPassword(), "password" );
+        String fullUrl = StringUtils.replace(starteamRepo.getFullUrl(), starteamRepo.getUser(), "username");
+        fullUrl = StringUtils.replace(fullUrl, starteamRepo.getPassword(), "password");
 
-        command.append( "$ stcmd co -x -nologo -stop -p " );
-        command.append( fullUrl );
-        command.append( " -is" );
-        command.append( "\n" );
-        command.append( "$ stcmd ci -x -nologo -stop -p " );
-        command.append( fullUrl );
-        command.append( " -f NCI -is" );
+        command.append("$ stcmd co -x -nologo -stop -p ");
+        command.append(fullUrl);
+        command.append(" -is");
+        command.append(SystemUtils.LINE_SEPARATOR);
+        command.append("$ stcmd ci -x -nologo -stop -p ");
+        command.append(fullUrl);
+        command.append(" -f NCI -is");
 
-        verbatimText( command.toString() );
+        verbatimText(command.toString());
     }
 
-    // SVN
-
+    // Subversion
     /**
-     * Create the documentation to provide an anonymous access with a <code>SVN</code> SCM.
-     * For example, generate the following command line:
-     * <p>svn checkout http://svn.apache.org/repos/asf/maven/components/trunk maven</p>
+     * Create the documentation to provide an anonymous access with a
+     * <code>Subversion</code> SCM. For example, generate the following command
+     * line:
+     * <p>
+     * svn checkout http://svn.apache.org/repos/asf/maven/components/trunk maven
+     * </p>
      *
      * @param svnRepo
-     * @see <a href="http://svnbook.red-bean.com/">http://svnbook.red-bean.com/</a>
+     * @see
+     * <a href="http://svnbook.red-bean.com/">http://svnbook.red-bean.com/</a>
      */
-    private void anonymousAccessSVN( SvnScmProviderRepository svnRepo )
-    {
-        paragraph( i18n.getString( "project-info-report", locale, "report.scm.anonymousaccess.svn.intro" ) );
+    private void anonymousAccessSubversion(SvnScmProviderRepository svnRepo) {
+        paragraph(getI18nString("anonymousaccess.svn.intro"));
 
-        StringBuffer sb = new StringBuffer();
-        sb.append( "$ svn checkout " ).append( svnRepo.getUrl() ).append( " " ).append( checkoutDirectoryName );
-
-        verbatimText( sb.toString() );
+        verbatimText("$ svn checkout " + svnRepo.getUrl() + " " + checkoutDirectoryName);
     }
 
     /**
-     * Create the documentation to provide an developer access with a <code>SVN</code> SCM.
-     * For example, generate the following command line:
-     * <p>svn checkout https://svn.apache.org/repos/asf/maven/components/trunk maven</p>
-     * <p>svn commit --username your-username -m "A message"</p>
+     * Create the documentation to provide an developer access with a
+     * <code>Subversion</code> SCM. For example, generate the following command
+     * line:
+     * <p>
+     * svn checkout https://svn.apache.org/repos/asf/maven/components/trunk
+     * maven
+     * </p>
+     * <p>
+     * svn commit --username your-username -m "A message"
+     * </p>
      *
      * @param svnRepo
-     * @see <a href="http://svnbook.red-bean.com/">http://svnbook.red-bean.com/</a>
+     * @see
+     * <a href="http://svnbook.red-bean.com/">http://svnbook.red-bean.com/</a>
      */
-    private void developerAccessSVN( SvnScmProviderRepository svnRepo )
-    {
-        if ( svnRepo.getUrl() != null )
-        {
-            if ( svnRepo.getUrl().startsWith( "https://" ) )
-            {
-                paragraph( i18n.getString( "project-info-report", locale,
-                                           "report.scm.devaccess.svn.intro1.https" ) );
-            }
-            else if ( svnRepo.getUrl().startsWith( "svn://" ) )
-            {
-                paragraph( i18n.getString( "project-info-report", locale, "report.scm.devaccess.svn.intro1.svn" ) );
-            }
-            else if ( svnRepo.getUrl().startsWith( "svn+ssh://" ) )
-            {
-                paragraph( i18n.getString( "project-info-report", locale,
-                                           "report.scm.devaccess.svn.intro1.svnssh" ) );
-            }
-            else
-            {
-                paragraph( i18n.getString( "project-info-report", locale,
-                                           "report.scm.devaccess.svn.intro1.other" ) );
+    private void developerAccessSubversion(SvnScmProviderRepository svnRepo) {
+        if (svnRepo.getUrl() != null) {
+            if (svnRepo.getUrl().startsWith("https://")) {
+                paragraph(getI18nString("devaccess.svn.intro1.https"));
+            } else if (svnRepo.getUrl().startsWith("svn://")) {
+                paragraph(getI18nString("devaccess.svn.intro1.svn"));
+            } else if (svnRepo.getUrl().startsWith("svn+ssh://")) {
+                paragraph(getI18nString("devaccess.svn.intro1.svnssh"));
+            } else {
+                paragraph(getI18nString("devaccess.svn.intro1.other"));
             }
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
-        sb.append( "$ svn checkout " ).append( svnRepo.getUrl() ).append( " " ).append( checkoutDirectoryName );
+        sb.append("$ svn checkout ").append(svnRepo.getUrl()).append(" ").append(checkoutDirectoryName);
 
-        verbatimText( sb.toString() );
+        verbatimText(sb.toString());
 
-        paragraph( i18n.getString( "project-info-report", locale, "report.scm.devaccess.svn.intro2" ) );
+        paragraph(getI18nString("devaccess.svn.intro2"));
 
-        sb = new StringBuffer();
-        sb.append( "$ svn commit --username your-username -m \"A message\"" );
+        sb = new StringBuilder();
+        sb.append("$ svn commit --username your-username -m \"A message\"");
 
-        verbatimText( sb.toString() );
+        verbatimText(sb.toString());
     }
 
     /**
@@ -586,63 +641,93 @@ public class ScmRenderer extends AbstractMavenReportRenderer {
      * @param scmUrl an SCM URL
      * @return a valid SCM repository or null
      */
-    public ScmRepository getScmRepository( String scmUrl )
-    {
+    public ScmRepository getScmRepository(String scmUrl) {
+        if (StringUtils.isEmpty(scmUrl)) {
+            return null;
+        }
+
         ScmRepository repo = null;
-        if ( !StringUtils.isEmpty( scmUrl ) )
-        {
-            try
-            {
-                repo = scmManager.makeScmRepository( scmUrl );
+        List<String> messages = new ArrayList<String>();
+        try {
+            messages.addAll(scmManager.validateScmRepository(scmUrl));
+        } catch (Exception e) {
+            messages.add(e.getMessage());
+        }
+
+        if (messages.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            boolean isIntroAdded = false;
+            for (String msg : messages) {
+                // Ignore NoSuchScmProviderException msg
+                // See impl of AbstractScmManager#validateScmRepository()
+                if (msg.startsWith("No such provider")) {
+                    continue;
+                }
+
+                if (!isIntroAdded) {
+                    sb.append("This SCM url '");
+                    sb.append(scmUrl);
+                    sb.append("' is invalid due to the following errors:");
+                    sb.append(SystemUtils.LINE_SEPARATOR);
+                    isIntroAdded = true;
+                }
+                sb.append(" * ");
+                sb.append(msg);
+                sb.append(SystemUtils.LINE_SEPARATOR);
             }
-            catch ( NoSuchScmProviderException e )
-            {
-                // ignore
-            }
-            catch ( ScmRepositoryException e )
-            {
-                // ignore
+
+            if (StringUtils.isNotEmpty(sb.toString())) {
+                sb.append("For more information about SCM URL Format, please refer to: "
+                        + "http://maven.apache.org/scm/scm-url-format.html");
+
+                throw new IllegalArgumentException(sb.toString());
             }
         }
+
+        try {
+            repo = scmManager.makeScmRepository(scmUrl);
+        } catch (NoSuchScmProviderException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getMessage(), e);
+            }
+        } catch (ScmRepositoryException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            // Should be already catched
+            if (log.isDebugEnabled()) {
+                log.debug(e.getMessage(), e);
+            }
+        }
+
         return repo;
     }
 
     /**
-     * Convenience method that return true is the defined <code>SCM repository</code> is a known provider.
+     * Convenience method that return true is the defined
+     * <code>SCM repository</code> is a known provider.
      * <p>
-     * Actually, we fully support Clearcase, CVS, Perforce, Starteam, SVN by the maven-scm-providers component.
+     * Currently, we fully support ClearCase, CVS, Git, Perforce, Mercurial,
+     * Starteam and Subversion by the maven-scm-providers component.
      * </p>
      *
      * @param scmRepository a SCM repository
-     * @param scmProvider   a SCM provider name
-     * @return true if the provider of the given SCM repository is equal to the given scm provider.
-     * @see <a href="http://svn.apache.org/repos/asf/maven/scm/trunk/maven-scm-providers/">maven-scm-providers</a>
+     * @param scmProvider a SCM provider name
+     * @return true if the provider of the given SCM repository is equal to the
+     * given scm provider.
+     * @see
+     * <a href="http://svn.apache.org/repos/asf/maven/scm/trunk/maven-scm-providers/">maven-scm-providers</a>
      */
-    private static boolean isScmSystem( ScmRepository scmRepository, String scmProvider )
-    {
-        if ( StringUtils.isEmpty( scmProvider ) )
-        {
+    private static boolean isScmSystem(ScmRepository scmRepository, String scmProvider) {
+        if (StringUtils.isEmpty(scmProvider)) {
             return false;
         }
 
-        if ( scmRepository != null && scmProvider.equalsIgnoreCase( scmRepository.getProvider() ) )
-        {
+        if (scmRepository != null && scmProvider.equalsIgnoreCase(scmRepository.getProvider())) {
             return true;
         }
 
         return false;
     }
-
-    @Override
-    protected void verbatimLink( final String text, final String href) {
-    
-        ConfluenceSink.pushCommandBlock(sink, ConfluenceSink.Command.PANEL, new Runnable() {
-           
-            public void run() {
-               ScmRenderer.super.verbatimLink(text, href);
-            }
-        });
-        
-    }
-
 }
