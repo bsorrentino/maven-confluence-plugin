@@ -67,6 +67,15 @@
     <tag>${project.artifactId}-${project.version}</tag>
     <snapshot.repo.id>sonatype-server</snapshot.repo.id>
   </properties>
+  
+  <repositories>
+      <repository>
+        <id>${snapshot.repo.id}</id>
+        <name>snapshots</name>
+        <url>${snapshot.repo.url}</url>          
+      </repository>
+  </repositories>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -116,7 +125,7 @@
       <dependency>
         <groupId>org.bsc.util</groupId>
         <artifactId>minitemplator-repackaged</artifactId>
-        <version>1.1</version>
+        <version>1.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
