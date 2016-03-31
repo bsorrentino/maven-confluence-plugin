@@ -93,12 +93,12 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
 
         startSection( getTitle() );
         
-        String groupId = getReportString( "report.dependencies.column.groupId" );
-        String artifactId = getReportString( "report.dependencies.column.artifactId" );
-        String version = getReportString( "report.dependencies.column.version" );
-        String classifier = getReportString( "report.dependencies.column.classifier" );
-        String type = getReportString( "report.dependencies.column.type" );
-        String optional = getReportString( "report.dependencies.column.optional" );
+        String groupId      = getReportString( "report.dependencies.column.groupId" );
+        String artifactId   = getReportString( "report.dependencies.column.artifactId" );
+        String version      = getReportString( "report.dependencies.column.version" );
+        String classifier   = getReportString( "report.dependencies.column.classifier" );
+        String type         = getReportString( "report.dependencies.column.type" );
+        String optional     = getReportString( "report.dependencies.column.optional" );
         String[] tableHeader = new String[]{groupId, artifactId, version, classifier, type, optional};
 
         // collect dependencies by scope

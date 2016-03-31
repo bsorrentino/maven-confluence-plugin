@@ -21,6 +21,22 @@
         <confluence.home>http://support.softphone.it/confluence/</confluence.home>
     </properties> 
 
+<contributors>
+    <contributor>
+      <name>Noelle</name>
+      <email>some.name@gmail.com</email>
+      <url>http://noellemarie.com</url>
+      <organization>Noelle Marie</organization>
+      <organizationUrl>http://noellemarie.com</organizationUrl>
+      <roles>
+        <role>tester</role>
+      </roles>
+      <timezone>America/Vancouver</timezone>
+      <properties>
+        <gtalk>some.name@gmail.com</gtalk>
+      </properties>
+    </contributor>
+  </contributors>
 
     <build>
         <finalName>site-generation-test</finalName>

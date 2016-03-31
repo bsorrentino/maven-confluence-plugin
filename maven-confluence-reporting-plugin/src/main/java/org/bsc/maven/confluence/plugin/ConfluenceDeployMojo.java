@@ -44,6 +44,8 @@ import org.codehaus.swizzle.confluence.Page;
 
 import java.io.StringWriter;
 import java.util.*;
+import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
+import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
 /**
  * 
@@ -53,11 +55,12 @@ import java.util.*;
 @Mojo( name="deploy", threadSafe = true )
 public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
-    private static final String PROJECT_DEPENDENCIES_VAR = "project.dependencies";
-    private static final String PROJECT_SCM_MANAGER_VAR = "project.scmManager";
-    private static final String PROJECT_SUMMARY_VAR = "project.summary";
-    private static final String GITLOG_JIRA_ISSUES_VAR = "gitlog.jiraIssues";
-    private static final String GITLOG_SINCE_TAG_NAME = "gitlog.sinceTagName";
+    private static final String PROJECT_DEPENDENCIES_VAR    = "project.dependencies";
+    private static final String PROJECT_SCM_MANAGER_VAR     = "project.scmManager";
+    private static final String PROJECT_TEAM_VAR            = "project.team";    
+    private static final String PROJECT_SUMMARY_VAR         = "project.summary";
+    private static final String GITLOG_JIRA_ISSUES_VAR      = "gitlog.jiraIssues";
+    private static final String GITLOG_SINCE_TAG_NAME       = "gitlog.sinceTagName";
 
     /**
      * Local Repository.
@@ -304,6 +307,38 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 
             } catch (VariableNotDefinedException e) {
                 getLog().warn(String.format("variable %s not defined in template", PROJECT_SUMMARY_VAR));
+            }
+
+        }
+       /////////////////////////////////////////////////////////////////
+       // TEAM
+       /////////////////////////////////////////////////////////////////
+
+        {
+
+            final StringWriter w = new StringWriter(10 * 1024);
+            final Sink sink = new ConfluenceSink(w);
+            
+            final AbstractProjectInfoRenderer renderer = 
+                    new ProjectTeamRenderer( sink,
+                            project.getModel(),
+                            i18n,
+                            locale,
+                            getLog(),
+                            false /* showAvatarImages */
+                    );
+            
+            renderer.render();
+            
+            try {
+                final String project_team_var = w.toString();
+                
+                getProperties().put(PROJECT_TEAM_VAR,project_team_var); // to share with children
+                
+                t.setVariable(PROJECT_TEAM_VAR, project_team_var);
+                
+            } catch (VariableNotDefinedException e) {
+                getLog().warn(String.format("variable %s not defined in template", PROJECT_TEAM_VAR));
             }
 
         }
