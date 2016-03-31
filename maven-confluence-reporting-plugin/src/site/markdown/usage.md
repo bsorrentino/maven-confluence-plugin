@@ -122,7 +122,7 @@ Variable | Description
  ```${gitlog.sinceTagName}```   | name of version tag to start extract JIRA issues   
 
 
-### Tips & Tricks
+### Images
 
 * How to refer to an image
 > ``` !${pageTitle}^image_name! ```
@@ -130,11 +130,18 @@ Variable | Description
 * How to refer to an child's image within child page
 > ``` !${childTitle}^image_name! ```
 
+### Attachments
+
 * How to refer to an attachment
 > ``` [${pageTitle}^attachment_name] ```
 
 * How to refer to an child's attachment within child page
 > ``` [${childTitle}^attachment_name] ```
+
+### Tips & Tricks
+
+In order to **escape a variable** so that in the same time it not will be translated and not will be considered a confluence's macro, use the syntax below
+> ```$\{varName\}```
 
 
 ### Git log template variables
