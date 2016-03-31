@@ -1,4 +1,4 @@
-package org.apache.maven.report.projectinfo;
+package org.bsc.maven.reporting.renderer;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -32,7 +32,7 @@ import org.apache.maven.model.Contributor;
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.reporting.AbstractMavenReportRenderer;
+import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.codehaus.plexus.i18n.I18N;
 import org.codehaus.plexus.util.StringUtils;
 

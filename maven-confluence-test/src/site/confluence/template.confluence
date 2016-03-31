@@ -36,6 +36,10 @@ ${project.summary}
 
 ----
 
+${project.team}
+
+----
+
 ${project.scmManager}
 
 ----
