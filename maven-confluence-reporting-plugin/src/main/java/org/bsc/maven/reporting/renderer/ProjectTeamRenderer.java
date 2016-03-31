@@ -198,7 +198,8 @@ public class ProjectTeamRenderer extends AbstractProjectInfoRenderer
                     }
                     else
                     {
-                        tableCell( "<a name=\"" + id + "\"></a>" + id, true );
+                        //tableCell( "<a name=\"" + id + "\"></a>" + id, true );
+                        tableCell( id, true );
                     }
                 }
             }

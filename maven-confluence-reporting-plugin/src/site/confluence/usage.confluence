@@ -102,6 +102,7 @@ By default the plugin use an internal template to generate confluence page. You 
 h3.Built-In template variables
 ||Variable ||Description||
 |{{$\{project.summary}}}|project summary|
+|{{$\{project.team}}}|project team information|
 |{{$\{project.scmManager}}} |scm information|
 |{{$\{project.dependencies}}} |dependencies|
 |{{$\{pageTitle}}} |title of home page|
@@ -197,11 +198,13 @@ How to use the project
 ${project.summary}
 
 
+${project.team}
+
+
 ${project.scmManager}
 
 
 ${project.dependencies}
-
 
 {noformat}
 

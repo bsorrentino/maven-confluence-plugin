@@ -112,6 +112,7 @@ The template can include all valid confluence contents plus the following built-
 Variable | Description
 -----------------|-----------------
  ```${project.summary}```| project summary
+ ```${project.team}```| project team information
  ```${project.scmManager}```   | scm information
  ```${project.dependencies}``` | dependencies    
  ```${pageTitle}```            | title of home page   
@@ -213,6 +214,9 @@ How to use the project
 {panel}
 
 ${project.summary}
+
+
+${project.team}
 
 
 ${project.scmManager}
