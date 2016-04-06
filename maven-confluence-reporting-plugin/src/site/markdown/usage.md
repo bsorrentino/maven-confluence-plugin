@@ -142,7 +142,9 @@ Variable | Description
 ### Tips & Tricks
 
 In order to **escape a variable** so that in the same time it not will be translated and not will be considered a confluence's macro, use the syntax below
-> ```$\{varName\}```
+```
+$\{varName\}
+```
 
 
 ### Git log template variables
