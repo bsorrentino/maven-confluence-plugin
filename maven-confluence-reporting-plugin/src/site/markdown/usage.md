@@ -112,6 +112,7 @@ The template can include all valid confluence contents plus the following built-
 Variable | Description
 -----------------|-----------------
  ```${project.summary}```| project summary
+ ```${project.team}```| project team information
  ```${project.scmManager}```   | scm information
  ```${project.dependencies}``` | dependencies    
  ```${pageTitle}```            | title of home page   
@@ -141,7 +142,9 @@ Variable | Description
 ### Tips & Tricks
 
 In order to **escape a variable** so that in the same time it not will be translated and not will be considered a confluence's macro, use the syntax below
-> ```$\{varName\}```
+```
+$\{varName\}
+```
 
 
 ### Git log template variables
@@ -213,6 +216,9 @@ How to use the project
 {panel}
 
 ${project.summary}
+
+
+${project.team}
 
 
 ${project.scmManager}

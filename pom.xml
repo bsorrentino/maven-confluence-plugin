@@ -4,7 +4,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>maven-confluence-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.5</version>
+  <version>4.6</version>
   <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
   <description><![CDATA[
     Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
@@ -67,6 +67,15 @@
     <tag>${project.artifactId}-${project.version}</tag>
     <snapshot.repo.id>sonatype-server</snapshot.repo.id>
   </properties>
+  
+  <repositories>
+      <repository>
+        <id>${snapshot.repo.id}</id>
+        <name>snapshots</name>
+        <url>${snapshot.repo.url}</url>          
+      </repository>
+  </repositories>
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -116,7 +125,7 @@
       <dependency>
         <groupId>org.bsc.util</groupId>
         <artifactId>minitemplator-repackaged</artifactId>
-        <version>1.1</version>
+        <version>1.2</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
