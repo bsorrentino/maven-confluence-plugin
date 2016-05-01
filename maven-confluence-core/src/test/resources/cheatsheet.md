@@ -23,11 +23,21 @@ this bold text **Note: You must pass in an element name, and the name must conta
 
 ## Links 
 
+### External 
 Yeoman generator to scaffold out [Polymer 1.0](http://www.polymer-project.org/)'s elements using Typescript based on [PolymerTS](https://github.com/nippur72/PolymerTS) project
 
 [PolymerTS](https://github.com/nippur72/PolymerTS) is a project that allow to develop [Polymer 1.0](http://www.polymer-project.org/) element using Typescript @decorated classes.
 
 It is thought to work joined with [Polymer Starter Kit](https://developers.google.com/web/tools/polymer-starter-kit/)
+
+### Ref 
+
+This is an ref link [README.MD]
+
+This is an ref link [README.MD][My Readme]
+
+This is an ref link [README.MD][1]
+
 
 ## Bullet List
 
