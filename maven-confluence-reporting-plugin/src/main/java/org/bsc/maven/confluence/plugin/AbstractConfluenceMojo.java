@@ -270,9 +270,11 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             if( source != null /*&& source.isFile() && source.exists() */) {
 
+                final java.io.InputStream is = Site.processUri(source, this.getTitle()) ;
+
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
-                    .build( Site.processUri(source), getCharset() );
+                    .build( is, getCharset() );
                      
                 if( !child.isIgnoreVariables() ) {
     
@@ -327,6 +329,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 if( uri.getScheme() == null ) {
                     continue;
                 }
+                
                 getProperties().put( e.getKey(), processUri( uri, getCharset() ));
                 
             } catch (ProcessUriException ex) {
@@ -352,7 +355,9 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     private String processUri( java.net.URI uri, Charset charset ) throws ProcessUriException {
     
         try {
-            return toString( Site.processUri(uri), charset );
+            final java.io.InputStream is = Site.processUri(uri, this.getTitle()) ;
+
+            return toString( is, charset );
         } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
         }

@@ -232,6 +232,11 @@ public abstract class PegdownParse {
                 throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. ", node.getClass().getSimpleName()) );
             }
 
+            @Override
+            protected String getHomePageTitle() {
+                return "Parent Page Title";
+            }
+
         };
 
         root.accept( ser );

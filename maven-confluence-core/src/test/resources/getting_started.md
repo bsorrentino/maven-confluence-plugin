@@ -38,3 +38,15 @@ define(["require", "exports"], function (require, exports) {
 
 });
 ```
+
+### links
+
+#### External Link
+
+* This is an external link [Google](http://www.google.com)
+
+#### Ref link
+
+* This is a ref link [My page]
+* This is a ref link [My page][My Page Reference] 
+
