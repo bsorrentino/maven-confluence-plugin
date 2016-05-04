@@ -37,7 +37,7 @@ public class Site {
      * @param is
      * @return 
      */
-    private static java.io.InputStream processMarkdown( final java.io.InputStream is ) throws IOException {
+    private static java.io.InputStream processMarkdown( final java.io.InputStream is, final String parentPageTitle ) throws IOException {
         
         final char[] contents = IOUtils.toCharArray(is);
         
@@ -58,6 +58,11 @@ public class Site {
                                                             lc[1] ));        
             }
 
+            @Override
+            protected String getParentPageTitle() {
+                return parentPageTitle;
+            }
+
         };
         
         root.accept( ser );
@@ -70,7 +75,7 @@ public class Site {
      * @return
      * @throws Exception
      */
-    public static java.io.InputStream processUri( java.net.URI uri ) throws /*ProcessUri*/Exception {
+    public static java.io.InputStream processUri( java.net.URI uri, final String parentPageTitle ) throws /*ProcessUri*/Exception {
             if( uri == null ) {
                 throw new IllegalArgumentException( "uri is null!" );
             }
@@ -102,7 +107,7 @@ public class Site {
 
                     final java.io.InputStream is = cl.getResourceAsStream(source);
                     
-                    result = (isMarkdown) ? processMarkdown(is) : is;
+                    result = (isMarkdown) ? processMarkdown(is, parentPageTitle) : is;
 
                     if (result == null) {
                         throw new /*ProcessUri*/Exception(String.format("resource [%s] doesn't exist in classloader", source));
@@ -117,7 +122,7 @@ public class Site {
 
                     final java.io.InputStream is = url.openStream();
 
-                    result =  (isMarkdown) ? processMarkdown(is) : is;
+                    result =  (isMarkdown) ? processMarkdown(is, parentPageTitle) : is;
 
                 } catch (IOException e) {
                     throw new /*ProcessUri*/Exception(String.format("error opening url [%s]!", source), e);
@@ -171,11 +176,7 @@ public class Site {
         public Source() {
             this.site = _SITE.peek();
         }
-
-        public java.io.InputStream getContentAsStream() throws /*ProcessUri*/Exception {
-            return Site.processUri( uri );
-        }
-
+        
         @Override
         public String toString() {
             return new StringBuilder()

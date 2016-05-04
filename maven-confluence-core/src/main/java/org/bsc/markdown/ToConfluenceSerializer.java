@@ -120,16 +120,24 @@ public abstract class ToConfluenceSerializer implements Visitor {
         return new int[] {line,col};
     }
 
+    
     @Override
     public String toString() {
         return _buffer.toString();
+    }
+    
+    protected String getParentPageTitle() { 
+        return null; 
     }
 
     protected abstract void notImplementedYet( Node node );
 
     protected StringBuilder bufferVisit( F<Void,Void> closure  ) {
 
-        final StringBuilder _sb = new StringBuilder();
+        return bufferVisit( new StringBuilder(), closure );
+    }
+    
+    protected StringBuilder bufferVisit( final StringBuilder _sb, F<Void,Void> closure  ) {
 
         final StringBuilder _original = _buffer;
         _buffer = _sb;
@@ -545,9 +553,29 @@ public abstract class ToConfluenceSerializer implements Visitor {
     }
 
     @Override
-    public void visit(RefLinkNode rln) {
+    public void visit(final RefLinkNode rln) {
         _buffer.append( '[' );
         visitChildren(rln);
+        if( rln.referenceKey !=null ) {
+            
+            final String ref = bufferVisit( new F<Void, Void>() {
+                @Override
+                public Void f(Void p) {
+                    visitChildren(rln.referenceKey);
+                    return null;
+                }
+            }).toString();
+            
+            _buffer.append('|');
+            
+            final String parentPageTitle = getParentPageTitle();
+            
+            if( parentPageTitle != null && !ref.startsWith(parentPageTitle)) {
+
+                _buffer.append(parentPageTitle).append(" - ");    
+            }
+            _buffer.append(ref);    
+        }
         _buffer.append( ']' );
     }
 
