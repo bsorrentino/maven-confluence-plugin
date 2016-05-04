@@ -270,7 +270,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             if( source != null /*&& source.isFile() && source.exists() */) {
 
-                final java.io.InputStream is = Site.processUri(source, this.getParentPageTitle()) ;
+                final java.io.InputStream is = Site.processUri(source, this.getTitle()) ;
 
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
@@ -355,7 +355,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     private String processUri( java.net.URI uri, Charset charset ) throws ProcessUriException {
     
         try {
-            final java.io.InputStream is = Site.processUri(uri, this.getParentPageTitle()) ;
+            final java.io.InputStream is = Site.processUri(uri, this.getTitle()) ;
 
             return toString( is, charset );
         } catch (Exception ex) {

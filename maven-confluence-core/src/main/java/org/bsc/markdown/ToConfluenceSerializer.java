@@ -46,6 +46,7 @@ import static java.lang.String.format;
 import java.net.URISyntaxException;
 import org.bsc.functional.F;
 import org.pegdown.Extensions;
+import static java.lang.String.format;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -126,7 +127,12 @@ public abstract class ToConfluenceSerializer implements Visitor {
         return _buffer.toString();
     }
     
-    protected String getParentPageTitle() { 
+    /**
+     * The home page title useful to manage #RefLinkNode 
+     * 
+     * @return home page title. nullable
+     */
+    protected String getHomePageTitle() { 
         return null; 
     }
 
@@ -568,7 +574,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
             
             _buffer.append('|');
             
-            final String parentPageTitle = getParentPageTitle();
+            final String parentPageTitle = getHomePageTitle();
             
             if( parentPageTitle != null && !ref.startsWith(parentPageTitle)) {
 

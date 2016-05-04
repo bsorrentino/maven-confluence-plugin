@@ -272,7 +272,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         
         MiniTemplator t = null;
         try {
-            final java.io.InputStream is = Site.processUri(site.getHome().getUri(), this.getParentPageTitle()) ;
+            final java.io.InputStream is = Site.processUri(site.getHome().getUri(), this.getTitle()) ;
             
             t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)

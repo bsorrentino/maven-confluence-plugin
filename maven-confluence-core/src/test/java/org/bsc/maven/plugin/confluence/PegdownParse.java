@@ -233,7 +233,7 @@ public abstract class PegdownParse {
             }
 
             @Override
-            protected String getParentPageTitle() {
+            protected String getHomePageTitle() {
                 return "Parent Page Title";
             }
 
