@@ -46,18 +46,17 @@ import org.pegdown.ast.Visitor;
  *
  * @author softphone
  */
-public class PegdownTest {
+public abstract class PegdownParse {
 
     interface F<P extends Node> {
         void f( P node );
     }
 
-    private static final String FILE0 = "TEST1.md";
-    private static final String FILE = "getting_started.md";
+    //private static final String FILE0 = "TEST1.md";
 
-    private char[] loadResource( String name ) throws IOException {
+    protected char[] loadResource( String name ) throws IOException {
 
-        final ClassLoader cl = PegdownTest.class.getClassLoader();
+        final ClassLoader cl = PegdownParse.class.getClassLoader();
 
         final java.io.InputStream is = cl.getResourceAsStream(name);
         try {
@@ -77,6 +76,8 @@ public class PegdownTest {
 
     }
 
+    protected abstract char[] loadResource() throws IOException;
+    
     static class IfContext {
 
         static final IfContext IsTrue = new IfContext(true);
@@ -148,16 +149,23 @@ public class PegdownTest {
         public void f(RefLinkNode node) {
            System.out.printf( " separatorSpace=[%s]", node.separatorSpace);
 
+           if( node.referenceKey != null  ) {
+               System.out.println();
+               node.referenceKey.accept(newVisitor(4));
+           }
         }
 
     };
 
-    @Test
-    public void parseTest() throws IOException {
+    Visitor newVisitor( final int start_indent ) {
+        final ClassLoader cl = PegdownParse.class.getClassLoader();
+        
+        final InvocationHandler handler = new InvocationHandler() {
 
-        InvocationHandler handler = new InvocationHandler() {
-
-            int indent = 0;
+            int indent;
+            {
+                this.indent = start_indent;
+            }
 
             protected void visitChildren(Object proxy, Node node ) {
                     for (Node child : node.getChildren()) {
@@ -189,21 +197,25 @@ public class PegdownTest {
             }
 
         };
-
-        final ClassLoader cl = PegdownTest.class.getClassLoader();
-
+                
         final Visitor proxy = (Visitor) Proxy.newProxyInstance(
                             cl,
                             new Class[] { Visitor.class },
                             handler);
+        
+        return proxy;
 
+    }
+    
+    @Test
+    public void parseTest() throws IOException {
 
         final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions() );
 
 
-        final RootNode root = p.parseMarkdown(loadResource(FILE));
+        final RootNode root = p.parseMarkdown(loadResource());
 
-        root.accept(proxy);
+        root.accept(newVisitor(0));
     }
 
     @Test
@@ -211,13 +223,18 @@ public class PegdownTest {
 
         final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions());
 
-        final RootNode root = p.parseMarkdown(loadResource(FILE));
+        final RootNode root = p.parseMarkdown(loadResource());
 
         ToConfluenceSerializer ser =  new ToConfluenceSerializer() {
 
             @Override
             protected void notImplementedYet(Node node) {
                 throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. ", node.getClass().getSimpleName()) );
+            }
+
+            @Override
+            protected String getHomePageTitle() {
+                return "Parent Page Title";
             }
 
         };
