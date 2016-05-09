@@ -47,6 +47,7 @@ import java.util.*;
 import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
+import static java.lang.String.format;
 /**
  * 
  * Generate Project's documentation in confluence's wiki format and deploy it
@@ -211,7 +212,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Locale locale = Locale.getDefault();
         
-        getLog().info(String.format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
+        getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
         loadUserInfoFromSettings();
 
@@ -262,13 +263,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }
        
     }
-    
-    
-    private void generateProjectReport( final Site site, Locale locale ) throws MojoExecutionException
-    {
-        // Issue 32
-        final String title = getTitle();
-        //String title = project.getArtifactId() + "-" + project.getVersion();
+        
+    private String createProjectHome( final Site site, final Locale locale) throws MojoExecutionException {
         
         MiniTemplator t = null;
         try {
@@ -308,7 +304,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 t.setVariable(PROJECT_SUMMARY_VAR, project_summary_var);
                 
             } catch (VariableNotDefinedException e) {
-                getLog().warn(String.format("variable %s not defined in template", PROJECT_SUMMARY_VAR));
+                getLog().warn(format("variable %s not defined in template", PROJECT_SUMMARY_VAR));
             }
 
         }
@@ -340,7 +336,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 t.setVariable(PROJECT_TEAM_VAR, project_team_var);
                 
             } catch (VariableNotDefinedException e) {
-                getLog().warn(String.format("variable %s not defined in template", PROJECT_TEAM_VAR));
+                getLog().warn(format("variable %s not defined in template", PROJECT_TEAM_VAR));
             }
 
         }
@@ -376,7 +372,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 t.setVariable(PROJECT_SCM_MANAGER_VAR, project_scm_var );
                 
             } catch (VariableNotDefinedException e) {
-                getLog().warn(String.format("variable %s not defined in template", PROJECT_SCM_MANAGER_VAR));
+                getLog().warn(format("variable %s not defined in template", PROJECT_SCM_MANAGER_VAR));
             }
         }
 
@@ -407,7 +403,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 t.setVariable(PROJECT_DEPENDENCIES_VAR, project_dependencies_var);
                 
             } catch (VariableNotDefinedException e) {
-                getLog().warn(String.format("variable %s not defined in template", PROJECT_DEPENDENCIES_VAR));
+                getLog().warn(format("variable %s not defined in template", PROJECT_DEPENDENCIES_VAR));
             }
         }
 
@@ -444,7 +440,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     t.setVariable(GITLOG_JIRA_ISSUES_VAR, gitlog_jiraissues_var);
 
                 } catch (VariableNotDefinedException e) {
-                    getLog().info(String.format("variable %s not defined in template", GITLOG_JIRA_ISSUES_VAR));
+                    getLog().info(format("variable %s not defined in template", GITLOG_JIRA_ISSUES_VAR));
                 }
             }
 
@@ -455,44 +451,56 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 getProperties().put(GITLOG_SINCE_TAG_NAME, gitLogSinceTagName); // to share with children
                 t.setVariable(GITLOG_SINCE_TAG_NAME, gitLogSinceTagName);
             } catch (VariableNotDefinedException e) {
-                getLog().debug(String.format("variable %s not defined in template", GITLOG_SINCE_TAG_NAME));
+                getLog().debug(format("variable %s not defined in template", GITLOG_SINCE_TAG_NAME));
             }
 
         }
 
-        final String wiki = t.generateOutput();
-
-        super.confluenceExecute(  new ConfluenceTask() {
+        return t.generateOutput();
+        
+    }
+    
+    private void generateProjectReport( final Site site, final Locale locale ) throws MojoExecutionException
+    {
+        
+        super.confluenceExecute(new ConfluenceTask() {
 
             @Override
             public void execute(Confluence confluence) throws Exception {
+                //
+                // Issue 32
+                //
+                final String title = getTitle();
+                //String title = project.getArtifactId() + "-" + project.getVersion();
         
-             if (!isSnapshot() && isRemoveSnapshots()) {
-                final String snapshot = title.concat("-SNAPSHOT");
-                getLog().info(String.format("removing page [%s]!", snapshot));
-                boolean deleted = ConfluenceUtils.removePage(confluence, getSpaceKey(), getParentPageTitle(), snapshot);
+                if (!isSnapshot() && isRemoveSnapshots()) {
+                   final String snapshot = title.concat("-SNAPSHOT");
+                   getLog().info(format("removing page [%s]!", snapshot));
+                   boolean deleted = ConfluenceUtils.removePage(confluence, getSpaceKey(), getParentPageTitle(), snapshot);
 
-                if (deleted) {
-                    getLog().info(String.format("Page [%s] has been removed!", snapshot));
-                }
-            }
+                   if (deleted) {
+                       getLog().info(format("Page [%s] has been removed!", snapshot));
+                   }
+               }
 
-
-            Page confluencePage = ConfluenceUtils.getOrCreatePage(confluence, getSpaceKey(), getParentPageTitle(), title);
-
-            confluencePage.setContent(wiki);
-
-            confluencePage = confluence.storePage(confluencePage);
-
-            for( String label : site.getHome().getComputedLabels() ) {
+                final String titlePrefix = title;
                 
-                confluence.addLabelByName(label, Long.parseLong(confluencePage.getId()) );
+                final String wiki = createProjectHome(site, locale);
+
+                Page confluenceHomePage = ConfluenceUtils.getOrCreatePage(confluence, getSpaceKey(), getParentPageTitle(), title);
+
+                confluenceHomePage.setContent(wiki);
+
+                confluenceHomePage = confluence.storePage(confluenceHomePage);
+
+                for( String label : site.getHome().getComputedLabels() ) {
+
+                    confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+                }
+                
+                generateChildren( confluence, site.getHome(), confluenceHomePage, getSpaceKey(), title, titlePrefix);
             }
-                               
-            generateChildren( confluence, site.getHome(), confluencePage, getSpaceKey(), title, title);
-           
-            
-            }
+
         });
 
          
@@ -642,7 +650,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             } catch (InvalidPluginDescriptorException e) {
                 // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
-                getLog().warn(String.format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
+                getLog().warn(format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
 
             }
 
@@ -695,7 +703,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             //r.render();
         } catch (ExtractionException e) {
             throw new MojoExecutionException(
-                    String.format("Error extracting plugin descriptor: %s",
+                    format("Error extracting plugin descriptor: %s",
                     e.getLocalizedMessage()),
                     e);
         }
