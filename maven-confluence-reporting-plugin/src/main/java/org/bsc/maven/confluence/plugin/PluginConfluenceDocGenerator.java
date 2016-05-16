@@ -13,14 +13,11 @@ import java.util.List;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.reporting.MavenReportException;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.util.Collections;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 
@@ -30,17 +27,13 @@ import org.apache.maven.tools.plugin.generator.GeneratorException;
  *
  */
 @SuppressWarnings("unchecked")
-public class PluginConfluenceDocGenerator implements Generator {
+public abstract class PluginConfluenceDocGenerator implements Generator {
 
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
-    private final Confluence confluence;
-    private final Page parentPage;
-    private final java.io.File templateWiki;
-    private final AbstractConfluenceSiteMojo mojo;
 
     class Goal {
 
-        final MojoDescriptor descriptor;
+        public final MojoDescriptor descriptor;
 
         public Goal(MojoDescriptor mojoDescriptor) {
             this.descriptor = mojoDescriptor;
@@ -79,33 +72,28 @@ public class PluginConfluenceDocGenerator implements Generator {
             return goalName;
         }
 
-        public Page generatePage( Page parent, String parentName ) {
+        public Page generatePage( Confluence confluence,  Page parent, String parentName ) throws Exception {
             
-            try {
-                final String goalName = getPageName( parentName );
+            final String goalName = getPageName( parentName );
+
+            Page result = ConfluenceUtils.getOrCreatePage(confluence, parent, goalName);
+
+            final StringWriter writer = new StringWriter(100 * 1024);
+
+            ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
+
+            write( w );
+
+            writer.flush();
+
+            result.setContent(writer.toString());
+
+            result  = confluence.storePage(result);
+
+            return result;
                 
-                Page result = ConfluenceUtils.getOrCreatePage(confluence, parent, goalName);
-                
-                final StringWriter writer = new StringWriter(100 * 1024);
-                
-                ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
-                
-                write( w );
-                
-                writer.flush();
-                
-                result.setContent(writer.toString());
-                
-                result  = confluence.storePage(result);
-                
-                return result;
-                
-            } catch (Exception ex) {
-                mojo.getLog().warn( String.format("error generatig page for goal [%s]", descriptor.getGoal()), ex);
-            }
-            
-            return null;
         }
+        
         /**
          *
          * @param mojoDescriptor
@@ -194,21 +182,7 @@ public class PluginConfluenceDocGenerator implements Generator {
 
     };
     
-    /**
-     * 
-     * @param mojo
-     * @param confluence
-     * @param parentPage
-     * @param templateWiki 
-     */
-    public PluginConfluenceDocGenerator(AbstractConfluenceSiteMojo mojo, Confluence confluence, Page parentPage, java.io.File templateWiki) {
-        this.mojo = mojo;
-        this.confluence = confluence;
-        this.parentPage = parentPage;
-        this.templateWiki = templateWiki;
-
-    }
-
+    
     /**
      * 
      * @param destinationDirectory
@@ -216,177 +190,30 @@ public class PluginConfluenceDocGenerator implements Generator {
      * @throws IOException 
      */
     public void execute(File destinationDirectory, PluginDescriptor pluginDescriptor) throws IOException {
-
-        try {
-            processMojoDescriptors(pluginDescriptor);
-        } catch (Exception e) {
-
-            throw new IOException(e.getMessage());
-        }
+        
+        throw new UnsupportedOperationException( "execute is not supported!");
     }
 
     /**
-     *
+     * 
+     * @param destinationDirectory
+     * @param request
+     * @throws GeneratorException 
      */
     @Override
     public void execute(File destinationDirectory, PluginToolsRequest request) throws GeneratorException {
-        try {
-            processMojoDescriptors(request.getPluginDescriptor());
-        } catch (Exception e) {
 
-            throw new GeneratorException(e.getMessage(), e);
-        }
+        throw new UnsupportedOperationException( "execute is not supported!");
 
     }
 
     /**
-     *
-     * @param mojoDescriptor
-     * @param destinationDirectory
-     * @throws IOException
-     */
-    protected void processMojoDescriptors(PluginDescriptor pluginDescriptor) throws Exception {
-        List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
-
-        if (mojos == null) {
-            mojo.getLog().warn("no mojos found [pluginDescriptor.getMojos()]");
-            return;
-        }
-
-        String title = pluginDescriptor.getArtifactId() + "-" + pluginDescriptor.getVersion();
-
-        mojo.getProperties().put("pageTitle", title);
-        mojo.getProperties().put("artifactId", mojo.getProject().getArtifactId());
-        mojo.getProperties().put("version", mojo.getProject().getVersion());
-
-        MiniTemplator t = null;
-
-        if (templateWiki == null || !templateWiki.exists()) {
-
-            mojo.getLog().warn("template not set! default using ...");
-
-            java.net.URL sourceUrl = getClass().getClassLoader().getResource(DEFAULT_PLUGIN_TEMPLATE_WIKI);
-
-            if (sourceUrl == null) {
-                final String msg = "default template cannot be found";
-                mojo.getLog().error(msg);
-                throw new MavenReportException(msg);
-            }
-
-            try {
-
-                t = new MiniTemplator.Builder()
-                        .setSkipUndefinedVars(true)
-                        .build(sourceUrl, mojo.getCharset());
-
-            } catch (Exception e) {
-                final String msg = "error loading template";
-                mojo.getLog().error(msg, e);
-                throw new MavenReportException(msg, e);
-            }
-            /*                         
-             java.io.InputStream is = getClass().getClassLoader().getResourceAsStream(DEFAULT_PLUGIN_TEMPLATE_WIKI);
-
-             if( is==null ) {
-             final String msg = "default template cannot be found";
-             mojo.getLog().error( msg);
-             throw new MavenReportException(msg);
-             }
-
-             try {
-             t = new MiniTemplator(new java.io.InputStreamReader(is));
-             } catch (Exception e) {
-             final String msg = "error loading template";
-             mojo.getLog().error(msg,e);
-             throw new MavenReportException(msg, e);
-             }
-                 
-             */
-        } else {
-            try {
-                t = new MiniTemplator.Builder()
-                        .setSkipUndefinedVars(true)
-                        .build(templateWiki.toURI().toURL(), mojo.getCharset());
-
-                //t = new MiniTemplator(templateWiki);
-            } catch (Exception e) {
-                final String msg = "error loading template";
-                mojo.getLog().error(msg, e);
-                throw new MavenReportException(msg, e);
-            }
-
-        }
-
-        mojo.addStdProperties(t);
-
-        Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
-
-        if (!mojo.isSnapshot() && mojo.isRemoveSnapshots()) {
-            final String snapshot = title.concat("-SNAPSHOT");
-            mojo.getLog().info(String.format("removing page [%s]!", snapshot));
-            boolean deleted = ConfluenceUtils.removePage(confluence, parentPage, snapshot);
-
-            if (deleted) {
-                mojo.getLog().info(String.format("Page [%s] has been removed!", snapshot));
-            }
-        }
-
-        {
-            StringWriter writer = new StringWriter(100 * 1024);
-
-            writeSummary(writer, pluginDescriptor, mojos);
-
-            writer.flush();
-
-            try {
-                t.setVariable("plugin.summary", writer.toString());
-            } catch (VariableNotDefinedException e) {
-                mojo.getLog().warn(String.format("variable %s not defined in template", "plugin.summary"));
-            }
-
-        }
-
-        java.util.List<Goal> goals;
-        {
-            StringWriter writer = new StringWriter(100 * 1024);
-
-            //writeGoals(writer, mojos);
-            goals = writeGoalsAsChildren(writer, page, title, mojos);
-
-            writer.flush();
-
-            try {
-                t.setVariable("plugin.goals", writer.toString());
-            } catch (VariableNotDefinedException e) {
-                mojo.getLog().warn(String.format("variable %s not defined in template", "plugin.goals"));
-            }
-
-        }
-
-        StringBuilder wiki = new StringBuilder()
-                .append("{info:title=").append("auto generated page").append('}')
-                .append("this page has been generated by plugin: ")
-                .append("[org.bsc.maven:maven-confluence-reporting-plugin|https://github.com/bsorrentino/maven-confluence-plugin]")
-                .append("{info}")
-                .append('\n')
-                .append(t.generateOutput());
-
-        page.setContent(wiki.toString());
-
-        page = confluence.storePage(page);
-
-        // GENERATE GOAL
-        for( Goal goal : goals ) {
-            goal.generatePage(page, title);
-        }
-    }
-
-    /**
-     *
+     * 
      * @param writer
-     * @param mojoDescriptor
+     * @param pluginDescriptor
+     * @param mojos 
      */
-    private void writeSummary(Writer writer, PluginDescriptor pluginDescriptor, List<MojoDescriptor> mojos) {
+    protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor, List<MojoDescriptor> mojos) {
 
         ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 
@@ -402,7 +229,7 @@ public class PluginConfluenceDocGenerator implements Generator {
 
     }
     
-    private java.util.List<Goal> writeGoalsAsChildren( Writer writer, Page parent, String parentName, List<MojoDescriptor> mojos ) {
+    protected java.util.List<Goal> writeGoalsAsChildren( Writer writer, Page parent, String parentName, List<MojoDescriptor> mojos ) {
 
         final java.util.List<Goal> result = new java.util.ArrayList<Goal>(mojos.size());
         
