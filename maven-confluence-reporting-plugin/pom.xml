@@ -348,6 +348,7 @@ TEST
                         <serverId>softphone-server</serverId>
                         <wikiFilesExt>.confluence</wikiFilesExt>
                         <templateWiki>${basedir}/src/site/confluence/codehaus-home.confluence</templateWiki>
+                        <removeSnapshots>true</removeSnapshots>
                     </configuration>
                 </plugin>
 
