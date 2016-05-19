@@ -750,11 +750,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             return;
         }
 
-        final String title = format( "%s-%s", pluginDescriptor.getArtifactId(), pluginDescriptor.getVersion() );
-
-        getProperties().put("pageTitle", title);
-        getProperties().put("artifactId", getProject().getArtifactId());
-        getProperties().put("version", getProject().getVersion());
+        // issue#102
+        //final String title = format( "%s-%s", pluginDescriptor.getArtifactId(), pluginDescriptor.getVersion() );
+        final String title = getTitle();
+        
+        getProperties().put("pageTitle",    title);
+        getProperties().put("artifactId",   getProject().getArtifactId());
+        getProperties().put("version",      getProject().getVersion());
 
         MiniTemplator t = null;
 
