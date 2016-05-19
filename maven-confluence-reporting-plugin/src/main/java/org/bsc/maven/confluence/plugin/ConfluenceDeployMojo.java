@@ -854,12 +854,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
 
         }
-
+        
+        /* 
+        // issue#102
         final StringBuilder wiki = new StringBuilder()
-                .append(ConfluenceUtils.getBannerWiki())
+                .append(ConfluenceUtils.getBannerWiki()) 
                 .append(t.generateOutput());
-
         page.setContent(wiki.toString());
+        */
+        page.setContent(t.generateOutput());
 
         page = confluence.storePage(page);
 
