@@ -282,34 +282,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                                             .setSkipUndefinedVars(true)
                                             .build( is, getCharset() );
 
-            /////////////////////////////////////////////////////////////////
-            // SUMMARY
-            /////////////////////////////////////////////////////////////////
-            {
-
-                 final StringWriter w = new StringWriter(10 * 1024);
-                 final Sink sink = new ConfluenceSink(w);
-
-                 final ProjectSummaryRenderer summary = new ProjectSummaryRenderer(sink,
-                         project,
-                         i18n,
-                         locale);
-                 
-                 summary.render();
-
-                 try {
-                     final String project_summary_var = w.toString();
-
-                     getProperties().put(PROJECT_SUMMARY_VAR,project_summary_var); // to share with children
-
-                     t.setVariable(PROJECT_SUMMARY_VAR, project_summary_var);
-
-                 } catch (VariableNotDefinedException e) {
-                     getLog().warn(format("variable %s not defined in template", PROJECT_SUMMARY_VAR));
-                 }
-
-             }
-            
             generateProjectHomeTemplate( t, site, locale );
             
             return t.generateOutput();
@@ -330,6 +302,35 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         
         super.addStdProperties(t);
 
+        /////////////////////////////////////////////////////////////////
+        // SUMMARY
+        /////////////////////////////////////////////////////////////////
+        {
+
+             final StringWriter w = new StringWriter(10 * 1024);
+             final Sink sink = new ConfluenceSink(w);
+
+             final ProjectSummaryRenderer summary = new ProjectSummaryRenderer(sink,
+                     project,
+                     i18n,
+                     locale);
+
+             summary.render();
+
+             try {
+                 final String project_summary_var = w.toString();
+
+                 getProperties().put(PROJECT_SUMMARY_VAR,project_summary_var); // to share with children
+
+                 t.setVariable(PROJECT_SUMMARY_VAR, project_summary_var);
+
+             } catch (VariableNotDefinedException e) {
+                 getLog().warn(format("variable %s not defined in template", PROJECT_SUMMARY_VAR));
+             }
+
+         }
+            
+        
        /////////////////////////////////////////////////////////////////
        // TEAM
        /////////////////////////////////////////////////////////////////
@@ -821,7 +822,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             try {
                 final String summary = writer.toString();
                 
-                t.setVariable(PROJECT_SUMMARY_VAR, summary);
                 t.setVariable(PLUGIN_SUMMARY_VAR, summary);
                 
             } catch (VariableNotDefinedException e) {
