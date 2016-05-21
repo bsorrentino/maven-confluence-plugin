@@ -235,7 +235,6 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             getLog().info("no properties set!");
         } else {
             for (java.util.Map.Entry<String, String> e : props.entrySet()) {
-                //getLog().debug(String.format("property %s = %s", e.getKey(), e.getValue()));
 
                 try {
                     t.setVariable(e.getKey(), e.getValue(), true /* isOptional */);

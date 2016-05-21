@@ -112,6 +112,12 @@ h3.Built-In template variables
 |{{$\{gitlog.jiraIssues}}} |list of JIRA issuses, extracted from gitlog since start tag|
 |{{$\{gitlog.sinceTagName}}} |name of version tag to start extract JIRA issues|
 
+{info:title=Only available for plugin documentation}
+
+|{{$\{plugin.summary}}}| plugin summary **DEPRECATED** (use project.summary instead)
+|{{$\{plugin.goals}}}}| plugin goals 
+
+{info}
 
 h3. Images
 
