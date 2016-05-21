@@ -13,6 +13,12 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|May 21,2016 | **Release 4.8**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.8%7Cmaven-plugin)**  |
+|:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Refer to [Issue 100](https://github.com/bsorrentino/maven-confluence-plugin/issues/100) - Enable builtin ```project.scmManager/dependencies/team``` for ```maven-plugin```
+  * Refer to [Issue 102](https://github.com/bsorrentino/maven-confluence-plugin/issues/102) - ```Title``` element in plugin configuration ignored for ```maven-plugin``` type projects
+
 |May 9,2016 | **Release 4.7**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.7%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
