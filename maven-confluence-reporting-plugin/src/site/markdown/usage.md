@@ -122,6 +122,12 @@ Variable | Description
  ```${gitlog.jiraIssues}```     | list of JIRA issuses, extracted from gitlog since start tag
  ```${gitlog.sinceTagName}```   | name of version tag to start extract JIRA issues   
 
+#### Only available for plugin documentation
+
+-----------------|-----------------
+```${plugin.summary}```| plugin summary **DEPRECATED** (use project.summary instead)
+```${plugin.goals}```| plugin goals 
+ 
 
 ### Images
 
