@@ -66,8 +66,8 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 	/**
 	 * prefix child page with the title of the parent
      */
-    @Parameter(property = "confluence.childrenTitlesPrefixed", required = false,  defaultValue = "false")
-    protected boolean childrenTitlesPrefixed = false;
+    @Parameter(property = "confluence.childrenTitlesPrefixed", required = false,  defaultValue = "true")
+    protected boolean childrenTitlesPrefixed = true;
 
     /**
      * Labels to add
