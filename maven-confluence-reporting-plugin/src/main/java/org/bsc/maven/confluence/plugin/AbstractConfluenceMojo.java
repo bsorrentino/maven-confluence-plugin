@@ -63,8 +63,10 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     @Parameter(property = "confluence.removeSnapshots", required = false,  defaultValue = "false")
     protected boolean removeSnapshots = false;
 
-	/**
-	 * prefix child page with the title of the parent
+	  /**
+	   * prefix child page with the title of the parent
+     *
+     * @since 4.9
      */
     @Parameter(property = "confluence.childrenTitlesPrefixed", required = false,  defaultValue = "true")
     protected boolean childrenTitlesPrefixed = true;
