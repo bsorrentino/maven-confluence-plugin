@@ -90,11 +90,11 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      *
      * <pre>
      *
-     * <sslCertificate>
-     *  <ignore>true|false</ignore>  // default true
-     *  <hostNameVerifierClass>FQN</hostNameVerifierClass> //default null
-     *  <trustManagerClass>FQN</trustManagerClass> // default null
-     * </sslCertificate>
+     * < sslCertificate>
+     *  < ignore>true|false</ignore>  // default true
+     *  < hostNameVerifierClass>FQN</hostNameVerifierClass> //default null
+     *  < trustManagerClass>FQN</trustManagerClass> // default null
+     * < /sslCertificate>
      *
      * </pre>
      * @since 4.1.0
