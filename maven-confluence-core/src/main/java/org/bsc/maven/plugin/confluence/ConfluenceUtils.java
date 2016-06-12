@@ -27,14 +27,20 @@ public class ConfluenceUtils {
 	 */
 	public static String decode( String value ) {
 		if( null==value ) return value;
- 		return value
+ 		final String result =  value
                         .replace("{", "\\{")
                         .replace("}", "\\}")
                         .replaceAll("<[Pp][Rr][Ee]>|</[Pp][Rr][Ee]>", "{noformat}")
                         .replaceAll("<[Cc][Oo][Dd][Ee]>", "{{")
                         .replaceAll("</[Cc][Oo][Dd][Ee]>", "}}")
+                        .replaceAll("<[Bb]>|</Bb>", "*")
+                        .replaceAll("<[Bb][Rr]>|<[Bb][Rr]/>", "\\\\")
+                        .replaceAll("<[Hh][Rr]>|<[Hh][Rr]/>", "----")
+                        .replaceAll("<[Pp]>", "\n\n")
+                        .replaceAll("</[Pp]>", "")
+                        
                         ;	
-                
+                return ConfluenceHtmlListUtils.replaceHtmlList(result);
 	}
 
 	/**
