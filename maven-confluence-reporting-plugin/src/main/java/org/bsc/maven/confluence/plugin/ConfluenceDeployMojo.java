@@ -47,12 +47,9 @@ import java.util.*;
 import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
-import static java.lang.String.format;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.reporting.MavenReportException;
 import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
-import static java.lang.String.format;
-import static java.lang.String.format;
 import static java.lang.String.format;
 /**
  * 

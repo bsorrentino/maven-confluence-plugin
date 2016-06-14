@@ -47,9 +47,20 @@ h3.Numbered List
 
 h3.Links
 
-h4.external link
+h4. external link
+
 {noformat}
 [this is a link](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown/)
+{noformat}
+
+h4. internal link
+
+{noformat}
+This is an ref link [README.MD]
+
+This is an ref link [README.MD][My Readme]
+
+This is an ref link [README.MD][1]
 {noformat}
 
 h3.Image
