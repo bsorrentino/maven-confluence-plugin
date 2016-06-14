@@ -13,6 +13,14 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|Jun 14,2016 | **Release 4.9**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.9%7Cmaven-plugin)**  |
+|:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Refer to [Issue 99](https://github.com/bsorrentino/maven-confluence-plugin/issues/99) - Allow additional tags in comments (_concerning javadoc translation_)
+  * Refer to [Pull Request 105](https://github.com/bsorrentino/maven-confluence-plugin/pull/105) - Add property ```childrenTitlesPrefixed```
+
+   > **Thanks to [pbaris](https://github.com/pbaris) for contribution**.
+
 |May 21,2016 | **Release 4.8**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.8%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 

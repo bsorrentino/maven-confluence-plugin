@@ -56,6 +56,16 @@ _Italic text_
 [this is a link](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown/)
 ```
 
+#### internal link
+
+```
+This is an ref link [README.MD]
+
+This is an ref link [README.MD][My Readme]
+
+This is an ref link [README.MD][1]
+```
+
 ### Image
 
 #### external image
