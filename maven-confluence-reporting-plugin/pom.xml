@@ -18,7 +18,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.9</version>
+        <version>4.9.1-SNAPSHOT</version>
     </parent>
 
     <properties>
