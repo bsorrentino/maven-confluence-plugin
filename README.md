@@ -13,6 +13,11 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|Jun 21,2016 | **Release 4.9.1**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.9.1%7Cmaven-plugin)**  |
+|:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Hot Fix on [Issue 99](https://github.com/bsorrentino/maven-confluence-plugin/issues/99) - Allow additional tags in comments (_concerning javadoc translation_)
+  
 |Jun 14,2016 | **Release 4.9**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.9%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
