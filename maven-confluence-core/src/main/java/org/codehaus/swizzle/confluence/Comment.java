@@ -22,18 +22,18 @@ import java.util.Map;
 /**
  * @version $Revision$ $Date$
  */
-public class Attachment extends MapObject {
+public class Comment extends MapObject {
 
-    public Attachment() {
+    public Comment() {
         super();
     }
 
-    public Attachment(Map data) {
+    public Comment(Map data) {
         super(data);
     }
 
     /**
-     * numeric id of the attachment
+     * numeric id of the comment
      */
     public String getId() {
         return getString("id");
@@ -44,7 +44,7 @@ public class Attachment extends MapObject {
     }
 
     /**
-     * page ID of the attachment
+     * page ID of the comment
      */
     public String getPageId() {
         return getString("pageId");
@@ -55,7 +55,7 @@ public class Attachment extends MapObject {
     }
 
     /**
-     * title of the attachment
+     * title of the comment
      */
     public String getTitle() {
         return getString("title");
@@ -66,36 +66,25 @@ public class Attachment extends MapObject {
     }
 
     /**
-     * file name of the attachment {color:#cc3300}(Required){color}
+     * notated content of the comment (use renderContent to render)
      */
-    public String getFileName() {
-        return getString("fileName");
+    public String getContent() {
+        return getString("content");
     }
 
-    public void setFileName(String fileName) {
-        setString("fileName", fileName);
+    public void setContent(String content) {
+        setString("content", content);
     }
 
     /**
-     * numeric file size of the attachment in bytes
+     * url to view the comment online
      */
-    public String getFileSize() {
-        return getString("fileSize");
+    public String getUrl() {
+        return getString("url");
     }
 
-    public void setFileSize(String fileSize) {
-        setString("fileSize", fileSize);
-    }
-
-    /**
-     * mime content type of the attachment {color:#cc0000}(Required){color}
-     */
-    public String getContentType() {
-        return getString("contentType");
-    }
-
-    public void setContentType(String contentType) {
-        setString("contentType", contentType);
+    public void setUrl(String url) {
+        setString("url", url);
     }
 
     /**
@@ -118,28 +107,6 @@ public class Attachment extends MapObject {
 
     public void setCreator(String creator) {
         setString("creator", creator);
-    }
-
-    /**
-     * url to download the attachment online
-     */
-    public String getUrl() {
-        return getString("url");
-    }
-
-    public void setUrl(String url) {
-        setString("url", url);
-    }
-
-    /**
-     * comment for the attachment {color:#cc3300}(Required){color}
-     */
-    public String getComment() {
-        return getString("comment");
-    }
-
-    public void setComment(String comment) {
-        setString("comment", comment);
     }
 
     public Map toRawMap() {
