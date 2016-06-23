@@ -13,6 +13,14 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+|  | **Release 4.10**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
+|:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+  * Refer to [Issue 109](https://github.com/bsorrentino/maven-confluence-plugin/issues/109) - Markdown **sublist** support
+   
+   > **Thanks to [esivres](https://github.com/esivres) for providing patch**.
+
+
 |Jun 21,2016 | **Release 4.9.1**. | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.9.1%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 

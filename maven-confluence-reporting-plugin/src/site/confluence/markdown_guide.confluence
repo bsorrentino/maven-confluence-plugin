@@ -31,18 +31,29 @@ h4.italic
 _Italic text_
 {noformat}
 
-h3.Bullet List
+
+h3.Unordered List
+
 {noformat}
- * Element 1
- * Element 2
- * Element 3
+* Element 1
+* Element 2
+* Element 3
+* Sublist
+   1. item 1
+   1. item 2
+   1. item 3
 {noformat}
 
-h3.Numbered List
+h3.Ordered List
+
 {noformat}
- 1. Element 1
- 1. Element 2
- 1. Element 3
+1. Element 1
+1. Element 2
+1. Element 3
+1. Sublist
+   * item 1
+   * item 2
+   * item 3
 {noformat}
 
 h3.Links
