@@ -7,9 +7,10 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.ConfluenceFactory;
+import org.bsc.functional.P1;
+import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceServiceFactory;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
@@ -20,11 +21,6 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
  * @author bsorrentino
  */
 public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
-
-    protected interface ConfluenceTask {
-
-        void execute(Confluence confluence) throws Exception;
-    }
 
     /**
      * Confluence end point url
@@ -130,31 +126,10 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
     /**
      *
-     * @param confluence
-     */
-    private void confluenceLogout(Confluence confluence) {
-
-        if (null == confluence) {
-            return;
-        }
-
-        try {
-            if (!confluence.logout()) {
-                getLog().warn("confluence logout has failed!");
-            }
-        } catch (Exception e) {
-            getLog().warn("confluence logout has failed due exception ", e);
-        }
-
-
-    }
-
-    /**
-     *
      * @param task
      * @throws MojoExecutionException
      */
-    protected void confluenceExecute(ConfluenceTask task) throws MojoExecutionException {
+    protected void confluenceExecute(P1<ConfluenceService> task) throws MojoExecutionException {
 
         if (sslCertificate != null) {
             getLog().debug(String.valueOf(sslCertificate));
@@ -162,18 +137,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             sslCertificate.setup(this.getEndPoint());
         }
 
-        Confluence confluence = null;
-
+        ConfluenceService confluence = null;
+        
         try {
 
-            Confluence.ProxyInfo proxyInfo = null;
+            ConfluenceProxy proxyInfo = null;
 
             final Proxy activeProxy = mavenSettings.getActiveProxy();
 
             if (activeProxy != null) {
 
                 proxyInfo =
-                        new Confluence.ProxyInfo(
+                        new ConfluenceProxy(
                                 activeProxy.getHost(),
                                 activeProxy.getPort(),
                                 activeProxy.getUsername(),
@@ -182,19 +157,17 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                         );
             }
 
-            confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
+            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), proxyInfo, getUsername(), getPassword());
 
-            getLog().info(ConfluenceUtils.getVersion(confluence));
+            getLog().info(confluence.getVersion());
 
-            task.execute(confluence);
+            confluence.call(task);
             
         } catch (Exception e) {
 
             getLog().error("has been imposssible connect to confluence due exception", e);
 
             throw new MojoExecutionException("has been imposssible connect to confluence due exception", e);
-        } finally {
-            confluenceLogout(confluence);
         }
 
     }

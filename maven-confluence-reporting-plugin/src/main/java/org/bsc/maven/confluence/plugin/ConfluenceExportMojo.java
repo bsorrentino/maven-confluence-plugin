@@ -11,9 +11,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.codehaus.swizzle.confluence.Confluence;
+import org.bsc.functional.P1;
+import org.bsc.confluence.ConfluenceService;
 import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
-import org.codehaus.swizzle.confluence.ExportFormat;
+import org.bsc.confluence.ExportFormat;
 
 /**
  * Export a confluence page either in PDF or DOC 
@@ -64,10 +65,10 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
        super.loadUserInfoFromSettings();
         
-        super.confluenceExecute( new ConfluenceTask() {
+        super.confluenceExecute( new P1<ConfluenceService>() {
 
             @Override
-            public void execute(Confluence confluence) throws Exception {
+            public void call(ConfluenceService confluence) throws Exception {
                 final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
                 
                 if( outputFile == null ) {
@@ -82,16 +83,14 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
                 
                 
                 final String url = ConfluenceExportMojo.super.getEndPoint().replace("/rpc/xmlrpc", "");  // /rpc/xmlrpc
-                final ConfluenceExportDecorator exporter = 
-                    new ConfluenceExportDecorator(  confluence, 
-                                                    url, 
-                                                    ConfluenceExportMojo.super.getUsername(), 
-                                                    ConfluenceExportMojo.super.getPassword());
                 
-                exporter.exportPage(ConfluenceExportMojo.super.getSpaceKey(), 
-                                    ConfluenceExportMojo.this.pageTitle, 
-                                    exfmt, 
-                                    outputFile);
+                confluence.exportPage(  url, 
+                                        ConfluenceExportMojo.super.getUsername(), 
+                                        ConfluenceExportMojo.super.getPassword(), 
+                                        ConfluenceExportMojo.super.getSpaceKey(), 
+                                        ConfluenceExportMojo.this.pageTitle, 
+                                        exfmt, 
+                                        outputFile);
             }
   
         });

@@ -8,10 +8,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
-import org.codehaus.swizzle.confluence.PageSummary;
+import org.bsc.functional.P1;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 
 /**
  *
@@ -44,19 +44,19 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
         
         super.loadUserInfoFromSettings();
         
-        super.confluenceExecute( new ConfluenceTask() {
+        super.confluenceExecute( new P1<ConfluenceService>() {
 
             @Override
-            public void execute(Confluence confluence) throws Exception {
+            public void call(ConfluenceService confluence) throws Exception  {
                 
-                final Page parentPage = confluence.getPage(getSpaceKey(), getParentPageTitle());
+                final Model.Page parentPage = confluence.getPage(getSpaceKey(), getParentPageTitle());
                 if( parentPage==null ) {
                     getLog().warn(String.format("Parent page [%s] in [%s] not found!", getParentPageTitle(), getSpaceKey()));                    
                     return;
                 }
 
            
-                final PageSummary root = ConfluenceUtils.findPageByTitle(confluence, parentPage.getId(),pageTitle);
+                final Model.PageSummary root = confluence.findPageByTitle(parentPage.getId(),pageTitle);
                 
                 if( root==null ) {
                     getLog().warn(String.format("Page [%s]/[%s] in [%s] not found!", getParentPageTitle(),pageTitle, getSpaceKey()));                    
@@ -64,7 +64,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
                 }
                 
                 if( recursive ) {
-                    final java.util.List<PageSummary> descendents = confluence.getDescendents(root.getId());
+                    final java.util.List<Model.PageSummary> descendents = confluence.getDescendents(root.getId());
 
                     if( descendents==null || descendents.isEmpty() ) {
                         getLog().warn(String.format("Page [%s]/[%s] in [%s] has not descendents!", getParentPageTitle(),pageTitle, getSpaceKey()));                    

@@ -11,12 +11,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.model.SiteFactory;
-import org.codehaus.swizzle.confluence.Attachment;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
 
 /**
  *
@@ -74,13 +72,13 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param confluencePage 
      */
-    private void generateAttachments( Site.Page page,  Confluence confluence, Page confluencePage) /*throws MavenReportException*/ {
+    private void generateAttachments( Site.Page page,  ConfluenceService confluence, Model.Page confluencePage) /*throws MavenReportException*/ {
 
         getLog().info(String.format("generateAttachments pageId [%s]", confluencePage.getId()));
 
         for( Site.Attachment attachment : page.getAttachments() ) {
 
-            Attachment confluenceAttachment = null;
+            Model.Attachment confluenceAttachment = null;
 
             try {
                 confluenceAttachment = confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion());
@@ -105,7 +103,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                     }
                 }
             } else {
-                confluenceAttachment = new Attachment();
+                confluenceAttachment = confluence.createAttachment();
                 confluenceAttachment.setFileName(attachment.getName());
                 confluenceAttachment.setContentType(attachment.getContentType());
 
@@ -113,8 +111,8 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
 
             confluenceAttachment.setComment( attachment.getComment());
             
-            try {
-                ConfluenceUtils.addAttchment(confluence, confluencePage, confluenceAttachment, attachment.getUri().toURL() );
+            try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
+                confluence.addAttchment(confluencePage, confluenceAttachment, is );
             } catch (Exception e) {
                 getLog().error(String.format("Error uploading attachment [%s] ", attachment.getName()), e);
             }
@@ -133,9 +131,9 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param parentPageTitle
      * @param titlePrefix 
      */
-    protected void generateChildren(    final Confluence confluence, 
+    protected void generateChildren(    final ConfluenceService confluence, 
                                         final Site.Page parentPage,
-                                        final Page confluenceParentPage,  
+                                        final Model.Page confluenceParentPage,  
                                         final String spaceKey, 
                                         final String parentPageTitle, 
                                         final String titlePrefix) 
@@ -148,7 +146,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         for( Site.Page child : parentPage.getChildren() ) {
 
-            final Page confluencePage = generateChild(confluence, child, spaceKey, parentPage.getName(), titlePrefix);
+            final Model.Page confluencePage = generateChild(confluence, child, spaceKey, parentPage.getName(), titlePrefix);
             
             if( confluencePage != null  ) {
 

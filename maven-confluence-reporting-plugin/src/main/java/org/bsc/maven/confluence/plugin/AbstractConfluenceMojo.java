@@ -4,9 +4,7 @@ import java.io.File;
 import java.util.Collections;
 
 import org.apache.maven.project.MavenProject;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
+import org.bsc.confluence.ConfluenceUtils;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
@@ -17,8 +15,11 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
+import org.bsc.maven.reporting.model.Site.Page;
 
 /**
  *
@@ -257,7 +258,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     }
 
-    protected <T extends Site.Page> Page  generateChild(Confluence confluence,  T child, String spaceKey, String parentPageTitle, String titlePrefix) {
+    protected <T extends Site.Page> Model.Page  generateChild(ConfluenceService confluence,  T child, String spaceKey, String parentPageTitle, String titlePrefix) {
 
         java.net.URI source = child.getUri(getProject(), getFileExt());
 
@@ -267,7 +268,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             if (!isSnapshot() && isRemoveSnapshots()) {
                 final String snapshot = titlePrefix.concat("-SNAPSHOT");
-                boolean deleted = ConfluenceUtils.removePage(confluence, spaceKey, parentPageTitle, snapshot);
+                boolean deleted = confluence.removePage(spaceKey, parentPageTitle, snapshot);
 
                 if (deleted) {
                     getLog().info(String.format("Page [%s] has been removed!", snapshot));
@@ -277,7 +278,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             final String pageName = !isChildrenTitlesPrefixed()
                 ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
 
-            Page p = ConfluenceUtils.getOrCreatePage(confluence, spaceKey, parentPageTitle, pageName);
+            Model.Page p = confluence.getOrCreatePage(spaceKey, parentPageTitle, pageName);
 
             if( source != null /*&& source.isFile() && source.exists() */) {
 
@@ -294,12 +295,14 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     t.setVariableOpt("childTitle", pageName);
                 }
 
+                p = confluence.storePage(p, t.generateOutput());
+            }
+            else {
 
-                p.setContent(t.generateOutput());
+                p = confluence.storePage(p);
+                
             }
 
-
-            p = confluence.storePage(p);
 
             for( String label : child.getComputedLabels() ) {
 

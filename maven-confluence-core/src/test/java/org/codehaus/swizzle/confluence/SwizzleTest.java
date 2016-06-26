@@ -3,14 +3,12 @@
  * and open the template in the editor.
  */
 
-package org.bsc.maven.plugin.confluence;
+package org.codehaus.swizzle.confluence;
 
-import org.codehaus.swizzle.confluence.ServerInfo;
+import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Ignore;
-import org.codehaus.swizzle.confluence.Attachment;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.ConfluenceFactory;
-import org.codehaus.swizzle.confluence.Page;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,14 +28,15 @@ public class SwizzleTest {
     public static final String USER = "admin";
     public static final String URL = "http://localhost:8090/";
 
-    Confluence confluence = null;
+    XMLRPCConfluenceServiceImpl confluence = null;
 
     @Before
     public void connect() throws Exception  {
         
-        Confluence.ProxyInfo proxyInfo = null;
+        ConfluenceProxy proxyInfo = null;
         
-        confluence = ConfluenceFactory.createInstanceDetectingVersion( URL, proxyInfo, USER, PASSWORD);
+        confluence = 
+            XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(URL, proxyInfo, USER, PASSWORD);
         
 
     }
@@ -56,7 +55,7 @@ public class SwizzleTest {
     @Test
     public void showInfo() throws Exception {
         
-        ServerInfo  si = confluence.getServerInfo();
+        ServerInfo  si = confluence.connection.getServerInfo();
         
         System.out.printf( "majorVersion=[%s]\n", si.getMajorVersion());
         
@@ -66,7 +65,7 @@ public class SwizzleTest {
     @Ignore
     public void addAttachment() throws Exception {
 
-        Page page = ConfluenceUtils.getOrCreatePage(confluence, "ds", "Tutorial", "test");
+        Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
         
         Attachment a = new Attachment(new java.util.HashMap());
         a.setComment("test");
@@ -81,19 +80,20 @@ public class SwizzleTest {
         Assert.assertThat( page, notNullValue() );
         Assert.assertThat( page.getId(), notNullValue() );
         
-        ConfluenceUtils.addAttchment(confluence, page, a, is);
+        confluence.addAttchment(page, a, is);
 
     }
 
     @Test 
     @Ignore
     public void findAttachment() throws Exception {
-        Page page = ConfluenceUtils.getOrCreatePage(confluence, "ds", "Tutorial", "test");
+        Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
 
-        Attachment a = confluence.getAttachment( page.getId(), "foto2.jpg", "0");
+        Model.Attachment a = confluence.getAttachment( page.getId(), "foto2.jpg", "0");
 
         assertThat( a, notNullValue() );
+        assertThat( a, IsInstanceOf.instanceOf(Attachment.class) );
 
-        System.out.printf( " created=[%tc] creator=[%s] size=[%s]\n", a.getCreated(), a.getCreator(), a.getFileSize());
+        System.out.printf( " created=[%tc] creator=[%s] size=[%s]\n", a.getCreated(), ((Attachment)a).getCreator(), ((Attachment)a).getFileSize());
     }
 }

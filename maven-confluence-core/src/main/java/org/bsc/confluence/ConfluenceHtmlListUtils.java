@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.maven.plugin.confluence;
+package org.bsc.confluence;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

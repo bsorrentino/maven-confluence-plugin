@@ -18,11 +18,12 @@ package org.codehaus.swizzle.confluence;
 
 import java.util.Date;
 import java.util.Map;
+import org.bsc.confluence.ConfluenceService.Model;
 
 /**
  * @version $Revision$ $Date$
  */
-public class Attachment extends MapObject {
+class Attachment extends MapObject implements Model.Attachment {
 
     public Attachment() {
         super();

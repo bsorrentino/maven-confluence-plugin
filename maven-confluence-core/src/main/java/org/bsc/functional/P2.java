@@ -3,16 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.bsc.functional;
 
 /**
- * function
+ * Procedure
  * 
- * @param <R> return
- * @param <P> argument
+ * @author softphone
  */
-public interface F<R, P> {
+public interface P2<P1,P2> {
+   
+    void call(P1 p1, P2 p2);
 
-    R f(P p);
 }

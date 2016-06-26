@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.10-SNAPSHOT</version>
+        <version>5.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -63,7 +63,7 @@
                     <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
 
                     <spaceKey>test</spaceKey>
-                    <parentPageTitle>test</parentPageTitle>
+                    <parentPageTitle>Home</parentPageTitle>
                     <title>my-site-generation-test ${project.version}</title>
 
                     <labels>
