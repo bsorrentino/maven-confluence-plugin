@@ -1,5 +1,8 @@
 package org.bsc.maven.confluence.plugin;
 
+import static java.lang.String.format;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -10,9 +13,12 @@ import org.apache.maven.settings.Server;
 import org.bsc.maven.plugin.confluence.ConfluenceUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.ConfluenceFactory;
+import org.codehaus.swizzle.confluence.Page;
+import org.codehaus.swizzle.confluence.SwizzleException;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
+import static java.lang.String.format;
 
 
 /**
@@ -27,20 +33,34 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     }
 
     /**
+     * additional properties pass to template processor
+     */
+    @Parameter()
+    private java.util.Map properties;    
+    /**
      * Confluence end point url
      */
     @Parameter(property = "confluence.endPoint", defaultValue = "http://localhost:8080/rpc/xmlrpc")
     private String endPoint;
     /**
-     * Confluence target confluence's spaceKey
+     * Confluence target confluence spaceKey
      */
     @Parameter(property = "confluence.spaceKey", required = true)
     private String spaceKey;
+    
     /**
-     * Confluence target confluence's spaceKey
+     * Confluence target confluence parent page 
      */
     @Parameter(property = "confluence.parentPage", defaultValue = "Home")
     private String parentPageTitle;
+    /**
+     * Confluence target confluence parent page 
+     * 
+     * @since 4.10
+     */
+    @Parameter(property = "confluence.parentPageId")
+    private String parentPageId;
+    
     /**
      * Confluence username
      */
@@ -116,7 +136,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         return spaceKey;
     }
 
-    public final String getParentPageTitle() {
+    public final String _getParentPageTitle() {
         return parentPageTitle;
     }
 
@@ -128,6 +148,14 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         return password;
     }
 
+    @SuppressWarnings("unchecked")
+    public final java.util.Map<String, String> getProperties() {
+        if (null == properties) {
+            properties = new java.util.HashMap<String, String>(5);
+        }
+        return properties;
+    }
+    
     /**
      *
      * @param confluence
@@ -199,6 +227,46 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
     }
 
+    /**
+     * 
+     * @param confluence
+     * @return
+     * @throws MojoExecutionException 
+     */
+    protected Page loadParentPage( Confluence confluence) throws MojoExecutionException {
+        
+        Page result = null;
+        if( parentPageId != null ) {
+            
+            try {
+                result = confluence.getPage( parentPageId );
+                
+                if( result==null ) {
+                    getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s]", parentPageId, parentPageTitle));
+                }
+            } catch (SwizzleException ex) {
+                getLog().warn( format( "cannot get page with parentPageId [%s]! Try with parentPageTitle [%s]", parentPageId, parentPageTitle), ex);
+                
+            }
+        }
+        
+        try {
+            result = confluence.getPage(spaceKey, parentPageTitle);
+            
+            if( result==null ) {
+                throw new MojoExecutionException( format( "parentPageTitle [%s] not found in space [%s]!", parentPageTitle, spaceKey));
+            }
+        } catch (SwizzleException ex) {
+            getLog().warn( format( "parentPageTitle [%s] not found in space [%s]!", parentPageTitle, spaceKey));
+            throw new MojoExecutionException( format( "cannot get page with parentPageTitle [%s] in space [%s]!", parentPageTitle, spaceKey), ex);
+        }
+        
+        getProperties().put("parentPageTitle", result.getTitle());
+        
+        return result;
+
+    }
+    
     /**
      * Issue 39
      *

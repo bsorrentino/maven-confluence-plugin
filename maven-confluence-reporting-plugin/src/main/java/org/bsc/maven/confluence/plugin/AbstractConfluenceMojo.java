@@ -26,13 +26,6 @@ import org.bsc.maven.reporting.model.Site;
  */
 public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo {
 
-
-    /**
-     * additional properties pass to template processor
-     */
-    @Parameter()
-    private java.util.Map properties;
-
     /**
      * Maven Project
      */
@@ -177,14 +170,6 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     }
 
 
-    @SuppressWarnings("unchecked")
-    public final java.util.Map<String, String> getProperties() {
-        if (null == properties) {
-            properties = new java.util.HashMap<String, String>(5);
-        }
-        return properties;
-    }
-
     public MavenProject getProject() {
         return project;
     }
@@ -221,7 +206,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         processProperties();
 
         getProperties().put("pageTitle", getTitle());
-        getProperties().put("parentPageTitle", getParentPageTitle());
+        //getProperties().put("parentPageTitle", getParentPageTitle());
         getProperties().put("artifactId", project.getArtifactId());
         getProperties().put("version", project.getVersion());
         getProperties().put("groupId", project.getGroupId());

@@ -49,17 +49,17 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
             @Override
             public void execute(Confluence confluence) throws Exception {
                 
-                final Page parentPage = confluence.getPage(getSpaceKey(), getParentPageTitle());
+                final Page parentPage = loadParentPage(confluence);
+
                 if( parentPage==null ) {
-                    getLog().warn(String.format("Parent page [%s] in [%s] not found!", getParentPageTitle(), getSpaceKey()));                    
+                    getLog().warn(String.format("Parent page [%s] in [%s] not found!", parentPage.getTitle(), getSpaceKey()));                    
                     return;
                 }
-
-           
+      
                 final PageSummary root = ConfluenceUtils.findPageByTitle(confluence, parentPage.getId(),pageTitle);
                 
                 if( root==null ) {
-                    getLog().warn(String.format("Page [%s]/[%s] in [%s] not found!", getParentPageTitle(),pageTitle, getSpaceKey()));                    
+                    getLog().warn(String.format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(),pageTitle, getSpaceKey()));                    
                     return;
                 }
                 
@@ -67,13 +67,13 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
                     final java.util.List<PageSummary> descendents = confluence.getDescendents(root.getId());
 
                     if( descendents==null || descendents.isEmpty() ) {
-                        getLog().warn(String.format("Page [%s]/[%s] in [%s] has not descendents!", getParentPageTitle(),pageTitle, getSpaceKey()));                    
+                        getLog().warn(String.format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(),pageTitle, getSpaceKey()));                    
                     }
                     else {
 
                         for( PageSummary descendent : descendents) {
 
-                            getLog().info( String.format("Page [%s]/[%s]/[%s]  has been removed!", getParentPageTitle(),pageTitle, descendent.getTitle()) );
+                            getLog().info( String.format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),pageTitle, descendent.getTitle()) );
                             confluence.removePage(descendent.getId());
 
                         }
@@ -82,7 +82,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
                 
                 confluence.removePage(root.getId());
 
-                getLog().info(String.format("Page [%s]/[%s] in [%s] has been removed!", getParentPageTitle(),pageTitle, getSpaceKey()));
+                getLog().info(String.format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),pageTitle, getSpaceKey()));
         
             }
         });
