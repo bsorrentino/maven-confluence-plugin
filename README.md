@@ -13,9 +13,10 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
-|  | **Release 4.10** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
+|  | **Release 4.10-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
+  * Refer to [Issue 107](https://github.com/bsorrentino/maven-confluence-plugin/issues/107) - Use pageId instead of Spacekey and parent title
   * Refer to [Issue 109](https://github.com/bsorrentino/maven-confluence-plugin/issues/109) - Markdown **sublist** support
    
    > **Thanks to [esivres](https://github.com/esivres) for providing patch**.

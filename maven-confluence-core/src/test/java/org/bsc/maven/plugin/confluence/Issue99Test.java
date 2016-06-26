@@ -5,6 +5,7 @@
  */
 package org.bsc.maven.plugin.confluence;
 
+import org.bsc.confluence.ConfluenceHtmlListUtils;
 import java.util.regex.*;
 import org.hamcrest.core.IsEqual;
 import org.junit.Assert;

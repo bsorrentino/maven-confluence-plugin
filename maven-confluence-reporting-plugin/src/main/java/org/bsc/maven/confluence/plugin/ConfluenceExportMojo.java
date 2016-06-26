@@ -14,6 +14,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
 import org.codehaus.swizzle.confluence.ExportFormat;
+import org.codehaus.swizzle.confluence.Page;
 
 /**
  * Export a confluence page either in PDF or DOC 
@@ -70,6 +71,8 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
             public void execute(Confluence confluence) throws Exception {
                 final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
                 
+                final Page parentPage = loadParentPage(confluence);
+                
                 if( outputFile == null ) {
                     
                     outputFile = ( outputDirectory == null ) ? 
@@ -88,8 +91,8 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
                                                     ConfluenceExportMojo.super.getUsername(), 
                                                     ConfluenceExportMojo.super.getPassword());
                 
-                exporter.exportPage(ConfluenceExportMojo.super.getSpaceKey(), 
-                                    ConfluenceExportMojo.this.pageTitle, 
+                exporter.exportPage(parentPage.getSpace(), 
+                                    parentPage.getTitle(), 
                                     exfmt, 
                                     outputFile);
             }

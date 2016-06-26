@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import org.apache.maven.doxia.sink.SinkEventAttributes;
 
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
+import org.bsc.confluence.ConfluenceUtils;
 
 
 /**

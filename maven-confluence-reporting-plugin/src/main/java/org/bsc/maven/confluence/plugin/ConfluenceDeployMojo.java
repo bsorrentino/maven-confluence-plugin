@@ -31,7 +31,7 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
+import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
@@ -53,7 +53,7 @@ import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAU
 import static java.lang.String.format;
 /**
  * 
- * Generate Project's documentation in confluence's wiki format and deploy it
+ * Generate Project's documentation in confluence wiki format and deploy it
  * 
  */
 @Mojo( name="deploy", threadSafe = true )
@@ -484,6 +484,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             @Override
             public void execute(Confluence confluence) throws Exception {
+                
+                final Page parentPage = loadParentPage(confluence);
+
                 //
                 // Issue 32
                 //
@@ -492,7 +495,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 if (!isSnapshot() && isRemoveSnapshots()) {
                    final String snapshot = title.concat("-SNAPSHOT");
                    getLog().info(format("removing page [%s]!", snapshot));
-                   boolean deleted = ConfluenceUtils.removePage(confluence, getSpaceKey(), getParentPageTitle(), snapshot);
+                   boolean deleted = ConfluenceUtils.removePage(confluence, parentPage, snapshot);
 
                    if (deleted) {
                        getLog().info(format("Page [%s] has been removed!", snapshot));
@@ -503,7 +506,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 
                 final String wiki = createProjectHome(site, locale);
 
-                Page confluenceHomePage = ConfluenceUtils.getOrCreatePage(confluence, getSpaceKey(), getParentPageTitle(), title);
+                Page confluenceHomePage = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
 
                 confluenceHomePage.setContent(wiki);
 
@@ -514,7 +517,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
                 }
                 
-                generateChildren( confluence, site.getHome(), confluenceHomePage, getSpaceKey(), title, titlePrefix);
+                generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
             }
 
         });
@@ -676,11 +679,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 @Override
                 public void execute(Confluence confluence) throws Exception {
 
+                    final Page parentPage = loadParentPage(confluence);
+
                     outputDirectory.mkdirs();
 
-                    getLog().info( format("speceKey=%s parentPageTitle=%s", getSpaceKey(), getParentPageTitle()) );
-
-                    Page confluencePage = confluence.getPage(getSpaceKey(), getParentPageTitle());
+                    getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
 
                     final PluginGenerator generator = new PluginGenerator();
                                         
@@ -690,13 +693,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     generator.processMojoDescriptors( 
                             request.getPluginDescriptor(),
                             confluence,
-                            confluencePage,
+                            parentPage,
                             site,
                             locale );
 
                     for( String label : site.getHome().getComputedLabels() ) {
 
-                        confluence.addLabelByName(label, Long.parseLong(confluencePage.getId()) );
+                        confluence.addLabelByName(label, Long.parseLong(parentPage.getId()) );
                     }
 
                     // Issue 32
@@ -704,8 +707,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
                     generateChildren(   confluence, 
                                         site.getHome(), 
-                                        confluencePage, 
-                                        getSpaceKey(), 
+                                        parentPage, 
                                         title, 
                                         title);
 
