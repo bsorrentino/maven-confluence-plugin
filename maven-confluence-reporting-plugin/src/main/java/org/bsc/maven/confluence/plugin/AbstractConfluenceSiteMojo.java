@@ -11,7 +11,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
+import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.model.SiteFactory;
 import org.codehaus.swizzle.confluence.Attachment;
@@ -136,7 +136,6 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
     protected void generateChildren(    final Confluence confluence, 
                                         final Site.Page parentPage,
                                         final Page confluenceParentPage,  
-                                        final String spaceKey, 
                                         final String parentPageTitle, 
                                         final String titlePrefix) 
     {
@@ -148,11 +147,11 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         for( Site.Page child : parentPage.getChildren() ) {
 
-            final Page confluencePage = generateChild(confluence, child, spaceKey, parentPage.getName(), titlePrefix);
+            final Page confluencePage = generateChild(confluence, child, confluenceParentPage.getSpace(), parentPage.getName(), titlePrefix);
             
             if( confluencePage != null  ) {
 
-                generateChildren(confluence, child, confluencePage, spaceKey, child.getName(), titlePrefix );    
+                generateChildren(confluence, child, confluencePage, child.getName(), titlePrefix );    
             }
             
         }

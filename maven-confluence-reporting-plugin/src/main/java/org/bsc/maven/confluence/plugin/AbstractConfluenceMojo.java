@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Collections;
 
 import org.apache.maven.project.MavenProject;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
+import org.bsc.confluence.ConfluenceUtils;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
 

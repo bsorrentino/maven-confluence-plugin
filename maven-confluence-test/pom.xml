@@ -14,11 +14,6 @@
     <properties>
         <scmUrl>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</scmUrl>
         <siteUrl>https://github.com/bsorrentino/maven-confluence-plugin</siteUrl>
-        <!--
-        <confluence.home>http://localhost:8090</confluence.home>
-        <confluence.home>http://docs.codehaus.org</confluence.home>
-        -->
-        <confluence.home>http://support.softphone.it/confluence/</confluence.home>
     </properties> 
 
 <contributors>
@@ -59,9 +54,10 @@
                     <!--encoding>ISO-8859-1</encoding-->
                     <encoding>UTF-8</encoding>
                     <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
-
-                    <spaceKey>~bsorrentino</spaceKey>
+                                  
+                    <spaceKey>${spaceKey}</spaceKey>
                     <parentPageTitle>Home</parentPageTitle>
+                    <parentPageId>18677788</parentPageId><!-- TEST ISSUE 107 -->
                     <title>my-site-generation-test ${project.version}</title>
 
                     <labels>
@@ -75,7 +71,7 @@
                     <serverId>confluence-local</serverId>
                     <serverId>codehaus</serverId>    
                     -->
-                    <serverId>softphone-server</serverId>    
+                    <serverId>${serverId}</serverId>    
                     
                     <properties>
                         <evaluation>(y)</evaluation>
@@ -105,5 +101,26 @@
       <tag>HEAD</tag>
   </scm>
 
+  <profiles>
+      <profile>
+          <id>softphone</id>
+          <activation>
+              <activeByDefault>true</activeByDefault>
+          </activation>
+          <properties>
+            <confluence.home>http://support.softphone.it/confluence/</confluence.home>
+            <serverId>softphone-server</serverId>
+            <spaceKey>~bsorrentino</spaceKey>  
+          </properties>
+      </profile>
+      <profile>
+          <id>local</id>
+          <properties>
+            <confluence.home>http://192.168.99.100:8090/</confluence.home>
+            <serverId>confluence-local</serverId> 
+            <spaceKey>test</spaceKey> 
+          </properties>
+      </profile>
+  </profiles>
   
 </project>

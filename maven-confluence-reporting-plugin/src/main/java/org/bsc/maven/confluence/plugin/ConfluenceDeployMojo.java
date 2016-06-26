@@ -31,7 +31,7 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
-import org.bsc.maven.plugin.confluence.ConfluenceUtils;
+import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
@@ -51,10 +51,9 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.reporting.MavenReportException;
 import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
 import static java.lang.String.format;
-import static java.lang.String.format;
 /**
  * 
- * Generate Project's documentation in confluence's wiki format and deploy it
+ * Generate Project's documentation in confluence wiki format and deploy it
  * 
  */
 @Mojo( name="deploy", threadSafe = true )
@@ -518,7 +517,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
                 }
                 
-                generateChildren( confluence, site.getHome(), confluenceHomePage, getSpaceKey(), title, titlePrefix);
+                generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
             }
 
         });
@@ -684,7 +683,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
                     outputDirectory.mkdirs();
 
-                    getLog().info( format("speceKey=%s parentPageTitle=%s", getSpaceKey(), parentPage.getTitle()) );
+                    getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
 
                     final PluginGenerator generator = new PluginGenerator();
                                         
@@ -709,7 +708,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     generateChildren(   confluence, 
                                         site.getHome(), 
                                         parentPage, 
-                                        getSpaceKey(), 
                                         title, 
                                         title);
 
