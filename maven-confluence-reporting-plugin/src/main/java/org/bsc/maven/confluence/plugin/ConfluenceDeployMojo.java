@@ -482,10 +482,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         
         super.confluenceExecute(new P1<ConfluenceService>() {
 
-
             public void call(ConfluenceService confluence) throws Exception {
                 
                 final Model.Page parentPage = loadParentPage(confluence);
+
                 //
                 // Issue 32
                 //
@@ -494,6 +494,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 if (!isSnapshot() && isRemoveSnapshots()) {
                    final String snapshot = title.concat("-SNAPSHOT");
                    getLog().info(format("removing page [%s]!", snapshot));
+
                    boolean deleted = confluence.removePage( parentPage, snapshot);
 
                    if (deleted) {
@@ -513,6 +514,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
                     confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
                 }
+
                 generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
             }
 
@@ -676,6 +678,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 public void call(ConfluenceService confluence)  {
 
                     try {
+
                         final Model.Page parentPage = loadParentPage(confluence);
                         
                         outputDirectory.mkdirs();

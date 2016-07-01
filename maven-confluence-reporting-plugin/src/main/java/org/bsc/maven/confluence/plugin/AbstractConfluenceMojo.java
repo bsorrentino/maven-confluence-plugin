@@ -18,6 +18,7 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
+import org.bsc.maven.reporting.model.Site.Page;
 
 /**
  *

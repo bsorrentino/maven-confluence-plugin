@@ -55,7 +55,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
                     getLog().warn(String.format("Parent page [%s] in [%s] not found!", parentPage.getTitle(), parentPage.getSpace()));                    
                     return;
                 }
-     
+
                 final Model.PageSummary root = confluence.findPageByTitle(parentPage.getId(),pageTitle);
                 
                 if( root==null ) {

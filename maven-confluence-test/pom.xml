@@ -14,7 +14,18 @@
     <properties>
         <scmUrl>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</scmUrl>
         <siteUrl>https://github.com/bsorrentino/maven-confluence-plugin</siteUrl>
+<<<<<<< HEAD
     </properties>
+=======
+        <!--
+        <confluence.home>http://localhost:8090</confluence.home>
+        <confluence.home>http://docs.codehaus.org</confluence.home>
+        <confluence.home>http://support.softphone.it/confluence/</confluence.home>
+        -->
+        
+        <confluence.home>http://192.168.99.100:8090/</confluence.home>
+    </properties> 
+>>>>>>> origin/feature/issue#96
 
 <contributors>
     <contributor>
@@ -54,7 +65,12 @@
                     <!--encoding>ISO-8859-1</encoding-->
                     <encoding>UTF-8</encoding>
                     <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+<<<<<<< HEAD
                     <spaceKey>${spaceKey}</spaceKey>
+=======
+
+                    <spaceKey>test</spaceKey>
+>>>>>>> origin/feature/issue#96
                     <parentPageTitle>Home</parentPageTitle>
                     <parentPageId>18677788</parentPageId><!-- TEST ISSUE 107 -->
                     <title>my-site-generation-test ${project.version}</title>
@@ -67,10 +83,18 @@
                     <wikiFilesExt>.confluence</wikiFilesExt>
                     <!-- TEST ISSUE 39 -->
                     <!--
+<<<<<<< HEAD
                     <serverId>codehaus</serverId>
                     -->
                     <serverId>${serverId}</serverId>
 
+=======
+                    <serverId>codehaus</serverId>    
+                    <serverId>softphone-server</serverId>    
+                    -->
+                    <serverId>confluence-local</serverId>
+                    
+>>>>>>> origin/feature/issue#96
                     <properties>
                         <evaluation>(y)</evaluation>
                         <page>classpath:plugin-report.properties</page>

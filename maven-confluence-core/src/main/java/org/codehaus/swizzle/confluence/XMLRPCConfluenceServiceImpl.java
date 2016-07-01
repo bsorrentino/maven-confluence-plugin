@@ -271,7 +271,14 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public void exportPage(String url, String username, String password, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
+    public void exportPage( String url, 
+                            String username, 
+                            String password, 
+                            String spaceKey, 
+                            String pageTitle, 
+                            ExportFormat exfmt, 
+                            File outputFile) throws Exception 
+    {
             final ConfluenceExportDecorator exporter = 
                 new ConfluenceExportDecorator(  connection, 
                                                 url, 
