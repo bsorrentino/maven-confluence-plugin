@@ -47,6 +47,7 @@ import java.net.URISyntaxException;
 import org.bsc.functional.F;
 import org.pegdown.Extensions;
 import static java.lang.String.format;
+import org.parboiled.common.StringUtils;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -59,6 +60,9 @@ import static java.lang.String.format;
  * @author bsorrentino
  */
 public abstract class ToConfluenceSerializer implements Visitor {
+
+    //list level
+    private int listLevel = 0;
 
     private StringBuilder _buffer = new StringBuilder( 500 * 1024 );
 
@@ -370,7 +374,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(ExpLinkNode eln) {
         _buffer.append( '[');
         visitChildren(eln);
-        _buffer.append( format( "|%s|%s]", eln.url, eln.title));
+        _buffer.append(format("|%s|%s]", eln.url, eln.title));
     }
 
 
@@ -390,7 +394,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
                     .append('\n')
                     .append(vn.getText())
                     .append('\n')
-                    .append( "{noformat}")
+                    .append("{noformat}")
                     .append('\n')
                     ;
             return;
@@ -400,7 +404,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
                 .append('\n')
                 .append(vn.getText())
                 .append('\n')
-                .append( "{code}")
+                .append("{code}")
                 .append('\n')
                 ;
     }
@@ -447,18 +451,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
         _buffer.append("-");
     }
 
-    @Override
-    public void visit(BulletListNode bln) {
-
-        _buffer.append('\n');
-        for (Node child : bln.getChildren()) {
-            _buffer.append("* ");
-            child.accept(this);
-            _buffer.append('\n');
-        }
-		_buffer.append('\n');
-
-    }
     @Override
     public void visit(ListItemNode lin) {
         visitChildren(lin);
@@ -645,14 +637,39 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(OrderedListNode oln) {
-        _buffer.append('\n');
-        for (Node child : oln.getChildren()) {
-            _buffer.append("# ");
-            child.accept(this);
+        
+        ++listLevel;
+        try {
             _buffer.append('\n');
+            for (Node child : oln.getChildren()) {
+                _buffer.append( StringUtils.repeat('#', listLevel) ).append(' ');
+                child.accept(this);
+                _buffer.append('\n');
+            }
+            _buffer.append('\n');
+        }finally {
+            --listLevel;
         }
-        _buffer.append('\n');
+
     }
+
+    @Override
+    public void visit(BulletListNode bln) {
+
+        ++listLevel;
+        try {
+            _buffer.append('\n');
+            for (Node child : bln.getChildren()) {
+                _buffer.append( StringUtils.repeat('*', listLevel) ).append(' ');
+                child.accept(this);
+                _buffer.append('\n');
+            }
+            _buffer.append('\n');
+        }finally {
+            --listLevel;
+        }
+    }
+
 
     @Override
     public void visit(QuotedNode qn) {

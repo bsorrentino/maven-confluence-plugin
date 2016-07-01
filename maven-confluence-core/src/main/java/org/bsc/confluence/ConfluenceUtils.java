@@ -1,4 +1,4 @@
-package org.bsc.maven.plugin.confluence;
+package org.bsc.confluence;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

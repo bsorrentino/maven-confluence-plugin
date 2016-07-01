@@ -1,7 +1,7 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.bsc.maven.plugin.confluence.*;
-import static org.bsc.maven.plugin.confluence.ConfluenceUtils.decode;
+import org.bsc.confluence.ConfluenceUtils;
+import static org.bsc.confluence.ConfluenceUtils.decode;
 
 import java.io.File;
 import java.io.IOException;

@@ -39,11 +39,26 @@ This is an ref link [README.MD][My Readme]
 This is an ref link [README.MD][1]
 
 
-## Bullet List
+## Unordered List
 
  * [polymerts:el](#element-alias-el)
  * [polymerts:gen](#generate-typescript-from-element)
  * PolymerTS's element scaffold
+ * Sublist
+    1. item 1
+    1. item 2
+    1. item 3
+
+## Ordered List
+
+ 1. [polymerts:el](#element-alias-el)
+ 1. [polymerts:gen](#generate-typescript-from-element)
+ 1. PolymerTS's element scaffold
+ 1. Sublist
+    * item 1
+    * item 2
+    * item 3
+
 
 ### Element (alias: El)
 
