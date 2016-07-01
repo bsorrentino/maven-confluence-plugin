@@ -187,8 +187,10 @@
                     <version>1.0-m5.1</version>
                     <configuration>
                         <flowInitContext>
-                            <versionTagPrefix>v</versionTagPrefix>
+                          <versionTagPrefix>v</versionTagPrefix>
                         </flowInitContext>
+                        <!-- see goals wiki page for configuration options -->
+                        <noDeploy>true</noDeploy>
                     </configuration>
                 </plugin>
 

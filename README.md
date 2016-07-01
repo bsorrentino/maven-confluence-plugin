@@ -7,18 +7,21 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 |Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6) |
 |:------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
 
-<a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22confluence-reporting-maven-plugin%22"><img src="https://img.shields.io/maven-central/v/org.bsc.maven/confluence-reporting-maven-plugin.svg"></a>&nbsp;</a><img src="https://img.shields.io/github/forks/bsorrentino/maven-confluence-plugin.svg">&nbsp;<img src="https://img.shields.io/github/stars/bsorrentino/maven-confluence-plugin.svg">&nbsp;<a href="https://github.com/bsorrentino/maven-confluence-plugin/issues"><img src="https://img.shields.io/github/issues/bsorrentino/maven-confluence-plugin.svg">
+<a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22confluence-reporting-maven-plugin%22"><img src="https://img.shields.io/maven-central/v/org.bsc.maven/confluence-reporting-maven-plugin.svg">
+</a>&nbsp;<img src="https://img.shields.io/github/forks/bsorrentino/maven-confluence-plugin.svg">&nbsp;
+<img src="https://img.shields.io/github/stars/bsorrentino/maven-confluence-plugin.svg">&nbsp;<a href="https://github.com/bsorrentino/maven-confluence-plugin/issues"><img src="https://img.shields.io/github/issues/bsorrentino/maven-confluence-plugin.svg">
+</a>&nbsp;
 
 [![Join the chat at https://gitter.im/bsorrentino/maven-confluence-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bsorrentino/maven-confluence-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### News ###
 
-|  | **Release 4.10-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
+|Jul 1,2016  | **Release 4.10** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
-  * Refer to [Issue 107](https://github.com/bsorrentino/maven-confluence-plugin/issues/107) - Use pageId instead of Spacekey and parent title
+  * Refer to [Issue 107](https://github.com/bsorrentino/maven-confluence-plugin/issues/107) - Use pageId instead of SpaceKey and parent title
   * Refer to [Issue 109](https://github.com/bsorrentino/maven-confluence-plugin/issues/109) - Markdown **sublist** support
-   
+
    > **Thanks to [esivres](https://github.com/esivres) for providing patch**.
 
 
@@ -26,7 +29,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
   * Hot Fix on [Issue 99](https://github.com/bsorrentino/maven-confluence-plugin/issues/99) - Allow additional tags in comments (_concerning javadoc translation_)
-  
+
 |Jun 14,2016 | **Release 4.9** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.9%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
