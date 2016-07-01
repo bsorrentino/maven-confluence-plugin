@@ -17,11 +17,12 @@
 package org.codehaus.swizzle.confluence;
 
 import java.util.Map;
+import org.bsc.confluence.ConfluenceService.Model;
 
 /**
  * @version $Revision$ $Date$
  */
-public class PageSummary extends MapObject {
+class PageSummary extends MapObject implements Model.PageSummary{
 
     public PageSummary() {
         super();

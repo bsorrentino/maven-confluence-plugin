@@ -6,6 +6,7 @@
 
 package org.codehaus.swizzle.confluence;
 
+import org.bsc.confluence.ExportFormat;
 import java.io.IOException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;

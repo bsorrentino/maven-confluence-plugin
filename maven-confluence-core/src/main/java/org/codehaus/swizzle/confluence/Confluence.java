@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
+import org.bsc.confluence.ConfluenceProxy;
 
 /**
  * @version $Revision$ $Date$
@@ -34,60 +35,22 @@ import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
  * Issue: http://jira.codehaus.org/browse/SWIZZLE-57
  *
  */
-public class Confluence {
+class Confluence {
     protected static final String SERVICE_PREFIX_1 = "confluence1.";
     
-    public static class ProxyInfo {
-        final public String host;
-        final public int port;
-        
-        final public String userName;
-        final public String password;
-        final public String nonProxyHosts;
-
-        public ProxyInfo(String host, int port, String userName, String password, String nonProxyHosts) {
-            this.host = host;
-            this.port = port;
-            this.userName = userName;
-            this.password = password;
-            this.nonProxyHosts = nonProxyHosts;
-        }
-        
-        
-    }
     
     private final XmlRpcClient client;
     private String token;
     protected boolean sendRawData;
     
     private java.lang.ref.SoftReference<ServerInfo> serverInfoCache = null;
-
-/*    
-    protected Confluence(String endpoint) throws MalformedURLException {
-        this(new XmlRpcClient());
-	if (endpoint.endsWith("/")) {
-            endpoint = endpoint.substring(0, endpoint.length() - 1);
-        }
-
-        if (!endpoint.endsWith("/rpc/xmlrpc")) {
-            endpoint += "/rpc/xmlrpc";
-        }
-
-        XmlRpcClientConfigImpl clientConfig = new XmlRpcClientConfigImpl();
-        clientConfig.setServerURL(new URL(endpoint));
-
-        clientConfig.setEnabledForExtensions(true); // add this to support attachment upload
-        
-        client.setConfig(clientConfig);
-    }
-*/
     
     private boolean isNullOrEmpty( String v ) {
         if( v == null ) return true;
         return ( v.trim().length() == 0 );
     }
         
-    private boolean isProxyEnabled( final ProxyInfo proxyInfo, final java.net.URI serviceURI ) {
+    private boolean isProxyEnabled( final ConfluenceProxy proxyInfo, final java.net.URI serviceURI ) {
         
         if( proxyInfo ==null || isNullOrEmpty(proxyInfo.host) ) return false;
 
@@ -117,7 +80,7 @@ public class Confluence {
         return result;
     }
     
-    protected Confluence(String endpoint, ProxyInfo proxyInfo ) throws URISyntaxException, MalformedURLException {
+    protected Confluence(String endpoint, ConfluenceProxy proxyInfo ) throws URISyntaxException, MalformedURLException {
         this(new XmlRpcClient());
 	if (endpoint.endsWith("/")) {
             endpoint = endpoint.substring(0, endpoint.length() - 1);

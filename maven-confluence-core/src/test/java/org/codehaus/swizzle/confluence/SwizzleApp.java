@@ -3,18 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.maven.plugin.confluence;
+package org.codehaus.swizzle.confluence;
 
+import org.bsc.confluence.ExportFormat;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import java.net.HttpURLConnection;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
-import org.codehaus.swizzle.confluence.ConfluenceFactory;
-import org.codehaus.swizzle.confluence.ExportFormat;
-import org.codehaus.swizzle.confluence.Page;
+import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService.Model;
 
 /**
  *
@@ -48,18 +46,17 @@ public class SwizzleApp {
         
         new JCommander(app,args);
                
-        Confluence.ProxyInfo proxyInfo = null;
+        ConfluenceProxy proxyInfo = null;
 
-        Confluence confluence = null;
-
-        confluence = ConfluenceFactory.createInstanceDetectingVersion(
-                app.url.concat("/rpc/xmlrpc"),
-                proxyInfo,
-                app.username, 
-                app.password);
+        final XMLRPCConfluenceServiceImpl confluence = 
+            XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(
+                    app.url.concat("/rpc/xmlrpc"),
+                    proxyInfo,
+                    app.username, 
+                    app.password);
 
         ConfluenceExportDecorator exporter = 
-                new ConfluenceExportDecorator(  confluence, 
+                new ConfluenceExportDecorator(  confluence.connection, 
                                                 app.url, 
                                                 app.username, 
                                                 app.password);
@@ -73,15 +70,16 @@ public class SwizzleApp {
      */
     private void usingHttp( ) throws Exception {
 
-        Confluence.ProxyInfo proxyInfo = null;
+        ConfluenceProxy proxyInfo = null;
 
-        Confluence confluence = confluence = ConfluenceFactory.createInstanceDetectingVersion(
-                url.concat("/rpc/xmlrpc"), //args[0], 
-                proxyInfo,
-                username, //args[1], 
-                password); //args[2]);
+        final XMLRPCConfluenceServiceImpl confluence = 
+            XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(
+                        url.concat("/rpc/xmlrpc"), //args[0], 
+                        proxyInfo,
+                        username, //args[1], 
+                        password); //args[2]);
 
-        Page page = confluence.getPage("CIRC", "Best Movies");
+        Model.Page page = confluence.getPage("CIRC", "Best Movies");
 
         java.io.InputStream is = null;
         java.io.FileOutputStream fos = null;

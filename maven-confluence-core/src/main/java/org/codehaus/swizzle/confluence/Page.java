@@ -18,11 +18,12 @@ package org.codehaus.swizzle.confluence;
 
 import java.util.Date;
 import java.util.Map;
+import org.bsc.confluence.ConfluenceService.Model;
 
 /**
  * @version $Revision$ $Date$
  */
-public class Page extends PageSummary {
+class Page extends PageSummary implements Model.Page {
 
     public Page() {
         super();

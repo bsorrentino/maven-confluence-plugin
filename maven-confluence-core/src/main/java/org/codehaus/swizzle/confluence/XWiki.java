@@ -18,13 +18,14 @@ package org.codehaus.swizzle.confluence;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import org.bsc.confluence.ConfluenceProxy;
 
 /**
  * @version $Revision$ $Date$
  */
 public class XWiki extends Confluence {
 
-    public XWiki(String endpoint, ProxyInfo proxyInfo) throws MalformedURLException, URISyntaxException {
+    public XWiki(String endpoint, ConfluenceProxy proxyInfo) throws MalformedURLException, URISyntaxException {
         super(endpoint, proxyInfo);
         super.sendRawData = true;
     }
