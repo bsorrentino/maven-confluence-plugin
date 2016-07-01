@@ -46,8 +46,6 @@ public interface ConfluenceService {
 
     Model.PageSummary findPageByTitle( String parentPageId, String title) throws Exception ;
 
-    boolean removePage( String spaceKey, String parentPageTitle, String title ) throws Exception;
-
     boolean removePage( Model.Page parentPage, String title ) throws Exception;
 
     void removePage( String pageId ) throws Exception;

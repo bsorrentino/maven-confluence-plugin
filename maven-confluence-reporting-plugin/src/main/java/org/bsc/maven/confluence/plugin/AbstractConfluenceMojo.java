@@ -250,7 +250,10 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             if (!isSnapshot() && isRemoveSnapshots()) {
                 final String snapshot = titlePrefix.concat("-SNAPSHOT");
-                boolean deleted = confluence.removePage(spaceKey, parentPageTitle, snapshot);
+                
+                final Model.Page page = confluence.getPage(spaceKey, parentPageTitle);
+                
+                boolean deleted = confluence.removePage(page, snapshot);
 
                 if (deleted) {
                     getLog().info(String.format("Page [%s] has been removed!", snapshot));

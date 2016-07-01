@@ -87,13 +87,19 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public boolean removePage(String spaceKey, String parentPageTitle, String title) throws Exception {
-        throw new UnsupportedOperationException("removePage Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean removePage(Model.Page parentPage, String title) throws Exception {
-        throw new UnsupportedOperationException("removePage Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if( null==parentPage ) {
+            throw new IllegalArgumentException("parentPage is null");
+        }
+
+        final Model.PageSummary pageSummary = findPageByTitle( parentPage.getId(), title);
+
+        if( pageSummary!=null ) {
+            connection.removePage(pageSummary.getId());
+            return true;
+        }
+
+        return false;
     }
 
     @Override

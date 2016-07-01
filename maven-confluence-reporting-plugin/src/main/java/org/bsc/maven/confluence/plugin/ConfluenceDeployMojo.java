@@ -494,7 +494,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 if (!isSnapshot() && isRemoveSnapshots()) {
                    final String snapshot = title.concat("-SNAPSHOT");
                    getLog().info(format("removing page [%s]!", snapshot));
-                   boolean deleted = confluence.removePage( parentPage.getSpace(), parentPage.getTitle(), snapshot);
+                   boolean deleted = confluence.removePage( parentPage, snapshot);
 
                    if (deleted) {
                        getLog().info(format("Page [%s] has been removed!", snapshot));
