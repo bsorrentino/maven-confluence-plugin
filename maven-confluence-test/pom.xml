@@ -2,15 +2,15 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.11-SNAPSHOT</version>
+        <version>5.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-confluence-test</artifactId>
     <name>CONFLUENCE-REPORTING::Test - ${project.version}</name>
     <description>description</description>
-  
-  
+
+
     <properties>
         <scmUrl>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</scmUrl>
         <siteUrl>https://github.com/bsorrentino/maven-confluence-plugin</siteUrl>
@@ -35,7 +35,7 @@
 
     <build>
         <finalName>site-generation-test</finalName>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.bsc.maven</groupId>
@@ -54,7 +54,6 @@
                     <!--encoding>ISO-8859-1</encoding-->
                     <encoding>UTF-8</encoding>
                     <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
-                                  
                     <spaceKey>${spaceKey}</spaceKey>
                     <parentPageTitle>Home</parentPageTitle>
                     <parentPageId>18677788</parentPageId><!-- TEST ISSUE 107 -->
@@ -62,36 +61,35 @@
 
                     <labels>
                         <label>maven</label>
-                    </labels> 
+                    </labels>
                     <!-- TEST ISSUE 40 -->
                     <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                     <wikiFilesExt>.confluence</wikiFilesExt>
                     <!-- TEST ISSUE 39 -->
                     <!--
-                    <serverId>confluence-local</serverId>
-                    <serverId>codehaus</serverId>    
+                    <serverId>codehaus</serverId>
                     -->
-                    <serverId>${serverId}</serverId>    
-                    
+                    <serverId>${serverId}</serverId>
+
                     <properties>
                         <evaluation>(y)</evaluation>
                         <page>classpath:plugin-report.properties</page>
                         <page1>file://${basedir}/src/main/resources/confluence.html</page1>
                     </properties>
-                    
+
                     <sslCertificate />
 
-                    <!--                    
+                    <!--
                     <sslCertificate>
                         <ignore>true</ignore>
                     </sslCertificate>
                     -->
-                    
+
                 </configuration>
 
             </plugin>
         </plugins>
-        
+
     </build>
 
     <scm>
@@ -110,17 +108,17 @@
           <properties>
             <confluence.home>http://support.softphone.it/confluence/</confluence.home>
             <serverId>softphone-server</serverId>
-            <spaceKey>~bsorrentino</spaceKey>  
+            <spaceKey>~bsorrentino</spaceKey>
           </properties>
       </profile>
       <profile>
           <id>local</id>
           <properties>
             <confluence.home>http://192.168.99.100:8090/</confluence.home>
-            <serverId>confluence-local</serverId> 
-            <spaceKey>test</spaceKey> 
+            <serverId>confluence-local</serverId>
+            <spaceKey>test</spaceKey>
           </properties>
       </profile>
   </profiles>
-  
+
 </project>

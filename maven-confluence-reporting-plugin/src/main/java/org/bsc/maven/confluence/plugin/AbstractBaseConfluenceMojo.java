@@ -7,15 +7,15 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
-import org.bsc.confluence.ConfluenceUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.ConfluenceFactory;
-import org.codehaus.swizzle.confluence.Page;
-import org.codehaus.swizzle.confluence.SwizzleException;
+import org.bsc.functional.P1;
+import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceServiceFactory;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 import static java.lang.String.format;
+import org.bsc.confluence.ConfluenceService.Model;
 
 
 /**
@@ -23,11 +23,6 @@ import static java.lang.String.format;
  * @author bsorrentino
  */
 public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
-
-    protected interface ConfluenceTask {
-
-        void execute(Confluence confluence) throws Exception;
-    }
 
     /**
      * additional properties pass to template processor
@@ -152,31 +147,10 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     
     /**
      *
-     * @param confluence
-     */
-    private void confluenceLogout(Confluence confluence) {
-
-        if (null == confluence) {
-            return;
-        }
-
-        try {
-            if (!confluence.logout()) {
-                getLog().warn("confluence logout has failed!");
-            }
-        } catch (Exception e) {
-            getLog().warn("confluence logout has failed due exception ", e);
-        }
-
-
-    }
-
-    /**
-     *
      * @param task
      * @throws MojoExecutionException
      */
-    protected void confluenceExecute(ConfluenceTask task) throws MojoExecutionException {
+    protected void confluenceExecute(P1<ConfluenceService> task) throws MojoExecutionException {
 
         if (sslCertificate != null) {
             getLog().debug(String.valueOf(sslCertificate));
@@ -184,18 +158,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             sslCertificate.setup(this.getEndPoint());
         }
 
-        Confluence confluence = null;
-
+        ConfluenceService confluence = null;
+        
         try {
 
-            Confluence.ProxyInfo proxyInfo = null;
+            ConfluenceProxy proxyInfo = null;
 
             final Proxy activeProxy = mavenSettings.getActiveProxy();
 
             if (activeProxy != null) {
 
                 proxyInfo =
-                        new Confluence.ProxyInfo(
+                        new ConfluenceProxy(
                                 activeProxy.getHost(),
                                 activeProxy.getPort(),
                                 activeProxy.getUsername(),
@@ -204,19 +178,17 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                         );
             }
 
-            confluence = ConfluenceFactory.createInstanceDetectingVersion(getEndPoint(), proxyInfo, getUsername(), getPassword());
+            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), proxyInfo, getUsername(), getPassword());
 
-            getLog().info(ConfluenceUtils.getVersion(confluence));
+            getLog().info(confluence.getVersion());
 
-            task.execute(confluence);
+            confluence.call(task);
             
         } catch (Exception e) {
 
             getLog().error("has been imposssible connect to confluence due exception", e);
 
             throw new MojoExecutionException("has been imposssible connect to confluence due exception", e);
-        } finally {
-            confluenceLogout(confluence);
         }
 
     }
@@ -227,9 +199,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected Page loadParentPage( Confluence confluence) throws MojoExecutionException {
+    protected Model.Page loadParentPage( ConfluenceService confluence) throws MojoExecutionException {
         
-        Page result = null;
+        Model.Page result = null;
         if( parentPageId != null ) {
             
             try {
@@ -239,7 +211,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                     getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]", 
                                                 parentPageId, parentPageTitle, spaceKey));
                 }
-            } catch (SwizzleException ex) {
+            } catch (Exception ex) {
                 getLog().warn( format( "cannot get page with parentPageId [%s]! Try with parentPageTitle [%s] in space [%s]\n%s", 
                                                 parentPageId, parentPageTitle, spaceKey, ex.getMessage()) );
                 
@@ -257,7 +229,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                     throw new MojoExecutionException( format( "parentPageTitle [%s] not found in space [%s]!", 
                                                       parentPageTitle, spaceKey));
                 }
-            } catch (SwizzleException ex) {
+            } catch (Exception ex) {
                 throw new MojoExecutionException( format( "cannot get page with parentPageTitle [%s] in space [%s]!", 
                                                       parentPageTitle, spaceKey), ex);
             }
