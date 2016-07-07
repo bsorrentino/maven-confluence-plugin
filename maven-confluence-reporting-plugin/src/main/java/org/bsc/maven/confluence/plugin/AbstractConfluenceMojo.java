@@ -234,7 +234,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 try {
                     t.setVariable(e.getKey(), e.getValue(), true /* isOptional */);
                 } catch (VariableNotDefinedException e1) {
-                    getLog().warn(String.format("variable %s not defined in template", e.getKey()));
+                    getLog().debug(String.format("variable %s not defined in template", e.getKey()));
                 }
             }
         }
@@ -251,9 +251,9 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             if (!isSnapshot() && isRemoveSnapshots()) {
                 final String snapshot = titlePrefix.concat("-SNAPSHOT");
-                
+
                 final Model.Page page = confluence.getPage(spaceKey, parentPageTitle);
-                
+
                 boolean deleted = confluence.removePage(page, snapshot);
 
                 if (deleted) {
@@ -286,7 +286,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             else {
 
                 p = confluence.storePage(p);
-                
+
             }
 
 
