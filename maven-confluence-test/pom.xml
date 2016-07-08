@@ -66,11 +66,7 @@
                     <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                     <wikiFilesExt>.confluence</wikiFilesExt>
                     <!-- TEST ISSUE 39 -->
-                    <!--
-                    <serverId>codehaus</serverId>
-                    -->
                     <serverId>${serverId}</serverId>
-
                     <properties>
                         <evaluation>(y)</evaluation>
                         <page>classpath:plugin-report.properties</page>
