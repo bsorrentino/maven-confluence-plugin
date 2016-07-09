@@ -7,6 +7,7 @@ package org.bsc.maven.plugin.confluence;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -14,8 +15,10 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import okhttp3.Credentials;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.hamcrest.core.Is;
@@ -43,6 +46,9 @@ public class Issue106IntegrationTest {
         return result;
     }
 
+    @Test @Ignore
+    public void dummy() {}
+    
     @Before
     public void open() {
          client = new OkHttpClient.Builder(); 
@@ -149,6 +155,79 @@ public class Issue106IntegrationTest {
             Assert.assertThat( item0.getString("id"), IsEqual.equalTo("1867778") );
             
         }
+        
+    }
+    
+    @Test
+    public void addPage() throws IOException {
+
+        final String credential = Credentials.basic("admin", "admin");
+
+        final HttpUrl.Builder url = new HttpUrl.Builder()
+                                    .scheme("http")
+                                    .host("192.168.99.100")
+                                    .port(8090)
+                                    .addPathSegments("rest/api/content")
+                                    ;
+        
+        final MediaType storageFormat = MediaType.parse("application/json");
+        
+        JsonObject inputData = Json.createObjectBuilder()
+                .add("type","page")
+                .add("title","test2")
+                .add("space",Json.createObjectBuilder().add("key", "TEST"))
+                .add("body", Json.createObjectBuilder()
+                                .add("storage", Json.createObjectBuilder()
+                                                .add("representation","storage")
+                                                .add("value","<H1>TITLE 2</H1>")))
+                .build();
+        final RequestBody inputBody = RequestBody.create(storageFormat, 
+                inputData.toString());
+        
+        final Request req = new Request.Builder()
+                .header("Authorization", credential)
+                .url( url.build() )  
+                .post(inputBody)
+                .build();
+        
+        final Response res = client.build().newCall(req).execute();
+        
+        Assert.assertThat( res, IsNull.notNullValue());
+        Assert.assertThat( res.isSuccessful(), Is.is(true));
+        final ResponseBody body = res.body();
+        Assert.assertThat( body, IsNull.notNullValue());
+
+        try( Reader r = body.charStream()) {
+            
+            final JsonReader rdr = Json.createReader(r);
+            
+            final JsonObject root = rdr.readObject();
+            
+            Assert.assertThat( root,  IsNull.notNullValue() );
+            
+            Assert.assertThat( root.containsKey("id"), Is.is(true) );
+            //Assert.assertThat( item0.getString("id"), IsEqual.equalTo("1867778") );
+
+            
+            // DELETE
+            
+            
+            final Request req1 = new Request.Builder()
+                .header("Authorization", credential)
+                .url( url.addPathSegment(root.getString("id")).build() )     
+                .delete()    
+                .build();
+            
+            final Response res1 = client.build().newCall(req1).execute();
+            
+            Assert.assertThat( res1, IsNull.notNullValue());
+            Assert.assertThat( res1.code(), IsEqual.equalTo(204));
+
+            
+
+
+        }
+        
         
     }
     
