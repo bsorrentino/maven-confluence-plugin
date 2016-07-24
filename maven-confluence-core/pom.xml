@@ -148,40 +148,24 @@
                 </excludes>
               </configuration>
            </execution>
+           <execution>
+               <id>integration-tests</id>
+               <phase>integration-test</phase>
+               <goals>
+                   <goal>test</goal>
+               </goals>
+               <configuration>
+                   <skip>false</skip>
+                   <includes>
+                       <include>**/*IntegrationTest.java</include>
+                   </includes>
+               </configuration>
+           </execution>
+
         </executions>
       </plugin>
     </plugins>      
            
   </build>
-
-<profiles>
-  <profile>
-    <id>itest</id>
-    <build>
-      <plugins>
-        <plugin>
-          <!-- Separates the unit tests from the integration tests. -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <executions>
-             <execution>
-                <id>integration-tests</id>
-                <phase>integration-test</phase>
-                <goals>
-                   <goal>test</goal>
-                </goals>
-                <configuration>
-                   <skip>false</skip>
-                   <includes>
-                     <include>**/*IntegrationTest.java</include>
-                   </includes>
-                </configuration>
-             </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
-</profiles>
       
 </project>

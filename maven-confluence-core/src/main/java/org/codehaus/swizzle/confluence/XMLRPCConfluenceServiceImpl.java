@@ -8,9 +8,7 @@ package org.codehaus.swizzle.confluence;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.functional.P1;
@@ -25,17 +23,28 @@ import org.bsc.confluence.ExportFormat;
 public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
 
     public final Confluence connection;
+    public final Credentials credentials;
 
     /**
      * 
      * @param confluence 
      */
-    protected XMLRPCConfluenceServiceImpl(Confluence confluence ) {
+    protected XMLRPCConfluenceServiceImpl(Confluence confluence, Credentials credentials ) {
         if( confluence==null ) {
             throw new IllegalArgumentException("confluence argument is null!");
         } 
+        if( credentials==null ) {
+            throw new IllegalArgumentException("credentials argument is null!");
+        } 
         this.connection = confluence;
+        this.credentials = credentials;
     }
+
+    @Override
+    public Credentials getCredentials() {
+        return credentials;
+    }
+ 
     
     /**
      * 

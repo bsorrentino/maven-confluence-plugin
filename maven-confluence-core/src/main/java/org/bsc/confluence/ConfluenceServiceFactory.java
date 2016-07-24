@@ -5,6 +5,7 @@
  */
 package org.bsc.confluence;
 
+import org.bsc.confluence.ConfluenceService.Credentials;
 import org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceFactory;
 
 /**
@@ -13,9 +14,9 @@ import org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceFactory;
  */
 public class ConfluenceServiceFactory {
 
-    public static ConfluenceService createInstance(String endPoint, ConfluenceProxy proxyInfo, String username, String password) throws Exception {
+    public static ConfluenceService createInstance(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo) throws Exception {
         
-        return XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(endPoint, proxyInfo, username, password);
+        return XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(endPoint, credentials, proxyInfo);
     }
     
 }

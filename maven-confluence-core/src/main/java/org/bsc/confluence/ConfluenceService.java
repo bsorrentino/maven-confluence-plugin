@@ -14,7 +14,21 @@ import org.bsc.functional.P1;
 public interface ConfluenceService {
 
     
+    public static class Credentials {
+    
+        public final String username;
+        public final String password;
+
+        public Credentials(String username, String password) {
+            if( username==null ) {
+                throw new IllegalArgumentException("username argument is null!");
+            }
+            this.username = username;
+            this.password = password;
+        }
         
+    }   
+    
     public interface Model {
 
         public interface Attachment {
@@ -43,6 +57,7 @@ public interface ConfluenceService {
 
     }
     
+    Credentials getCredentials();
 
     Model.PageSummary findPageByTitle( String parentPageId, String title) throws Exception ;
 

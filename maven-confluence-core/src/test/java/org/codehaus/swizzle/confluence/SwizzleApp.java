@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 
 /**
@@ -48,12 +49,13 @@ public class SwizzleApp {
                
         ConfluenceProxy proxyInfo = null;
 
+        final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials(app.username,app.password);
+        
         final XMLRPCConfluenceServiceImpl confluence = 
             XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(
                     app.url.concat("/rpc/xmlrpc"),
-                    proxyInfo,
-                    app.username, 
-                    app.password);
+                    credentials,
+                    proxyInfo);
 
         ConfluenceExportDecorator exporter = 
                 new ConfluenceExportDecorator(  confluence.connection, 
@@ -72,12 +74,14 @@ public class SwizzleApp {
 
         ConfluenceProxy proxyInfo = null;
 
+        final ConfluenceService.Credentials credentials = 
+                new ConfluenceService.Credentials(username /*args[1]*/,password/*args[2]*/);
+
         final XMLRPCConfluenceServiceImpl confluence = 
             XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(
-                        url.concat("/rpc/xmlrpc"), //args[0], 
-                        proxyInfo,
-                        username, //args[1], 
-                        password); //args[2]);
+                        url.concat("/rpc/xmlrpc"), //args[0],
+                        credentials,
+                        proxyInfo); 
 
         Model.Page page = confluence.getPage("CIRC", "Best Movies");
 

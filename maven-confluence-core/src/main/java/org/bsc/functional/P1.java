@@ -11,6 +11,6 @@ package org.bsc.functional;
  * @param <P> 
  */
 public interface P1<P> {
-       void call(P p) throws Exception ;
+       void call(P p) ;
  
 }

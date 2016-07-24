@@ -7,8 +7,9 @@ package org.bsc.maven.plugin.confluence;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -21,6 +22,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.bsc.functional.P1;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
@@ -108,9 +110,14 @@ public class Issue106IntegrationTest {
         System.out.printf( "BODY\n%s\n", body.string() );
         
     }
-    
-    @Test
-    public void findPage() throws IOException {
+
+    /**
+     * 
+     * @param title
+     * @return
+     * @throws IOException 
+     */
+    void findPages( String title, P1<JsonArray> success ) throws IOException {
 
         final String credential = Credentials.basic("admin", "admin");
 
@@ -121,7 +128,7 @@ public class Issue106IntegrationTest {
                                     .addPathSegments("rest/api/")
                                     .addPathSegment("content")                
                                     .addQueryParameter("spaceKey", "TEST")
-                                    .addQueryParameter("title", "Home")
+                                    .addQueryParameter("title", title)
                                     .build();
         final Request req = new Request.Builder()
                 .header("Authorization", credential)
@@ -130,7 +137,7 @@ public class Issue106IntegrationTest {
                 .build();
         
         final Response res = client.build().newCall(req).execute();
-        
+    
         Assert.assertThat( res, IsNull.notNullValue());
         Assert.assertThat( res.isSuccessful(), Is.is(true));
         final ResponseBody body = res.body();
@@ -147,19 +154,82 @@ public class Issue106IntegrationTest {
             
             final JsonArray results = root.getJsonArray("results");
             Assert.assertThat( results,  IsNull.notNullValue() );
-            Assert.assertThat( results.size(),  IsEqual.equalTo(1) );
-
-            final JsonObject item0 = results.getJsonObject(0);
-            Assert.assertThat( item0,  IsNull.notNullValue() );
-            Assert.assertThat( item0.containsKey("id"), Is.is(true) );
-            Assert.assertThat( item0.getString("id"), IsEqual.equalTo("1867778") );
+            
+            success.call(results);
             
         }
         
     }
+
+    @Test
+    public void findPageTest() throws IOException {
+
+        
+        findPages( "Home", new P1<JsonArray>() {
+            @Override
+            public void call(JsonArray results) {
+                
+                Assert.assertThat( results.size(),  IsEqual.equalTo(1) );
+
+                final JsonObject item0 = results.getJsonObject(0);
+                Assert.assertThat( item0,  IsNull.notNullValue() );
+                Assert.assertThat( item0.containsKey("id"), Is.is(true) );
+
+                Assert.assertThat( item0.getString("id"), IsEqual.equalTo("1867778") );
+            }
+            
+        });
+        
+    }
+
+    private Response deletePage( String id ) {
+           
+        try {
+            final String credential = Credentials.basic("admin", "admin");
+            
+            final HttpUrl.Builder url = new HttpUrl.Builder()
+                    .scheme("http")
+                    .host("192.168.99.100")
+                    .port(8090)
+                    .addPathSegments("rest/api/content")
+                    ;
+            final Request req1 = new Request.Builder()
+                    .header("Authorization", credential)
+                    .url( url.addPathSegment(id).build() )
+                    .delete()
+                    .build();
+            
+            final Response res1 = client.build().newCall(req1).execute();
+            Assert.assertThat( res1, IsNull.notNullValue());
+            Assert.assertThat( res1.code(), IsEqual.equalTo(204));
+            
+            return res1;
+            
+        } catch (IOException ex) {
+            Assert.fail( ex.getMessage() );
+        }
+        
+        return null;
+    }
     
     @Test
     public void addPage() throws IOException {
+        
+        findPages( "test2", new P1<JsonArray>() {
+            @Override
+            public void call(JsonArray results) {
+                
+                if( results.size() == 1 ) {
+                    final JsonObject item0 = results.getJsonObject(0);
+                    Assert.assertThat( item0,  IsNull.notNullValue() );
+                    Assert.assertThat( item0.containsKey("id"), Is.is(true) );
+                    
+                    deletePage( item0.getString("id") );
+                }
+            }
+            
+        });
+    
 
         final String credential = Credentials.basic("admin", "admin");
 
@@ -211,21 +281,8 @@ public class Issue106IntegrationTest {
             
             // DELETE
             
+            deletePage( root.getString("id") );
             
-            final Request req1 = new Request.Builder()
-                .header("Authorization", credential)
-                .url( url.addPathSegment(root.getString("id")).build() )     
-                .delete()    
-                .build();
-            
-            final Response res1 = client.build().newCall(req1).execute();
-            
-            Assert.assertThat( res1, IsNull.notNullValue());
-            Assert.assertThat( res1.code(), IsEqual.equalTo(204));
-
-            
-
-
         }
         
         

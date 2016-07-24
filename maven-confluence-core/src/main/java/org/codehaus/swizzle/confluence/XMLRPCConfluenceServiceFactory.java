@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Credentials;
 
 /**
  *
@@ -28,15 +29,21 @@ public class XMLRPCConfluenceServiceFactory {
      * @throws SwizzleException
      * @throws URISyntaxException 
      */
-    public static XMLRPCConfluenceServiceImpl createInstanceDetectingVersion( String url, ConfluenceProxy proxyInfo, String login, String password ) throws MalformedURLException, SwizzleException, URISyntaxException {
+    public static <T extends ConfluenceService>  T createInstanceDetectingVersion( String url, Credentials credentials, ConfluenceProxy proxyInfo ) throws Exception {
+        if( url == null ) {
+            throw new IllegalArgumentException("url argument is null!");
+        }
+        if( credentials == null ) {
+            throw new IllegalArgumentException("credentials argument is null!");
+        }
         
         final Confluence c = new Confluence(url, proxyInfo);
         
-        c.login(login, password);
+        c.login(credentials.username, credentials.password);
         
         final ServerInfo info = c.getServerInfo();
         
-        return new XMLRPCConfluenceServiceImpl( (info.getMajorVersion() < 4) ? c : new Confluence2(c) );
+        return (T) new XMLRPCConfluenceServiceImpl( (info.getMajorVersion() < 4) ? c : new Confluence2(c), credentials );
         
     }
 }
