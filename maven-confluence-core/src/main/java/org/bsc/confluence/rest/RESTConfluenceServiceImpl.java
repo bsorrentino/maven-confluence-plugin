@@ -64,7 +64,7 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public Model.Page storePage(Model.Page page, String content) throws Exception {
+    public Model.Page storePage(Model.Page page, Storage content ) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

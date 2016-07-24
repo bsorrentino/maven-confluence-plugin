@@ -96,7 +96,7 @@ public interface ConfluenceService {
 
     boolean addLabelByName( String label, long id ) throws Exception;
     
-    Model.Page storePage( Model.Page page, String content ) throws Exception;
+    Model.Page storePage( Model.Page page, Storage content ) throws Exception;
     
     Model.Page storePage( Model.Page page ) throws Exception;
     

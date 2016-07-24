@@ -16,9 +16,10 @@ import java.util.Map;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
-import org.bsc.maven.reporting.model.Site.Page;
 
 /**
  *
@@ -281,7 +282,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     t.setVariableOpt("childTitle", pageName);
                 }
 
-                p = confluence.storePage(p, t.generateOutput());
+                p = confluence.storePage(p, new Storage(t.generateOutput(), Representation.WIKI) );
             }
             else {
 

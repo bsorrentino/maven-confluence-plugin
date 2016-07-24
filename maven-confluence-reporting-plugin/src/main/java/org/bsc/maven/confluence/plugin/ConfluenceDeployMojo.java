@@ -50,9 +50,9 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.reporting.MavenReportException;
 import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
 import static java.lang.String.format;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -505,7 +505,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         Model.Page confluenceHomePage = confluence.getOrCreatePage(parentPage.getSpace(), parentPage.getTitle(), title);
 
-        confluenceHomePage = confluence.storePage(confluenceHomePage, wiki);
+        confluenceHomePage = confluence.storePage(confluenceHomePage, new Storage(wiki, Representation.WIKI) );
 
         for( String label : site.getHome().getComputedLabels() ) {
 
@@ -876,7 +876,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         page.setContent(wiki.toString());
         */
 
-        page = confluence.storePage(page,t.generateOutput());
+        page = confluence.storePage(page,new Storage(t.generateOutput(), Representation.WIKI));
 
         // GENERATE GOAL
         for( Goal goal : goals ) {

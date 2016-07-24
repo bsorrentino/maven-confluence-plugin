@@ -175,14 +175,14 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
    @Override
-    public Model.Page storePage(Model.Page page, String content) throws Exception {
+    public Model.Page storePage(Model.Page page, Storage content) throws Exception {
         if( content == null ) {
             throw new IllegalArgumentException("content argument is null!");
         }
         
         final Page p = cast(page);
         
-        p.setContent(content);
+        p.setContent(content.value);
         
         return (Model.Page) connection.storePage(p);
     }
