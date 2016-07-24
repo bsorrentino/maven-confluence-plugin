@@ -178,7 +178,10 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                         );
             }
 
-            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), proxyInfo, getUsername(), getPassword());
+            final ConfluenceService.Credentials credentials = 
+                new ConfluenceService.Credentials(getUsername(), getPassword());
+
+            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), credentials, proxyInfo);
 
             getLog().info(confluence.getVersion());
 
