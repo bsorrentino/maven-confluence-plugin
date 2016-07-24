@@ -13,7 +13,28 @@ import org.bsc.functional.P1;
  */
 public interface ConfluenceService {
 
-    
+    public static class Storage {
+        
+        public enum Representation {
+            STORAGE,
+            WIKI;
+
+            @Override
+            public String toString() {
+                return name().toLowerCase();
+            }
+        }
+        
+        public final String value;
+        public final Representation rapresentation;
+
+        public Storage(String value, Representation rapresentation) {
+            this.value = value;
+            this.rapresentation = rapresentation;
+        }
+        
+        
+    }
     public static class Credentials {
     
         public final String username;
@@ -83,8 +104,6 @@ public interface ConfluenceService {
 
     
     void exportPage(    String url, 
-                        String username, 
-                        String password, 
                         String spaceKey, 
                         String pageTitle, 
                         ExportFormat exfmt, 

@@ -50,6 +50,8 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.reporting.MavenReportException;
 import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
 import static java.lang.String.format;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bsc.confluence.ConfluenceService.Model;
 /**
  *
@@ -477,45 +479,54 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     }
 
+    private void generateProjectReport( ConfluenceService confluence, Site site, Locale locale ) throws Exception {
+      
+        final Model.Page parentPage = loadParentPage(confluence);
+
+        //
+        // Issue 32
+        //
+        final String title = getTitle();
+
+        if (!isSnapshot() && isRemoveSnapshots()) {
+           final String snapshot = title.concat("-SNAPSHOT");
+           getLog().info(format("removing page [%s]!", snapshot));
+
+           boolean deleted = confluence.removePage( parentPage, snapshot);
+
+           if (deleted) {
+               getLog().info(format("Page [%s] has been removed!", snapshot));
+           }
+       }
+
+        final String titlePrefix = title;
+
+        final String wiki = createProjectHome(site, locale);
+
+        Model.Page confluenceHomePage = confluence.getOrCreatePage(parentPage.getSpace(), parentPage.getTitle(), title);
+
+        confluenceHomePage = confluence.storePage(confluenceHomePage, wiki);
+
+        for( String label : site.getHome().getComputedLabels() ) {
+
+            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+        }
+
+        generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
+        
+    }
+
     private void generateProjectReport( final Site site, final Locale locale ) throws MojoExecutionException
     {
 
         super.confluenceExecute(new P1<ConfluenceService>() {
 
-            public void call(ConfluenceService confluence) throws Exception {
-
-                final Model.Page parentPage = loadParentPage(confluence);
-
-                //
-                // Issue 32
-                //
-                final String title = getTitle();
-
-                if (!isSnapshot() && isRemoveSnapshots()) {
-                   final String snapshot = title.concat("-SNAPSHOT");
-                   getLog().info(format("removing page [%s]!", snapshot));
-
-                   boolean deleted = confluence.removePage( parentPage, snapshot);
-
-                   if (deleted) {
-                       getLog().info(format("Page [%s] has been removed!", snapshot));
-                   }
-               }
-
-                final String titlePrefix = title;
-
-                final String wiki = createProjectHome(site, locale);
-
-                Model.Page confluenceHomePage = confluence.getOrCreatePage(parentPage.getSpace(), parentPage.getTitle(), title);
-
-                confluenceHomePage = confluence.storePage(confluenceHomePage, wiki);
-
-                for( String label : site.getHome().getComputedLabels() ) {
-
-                    confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+            public void call(ConfluenceService confluence)  {
+                try {
+                    generateProjectReport(confluence, site, locale);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
-
-                generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
             }
 
         });

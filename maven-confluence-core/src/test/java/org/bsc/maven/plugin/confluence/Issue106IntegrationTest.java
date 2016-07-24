@@ -213,9 +213,10 @@ public class Issue106IntegrationTest {
     }
     
     @Test
-    public void addPage() throws IOException {
+    public void addStoragePage() throws IOException {
+        final String title = "test-storage";
         
-        findPages( "test2", new P1<JsonArray>() {
+        findPages( title, new P1<JsonArray>() {
             @Override
             public void call(JsonArray results) {
                 
@@ -244,7 +245,7 @@ public class Issue106IntegrationTest {
         
         JsonObject inputData = Json.createObjectBuilder()
                 .add("type","page")
-                .add("title","test2")
+                .add("title",title)
                 .add("space",Json.createObjectBuilder().add("key", "TEST"))
                 .add("body", Json.createObjectBuilder()
                                 .add("storage", Json.createObjectBuilder()
@@ -279,9 +280,77 @@ public class Issue106IntegrationTest {
             //Assert.assertThat( item0.getString("id"), IsEqual.equalTo("1867778") );
 
             
-            // DELETE
+        }
+        
+        
+    }
+    
+    @Test
+    public void addWikiPage() throws IOException {
+        
+        final String title = "test-wiki";
+        
+        findPages( title, new P1<JsonArray>() {
+            @Override
+            public void call(JsonArray results) {
+                
+                if( results.size() == 1 ) {
+                    final JsonObject item0 = results.getJsonObject(0);
+                    Assert.assertThat( item0,  IsNull.notNullValue() );
+                    Assert.assertThat( item0.containsKey("id"), Is.is(true) );
+                    
+                    deletePage( item0.getString("id") );
+                }
+            }
             
-            deletePage( root.getString("id") );
+        });
+    
+
+        final String credential = Credentials.basic("admin", "admin");
+
+        final HttpUrl.Builder url = new HttpUrl.Builder()
+                                    .scheme("http")
+                                    .host("192.168.99.100")
+                                    .port(8090)
+                                    .addPathSegments("rest/api/content")
+                                    ;
+        
+        final MediaType storageFormat = MediaType.parse("application/json");
+        
+        JsonObject inputData = Json.createObjectBuilder()
+                .add("type","page")
+                .add("title",title)
+                .add("space",Json.createObjectBuilder().add("key", "TEST"))
+                .add("body", Json.createObjectBuilder()
+                                .add("storage", Json.createObjectBuilder()
+                                                .add("representation","wiki")
+                                                .add("value","h1. TITLE H1")))
+                .build();
+        final RequestBody inputBody = RequestBody.create(storageFormat, 
+                inputData.toString());
+        
+        final Request req = new Request.Builder()
+                .header("Authorization", credential)
+                .url( url.build() )  
+                .post(inputBody)
+                .build();
+        
+        final Response res = client.build().newCall(req).execute();
+        
+        Assert.assertThat( res, IsNull.notNullValue());
+        Assert.assertThat( res.isSuccessful(), Is.is(true));
+        final ResponseBody body = res.body();
+        Assert.assertThat( body, IsNull.notNullValue());
+
+        try( Reader r = body.charStream()) {
+            
+            final JsonReader rdr = Json.createReader(r);
+            
+            final JsonObject root = rdr.readObject();
+            
+            Assert.assertThat( root,  IsNull.notNullValue() );
+            
+            Assert.assertThat( root.containsKey("id"), Is.is(true) );
             
         }
         

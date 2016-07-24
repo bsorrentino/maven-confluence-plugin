@@ -79,7 +79,7 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public void exportPage(String url, String username, String password, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
+    public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

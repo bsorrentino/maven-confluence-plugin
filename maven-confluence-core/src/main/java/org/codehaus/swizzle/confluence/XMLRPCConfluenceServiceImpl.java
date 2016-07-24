@@ -281,8 +281,6 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
 
     @Override
     public void exportPage( String url, 
-                            String username, 
-                            String password, 
                             String spaceKey, 
                             String pageTitle, 
                             ExportFormat exfmt, 
@@ -291,8 +289,8 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
             final ConfluenceExportDecorator exporter = 
                 new ConfluenceExportDecorator(  connection, 
                                                 url, 
-                                                username, 
-                                                password);
+                                                credentials.username, 
+                                                credentials.password);
 
             exporter.exportPage(spaceKey, 
                                 pageTitle, 

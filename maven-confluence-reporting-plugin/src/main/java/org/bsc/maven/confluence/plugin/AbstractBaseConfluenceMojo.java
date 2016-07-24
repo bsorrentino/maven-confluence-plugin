@@ -189,9 +189,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             
         } catch (Exception e) {
 
-            getLog().error("has been imposssible connect to confluence due exception", e);
+            getLog().error("has been impossible connect to confluence due exception", e);
 
-            throw new MojoExecutionException("has been imposssible connect to confluence due exception", e);
+            throw new MojoExecutionException("has been impossible connect to confluence due exception", e);
         }
 
     }

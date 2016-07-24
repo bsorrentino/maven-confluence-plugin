@@ -22,8 +22,6 @@ public class XMLRPCConfluenceServiceFactory {
      * 
      * @param url
      * @param proxyInfo
-     * @param login
-     * @param password
      * @return
      * @throws MalformedURLException
      * @throws SwizzleException
