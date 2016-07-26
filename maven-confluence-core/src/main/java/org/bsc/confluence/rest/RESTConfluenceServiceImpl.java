@@ -6,21 +6,250 @@
 package org.bsc.confluence.rest;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import static java.lang.String.format;
+import java.net.MalformedURLException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.functional.P1;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Func1;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import org.bsc.confluence.rest.model.Page;
+import rx.functions.Action1;
 /**
  *
  * @author softphone
  */
 public class RESTConfluenceServiceImpl implements ConfluenceService {
     
+    final Credentials credentials;
+    final OkHttpClient.Builder client = new OkHttpClient.Builder();
+    final java.net.URL endpoint ;
+    
+    public RESTConfluenceServiceImpl( String url , Credentials credentials) {
+        if( credentials==null ) {
+            throw new IllegalArgumentException("credentials argument is null!");
+        } 
+        if( url==null ) {
+            throw new IllegalArgumentException("url argument is null!");
+        } 
+        
+        try {
+            this.endpoint = new java.net.URL(url);
+            
+        } catch (MalformedURLException ex) {
+            throw new IllegalArgumentException("url argument is not valid!", ex);
+        }
+        
+
+        this.credentials = credentials;
+        
+        client.connectTimeout(10, TimeUnit.SECONDS);
+        client.writeTimeout(10, TimeUnit.SECONDS);
+        client.readTimeout(30, TimeUnit.SECONDS);
+        
+    }
+    
+    private HttpUrl.Builder urlBuilder() {
+        
+        return new HttpUrl.Builder()
+                      .scheme(endpoint.getProtocol())
+                      .host(endpoint.getHost())
+                      .port(endpoint.getPort())
+                      .addPathSegments("rest/api") 
+                    ; 
+    }
+    
+    private Observable<Response> rxfindPagesResponse( final String spaceKey, final String title ) {
+
+        final String credential = 
+                okhttp3.Credentials.basic(credentials.username, credentials.password);
+
+        
+        final HttpUrl url =  urlBuilder()
+                                    .addPathSegment("content")                
+                                    .addQueryParameter("spaceKey", spaceKey)
+                                    .addQueryParameter("title", title)
+                                    .build();
+        final Request req = new Request.Builder()
+                .header("Authorization", credential)
+                .url( url )  
+                .get()
+                .build();
+
+        return rx.Observable.create( new Observable.OnSubscribe<Response>() {
+            @Override
+            public void call(Subscriber<? super Response> t) {
+
+                try {
+                    final Response res = client.build().newCall(req).execute();
+
+                    t.onNext(res);
+                    t.onCompleted();
+                                        
+                } catch (IOException ex) {
+                    
+                    t.onError(ex);
+                }
+                
+            }
+        });
+        
+    }
+    
+    public Observable<JsonArray> rxfindPagesArray( final String spaceKey, final String title ) {
+
+        return rxfindPagesResponse(spaceKey, title)
+                .flatMap( new Func1<Response, Observable<? extends JsonArray>>() {
+                    @Override
+                    public Observable<? extends JsonArray> call(Response res) {
+                        /*
+                        if( !res.isSuccessful()) {
+                            return Observable.empty();
+                        }
+                        */
+                        
+                        final ResponseBody body = res.body();
+
+                        try (Reader r = body.charStream()) {
+
+                            final JsonReader rdr = Json.createReader(r);
+
+                            final JsonObject root = rdr.readObject();
+
+                            final JsonArray results = root.getJsonArray("results");
+                            
+                            return Observable.just(results);
+
+
+                        } catch (IOException ex) {
+                            
+                            return Observable.error(ex);
+                        }
+                                    
+   
+                    }
+            
+        });
+        
+    }
+    
+    public Observable<JsonObject> rxfindPage( final String spaceKey, final String title ) {
+        
+        return rxfindPagesArray(spaceKey, title).flatMap(new Func1<JsonArray, Observable<? extends JsonObject>>() {
+            @Override
+            public Observable<? extends JsonObject> call(JsonArray t) {
+                
+                if(  t.size() == 1 ) {
+                    return Observable.just( t.getJsonObject(0) );
+                }
+                if( t.size() == 0 ) {
+                    return Observable.empty();
+                    
+                }
+                return Observable.error( new Exception( format("results contains more than one element [%d]", t.size()) ));
+            }
+        
+            
+        });
+    }
+    
+    public JsonObject createPage( final String spaceKey, final String title  ) {
+        return Json.createObjectBuilder()
+                .add("type","page")
+                .add("title",title)
+                .add("space",Json.createObjectBuilder().add("key", spaceKey))
+                .add("body", Json.createObjectBuilder()
+                                .add("storage", Json.createObjectBuilder()
+                                                .add("representation","wiki")
+                                                .add("value","")))
+                .build();
+    }
+
+    public JsonObject createPage( final String spaceKey, final int parentPageId, final String title  ) {
+        return Json.createObjectBuilder()
+                .add("type","page")
+                .add("title",title)
+                .add("space",Json.createObjectBuilder().add("key", spaceKey))
+                .add("ancestors", Json.createArrayBuilder()
+                                        .add(Json.createObjectBuilder().add("id", parentPageId )))
+                .add("body", Json.createObjectBuilder()
+                                .add("storage", Json.createObjectBuilder()
+                                                .add("representation","wiki")
+                                                .add("value","")))
+                
+                .build();
+    }
+
+    public Observable<JsonObject> rxCreatePage( final JsonObject inputData ) {
+        final String credential = 
+                okhttp3.Credentials.basic(credentials.username, credentials.password);
+
+        final MediaType storageFormat = MediaType.parse("application/json");
+        
+        final RequestBody inputBody = RequestBody.create(storageFormat, 
+                inputData.toString());
+        
+        final Request req = new Request.Builder()
+                .header("Authorization", credential)
+                .url( urlBuilder().addPathSegment("content") .build() )  
+                .post(inputBody)
+                .build();
+        
+        return rx.Observable.create( new Observable.OnSubscribe<JsonObject>() {
+            @Override
+            public void call(Subscriber<? super JsonObject> t) {
+
+                try {
+                    final Response res = client.build().newCall(req).execute();
+                    
+                    if( !res.isSuccessful() ) {
+                        t.onError( new Exception( format("error creating page\n%s", res.toString()) ));
+                        return;
+                    }
+
+                    final ResponseBody body = res.body();
+
+                    try( Reader r = body.charStream()) {
+            
+                        final JsonReader rdr = Json.createReader(r);
+
+                        final JsonObject root = rdr.readObject();
+                        
+                        t.onNext(root);
+                        t.onCompleted();
+                    }
+                    
+                                        
+                } catch (IOException ex) {
+                    
+                    t.onError(ex);
+                }
+                
+            }
+        });        
+    }
+
     @Override
     public Credentials getCredentials() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return credentials;
     }
     
     @Override
@@ -39,8 +268,28 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public Model.Page getOrCreatePage(String spaceKey, String parentPageTitle, String title) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Model.Page getOrCreatePage(final String spaceKey, final String parentPageTitle, final String title) throws Exception {
+        final Observable error =  Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
+
+        final JsonObject page = 
+                (JsonObject) rxfindPage(spaceKey, parentPageTitle)
+                .switchIfEmpty( error )
+                .flatMap(new Func1<JsonObject, Observable<JsonObject>>() {
+                      @Override
+                      public Observable<JsonObject> call(JsonObject parent) {
+
+                        final String id = parent.getString("id");
+                        final JsonObject input = createPage(spaceKey, Integer.valueOf(id), title);
+
+                        return rxfindPage(spaceKey,title)                                    
+                                .switchIfEmpty( rxCreatePage( input ));
+                      }
+                 })
+                .toBlocking()
+                .first()
+                ;
+        
+        return new Page( page );
     }
 
     @Override
@@ -70,7 +319,8 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
 
     @Override
     public Model.Page storePage(Model.Page page) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return page;
     }
 
     @Override

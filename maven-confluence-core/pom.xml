@@ -115,6 +115,12 @@
           <groupId>org.pegdown</groupId>
           <artifactId>pegdown</artifactId>
       </dependency>
+      
+      <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxjava</artifactId>
+    </dependency>
+      
   </dependencies>
 
 
@@ -167,5 +173,16 @@
     </plugins>      
            
   </build>
+
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.reactivex</groupId>
+        <artifactId>rxjava</artifactId>
+        <version>1.1.8</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
       
 </project>

@@ -3,13 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.maven.plugin.confluence;
+package org.bsc.confluence.rest;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -36,6 +34,7 @@ import org.junit.Test;
  *
  * @author softphone
  */
+@Ignore
 public class Issue106IntegrationTest {
     
     OkHttpClient.Builder client;
