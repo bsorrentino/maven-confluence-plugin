@@ -5,6 +5,7 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import java.io.IOException;
+import java.io.InputStream;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -50,7 +51,12 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.reporting.MavenReportException;
 import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
 import static java.lang.String.format;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import rx.functions.Func2;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -273,16 +279,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     protected String createProjectHome( final Site site, final Locale locale) throws MojoExecutionException {
 
         try {
-            final java.io.InputStream is = Site.processUri(site.getHome().getUri(), this.getTitle()) ;
-
-            final MiniTemplator t = new MiniTemplator.Builder()
-                                            .setSkipUndefinedVars(true)
-                                            .build( is, getCharset() );
-
-            generateProjectHomeTemplate( t, site, locale );
-
-            return t.generateOutput();
-
+            
+            return Site.processUri(site.getHome().getUri(), this.getTitle(), new Func2<InputStream, Representation, String>() {
+                @Override
+                public String call(InputStream is, Representation r) {
+                    try {
+                        final MiniTemplator t = new MiniTemplator.Builder()
+                                .setSkipUndefinedVars(true)
+                                .build( is, getCharset() );
+                        
+                        generateProjectHomeTemplate( t, site, locale );
+                        
+                        return t.generateOutput();
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                
+            }) ;
 
         } catch (Exception e) {
             final String msg = "error loading template";
@@ -477,45 +491,55 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     }
 
+    private void generateProjectReport( ConfluenceService confluence, Site site, Locale locale ) throws Exception {
+      
+        final Model.Page parentPage = loadParentPage(confluence);
+
+        //
+        // Issue 32
+        //
+        final String title = getTitle();
+
+        if (!isSnapshot() && isRemoveSnapshots()) {
+           final String snapshot = title.concat("-SNAPSHOT");
+           getLog().info(format("removing page [%s]!", snapshot));
+
+           boolean deleted = confluence.removePage( parentPage, snapshot);
+
+           if (deleted) {
+               getLog().info(format("Page [%s] has been removed!", snapshot));
+           }
+       }
+
+        final String titlePrefix = title;
+
+        final String wiki = createProjectHome(site, locale);
+
+        Model.Page confluenceHomePage = confluence.getOrCreatePage(parentPage.getSpace(), parentPage.getTitle(), title);
+
+        confluenceHomePage = confluence.storePage(confluenceHomePage, new Storage(wiki, Representation.WIKI) );
+
+        for( String label : site.getHome().getComputedLabels() ) {
+
+            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+        }
+
+        generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
+        
+    }
+
     private void generateProjectReport( final Site site, final Locale locale ) throws MojoExecutionException
     {
 
         super.confluenceExecute(new P1<ConfluenceService>() {
-
-            public void call(ConfluenceService confluence) throws Exception {
-
-                final Model.Page parentPage = loadParentPage(confluence);
-
-                //
-                // Issue 32
-                //
-                final String title = getTitle();
-
-                if (!isSnapshot() && isRemoveSnapshots()) {
-                   final String snapshot = title.concat("-SNAPSHOT");
-                   getLog().info(format("removing page [%s]!", snapshot));
-
-                   boolean deleted = confluence.removePage( parentPage, snapshot);
-
-                   if (deleted) {
-                       getLog().info(format("Page [%s] has been removed!", snapshot));
-                   }
-               }
-
-                final String titlePrefix = title;
-
-                final String wiki = createProjectHome(site, locale);
-
-                Model.Page confluenceHomePage = confluence.getOrCreatePage(parentPage.getSpace(), parentPage.getTitle(), title);
-
-                confluenceHomePage = confluence.storePage(confluenceHomePage, wiki);
-
-                for( String label : site.getHome().getComputedLabels() ) {
-
-                    confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+            
+            @Override
+            public void call(ConfluenceService confluence)  {
+                try {
+                    generateProjectReport(confluence, site, locale);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
-
-                generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
             }
 
         });
@@ -865,7 +889,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         page.setContent(wiki.toString());
         */
 
-        page = confluence.storePage(page,t.generateOutput());
+        page = confluence.storePage(page,new Storage(t.generateOutput(), Representation.WIKI));
 
         // GENERATE GOAL
         for( Goal goal : goals ) {

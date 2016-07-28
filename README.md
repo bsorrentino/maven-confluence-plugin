@@ -16,6 +16,17 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+
+ - | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+---- | ---- | ---- |
+
+ * Refer to [Issue 108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) - StorageFormat Support
+
+ > Starting to implement REST API support
+
+ > We will continue support Release 4 on branch **support/4.x** 
+
+
 |Jul 1,2016  | **Release 4.10** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 

@@ -12,7 +12,7 @@ package org.bsc.functional;
  * @param <R> return
  * @param <P> argument
  */
-public interface F<R, P> {
+@Deprecated
+public interface F<R, P> extends rx.functions.Func1<P,R> {
 
-    R f(P p);
 }

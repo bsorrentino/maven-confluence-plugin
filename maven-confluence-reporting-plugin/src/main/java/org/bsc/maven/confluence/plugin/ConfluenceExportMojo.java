@@ -56,6 +56,33 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
     @Parameter(property="project.build.directory", readonly = true)
     private java.io.File outputDirectory;
     
+    
+    private void exportPage( ConfluenceService confluence ) throws Exception  {
+        final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
+
+        final Model.Page parentPage = loadParentPage(confluence);
+
+        if( outputFile == null ) {
+
+            outputFile = ( outputDirectory == null ) ? 
+                                new java.io.File( String.format("%s.%s", pageTitle, exfmt.name().toLowerCase())) : 
+                                new java.io.File( outputDirectory, String.format("%s.%s", pageTitle, exfmt.name().toLowerCase())) 
+                    ;
+        }
+
+        FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
+
+
+        final String url = ConfluenceExportMojo.super.getEndPoint().replace("/rpc/xmlrpc", "");  // /rpc/xmlrpc
+
+        confluence.exportPage(  url, 
+                                parentPage.getSpace(), 
+                                parentPage.getTitle(), 
+                                exfmt, 
+                                outputFile);
+        
+    }
+    
     /**
      * 
      * @throws MojoExecutionException
@@ -68,31 +95,13 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
         super.confluenceExecute( new P1<ConfluenceService>() {
 
             @Override
-            public void call(ConfluenceService confluence) throws Exception {
-                final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
+            public void call(ConfluenceService confluence)  {
                 
-                final Model.Page parentPage = loadParentPage(confluence);
-                
-                if( outputFile == null ) {
-                    
-                    outputFile = ( outputDirectory == null ) ? 
-                                        new java.io.File( String.format("%s.%s", pageTitle, exfmt.name().toLowerCase())) : 
-                                        new java.io.File( outputDirectory, String.format("%s.%s", pageTitle, exfmt.name().toLowerCase())) 
-                            ;
+                try {
+                    exportPage(confluence);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
-
-                FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
-                
-                
-                final String url = ConfluenceExportMojo.super.getEndPoint().replace("/rpc/xmlrpc", "");  // /rpc/xmlrpc
-                
-                confluence.exportPage(  url, 
-                                        ConfluenceExportMojo.super.getUsername(), 
-                                        ConfluenceExportMojo.super.getPassword(), 
-                                        parentPage.getSpace(), 
-                                        parentPage.getTitle(), 
-                                        exfmt, 
-                                        outputFile);
             }
   
         });

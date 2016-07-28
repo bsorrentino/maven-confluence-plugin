@@ -51,6 +51,24 @@
           <groupId>commons-httpclient</groupId>
           <artifactId>commons-httpclient</artifactId>
       </dependency>
+      
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.4.0-RC1</version>
+    </dependency>  
+    
+    <dependency>
+        <groupId>javax.json</groupId>
+        <artifactId>javax.json-api</artifactId>
+        <version>1.0</version>
+    </dependency>  
+
+    <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <version>1.0.4</version>
+    </dependency>      
 <!--
       <dependency>
         <groupId>org.javalite</groupId>
@@ -92,14 +110,80 @@
           <type>jar</type>
           <scope>test</scope>
       </dependency>
+      
       <dependency>
           <groupId>org.pegdown</groupId>
           <artifactId>pegdown</artifactId>
       </dependency>
+      
+      <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxjava</artifactId>
+    </dependency>
+      
   </dependencies>
 
 
-  <build>       
+  <build>  
+      
+    <plugins>
+      <plugin>
+        <!-- Separates the unit tests from the integration tests. -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        
+        <configuration>
+           <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
+           <skip>true</skip>
+           <!-- Show 100% of the lines from the stack trace (doesn't work) -->
+           <trimStackTrace>false</trimStackTrace>
+        </configuration>
+        <executions>
+           <execution>
+              <id>unit-tests</id>
+              <phase>test</phase>
+              <goals>
+                 <goal>test</goal>
+              </goals>
+              <configuration>
+                 <skip>false</skip>
+                 <includes>
+                    <include>**/*Test.java</include>
+                 </includes>
+                 <excludes>
+                    <exclude>**/*IntegrationTest.java</exclude>
+                </excludes>
+              </configuration>
+           </execution>
+           <execution>
+               <id>integration-tests</id>
+               <phase>integration-test</phase>
+               <goals>
+                   <goal>test</goal>
+               </goals>
+               <configuration>
+                   <skip>false</skip>
+                   <includes>
+                       <include>**/*IntegrationTest.java</include>
+                   </includes>
+               </configuration>
+           </execution>
+
+        </executions>
+      </plugin>
+    </plugins>      
+           
   </build>
-  
+
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.reactivex</groupId>
+        <artifactId>rxjava</artifactId>
+        <version>1.1.8</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+      
 </project>

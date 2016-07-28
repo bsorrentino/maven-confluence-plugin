@@ -19,7 +19,8 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import java.util.Collections;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.maven.reporting.model.Site.Page;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
 
 /**
  *
@@ -86,7 +87,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
             writer.flush();
 
-            result  = confluence.storePage(result,writer.toString());
+            result  = confluence.storePage(result,new Storage(writer.toString(), Representation.WIKI));
 
             return result;
                 

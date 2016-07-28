@@ -8,6 +8,7 @@ import org.apache.maven.project.MavenProject;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -16,9 +17,11 @@ import java.util.Map;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
-import org.bsc.maven.reporting.model.Site.Page;
+import rx.functions.Func2;
 
 /**
  *
@@ -241,7 +244,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     }
 
-    protected <T extends Site.Page> Model.Page  generateChild(ConfluenceService confluence,  T child, String spaceKey, String parentPageTitle, String titlePrefix) {
+    protected <T extends Site.Page> Model.Page  generateChild(final ConfluenceService confluence,  final T child, String spaceKey, String parentPageTitle, String titlePrefix) {
 
         java.net.URI source = child.getUri(getProject(), getFileExt());
 
@@ -264,40 +267,52 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             final String pageName = !isChildrenTitlesPrefixed()
                 ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
 
-            Model.Page p = confluence.getOrCreatePage(spaceKey, parentPageTitle, pageName);
+            Model.Page result = confluence.getOrCreatePage(spaceKey, parentPageTitle, pageName);
 
             if( source != null /*&& source.isFile() && source.exists() */) {
 
-                final java.io.InputStream is = Site.processUri(source, this.getTitle()) ;
+                final Model.Page pageToUpdate = result;
+                
+                result = Site.processUri(source, this.getTitle(), new Func2<InputStream,Storage.Representation,Model.Page>() {
+                    @Override
+                    public Model.Page call(InputStream is, Representation r) {
 
-                final MiniTemplator t = new MiniTemplator.Builder()
-                    .setSkipUndefinedVars(true)
-                    .build( is, getCharset() );
+                        try {
+                            final MiniTemplator t = new MiniTemplator.Builder()
+                                    .setSkipUndefinedVars(true)
+                                    .build( is, getCharset() );
+                            
+                            if( !child.isIgnoreVariables() ) {
+                                
+                                addStdProperties(t);
+                                
+                                t.setVariableOpt("childTitle", pageName);
+                            }
+                            
+                            return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), r) );
+                            
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    
+                }) ;
 
-                if( !child.isIgnoreVariables() ) {
-
-                    addStdProperties(t);
-
-                    t.setVariableOpt("childTitle", pageName);
-                }
-
-                p = confluence.storePage(p, t.generateOutput());
             }
             else {
 
-                p = confluence.storePage(p);
+                result = confluence.storePage(result);
 
             }
 
-
             for( String label : child.getComputedLabels() ) {
 
-                confluence.addLabelByName(label, Long.parseLong(p.getId()) );
+                confluence.addLabelByName(label, Long.parseLong(result.getId()) );
             }
 
             child.setName( pageName );
 
-            return p;
+            return result;
 
         } catch (Exception e) {
             final String msg = "error loading template";
@@ -352,12 +367,20 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @return
      * @throws org.bsc.maven.reporting.AbstractConfluenceMojo.ProcessUriException
      */
-    private String processUri( java.net.URI uri, Charset charset ) throws ProcessUriException {
+    private String processUri( java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            final java.io.InputStream is = Site.processUri(uri, this.getTitle()) ;
+            return  Site.processUri(uri, this.getTitle(), new Func2<InputStream, Representation, String>() {
+                @Override
+                public String call(InputStream is, Representation r) {
+                    try {
+                        return AbstractConfluenceMojo.this.toString( is, charset );
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }) ;
 
-            return toString( is, charset );
         } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
         }

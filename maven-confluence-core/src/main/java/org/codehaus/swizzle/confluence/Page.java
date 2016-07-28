@@ -132,13 +132,14 @@ class Page extends PageSummary implements Model.Page {
         setBoolean("current", current);
     }
 
+    @Override
     public Map toRawMap() {
         Map map = super.toRawMap();
         map.put("created", getCreated());
         map.put("modified", getModified());
-        map.put("homePage", new Boolean(isHomePage()));
-        map.put("current", new Boolean(isCurrent()));
-        map.put("version", new Integer(getVersion()));
+        map.put("homePage", isHomePage());
+        map.put("current", isCurrent());
+        map.put("version", getVersion());
         return map;
     }
 }

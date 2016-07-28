@@ -5,7 +5,7 @@
  */
 package org.bsc.confluence;
 
-import org.bsc.functional.P1;
+import rx.functions.Action1;
 
 /**
  *
@@ -13,8 +13,43 @@ import org.bsc.functional.P1;
  */
 public interface ConfluenceService {
 
-    
+    public static class Storage {
         
+        public enum Representation {
+            STORAGE,
+            WIKI;
+
+            @Override
+            public String toString() {
+                return name().toLowerCase();
+            }
+        }
+        
+        public final String value;
+        public final Representation rapresentation;
+
+        public Storage(String value, Representation rapresentation) {
+            this.value = value;
+            this.rapresentation = rapresentation;
+        }
+        
+        
+    }
+    public static class Credentials {
+    
+        public final String username;
+        public final String password;
+
+        public Credentials(String username, String password) {
+            if( username==null ) {
+                throw new IllegalArgumentException("username argument is null!");
+            }
+            this.username = username;
+            this.password = password;
+        }
+        
+    }   
+    
     public interface Model {
 
         public interface Attachment {
@@ -35,14 +70,18 @@ public interface ConfluenceService {
             String getTitle();
             
             String getSpace();
+            
+            String getParentId();
         }
 
         public interface Page extends PageSummary {
 
+            int getVersion();
         }
 
     }
     
+    Credentials getCredentials();
 
     Model.PageSummary findPageByTitle( String parentPageId, String title) throws Exception ;
 
@@ -60,7 +99,7 @@ public interface ConfluenceService {
 
     boolean addLabelByName( String label, long id ) throws Exception;
     
-    Model.Page storePage( Model.Page page, String content ) throws Exception;
+    Model.Page storePage( Model.Page page, Storage content ) throws Exception;
     
     Model.Page storePage( Model.Page page ) throws Exception;
     
@@ -68,16 +107,12 @@ public interface ConfluenceService {
 
     
     void exportPage(    String url, 
-                        String username, 
-                        String password, 
                         String spaceKey, 
                         String pageTitle, 
                         ExportFormat exfmt, 
                         java.io.File outputFile) throws Exception;
     
-    String getVersion();
-
-    void call(P1<ConfluenceService> task) throws Exception;
+    void call(Action1<ConfluenceService> task) throws Exception;
     
     //
     // ATTACHMENT

@@ -38,7 +38,6 @@ import org.bsc.confluence.ConfluenceProxy;
 class Confluence {
     protected static final String SERVICE_PREFIX_1 = "confluence1.";
     
-    
     private final XmlRpcClient client;
     private String token;
     protected boolean sendRawData;
@@ -47,7 +46,7 @@ class Confluence {
     
     private boolean isNullOrEmpty( String v ) {
         if( v == null ) return true;
-        return ( v.trim().length() == 0 );
+        return ( v.trim().length() == 0 );        
     }
         
     private boolean isProxyEnabled( final ConfluenceProxy proxyInfo, final java.net.URI serviceURI ) {
