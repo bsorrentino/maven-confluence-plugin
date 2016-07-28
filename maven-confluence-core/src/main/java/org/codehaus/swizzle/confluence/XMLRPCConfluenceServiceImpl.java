@@ -13,7 +13,10 @@ import java.util.List;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.functional.P1;
 import static java.lang.String.format;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Collections;
+import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ExportFormat;
 
 /**
@@ -25,6 +28,33 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     public final Confluence connection;
     public final Credentials credentials;
 
+    /**
+     * 
+     * @param url
+     * @param proxyInfo
+     * @return
+     * @throws MalformedURLException
+     * @throws SwizzleException
+     * @throws URISyntaxException 
+     */
+    public static XMLRPCConfluenceServiceImpl createInstanceDetectingVersion( String url, Credentials credentials, ConfluenceProxy proxyInfo ) throws Exception {
+        if( url == null ) {
+            throw new IllegalArgumentException("url argument is null!");
+        }
+        if( credentials == null ) {
+            throw new IllegalArgumentException("credentials argument is null!");
+        }
+        
+        final Confluence c = new Confluence(url, proxyInfo);
+        
+        c.login(credentials.username, credentials.password);
+        
+        final ServerInfo info = c.getServerInfo();
+        
+        return new XMLRPCConfluenceServiceImpl( (info.getMajorVersion() < 4) ? c : new Confluence2(c), credentials );
+        
+    }
+    
     /**
      * 
      * @param confluence 
@@ -114,9 +144,15 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     @Override
     public Model.Page getOrCreatePage(String spaceKey, String parentPageTitle, String title) throws Exception {
 
-            Page parentPage = connection.getPage(spaceKey, parentPageTitle);
+            final Page parentPage = connection.getPage(spaceKey, parentPageTitle);
 
-            Model.PageSummary pageSummary = findPageByTitle(parentPage.getId(), title);
+            return getOrCreatePage(parentPage, title);
+    }
+
+    @Override
+    public Model.Page getOrCreatePage(Model.Page parentPage, String title) throws Exception {
+
+            final Model.PageSummary pageSummary = findPageByTitle(parentPage.getId(), title);
 
             Page result;
 
@@ -131,11 +167,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
             }
 
             return result;
-    }
-
-    @Override
-    public Model.Page getOrCreatePage(Model.Page parentPage, String title) throws Exception {
-        throw new UnsupportedOperationException("getOrCreatePage Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override

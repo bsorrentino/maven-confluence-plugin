@@ -40,7 +40,7 @@ public class SwizzleTest {
                 new ConfluenceService.Credentials(USER, PASSWORD );
 
         confluence = 
-            XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(URL, credentials,proxyInfo);
+            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(URL, credentials,proxyInfo);
         
 
     }

@@ -52,7 +52,7 @@ public class SwizzleApp {
         final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials(app.username,app.password);
         
         final XMLRPCConfluenceServiceImpl confluence = 
-            XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(
+            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
                     app.url.concat("/rpc/xmlrpc"),
                     credentials,
                     proxyInfo);
@@ -78,7 +78,7 @@ public class SwizzleApp {
                 new ConfluenceService.Credentials(username /*args[1]*/,password/*args[2]*/);
 
         final XMLRPCConfluenceServiceImpl confluence = 
-            XMLRPCConfluenceServiceFactory.createInstanceDetectingVersion(
+            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
                         url.concat("/rpc/xmlrpc"), //args[0],
                         credentials,
                         proxyInfo); 

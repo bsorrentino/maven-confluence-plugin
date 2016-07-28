@@ -336,7 +336,16 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
 
     @Override
     public Model.Page getOrCreatePage(Model.Page parentPage, String title) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        final String spaceKey = parentPage.getSpace();
+        final String id = parentPage.getId();
+        final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
+
+        final JsonObject result =  rxfindPage(spaceKey,title)                                    
+                .switchIfEmpty( rxCreatePage( input.build() ))
+                .toBlocking().first();
+        
+        return new Page(result);
     }
 
     @Override
