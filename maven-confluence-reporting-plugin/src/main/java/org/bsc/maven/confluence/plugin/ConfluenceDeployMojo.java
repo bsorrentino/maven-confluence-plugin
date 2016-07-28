@@ -520,7 +520,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     {
 
         super.confluenceExecute(new P1<ConfluenceService>() {
-
+            
+            @Override
             public void call(ConfluenceService confluence)  {
                 try {
                     generateProjectReport(confluence, site, locale);

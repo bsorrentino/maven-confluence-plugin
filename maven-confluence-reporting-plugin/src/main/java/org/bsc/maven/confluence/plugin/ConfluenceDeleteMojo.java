@@ -4,8 +4,6 @@
  */
 package org.bsc.maven.confluence.plugin;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
