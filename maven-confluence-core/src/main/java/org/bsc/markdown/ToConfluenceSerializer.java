@@ -152,7 +152,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         final StringBuilder _original = _buffer;
         _buffer = _sb;
         try {
-            closure.f(null);
+            closure.call(null);
         }
         finally {
             _buffer = _original;
@@ -233,7 +233,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
                         final StringBuilder _sb = bufferVisit(new F<Void,Void>() {
 
                             @Override
-                            public Void f(Void p) {
+                            public Void call(Void p) {
                                parent.getChildren().remove(0);
                                visitChildren(parent);
                                return null;
@@ -336,7 +336,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
       final String text = bufferVisit(new F<Void,Void>() {
 
           @Override
-          public Void f(Void p) {
+          public Void call(Void p) {
              visitChildren(bqn);
              return null;
           }
@@ -558,7 +558,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
             
             final String ref = bufferVisit( new F<Void, Void>() {
                 @Override
-                public Void f(Void p) {
+                public Void call(Void p) {
                     visitChildren(rln.referenceKey);
                     return null;
                 }

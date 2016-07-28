@@ -6,7 +6,6 @@
 package org.bsc.confluence.rest.model;
 
 import javax.json.JsonObject;
-import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 
 /**
@@ -39,7 +38,17 @@ public class Page implements Model.Page {
 
     @Override
     public String getSpace() {
-        return data.getString("space");
+        return data.getJsonObject("space").getString("key");
+    }
+
+    @Override
+    public int getVersion() {
+        return data.getJsonObject("version").getInt("number", 0);
+    }
+
+    @Override
+    public String toString() {
+        return data.toString();
     }
     
 }

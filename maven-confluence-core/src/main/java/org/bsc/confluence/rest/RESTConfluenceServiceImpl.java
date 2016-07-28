@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import static java.lang.String.format;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,10 +31,13 @@ import rx.functions.Func1;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import org.bsc.confluence.rest.model.Page;
-import rx.functions.Action1;
+import javax.json.JsonObjectBuilder;
+import static java.lang.String.format;
+
 /**
- *
- * @author softphone
+ * @see https://docs.atlassian.com/confluence/REST/latest/
+ * 
+ * @author bosrrentino
  */
 public class RESTConfluenceServiceImpl implements ConfluenceService {
     
@@ -87,6 +89,7 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                                     .addPathSegment("content")                
                                     .addQueryParameter("spaceKey", spaceKey)
                                     .addQueryParameter("title", title)
+                                    .addQueryParameter("expand", "space,version")
                                     .build();
         final Request req = new Request.Builder()
                 .header("Authorization", credential)
@@ -120,11 +123,6 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                 .flatMap( new Func1<Response, Observable<? extends JsonArray>>() {
                     @Override
                     public Observable<? extends JsonArray> call(Response res) {
-                        /*
-                        if( !res.isSuccessful()) {
-                            return Observable.empty();
-                        }
-                        */
                         
                         final ResponseBody body = res.body();
 
@@ -171,7 +169,7 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
         });
     }
     
-    public JsonObject createPage( final String spaceKey, final String title  ) {
+    public JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final String title  ) {
         return Json.createObjectBuilder()
                 .add("type","page")
                 .add("title",title)
@@ -180,22 +178,14 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                                 .add("storage", Json.createObjectBuilder()
                                                 .add("representation","wiki")
                                                 .add("value","")))
-                .build();
+                ;
     }
 
-    public JsonObject createPage( final String spaceKey, final int parentPageId, final String title  ) {
-        return Json.createObjectBuilder()
-                .add("type","page")
-                .add("title",title)
-                .add("space",Json.createObjectBuilder().add("key", spaceKey))
+    public JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final int parentPageId, final String title  ) {
+        return jsonForCreatingPage( spaceKey, title )
                 .add("ancestors", Json.createArrayBuilder()
                                         .add(Json.createObjectBuilder().add("id", parentPageId )))
-                .add("body", Json.createObjectBuilder()
-                                .add("storage", Json.createObjectBuilder()
-                                                .add("representation","wiki")
-                                                .add("value","")))
-                
-                .build();
+                ;
     }
 
     public Observable<JsonObject> rxCreatePage( final JsonObject inputData ) {
@@ -222,6 +212,58 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                     
                     if( !res.isSuccessful() ) {
                         t.onError( new Exception( format("error creating page\n%s", res.toString()) ));
+                        return;
+                    }
+
+                    final ResponseBody body = res.body();
+
+                    try( Reader r = body.charStream()) {
+            
+                        final JsonReader rdr = Json.createReader(r);
+
+                        final JsonObject root = rdr.readObject();
+                        
+                        t.onNext(root);
+                        t.onCompleted();
+                    }
+                    
+                                        
+                } catch (IOException ex) {
+                    
+                    t.onError(ex);
+                }
+                
+            }
+        });        
+    }
+    
+    public Observable<JsonObject> rxUpdatePage( final String pageId, final JsonObject inputData ) {
+        final String credential = 
+                okhttp3.Credentials.basic(credentials.username, credentials.password);
+
+        final MediaType storageFormat = MediaType.parse("application/json");
+        
+        final RequestBody inputBody = RequestBody.create(storageFormat, 
+                inputData.toString());
+        
+        final Request req = new Request.Builder()
+                .header("Authorization", credential)
+                .url( urlBuilder()
+                        .addPathSegment("content")
+                        .addPathSegment(pageId)
+                        .build() )  
+                .put(inputBody)
+                .build();
+        
+        return rx.Observable.create( new Observable.OnSubscribe<JsonObject>() {
+            @Override
+            public void call(Subscriber<? super JsonObject> t) {
+
+                try {
+                    final Response res = client.build().newCall(req).execute();
+                    
+                    if( !res.isSuccessful() ) {
+                        t.onError( new Exception( format("error updating page\n%s", res.toString()) ));
                         return;
                     }
 
@@ -279,10 +321,10 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                       public Observable<JsonObject> call(JsonObject parent) {
 
                         final String id = parent.getString("id");
-                        final JsonObject input = createPage(spaceKey, Integer.valueOf(id), title);
+                        final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
                         return rxfindPage(spaceKey,title)                                    
-                                .switchIfEmpty( rxCreatePage( input ));
+                                .switchIfEmpty( rxCreatePage( input.build() ));
                       }
                  })
                 .toBlocking()
@@ -314,7 +356,27 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
 
     @Override
     public Model.Page storePage(Model.Page page, Storage content ) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        int previousVersion = page.getVersion();
+        
+        final JsonObject input = Json.createObjectBuilder()
+                .add("version", Json.createObjectBuilder().add("number", ++previousVersion))
+                .add("id",page.getId())
+                .add("type","page")
+                .add("title",page.getTitle())
+                .add("space",Json.createObjectBuilder().add("key", page.getSpace()))
+                .add("body", Json.createObjectBuilder()
+                                .add("storage", Json.createObjectBuilder()
+                                                .add("representation",content.rapresentation.toString())
+                                                .add("value",content.value)))
+                .build()
+                ;        
+        
+        final JsonObject result = rxUpdatePage(page.getId(),input)
+                                    .toBlocking()
+                                    .first();
+        
+        return new Page(result);
     }
 
     @Override

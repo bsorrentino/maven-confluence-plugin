@@ -74,6 +74,7 @@ public interface ConfluenceService {
 
         public interface Page extends PageSummary {
 
+            int getVersion();
         }
 
     }

@@ -5,13 +5,14 @@
  */
 package org.bsc.functional;
 
+import rx.functions.Action2;
+
 /**
  * Procedure
  * 
- * @author softphone
+ * @author bsorrentino
  */
-public interface P2<P1,P2> {
+@Deprecated
+public interface P2<P1,P2> extends Action2<P1,P2> {
    
-    void call(P1 p1, P2 p2);
-
 }

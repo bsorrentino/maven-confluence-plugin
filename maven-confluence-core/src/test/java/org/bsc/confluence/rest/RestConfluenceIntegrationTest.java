@@ -16,9 +16,13 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 import org.hamcrest.core.IsNull;
 import rx.functions.Func1;
-import static java.lang.String.format;
 import org.bsc.confluence.ConfluenceService.Model;
 import rx.functions.Action1;
+import javax.json.JsonObjectBuilder;
+import static java.lang.String.format;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.hamcrest.core.Is;
+import org.junit.Ignore;
 /**
  *
  * @author softphone
@@ -35,8 +39,10 @@ public class RestConfluenceIntegrationTest {
         service = new RESTConfluenceServiceImpl("http://192.168.99.100:8090/rest/api", credentials );
     }
     
+    @Test @Ignore
+    public void dummy() {}
     
-    @Test
+    @Test @Ignore
     public void getOrCreatePage() throws Exception  {
         
         final String spaceKey = "TEST";
@@ -44,12 +50,12 @@ public class RestConfluenceIntegrationTest {
         final String title = "test-storage";
         
         {
-        TestSubscriber<JsonObject> test = new TestSubscriber<>();
+            TestSubscriber<JsonObject> test = new TestSubscriber<>();
 
-        service.rxfindPage(spaceKey,title).subscribe(test);
-        
-        test.assertCompleted();
-        test.assertValueCount(1);
+            service.rxfindPage(spaceKey,title).subscribe(test);
+
+            test.assertCompleted();
+            test.assertValueCount(1);
         }
         
         
@@ -104,12 +110,12 @@ public class RestConfluenceIntegrationTest {
                           public Observable<JsonObject> call(JsonObject parent) {
                             
                             final String id = parent.getString("id");
-                            final JsonObject input = service.createPage(spaceKey, Integer.valueOf(id), title0);
+                            final JsonObjectBuilder input = service.jsonForCreatingPage(spaceKey, Integer.valueOf(id), title0);
                             
                             System.out.printf( "input\n%s\n", input.toString());
                             
                             return service.rxfindPage(spaceKey,title0)                                    
-                                    .switchIfEmpty( service.rxCreatePage( input ));
+                                    .switchIfEmpty( service.rxCreatePage( input.build() ));
                           }
                      })
                     .subscribe(test)
@@ -124,10 +130,69 @@ public class RestConfluenceIntegrationTest {
     
         }
         
-        {
-            final Model.Page p = service.getOrCreatePage(spaceKey, parentPageTitle, "MyPage2");
-            
-            Assert.assertThat( p, IsNull.notNullValue());
-        }
     }
+    
+    @Test
+    public void getOrCreatePageAndStoreWiki() throws Exception  {
+
+        final String spaceKey = "TEST";
+        final String parentPageTitle = "Home";
+        final String title = "MyPage2";
+
+
+        final Model.Page p = service.getOrCreatePage(spaceKey, parentPageTitle, title);
+
+        int version = p.getVersion();
+        Assert.assertThat( p, IsNull.notNullValue());
+        Assert.assertThat( p.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat( version > 0, Is.is(true));
+
+        final String content = new StringBuilder()
+                                        .append("h1.")
+                                        .append(" TEST ")
+                                        .append(System.currentTimeMillis()).append('\n')
+                                        .append("----").append('\n')
+                                        .append("*'wiki' \"wiki\"*")
+                                        .toString();
+        
+        final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI));
+
+        Assert.assertThat( p1, IsNull.notNullValue());
+        Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
+        
+    }
+    
+    @Test
+    public void getOrCreatePageAndStoreStorage() throws Exception  {
+
+        final String spaceKey = "TEST";
+        final String parentPageTitle = "Home";
+        final String title = "MyPage3";
+
+
+        final Model.Page p = service.getOrCreatePage(spaceKey, parentPageTitle, title);
+
+        int version = p.getVersion();
+        Assert.assertThat( p, IsNull.notNullValue());
+        Assert.assertThat( p.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat( version > 0, Is.is(true));
+
+        final String content = new StringBuilder()
+                                        .append("<h1>")
+                                        .append("TEST ")
+                                        .append(System.currentTimeMillis())
+                                        .append("</h1>")
+                                        .append("<hr/>")
+                                        .append("<b>'storage' \"storage\"</b>")
+                                        .toString();
+        final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.STORAGE));
+
+        Assert.assertThat( p1, IsNull.notNullValue());
+        Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
+        
+    }
+
+
 }
