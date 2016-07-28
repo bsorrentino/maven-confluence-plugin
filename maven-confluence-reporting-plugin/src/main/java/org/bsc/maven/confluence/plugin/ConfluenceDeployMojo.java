@@ -5,6 +5,7 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import java.io.IOException;
+import java.io.InputStream;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -50,9 +51,12 @@ import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.reporting.MavenReportException;
 import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
 import static java.lang.String.format;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import rx.functions.Func2;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -275,16 +279,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     protected String createProjectHome( final Site site, final Locale locale) throws MojoExecutionException {
 
         try {
-            final java.io.InputStream is = Site.processUri(site.getHome().getUri(), this.getTitle()) ;
-
-            final MiniTemplator t = new MiniTemplator.Builder()
-                                            .setSkipUndefinedVars(true)
-                                            .build( is, getCharset() );
-
-            generateProjectHomeTemplate( t, site, locale );
-
-            return t.generateOutput();
-
+            
+            return Site.processUri(site.getHome().getUri(), this.getTitle(), new Func2<InputStream, Representation, String>() {
+                @Override
+                public String call(InputStream is, Representation r) {
+                    try {
+                        final MiniTemplator t = new MiniTemplator.Builder()
+                                .setSkipUndefinedVars(true)
+                                .build( is, getCharset() );
+                        
+                        generateProjectHomeTemplate( t, site, locale );
+                        
+                        return t.generateOutput();
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                
+            }) ;
 
         } catch (Exception e) {
             final String msg = "error loading template";

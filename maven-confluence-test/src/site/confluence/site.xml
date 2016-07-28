@@ -32,7 +32,7 @@ and open the template in the editor.
         
         <child name="from classpath" uri="classpath:template1.confluence"></child>
 
-        <child name="Storage Format" uri="storageFormat.sf"></child>
+        <child name="Storage Format" uri="storageFormat.xhtml"></child>
 
     </home>
     

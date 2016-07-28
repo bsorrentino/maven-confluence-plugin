@@ -14,10 +14,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.project.MavenProject;
+import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
+import rx.functions.Func2;
 
 /**
  *
@@ -69,13 +71,18 @@ public class Site {
        
         return new java.io.ByteArrayInputStream( ser.toString().getBytes() );
     }
+    
     /**
      *
      * @param uri
      * @return
      * @throws Exception
      */
-    public static java.io.InputStream processUri( java.net.URI uri, final String homePageTitle ) throws /*ProcessUri*/Exception {
+    public static <T> T processUri( 
+                                final java.net.URI uri, 
+                                final String homePageTitle, 
+                                final Func2<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception 
+    {
             if( uri == null ) {
                 throw new IllegalArgumentException( "uri is null!" );
             }
@@ -92,7 +99,10 @@ public class Site {
             final String path =  uri.getRawPath();
             
             final boolean isMarkdown = (path !=null && path.endsWith(".md"));
+            final boolean isStorage = (path !=null && (path.endsWith(".xml") || path.endsWith(".xhtml")));
 
+            final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE : Storage.Representation.WIKI;
+            
             java.io.InputStream result = null;
 
             if ("classpath".equalsIgnoreCase(scheme)) {
@@ -129,7 +139,12 @@ public class Site {
                 }
             }
 
-            return result;
+            try {
+                return onSuccess.call(result, representation);
+            }
+            catch( Exception ex) {
+                throw new Exception(ex.getCause());
+            }
     }
 
     /**

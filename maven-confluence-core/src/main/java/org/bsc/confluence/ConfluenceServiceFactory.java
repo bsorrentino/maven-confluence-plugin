@@ -20,7 +20,7 @@ import static org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl.create
  */
 public class ConfluenceServiceFactory {
 
-    public static class MixedConfluenceService implements ConfluenceService {
+    private static class MixedConfluenceService implements ConfluenceService {
         final XMLRPCConfluenceServiceImpl   xmlrpcService;
         final RESTConfluenceServiceImpl     restService;
 
@@ -90,7 +90,13 @@ public class ConfluenceServiceFactory {
         }
 
         public void call(P1<ConfluenceService> task) throws Exception {
-            xmlrpcService.call(task);
+            
+            try {
+                task.call(this);
+            }
+            finally {
+                xmlrpcService.logout();
+            }
         }
 
         public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
@@ -106,8 +112,9 @@ public class ConfluenceServiceFactory {
         }
         
     }
+    
     public static ConfluenceService createInstance(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo) throws Exception {
-        
+
         return new MixedConfluenceService(endPoint, credentials, proxyInfo);
     }
     

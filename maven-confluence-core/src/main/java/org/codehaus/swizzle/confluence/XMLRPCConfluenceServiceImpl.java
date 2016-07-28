@@ -223,7 +223,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      *
      * @param confluence
      */
-    protected boolean logout() {
+    public boolean logout() {
 
         try {
             if (!connection.logout()) {
