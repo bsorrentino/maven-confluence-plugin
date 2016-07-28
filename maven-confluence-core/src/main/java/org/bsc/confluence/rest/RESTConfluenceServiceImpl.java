@@ -23,7 +23,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
-import org.bsc.functional.P1;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -33,6 +32,7 @@ import okhttp3.RequestBody;
 import org.bsc.confluence.rest.model.Page;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
+import rx.functions.Action1;
 
 /**
  * @see https://docs.atlassian.com/confluence/REST/latest/
@@ -89,7 +89,7 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                                     .addPathSegment("content")                
                                     .addQueryParameter("spaceKey", spaceKey)
                                     .addQueryParameter("title", title)
-                                    .addQueryParameter("expand", "space,version")
+                                    .addQueryParameter("expand", "space,version,container")
                                     .build();
         final Request req = new Request.Builder()
                 .header("Authorization", credential)
@@ -174,10 +174,6 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                 .add("type","page")
                 .add("title",title)
                 .add("space",Json.createObjectBuilder().add("key", spaceKey))
-                .add("body", Json.createObjectBuilder()
-                                .add("storage", Json.createObjectBuilder()
-                                                .add("representation","wiki")
-                                                .add("value","")))
                 ;
     }
 
@@ -187,7 +183,16 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                                         .add(Json.createObjectBuilder().add("id", parentPageId )))
                 ;
     }
+    public JsonObjectBuilder jsonAddBody( JsonObjectBuilder builder, Storage storage  ) {
+        return builder
+                .add("body", Json.createObjectBuilder()
+                                .add("storage", Json.createObjectBuilder()
+                                                .add("representation",storage.rapresentation.toString())
+                                                .add("value",storage.value)))
+                ;
+    }
 
+    
     public Observable<JsonObject> rxCreatePage( final JsonObject inputData ) {
         final String credential = 
                 okhttp3.Credentials.basic(credentials.username, credentials.password);
@@ -405,12 +410,7 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public String getVersion() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void call(P1<ConfluenceService> task) throws Exception {
+    public void call(Action1<ConfluenceService> task) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

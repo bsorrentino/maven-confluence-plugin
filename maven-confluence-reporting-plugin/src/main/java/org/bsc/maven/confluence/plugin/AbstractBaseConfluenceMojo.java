@@ -15,6 +15,7 @@ import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 import static java.lang.String.format;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 
 
@@ -183,7 +184,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
             confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), credentials, proxyInfo);
 
-            getLog().info(confluence.getVersion());
+            getLog().info( String.valueOf(confluence) );
 
             confluence.call(task);
             
@@ -216,7 +217,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                 }
             } catch (Exception ex) {
                 getLog().warn( format( "cannot get page with parentPageId [%s]! Try with parentPageTitle [%s] in space [%s]\n%s", 
-                                                parentPageId, parentPageTitle, spaceKey, ex.getMessage()) );
+                                                parentPageId, parentPageTitle, spaceKey, ExceptionUtils.getRootCauseMessage(ex)) );
                 
             }
         }

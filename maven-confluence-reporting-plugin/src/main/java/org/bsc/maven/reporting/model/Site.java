@@ -139,12 +139,7 @@ public class Site {
                 }
             }
 
-            try {
-                return onSuccess.call(result, representation);
-            }
-            catch( Exception ex) {
-                throw new Exception(ex.getCause());
-            }
+            return onSuccess.call(result, representation);
     }
 
     /**

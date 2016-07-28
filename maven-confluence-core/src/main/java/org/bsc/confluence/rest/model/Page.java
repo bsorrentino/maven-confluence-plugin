@@ -47,6 +47,11 @@ public class Page implements Model.Page {
     }
 
     @Override
+    public String getParentId() {
+        return String.valueOf(data.getJsonObject("container").getInt("id"));
+    }
+
+    @Override
     public String toString() {
         return data.toString();
     }

@@ -11,13 +11,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.functional.P1;
 import static java.lang.String.format;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ExportFormat;
+import rx.functions.Action1;
 
 /**
  *
@@ -273,7 +273,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public String getVersion() {
+    public String toString() {
         try {
             final ServerInfo si = connection.getServerInfo();
             
@@ -291,7 +291,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public void call(P1<ConfluenceService> task) throws Exception {
+    public void call(Action1<ConfluenceService> task) throws Exception {
         
         try {
             task.call(this);

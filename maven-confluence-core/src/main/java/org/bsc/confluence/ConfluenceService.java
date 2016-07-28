@@ -5,7 +5,7 @@
  */
 package org.bsc.confluence;
 
-import org.bsc.functional.P1;
+import rx.functions.Action1;
 
 /**
  *
@@ -70,6 +70,8 @@ public interface ConfluenceService {
             String getTitle();
             
             String getSpace();
+            
+            String getParentId();
         }
 
         public interface Page extends PageSummary {
@@ -110,9 +112,7 @@ public interface ConfluenceService {
                         ExportFormat exfmt, 
                         java.io.File outputFile) throws Exception;
     
-    String getVersion();
-
-    void call(P1<ConfluenceService> task) throws Exception;
+    void call(Action1<ConfluenceService> task) throws Exception;
     
     //
     // ATTACHMENT
