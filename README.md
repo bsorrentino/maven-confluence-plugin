@@ -16,6 +16,16 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+Aug 5,2016  | **Release 4.11** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.11%7Cmaven-plugin)**  
+---- | ---- | ----
+
+  * Refer to [Issue 111](https://github.com/bsorrentino/maven-confluence-plugin/issues/111) - Fix confluence macro clashing in markdown inline code format
+  * Refer to [Pull Request 112](https://github.com/bsorrentino/maven-confluence-plugin/pull/112) - Markdown **referencenode** support
+
+   > **Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature**.
+
+
+
 |Jul 1,2016  | **Release 4.10** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
