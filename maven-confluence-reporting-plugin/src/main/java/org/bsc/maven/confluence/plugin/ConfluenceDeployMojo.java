@@ -757,8 +757,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("artifactId",   getProject().getArtifactId());
         getProperties().put("version",      getProject().getVersion());
 
-        MiniTemplator t = null;
+        final java.io.InputStream is = Site.processUri(site.getHome().getUri(), getTitle()) ;
+            
+        final MiniTemplator t = new MiniTemplator.Builder()
+                                            .setSkipUndefinedVars(true)
+                                            .build( is, getCharset() );
 
+/*        
         if (templateWiki == null || !templateWiki.exists()) {
 
             getLog().warn("template not set! default using ...");
@@ -796,7 +801,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
 
         }
-
+*/
         Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
 
         if (!isSnapshot() && isRemoveSnapshots()) {
