@@ -479,35 +479,86 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(final ExpImageNode ein) {
-        //visitChildren(ein);
+        // We always have a URL, relative or not
 
-        try {
+        final ArrayList<String> alt = new ArrayList<String>();
+        boolean found = findByClass(ein, TextNode.class, new FindPredicate<TextNode>() {
 
-            final java.net.URI uri = new java.net.URI(ein.url);
-
-            final String scheme = uri.getScheme();
-
-            if( !uri.isAbsolute()
-                     && (null==uri.getScheme() || scheme.isEmpty())
-                     && findByClass(ein, TextNode.class, new FindPredicate<TextNode>() {
-
-                            @Override
-                            public boolean f(TextNode node, Node parent, int index) {
-                                _buffer.append( format( "!%s!", node.getText() ));
-                                return true;
-                            }
-                        }))
-            {
-             return;
+            @Override
+            public boolean f(TextNode node, Node parent, int index) {
+                alt.add(node.getText());
+                return true;
             }
+        });
 
-         } catch (URISyntaxException ex) {
-             // @TODO notify error
-         }
+        if (!found) {
+            throw new IllegalStateException("The alt name should be mandatory in Markdown for images: " + ein.url);
+        }
 
+        String titlePart = isNotBlank(ein.title) ? format("|title=\"%s\"", ein.title) : "";
+        _buffer.append( format( "!%s|alt=\"%s\"%s!", ein.url, alt.get(0), titlePart));
 
-        _buffer.append( format( "!%s!", ein.url));
+    }
 
+    @Override
+    public void visit(final RefImageNode rin) {
+
+        final ArrayList<String> alt = new ArrayList<String>();
+        boolean found = findByClass(rin, TextNode.class, new FindPredicate<TextNode>() {
+
+            @Override
+            public boolean f(TextNode node, Node parent, int index) {
+                alt.add(node.getText());
+                return true;
+            }
+        });
+
+        if (!found) {
+            throw new IllegalStateException("The alt name should be mandatory in Markdown for images. ");
+        }
+
+        final SuperNode referenceKey = rin.referenceKey;
+        final String ref = getRefString(rin, referenceKey);
+        String url = ref;
+        String title = null;
+        ReferenceNode referenceNode = referenceNodes.get(ref);
+        if (referenceNode != null) {
+            if (isNotBlank(referenceNode.getUrl())) {
+                url = referenceNode.getUrl();
+            }
+            title = referenceNode.getTitle();
+        }
+
+        String titlePart = isNotBlank(title) ? format("|title=\"%s\"", title) : "";
+        _buffer.append( format( "!%s|alt=\"%s\"%s!", url, alt.get(0), titlePart));
+    }
+
+    private String getRefString(final SuperNode refnode, final SuperNode referenceKey) {
+        final String ref;
+        if( referenceKey != null ) {
+
+            ref = bufferVisit(new F<Void, Void>() {
+                @Override
+                public Void f(Void p) {
+                    visitChildren(referenceKey);
+                    return null;
+                }
+            }).toString();
+        } else {
+            // in case the refkey is not with the link, we use the references found in the root node
+            ref = bufferVisit(new F<Void, Void>() {
+                @Override
+                public Void f(Void p) {
+                    visitChildren(refnode);
+                    return null;
+                }
+            }).toString();
+        }
+        return ref;
+    }
+
+    private static boolean isNotBlank(String str) {
+        return str != null && str.length() > 0;
     }
 
     @Override
@@ -577,26 +628,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
         visitChildren(rln);
         _buffer.append('|');
 
-        final String ref;
-        if( rln.referenceKey != null ) {
+        final String ref = getRefString(rln, rln.referenceKey);
 
-            ref = bufferVisit(new F<Void, Void>() {
-                @Override
-                public Void f(Void p) {
-                    visitChildren(rln.referenceKey);
-                    return null;
-                }
-            }).toString();
-        } else {
-            // in case the refkey is not with the link, we use the references found in the root node
-            ref = bufferVisit(new F<Void, Void>() {
-                @Override
-                public Void f(Void p) {
-                    visitChildren(rln);
-                    return null;
-                }
-            }).toString();
-        }
         final String parentPageTitle = getHomePageTitle();
         String url = ref;
 
@@ -719,11 +752,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(ReferenceNode rn) {
         // nothing to do. already done in RootNode
-    }
-
-    @Override
-    public void visit(RefImageNode rin) {
-        notImplementedYet(rin);
     }
 
     @Override
