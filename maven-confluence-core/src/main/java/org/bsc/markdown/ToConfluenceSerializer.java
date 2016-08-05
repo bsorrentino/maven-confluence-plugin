@@ -412,10 +412,15 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(CodeNode cn) {
 
-        final String lines[] = cn.getText().split("\n");
+        final String text = cn.getText();
+        
+        final String lines[] = text.split("\n");
         if( lines.length == 1 ) {
+            
             _buffer.append( "{{")
-                   .append(cn.getText())
+                   .append(text
+                        .replace("{", "\\{")
+                        .replace("}", "\\}"))
                    .append( "}}");
             return;
         }
@@ -423,7 +428,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         _buffer
             .append( "{code}")
             .append('\n')
-            .append(cn.getText())
+            .append(text)
             .append( "{code}")
             .append('\n')
             ;
