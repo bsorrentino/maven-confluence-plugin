@@ -20,9 +20,13 @@ and open the template in the editor.
 
     <home  uri="encoding.confluence">
        
-        <child name="issue111" uri="issue111/issue111.md">
+        <child name="Pull Request 112" uri="PR112.md">           
+            <attachment name="conf-icon-64.png" uri="attachments/conf-icon-64.png" comment="" contentType="image/png" version="1"></attachment>
+        </child> 
+
+        <child name="ISSUE 111" uri="Issue111/issue111.md">
             <label>issue_111</label>
-            <child name="greenpepper" uri="issue111/runner-ref.md"></child>
+            <child name="greenpepper" uri="Issue111/runner-ref.md"></child>
         </child> 
         
         <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>

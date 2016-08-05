@@ -37,7 +37,7 @@ public class Site {
      * @param is
      * @return 
      */
-    private static java.io.InputStream processMarkdown( final java.io.InputStream is, final String homePageTitle ) throws IOException {
+    static java.io.InputStream processMarkdown( final java.io.InputStream is, final String homePageTitle ) throws IOException {
         
         final char[] contents = IOUtils.toCharArray(is);
         
