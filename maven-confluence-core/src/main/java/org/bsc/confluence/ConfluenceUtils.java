@@ -26,18 +26,19 @@ public class ConfluenceUtils {
 	 * @return
 	 */
 	public static String decode( String value ) {
-		if( null==value ) return value;
+		if( null==value ) return null;
  		final String result =  value
-                        .replace("{", "\\{")
-                        .replace("}", "\\}")
-                        .replaceAll("</?[Pp][Rr][Ee]>", "{noformat}")
-                        .replaceAll("<[Cc][Oo][Dd][Ee]>", "{{")
-                        .replaceAll("</[Cc][Oo][Dd][Ee]>", "}}")
-                        .replaceAll("</?[Bb]>", "*")
-                        .replaceAll("<[Bb][Rr]/?>", "\\\\")
-                        .replaceAll("<[Hh][Rr]/?>", "----")
-                        .replaceAll("<[Pp]>", "\n\n")
-                        .replaceAll("</[Pp]>", "")
+						.replaceAll("([{}\\[\\]\\+\\*_])", "\\\\$1") // escape every char that would mean something for confluence
+                        .replaceAll("(?i)</?pre>", "{noformat}")
+                        .replaceAll("(?i)<code>", "{{")
+                        .replaceAll("(?i)</code>", "}}")
+                        .replaceAll("(?i)</?(b|strong)>", "*")
+                        .replaceAll("(?i)<br/?>", "\\\\")
+                        .replaceAll("(?i)<hr/?>", "----")
+                        .replaceAll("(?i)</?p>", "\n")
+						.replaceAll("(?i)</?u>", "+")
+						.replaceAll("(?i)</?(s|del)>", "-")
+						.replaceAll("(?i)</?(i|em)>", "_")
 
                         ;
                 return ConfluenceHtmlListUtils.replaceHtmlList(result);
@@ -95,7 +96,6 @@ public class ConfluenceUtils {
         /**
 	 *
 	 * @param confluence
-	 * @param parentPageId
 	 * @param title
 	 * @return
 	 * @throws Exception
@@ -135,7 +135,6 @@ public class ConfluenceUtils {
 	/**
 	 *
 	 * @param confluence
-	 * @param parentPageId
 	 * @param title
 	 * @return
 	 * @throws Exception

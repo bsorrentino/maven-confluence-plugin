@@ -732,8 +732,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         
    /**
      *
-     * @param mojoDescriptor
-     * @param destinationDirectory
      * @throws IOException
      */
     public void processMojoDescriptors(  final PluginDescriptor pluginDescriptor,
@@ -747,6 +745,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         if (mojos == null) {
             getLog().warn("no mojos found [pluginDescriptor.getMojos()]");
             return;
+        } else if (getLog().isDebugEnabled()) {
+            getLog().debug("Found the following Mojos:");
+            for (MojoDescriptor mojo : mojos) {
+                getLog().debug(format("  - %s : %s", mojo.getFullGoalName(), mojo.getDescription()));
+            }
         }
 
         // issue#102
