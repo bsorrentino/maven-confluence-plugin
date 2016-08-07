@@ -37,5 +37,19 @@ public class SiteTest {
         assertThat(converted, containsString("!conf-icon-64.png|alt=\"conf-icon-none\"!"));
     }
 
+    @Test
+    public void shouldSupportSimpleNode() throws IOException {
+        InputStream stream = getClass().getResourceAsStream("simpleNodes.md");
+        InputStream inputStream = Site.processMarkdown(stream, "Test");
+        String converted = IOUtils.toString(inputStream);
 
+        assertThat("All forms of HRules should be supported", converted, containsString("----\n1\n----\n2\n----\n3\n----\n4\n----"));
+        /* only when Extensions.SMARTS is activated
+        assertThat(converted, containsString("&hellip;"));
+        assertThat(converted, containsString("&ndash;"));
+        assertThat(converted, containsString("&mdash;"));
+        */
+        assertThat(converted, containsString("Forcing a line-break\nNext line in the list"));
+        assertThat(converted, containsString("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+    }
 }
