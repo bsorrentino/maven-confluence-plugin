@@ -20,7 +20,8 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 ---- | ---- | ----
 
   * Refer to [Issue 114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) - Generation plugin doc ignores home page from site inline code format
-  * Refer to [Pull Request 112](https://github.com/bsorrentino/maven-confluence-plugin/pull/112) - Markdown **referencenode** support
+  * Refer to [Issue 116](https://github.com/bsorrentino/maven-confluence-plugin/issues/116) - Attachments wrongly assigned
+  * Refer to [Pull Request 117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) - Fix attachements on homepage
 
    > **Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature**.
 
