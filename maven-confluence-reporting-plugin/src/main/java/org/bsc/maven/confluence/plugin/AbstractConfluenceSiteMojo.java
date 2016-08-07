@@ -78,7 +78,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      */
     private void generateAttachments( Site.Page page,  Confluence confluence, Page confluencePage) /*throws MavenReportException*/ {
 
-        getLog().info(format("generateAttachments pageId [%s]", confluencePage.getId()));
+        getLog().info(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
 
         for( Site.Attachment attachment : page.getAttachments() ) {
 
