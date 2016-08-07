@@ -710,25 +710,26 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         final PluginToolsRequest request =
                                 new DefaultPluginToolsRequest(project, pluginDescriptor);
 
-                        generator.processMojoDescriptors(
-                                request.getPluginDescriptor(),
-                                confluence,
-                                parentPage,
-                                site,
-                                locale );
+                        Model.Page confluenceHomePage = generator.processMojoDescriptors(
+                            request.getPluginDescriptor(),
+                            confluence,
+                            parentPage,
+                            site,
+                            locale );
 
                         for( String label : site.getHome().getComputedLabels() ) {
 
-                            confluence.addLabelByName(label, Long.parseLong(parentPage.getId()) );
+                            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+
                         }
 
                         // Issue 32
                         final String title = getTitle();
 
-                        generateChildren(   confluence,
+                        generateChildren(   confluence, 
                                         site.getHome(),
-                                        parentPage,
-                                        title,
+                                        confluenceHomePage,
+                                        title, 
                                         title);
                     }
                     catch( Exception ex ) {
@@ -759,7 +760,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * @param destinationDirectory
      * @throws IOException
      */
-    public void processMojoDescriptors(  final PluginDescriptor pluginDescriptor,
+    public Model.Page processMojoDescriptors(  final PluginDescriptor pluginDescriptor,
                                             final ConfluenceService confluence,
                                             final Model.Page parentPage,
                                             final Site site,
@@ -769,7 +770,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         if (mojos == null) {
             getLog().warn("no mojos found [pluginDescriptor.getMojos()]");
-            return;
+        } else if (getLog().isDebugEnabled()) {
+            getLog().debug("Found the following Mojos:");
+            for (MojoDescriptor mojo : mojos) {
+                getLog().debug(format("  - %s : %s", mojo.getFullGoalName(), mojo.getDescription()));
+            }
         }
 
         // issue#102
@@ -780,10 +785,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("artifactId",   getProject().getArtifactId());
         getProperties().put("version",      getProject().getVersion());
 
-        Site.processUri(site.getHome().getUri(), getTitle(), new Func2<java.io.InputStream,Storage.Representation,Void>() {
+        return Site.processUri(site.getHome().getUri(), getTitle(), new Func2<java.io.InputStream,Storage.Representation,Model.Page>() {
 
             @Override
-            public Void call( java.io.InputStream is ,Storage.Representation sr) {
+            public Model.Page call( java.io.InputStream is ,Storage.Representation sr) {
                 
                 try {
                     final MiniTemplator t = new MiniTemplator.Builder()
@@ -809,7 +814,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     {
                         final StringWriter writer = new StringWriter(100 * 1024);
                         
-                        writeSummary(writer, pluginDescriptor, mojos);
+                        writeSummary(writer, pluginDescriptor);
                         
                         writer.flush();
                         
@@ -867,7 +872,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         }
                     }
                     
-                    return null;
+                    return page;
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -915,7 +920,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         }
 */
-    }
-
+        }
     }
 }

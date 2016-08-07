@@ -210,9 +210,8 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
      * 
      * @param writer
      * @param pluginDescriptor
-     * @param mojos 
      */
-    protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor, List<MojoDescriptor> mojos) {
+    protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor) {
 
         ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 

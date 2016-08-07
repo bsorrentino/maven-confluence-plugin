@@ -16,6 +16,8 @@ import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.maven.reporting.model.Site;
 import org.bsc.maven.reporting.model.SiteFactory;
 
+import static java.lang.String.format;
+
 /**
  *
  * @author bsorrentino
@@ -74,7 +76,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      */
     private void generateAttachments( Site.Page page,  ConfluenceService confluence, Model.Page confluencePage) /*throws MavenReportException*/ {
 
-        getLog().info(String.format("generateAttachments pageId [%s]", confluencePage.getId()));
+        getLog().info(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
 
         for( Site.Attachment attachment : page.getAttachments() ) {
 
@@ -83,26 +85,26 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
             try {
                 confluenceAttachment = confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion());
             } catch (Exception e) {
-                getLog().warn(String.format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
+                getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
             }
 
             if (confluenceAttachment != null) {
 
-
                 java.util.Date date = confluenceAttachment.getCreated();
 
                 if (date == null) {
-                    getLog().warn(String.format("creation date of attachments [%s] is undefined. It will be replaced! ", confluenceAttachment.getFileName()));
+                    getLog().warn(format("creation date of attachments [%s] is undefined. It will be replaced! ", confluenceAttachment.getFileName()));
                 } else {
                     if (attachment.hasBeenUpdatedFrom(date)) {
-                        getLog().info(String.format("attachment [%s] is more recent than the remote one. It will be replaced! ", confluenceAttachment.getFileName()));
+                        getLog().info(format("attachment [%s] is more recent than the remote one. It will be replaced! ", confluenceAttachment.getFileName()));
                     } else {
-                        getLog().info(String.format("attachment [%s] skipped! no updated detected", confluenceAttachment.getFileName()));
+                        getLog().info(format("attachment [%s] skipped! no updated detected", confluenceAttachment.getFileName()));
                         continue;
 
                     }
                 }
             } else {
+                getLog().info(format("Creating new attachment for [%s]", attachment.getName()));
                 confluenceAttachment = confluence.createAttachment();
                 confluenceAttachment.setFileName(attachment.getName());
                 confluenceAttachment.setContentType(attachment.getContentType());
@@ -114,7 +116,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
             try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
                 confluence.addAttchment(confluencePage, confluenceAttachment, is );
             } catch (Exception e) {
-                getLog().error(String.format("Error uploading attachment [%s] ", attachment.getName()), e);
+                getLog().error(format("Error uploading attachment [%s] ", attachment.getName()), e);
             }
 
         }
@@ -137,7 +139,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                                         final String titlePrefix) 
     {
 
-        getLog().info(String.format("generateChildren # [%d]", parentPage.getChildren().size()));
+        getLog().info(format("generateChildren # [%d]", parentPage.getChildren().size()));
 
         
         generateAttachments(parentPage, confluence, confluenceParentPage);
