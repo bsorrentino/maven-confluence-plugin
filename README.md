@@ -16,7 +16,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
--  | **Release 4.12-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.12%7Cmaven-plugin)**  
+-  | **Release 4.12-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/4.12-SNAPSHOT/)**  
 ---- | ---- | ----
 
   * Refer to [Issue 114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) - Generation plugin doc ignores home page from site inline code format
