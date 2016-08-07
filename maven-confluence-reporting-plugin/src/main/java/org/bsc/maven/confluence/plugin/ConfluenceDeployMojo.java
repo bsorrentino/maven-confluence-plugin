@@ -690,7 +690,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     final PluginToolsRequest request = 
                             new DefaultPluginToolsRequest(project, pluginDescriptor);
 
-                    generator.processMojoDescriptors( 
+                    Page confluenceHomePage = generator.processMojoDescriptors(
                             request.getPluginDescriptor(),
                             confluence,
                             parentPage,
@@ -699,15 +699,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
                     for( String label : site.getHome().getComputedLabels() ) {
 
-                        confluence.addLabelByName(label, Long.parseLong(parentPage.getId()) );
+                        confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
                     }
 
                     // Issue 32
                     final String title = getTitle();
 
                     generateChildren(   confluence, 
-                                        site.getHome(), 
-                                        parentPage, 
+                                        site.getHome(),
+                                        confluenceHomePage,
                                         title, 
                                         title);
 
@@ -734,17 +734,16 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      *
      * @throws IOException
      */
-    public void processMojoDescriptors(  final PluginDescriptor pluginDescriptor,
-                                            final Confluence confluence,
-                                            final Page parentPage,
-                                            final Site site, 
-                                            final Locale locale) throws Exception 
+    public Page processMojoDescriptors(final PluginDescriptor pluginDescriptor,
+                                       final Confluence confluence,
+                                       final Page parentPage,
+                                       final Site site,
+                                       final Locale locale) throws Exception
     {
         final List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
 
         if (mojos == null) {
             getLog().warn("no mojos found [pluginDescriptor.getMojos()]");
-            return;
         } else if (getLog().isDebugEnabled()) {
             getLog().debug("Found the following Mojos:");
             for (MojoDescriptor mojo : mojos) {
@@ -760,8 +759,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("artifactId",   getProject().getArtifactId());
         getProperties().put("version",      getProject().getVersion());
 
-        MiniTemplator t = null;
+        final java.io.InputStream is = Site.processUri(site.getHome().getUri(), getTitle()) ;
 
+        final MiniTemplator t = new MiniTemplator.Builder()
+                                            .setSkipUndefinedVars(true)
+                                            .build( is, getCharset() );
+
+/*
         if (templateWiki == null || !templateWiki.exists()) {
 
             getLog().warn("template not set! default using ...");
@@ -799,7 +803,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
 
         }
-
+*/
         Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
 
         if (!isSnapshot() && isRemoveSnapshots()) {
@@ -819,7 +823,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         {
             final StringWriter writer = new StringWriter(100 * 1024);
 
-            writeSummary(writer, pluginDescriptor, mojos);
+            writeSummary(writer, pluginDescriptor);
 
             writer.flush();
 
@@ -839,22 +843,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         /////////////////////////////////////////////////////////////////
         // GOALS
         /////////////////////////////////////////////////////////////////
-        
-        final java.util.List<Goal> goals;
-        {
-            StringWriter writer = new StringWriter(100 * 1024);
+        final java.util.List<Goal> goals = new ArrayList<Goal>();
 
-            //writeGoals(writer, mojos);
-            goals = writeGoalsAsChildren(writer, page, title, mojos);
+        if (mojos != null) {
+            {
+                StringWriter writer = new StringWriter(100 * 1024);
 
-            writer.flush();
+                //writeGoals(writer, mojos);
+                goals.addAll(writeGoalsAsChildren(writer, page, title, mojos));
 
-            try {
-                t.setVariable(PLUGIN_GOALS_VAR, writer.toString());
-            } catch (VariableNotDefinedException e) {
-                getLog().warn(String.format("variable %s not defined in template", "plugin.goals"));
+                writer.flush();
+
+                try {
+                    t.setVariable(PLUGIN_GOALS_VAR, writer.toString());
+                } catch (VariableNotDefinedException e) {
+                    getLog().warn(String.format("variable %s not defined in template", "plugin.goals"));
+                }
+
             }
-
         }
         
         /* 
@@ -869,15 +875,16 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         page = confluence.storePage(page);
 
         // GENERATE GOAL
-        for( Goal goal : goals ) {
+        for (Goal goal : goals) {
             try {
                 goal.generatePage(confluence, page, title);
-            }
-            catch( Exception ex ) {
-                getLog().warn( format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
+            } catch (Exception ex) {
+                getLog().warn(format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
             }
         }
+
+        return page;
     }
-        
+
     }
 }

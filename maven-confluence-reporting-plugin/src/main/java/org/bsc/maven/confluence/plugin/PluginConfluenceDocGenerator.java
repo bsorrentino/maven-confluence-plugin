@@ -211,9 +211,8 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
      * 
      * @param writer
      * @param pluginDescriptor
-     * @param mojos 
      */
-    protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor, List<MojoDescriptor> mojos) {
+    protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor) {
 
         ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 
@@ -235,7 +234,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         
         final ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 
-        w.printBiggerHeading("Plugin Goals");
+        w.printBiggestHeading("Plugin Goals");
 
         w.println("|| Name || Description ||");
         
