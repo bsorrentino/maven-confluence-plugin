@@ -1,21 +1,19 @@
-h1. Index
-{panel}
+# Index 
+
 {toc}
-{panel}
 
 
 ${project.summary}
 
-----
-
-${project.team}
-
-----
-
-${project.scmManager}
-
-----
 
 ${plugin.goals}
 
-----
+
+${project.team}
+
+
+${project.scmManager}
+
+
+
+

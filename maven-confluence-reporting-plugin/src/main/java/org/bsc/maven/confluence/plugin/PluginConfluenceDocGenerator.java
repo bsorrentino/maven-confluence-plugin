@@ -234,7 +234,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         
         final ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 
-        w.printBiggerHeading("Plugin Goals");
+        w.printBiggestHeading("Plugin Goals");
 
         w.println("|| Name || Description ||");
         

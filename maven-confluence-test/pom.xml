@@ -57,8 +57,9 @@
                     <spaceKey>${spaceKey}</spaceKey>
                     <parentPageTitle>Home</parentPageTitle>
                     <parentPageId>18677788</parentPageId><!-- TEST ISSUE 107 -->
+                    <!--
                     <title>my-site-generation-test ${project.version}</title>
-
+                    -->
                     <labels>
                         <label>maven</label>
                     </labels>

@@ -67,15 +67,15 @@
         <tag>${project.artifactId}-${project.version}</tag>
         <snapshot.repo.id>sonatype-server</snapshot.repo.id>
     </properties>
-  
+
     <repositories>
         <repository>
             <id>${snapshot.repo.id}</id>
             <name>snapshots</name>
-            <url>${snapshot.repo.url}</url>          
+            <url>${snapshot.repo.url}</url>
         </repository>
     </repositories>
-  
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -144,7 +144,7 @@
                 <artifactId>pegdown</artifactId>
                 <version>1.6.0</version>
             </dependency>
-            
+
             <dependency>
                <groupId>org.apache.xmlrpc</groupId>
                <artifactId>xmlrpc-client</artifactId>
@@ -168,7 +168,7 @@
                 <artifactId>junit</artifactId>
                 <version>4.8.2</version>
             </dependency>
-                      
+
         </dependencies>
     </dependencyManagement>
     <build>
@@ -192,7 +192,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>1.4.1</version>
-                </plugin>          
+                </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -256,9 +256,9 @@
         <profile>
             <id>release</id>
             <build>
-          
+
                 <plugins>
-        
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>

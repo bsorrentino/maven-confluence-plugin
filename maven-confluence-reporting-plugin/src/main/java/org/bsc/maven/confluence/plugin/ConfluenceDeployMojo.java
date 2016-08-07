@@ -48,11 +48,7 @@ import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.reporting.MavenReportException;
-import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
 import static java.lang.String.format;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
@@ -784,8 +780,103 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("artifactId",   getProject().getArtifactId());
         getProperties().put("version",      getProject().getVersion());
 
-        MiniTemplator t = null;
+        Site.processUri(site.getHome().getUri(), getTitle(), new Func2<java.io.InputStream,Storage.Representation,Void>() {
 
+            @Override
+            public Void call( java.io.InputStream is ,Storage.Representation sr) {
+                
+                try {
+                    final MiniTemplator t = new MiniTemplator.Builder()
+                            .setSkipUndefinedVars(true)
+                            .build( is, getCharset() );
+                    
+                    Model.Page page = confluence.getOrCreatePage(parentPage, title);
+                    
+                    if (!isSnapshot() && isRemoveSnapshots()) {
+                        final String snapshot = title.concat("-SNAPSHOT");
+                        getLog().info(format("removing page [%s]!", snapshot));
+                        boolean deleted = confluence.removePage( parentPage, snapshot);
+                        
+                        if (deleted) {
+                            getLog().info(format("Page [%s] has been removed!", snapshot));
+                        }
+                    }
+                    
+                    /////////////////////////////////////////////////////////////////
+                    // SUMMARY
+                    /////////////////////////////////////////////////////////////////
+                    
+                    {
+                        final StringWriter writer = new StringWriter(100 * 1024);
+                        
+                        writeSummary(writer, pluginDescriptor, mojos);
+                        
+                        writer.flush();
+                        
+                        try {
+                            final String summary = writer.toString();
+                            
+                            t.setVariable(PLUGIN_SUMMARY_VAR, summary);
+                            
+                        } catch (VariableNotDefinedException e) {
+                            getLog().debug(format("variable %s or %s not defined in template", PLUGIN_SUMMARY_VAR, PROJECT_SUMMARY_VAR));
+                        }
+                        
+                    }
+                    
+                    generateProjectHomeTemplate(t, site, locale);
+                    
+                    /////////////////////////////////////////////////////////////////
+                    // GOALS
+                    /////////////////////////////////////////////////////////////////
+                    
+                    final java.util.List<Goal> goals;
+                    {
+                        StringWriter writer = new StringWriter(100 * 1024);
+                        
+                        //writeGoals(writer, mojos);
+                        goals = writeGoalsAsChildren(writer, title, mojos);
+                        
+                        writer.flush();
+                        
+                        try {
+                            t.setVariable(PLUGIN_GOALS_VAR, writer.toString());
+                        } catch (VariableNotDefinedException e) {
+                            getLog().debug(String.format("variable %s not defined in template", "plugin.goals"));
+                        }
+                        
+                    }
+                    
+                    /*
+                    // issue#102
+                    final StringBuilder wiki = new StringBuilder()
+                    .append(ConfluenceUtils.getBannerWiki())
+                    .append(t.generateOutput());
+                    page.setContent(wiki.toString());
+                    */
+                    
+                    page = confluence.storePage(page,new Storage(t.generateOutput(), Representation.WIKI));
+                    
+                    // GENERATE GOAL
+                    for( Goal goal : goals ) {
+                        try {
+                            goal.generatePage(confluence, page, title);
+                        }
+                        catch( Exception ex ) {
+                            getLog().warn( format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
+                        }
+                    }
+                    
+                    return null;
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            
+        }) ;
+            
+
+/*        
         if (templateWiki == null || !templateWiki.exists()) {
 
             getLog().warn("template not set! default using ...");
@@ -823,83 +914,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
 
         }
-
-        Model.Page page = confluence.getOrCreatePage(parentPage, title);
-
-        if (!isSnapshot() && isRemoveSnapshots()) {
-            final String snapshot = title.concat("-SNAPSHOT");
-            getLog().info(format("removing page [%s]!", snapshot));
-            boolean deleted = confluence.removePage( parentPage, snapshot);
-
-            if (deleted) {
-                getLog().info(format("Page [%s] has been removed!", snapshot));
-            }
-        }
-
-        /////////////////////////////////////////////////////////////////
-        // SUMMARY
-        /////////////////////////////////////////////////////////////////
-
-        {
-            final StringWriter writer = new StringWriter(100 * 1024);
-
-            writeSummary(writer, pluginDescriptor, mojos);
-
-            writer.flush();
-
-            try {
-                final String summary = writer.toString();
-
-                t.setVariable(PLUGIN_SUMMARY_VAR, summary);
-
-            } catch (VariableNotDefinedException e) {
-                getLog().debug(format("variable %s or %s not defined in template", PLUGIN_SUMMARY_VAR, PROJECT_SUMMARY_VAR));
-            }
-
-        }
-
-        generateProjectHomeTemplate(t, site, locale);
-
-        /////////////////////////////////////////////////////////////////
-        // GOALS
-        /////////////////////////////////////////////////////////////////
-
-        final java.util.List<Goal> goals;
-        {
-            StringWriter writer = new StringWriter(100 * 1024);
-
-            //writeGoals(writer, mojos);
-            goals = writeGoalsAsChildren(writer, title, mojos);
-
-            writer.flush();
-
-            try {
-                t.setVariable(PLUGIN_GOALS_VAR, writer.toString());
-            } catch (VariableNotDefinedException e) {
-                getLog().debug(String.format("variable %s not defined in template", "plugin.goals"));
-            }
-
-        }
-
-        /*
-        // issue#102
-        final StringBuilder wiki = new StringBuilder()
-                .append(ConfluenceUtils.getBannerWiki())
-                .append(t.generateOutput());
-        page.setContent(wiki.toString());
-        */
-
-        page = confluence.storePage(page,new Storage(t.generateOutput(), Representation.WIKI));
-
-        // GENERATE GOAL
-        for( Goal goal : goals ) {
-            try {
-                goal.generatePage(confluence, page, title);
-            }
-            catch( Exception ex ) {
-                getLog().warn( format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
-            }
-        }
+*/
     }
 
     }
