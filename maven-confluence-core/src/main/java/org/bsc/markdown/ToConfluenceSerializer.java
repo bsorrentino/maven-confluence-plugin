@@ -221,11 +221,10 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
             java.util.List<Node> children = bqn.getChildren();
 
-            if( children.size() != 2 ) return false;
-
-            Node node1 = bqn.getChildren().get(1);
-
-            if( !(node1 instanceof BlockQuoteNode ) ) return false;
+            if( children.size() < 2 ) {
+                // We are sure to not have a title tag
+                return false;
+            }
 
             final boolean result =
                     findByClass(bqn.getChildren().get(0),
@@ -263,9 +262,10 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
             if( result ) {
 
-                _buffer.append( format("{%s:title=%s}", element, title));
-                visitChildren(node1);
-                _buffer.append( format("{%s}", element) ).append('\n');;
+                _buffer.append( format("\n{%s%s}\n", element, isNotBlank(title)? ":title=" + title : ""));
+                bqn.getChildren().remove(0);
+                visitChildren(bqn);
+                _buffer.append( format("\n{%s}\n", element) ).append('\n');
             }
 
             return result;
@@ -348,7 +348,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(HeaderNode hn) {
         _buffer.append( format( "h%s.", hn.getLevel()) );
         visitChildren(hn);
-        _buffer.append('\n');
+        _buffer.append("\n\n");
     }
 
 
