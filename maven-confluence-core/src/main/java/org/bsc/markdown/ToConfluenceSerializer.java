@@ -85,6 +85,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         EXT |= Extensions.FENCED_CODE_BLOCKS;
         EXT |= Extensions.TABLES;
         EXT |= Extensions.STRIKETHROUGH;
+        // EXT |= Extensions.SMARTS; // Breaks link including a dash -
 
         return EXT;
     }
@@ -761,7 +762,28 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(SimpleNode sn) {
-        notImplementedYet(sn);
+        switch (sn.getType()) {
+            case HRule:
+                _buffer.append("----\n");
+                break;
+            case Linebreak:
+                _buffer.append("\n");
+                break;
+            case Nbsp:
+                _buffer.append("&nbsp;");
+                break;
+            case Emdash:
+                _buffer.append("&mdash;");
+                break;
+            case Endash:
+                _buffer.append("&ndash;");
+                break;
+            case Ellipsis:
+                _buffer.append("&hellip;");
+                break;
+            default:
+                notImplementedYet(sn);
+        }
     }
 
     @Override
