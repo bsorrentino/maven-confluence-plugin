@@ -1,7 +1,8 @@
 package org.bsc.maven.confluence.plugin;
 
 import org.bsc.confluence.ConfluenceService;
-import static org.bsc.confluence.ConfluenceUtils.decode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import static org.bsc.confluence.ConfluenceUtils.decode;
 
 /**
  *
@@ -29,6 +31,8 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
  */
 @SuppressWarnings("unchecked")
 public abstract class PluginConfluenceDocGenerator implements Generator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginConfluenceDocGenerator.class);
 
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
 
@@ -40,11 +44,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             this.descriptor = mojoDescriptor;
         }
 
-        /**
-         *
-         * @param writer
-         * @param mojoDescriptor
-         */
         public void write(ConfluenceWikiWriter w) {
 
             w.appendBigHeading()
@@ -52,7 +51,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                     .println();
 
             String description = (descriptor.getDescription() != null)
-                    ? descriptor.getDescription()
+                    ? decode(descriptor.getDescription())
                     : "No description.";
 
             w.printQuote(description);
@@ -95,7 +94,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         
         /**
          *
-         * @param mojoDescriptor
          * @param w
          */
         private void writeAttributes(ConfluenceWikiWriter w) {
@@ -163,7 +161,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
         /**
          *
-         * @param mojoDescriptor
          * @param w
          */
         private void writeParameterTable(ConfluenceWikiWriter w) {
@@ -244,7 +241,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             w.printf( "[%s|%s]",goal.descriptor.getFullGoalName(),
                                   goal.getPageName(parentName) );		
             w.print('|');
-            w.print(goal.descriptor.getDescription());
+            w.print(decode(goal.descriptor.getDescription()));
             w.println('|');
             
             result.add(goal);

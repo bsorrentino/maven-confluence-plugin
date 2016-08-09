@@ -25,6 +25,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
  > We will continue support Release 4 on branch **support/4.x**
 
+
 Aug 5,2016  | **Release 4.11** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.11%7Cmaven-plugin)**  
 ---- | ---- | ----
 
