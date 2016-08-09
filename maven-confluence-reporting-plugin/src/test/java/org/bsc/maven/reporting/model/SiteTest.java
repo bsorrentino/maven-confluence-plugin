@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
@@ -51,5 +52,21 @@ public class SiteTest {
         */
         assertThat(converted, containsString("Forcing a line-break\nNext line in the list"));
         assertThat(converted, containsString("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+    }
+    
+    @Test
+    public void shouldCreateSpecificNoticeBlock() throws IOException {
+        InputStream stream = getClass().getResourceAsStream("createSpecificNoticeBlock.md");
+        InputStream inputStream = Site.processMarkdown(stream, "Test Macro");
+        String converted = IOUtils.toString(inputStream);
+
+        assertThat(converted, containsString("{info:title=About me}\n"));
+        assertThat("Should not generate unneeded param 'title'", converted, not(containsString("{note:title=}\n")));
+        assertThat(converted, containsString("{tip:title=About you}\n"));
+        assertThat(converted, containsString("bq. test a simple blockquote"));
+        assertThat(converted, containsString("{quote}\n"));
+        assertThat(converted, containsString("* one\n* two"));
+        assertThat(converted, containsString("a *strong* and _pure_ feeling"));
+
     }
 }
