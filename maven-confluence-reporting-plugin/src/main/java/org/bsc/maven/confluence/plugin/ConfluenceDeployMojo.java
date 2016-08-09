@@ -52,6 +52,7 @@ import static java.lang.String.format;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import rx.functions.Action1;
 import rx.functions.Func2;
 /**
  *
@@ -527,7 +528,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private void generateProjectReport( final Site site, final Locale locale ) throws MojoExecutionException
     {
 
-        super.confluenceExecute(new P1<ConfluenceService>() {
+        super.confluenceExecute(new Action1<ConfluenceService>() {
             
             @Override
             public void call(ConfluenceService confluence)  {
@@ -756,8 +757,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
    /**
      *
-     * @param mojoDescriptor
-     * @param destinationDirectory
      * @throws IOException
      */
     public Model.Page processMojoDescriptors(  final PluginDescriptor pluginDescriptor,
@@ -881,7 +880,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }) ;
             
 
-/*        
+/*
         if (templateWiki == null || !templateWiki.exists()) {
 
             getLog().warn("template not set! default using ...");

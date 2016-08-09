@@ -17,6 +17,7 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 import static java.lang.String.format;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bsc.confluence.ConfluenceService.Model;
+import rx.functions.Action1;
 
 
 /**
@@ -151,7 +152,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @param task
      * @throws MojoExecutionException
      */
-    protected void confluenceExecute(P1<ConfluenceService> task) throws MojoExecutionException {
+    protected <T extends Action1<ConfluenceService>> void confluenceExecute(T task) throws MojoExecutionException {
 
         if (sslCertificate != null) {
             getLog().debug(String.valueOf(sslCertificate));
