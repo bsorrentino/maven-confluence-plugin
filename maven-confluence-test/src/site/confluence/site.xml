@@ -25,8 +25,12 @@ and open the template in the editor.
         </child> 
 
         <child name="ISSUE 111" uri="Issue111/issue111.md">
-            <label>issue_111</label>
+            <label>Issue 111</label>
             <child name="greenpepper" uri="Issue111/runner-ref.md"></child>
+        </child> 
+
+        <child name="Pull Request 113" uri="PR113/createSpecificNoticeBlock.md">
+            <label>PR 113</label>
         </child> 
         
         <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
