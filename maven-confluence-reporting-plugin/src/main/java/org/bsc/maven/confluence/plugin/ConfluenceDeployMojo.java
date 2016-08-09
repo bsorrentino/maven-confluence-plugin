@@ -516,7 +516,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
                     confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
                 }
-
+                
                 generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
             }
 
@@ -732,8 +732,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         
    /**
      *
-     * @param mojoDescriptor
-     * @param destinationDirectory
      * @throws IOException
      */
     public Page processMojoDescriptors(final PluginDescriptor pluginDescriptor,
@@ -762,12 +760,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("version",      getProject().getVersion());
 
         final java.io.InputStream is = Site.processUri(site.getHome().getUri(), getTitle()) ;
-            
+
         final MiniTemplator t = new MiniTemplator.Builder()
                                             .setSkipUndefinedVars(true)
                                             .build( is, getCharset() );
 
-/*        
+/*
         if (templateWiki == null || !templateWiki.exists()) {
 
             getLog().warn("template not set! default using ...");
