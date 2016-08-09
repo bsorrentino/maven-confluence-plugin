@@ -18,20 +18,18 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 -  | **Release 4.12-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/4.12-SNAPSHOT/)**  
 ---- | ---- | ----
-  * Refer to [Pull Request 113](https://github.com/bsorrentino/maven-confluence-plugin/pull/113) - More flexibility to panels
+
+ * Refer to [Issue 114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) - Generation plugin doc ignores home page from site inline code format
+ * Refer to [Issue 116](https://github.com/bsorrentino/maven-confluence-plugin/issues/116) - Attachments wrongly assigned
+ * Refer to [Issue 119](https://github.com/bsorrentino/maven-confluence-plugin/issues/119) - Using an Horizontal rules in a MD page breaks
+
+
+ * Refer to [Pull Request 113](https://github.com/bsorrentino/maven-confluence-plugin/pull/113) - More flexibility to panels
+ * Refer to [Pull Request 115](https://github.com/bsorrentino/maven-confluence-plugin/pull/115) - support more tags in the plugin doc generation
+ * Refer to [Pull Request 117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) - Fix attachments on homepage
+ * Refer to [Pull Request 120](https://github.com/bsorrentino/maven-confluence-plugin/pull/120) - Support simpleNode (Horizontal rules + forced line breaks)
 
     > **Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature**.
-
-  * Refer to [Issue 114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) - Generation plugin doc ignores home page from site inline code format
-  * Refer to [Issue 116](https://github.com/bsorrentino/maven-confluence-plugin/issues/116) - Attachments wrongly assigned
-  * Refer to [Pull Request 117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) - Fix attachements on homepage
-
-   > **Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature**.
-
-  * Refer to [Issue 119](https://github.com/bsorrentino/maven-confluence-plugin/issues/119) - Using an Horizontal rules in a MD page breaks
-  * Refer to [Pull Request 120](https://github.com/bsorrentino/maven-confluence-plugin/pull/120) - Support simpleNode (Horizontal rules + forced line breaks)
-
-   > **Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature**.
 
 
 Aug 5,2016  | **Release 4.11** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.11%7Cmaven-plugin)**  
