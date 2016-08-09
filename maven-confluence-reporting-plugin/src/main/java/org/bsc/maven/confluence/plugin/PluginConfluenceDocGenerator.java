@@ -1,25 +1,27 @@
 package org.bsc.maven.confluence.plugin;
 
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.bsc.confluence.ConfluenceUtils;
-import static org.bsc.confluence.ConfluenceUtils.decode;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.tools.plugin.generator.Generator;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import java.util.Collections;
-import org.apache.maven.tools.plugin.generator.GeneratorException;
+import static org.bsc.confluence.ConfluenceUtils.decode;
 
 /**
  *
@@ -28,6 +30,8 @@ import org.apache.maven.tools.plugin.generator.GeneratorException;
  */
 @SuppressWarnings("unchecked")
 public abstract class PluginConfluenceDocGenerator implements Generator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginConfluenceDocGenerator.class);
 
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
 
@@ -39,11 +43,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             this.descriptor = mojoDescriptor;
         }
 
-        /**
-         *
-         * @param writer
-         * @param mojoDescriptor
-         */
         public void write(ConfluenceWikiWriter w) {
 
             w.appendBigHeading()
@@ -51,7 +50,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                     .println();
 
             String description = (descriptor.getDescription() != null)
-                    ? descriptor.getDescription()
+                    ? decode(descriptor.getDescription())
                     : "No description.";
 
             w.printQuote(description);
@@ -73,7 +72,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         }
 
         public Page generatePage( Confluence confluence,  Page parent, String parentName ) throws Exception {
-            
+
             final String goalName = getPageName( parentName );
 
             Page result = ConfluenceUtils.getOrCreatePage(confluence, parent, goalName);
@@ -86,7 +85,10 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
             writer.flush();
 
-            result.setContent(writer.toString());
+            String content = writer.toString();
+            LOGGER.debug("{} content to write:\n{}", goalName, content);
+
+            result.setContent(content);
 
             result  = confluence.storePage(result);
 
@@ -96,7 +98,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         
         /**
          *
-         * @param mojoDescriptor
          * @param w
          */
         private void writeAttributes(ConfluenceWikiWriter w) {
@@ -164,7 +165,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
         /**
          *
-         * @param mojoDescriptor
          * @param w
          */
         private void writeParameterTable(ConfluenceWikiWriter w) {
@@ -245,7 +245,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             w.printf( "[%s|%s]",goal.descriptor.getFullGoalName(),
                                   goal.getPageName(parentName) );		
             w.print('|');
-            w.print(goal.descriptor.getDescription());
+            w.print(decode(goal.descriptor.getDescription()));
             w.println('|');
             
             //w.appendBullet()
