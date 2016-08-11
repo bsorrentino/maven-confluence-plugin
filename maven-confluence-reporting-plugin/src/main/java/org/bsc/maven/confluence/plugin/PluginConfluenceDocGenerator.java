@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.bsc.confluence.ConfluenceUtils.decode;
+import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createAnchor;
+import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createLinkToAnchor;
 
 /**
  *
@@ -121,37 +123,37 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                 w.printBullet("Executes by direct invocation only.");
             }
 
-            value = descriptor.isDependencyResolutionRequired();
+            value = descriptor.getDependencyResolutionRequired();
 
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Requires dependency resolution of artifacts in scope: <code>" + value + "</code>");
+                w.printBullet("Requires dependency resolution of artifacts in scope: {{" + value + "}}");
             }
 
             value = descriptor.getSince();
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Since version: <code>" + value + "</code>");
+                w.printBullet("Since version: {{" + value + "}}");
             }
 
             value = descriptor.getPhase();
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Automatically executes within the lifecycle phase: <code>" + value + "</code>");
+                w.printBullet("Automatically executes within the lifecycle phase: {{" + value + "}}");
             }
 
             value = descriptor.getExecutePhase();
             if (StringUtils.isNotEmpty(value)) {
                 w.printBullet(
-                        "Invokes the execution of the lifecycle phase <code>" + value + "</code> prior to executing itself.");
+                        "Invokes the execution of the lifecycle phase {{" + value + "}} prior to executing itself.");
             }
 
             value = descriptor.getExecuteGoal();
             if (StringUtils.isNotEmpty(value)) {
                 w.printBullet(
-                        "Invokes the execution of this plugin's goal <code>" + value + "</code> prior to executing itself.");
+                        "Invokes the execution of this plugin's goal {{" + value + "}} prior to executing itself.");
             }
 
             value = descriptor.getExecuteLifecycle();
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Executes in its own lifecycle: <code>" + value + "</code>");
+                w.printBullet("Executes in its own lifecycle: {{" + value + "}}");
             }
 
             if (descriptor.isOnlineRequired()) {
@@ -317,7 +319,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
         for (Parameter parameter : parameterList) {
 
-            w.printSmallHeading(parameter.getName());
+            w.printSmallHeading(createAnchor(parameter.getName(), parameter.getName()));
 
             String description = parameter.getDescription();
             if (StringUtils.isEmpty(description)) {
@@ -348,7 +350,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     private void writeDetail(String param, String value, ConfluenceWikiWriter w) {
         if (StringUtils.isNotEmpty(value)) {
-            w.printf("|%s|%s|\n", decode(param), decode(value));
+            w.printf("||%s|%s|\n", decode(param), decode(value));
         }
     }
 
@@ -388,7 +390,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
             w.print('|');
 
-            w.print(parameter.getName());
+            w.print(createLinkToAnchor(parameter.getName(), parameter.getName()));
 
             w.print('|');
 
