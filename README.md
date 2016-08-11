@@ -28,6 +28,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
  * Refer to [Pull Request 115](https://github.com/bsorrentino/maven-confluence-plugin/pull/115) - support more tags in the plugin doc generation
  * Refer to [Pull Request 117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) - Fix attachments on homepage
  * Refer to [Pull Request 120](https://github.com/bsorrentino/maven-confluence-plugin/pull/120) - Support simpleNode (Horizontal rules + forced line breaks)
+ * Refer to [Pull Request 121](https://github.com/bsorrentino/maven-confluence-plugin/pull/121) - Some small improvement to the plugin goal page
 
     > **Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature**.
 
