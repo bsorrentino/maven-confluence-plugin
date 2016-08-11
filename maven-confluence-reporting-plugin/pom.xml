@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>confluence-reporting-maven-plugin</artifactId>
 <packaging>maven-plugin</packaging>
-    
+
     <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
     </description>

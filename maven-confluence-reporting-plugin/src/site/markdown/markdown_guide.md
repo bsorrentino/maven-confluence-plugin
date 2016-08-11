@@ -31,46 +31,62 @@ Below the supported format:
 _Italic text_
 ```
 
-### Bullet List
+### Unordered List
 
 ```
- * Element 1
- * Element 2
- * Element 3
+* Element 1
+* Element 2
+* Element 3
+* Sublist
+   1. item 1
+   1. item 2
+   1. item 3
 ```
 
-### Numbered List
+### Ordered List
 
 ```
- 1. Element 1
- 1. Element 2
- 1. Element 3
+1. Element 1
+1. Element 2
+1. Element 3
+1. Sublist
+   * item 1
+   * item 2
+   * item 3
 ```
 
-
-### Links
-
-#### external link
+### Site Ref Links
 
 ```
-[this is a link](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown/)
+
+* This one is [inline](http://google.com "Google").
+* This one is [inline **wo** title](http://google.com).
+* This is my [google] link defined after.
+* This is my [more complex google] link defined after.
+* This is my [relative](relativepage) link defined after.
+* This is my [rel] link defined after.
+
+[rel]: relativeagain
+[more complex google]: http://google.com "Other google"
+[google]: http://google.com
+
 ```
 
-#### internal link
+### Image Ref Link
 
 ```
-This is an ref link [README.MD]
+* add an absolute ![conf-icon](http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png "My conf-icon") with title.
+* add a relative ![conf-icon](conf-icon-64.png "My conf-icon") with title.
+* add a relative ![conf-icon](conf-icon-64.png) without title.
+* add a ref img ![conf-icon-y][y] with title.
+* add a ref img ![conf-icon-y1][y1] without title.
+* add a ref img ![conf-icon-y2][y2] relative.
+* add a ref img ![conf-icon-none] relative with default refname.
 
-This is an ref link [README.MD][My Readme]
-
-This is an ref link [README.MD][1]
-```
-
-### Image
-
-#### external image
-```
-![alt](https://github.com/bsorrentino/..../raw/images/icon48.png "Title")
+[y]: http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png "My conf-icon"
+[y1]: http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png
+[y2]: conf-icon-64.png
+[conf-icon-none]: conf-icon-64.png
 ```
 
 #### confluence specific

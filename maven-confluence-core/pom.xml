@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
- 
+
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
         <version>5.0-SNAPSHOT</version>
     </parent>
-  
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-confluence-core</artifactId>
     <name>CONFLUENCE-REPORTING::Core - ${project.version}</name>
@@ -17,7 +17,7 @@
         <url>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</url>
         <tag>HEAD</tag>
     </scm>
- 
+
     <description>maven confluence plugin - core project</description>
     <url>http://code.google.com/p/maven-confluence-plugin/</url>
     <developers>
@@ -34,14 +34,14 @@
         </license>
     </licenses>
 
-  
+
   <dependencies>
       <dependency>
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
           <scope>test</scope>
       </dependency>
-          
+
       <dependency>
           <groupId>org.apache.xmlrpc</groupId>
           <artifactId>xmlrpc-client</artifactId>
@@ -51,58 +51,58 @@
           <groupId>commons-httpclient</groupId>
           <artifactId>commons-httpclient</artifactId>
       </dependency>
-      
+
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
       <version>3.4.0-RC1</version>
-    </dependency>  
-    
+    </dependency>
+
     <dependency>
         <groupId>javax.json</groupId>
         <artifactId>javax.json-api</artifactId>
         <version>1.0</version>
-    </dependency>  
+    </dependency>
 
     <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>javax.json</artifactId>
         <version>1.0.4</version>
-    </dependency>      
+    </dependency>
 <!--
       <dependency>
         <groupId>org.javalite</groupId>
         <artifactId>javalite-common</artifactId>
       </dependency>
 -->
-  <!-- 
+  <!--
 	ISSUE 18
-	
+
 	This 'system deps' inclusion cause: java.lang.NoClassDefFoundError: org/codehaus/swizzle/confluence/Page during execution
-	
+
   	<dependency>
   		<groupId>miniTemplator</groupId>
   		<artifactId>miniTemplator</artifactId>
   		<version>1.0</version>
 
-  		<optional>true</optional>  		  
+  		<optional>true</optional>
   		<scope>system</scope>
   		<systemPath>${project.basedir}/lib/miniTemplator-1.0.jar</systemPath>
-  		
+
         </dependency>
       -->
- 
+
       <dependency>
           <groupId>commons-io</groupId>
           <artifactId>commons-io</artifactId>
           <version>1.4</version>
       </dependency>
-        
+
       <dependency>
           <groupId>org.bsc.util</groupId>
           <artifactId>minitemplator-repackaged</artifactId>
       </dependency>
-        
+
       <dependency>
           <groupId>com.beust</groupId>
           <artifactId>jcommander</artifactId>
@@ -110,28 +110,28 @@
           <type>jar</type>
           <scope>test</scope>
       </dependency>
-      
+
       <dependency>
           <groupId>org.pegdown</groupId>
           <artifactId>pegdown</artifactId>
       </dependency>
-      
+
       <dependency>
       <groupId>io.reactivex</groupId>
       <artifactId>rxjava</artifactId>
     </dependency>
-      
+
   </dependencies>
 
 
-  <build>  
-      
+  <build>
+
     <plugins>
       <plugin>
         <!-- Separates the unit tests from the integration tests. -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        
+
         <configuration>
            <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
            <skip>true</skip>
@@ -158,8 +158,8 @@
 
         </executions>
       </plugin>
-    </plugins>      
-           
+    </plugins>
+
   </build>
 
  <profiles>
@@ -201,5 +201,5 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-      
+
 </project>
