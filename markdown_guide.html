@@ -174,52 +174,66 @@
 <pre>_Italic text_
 </pre></div></div></div></div>
 <div class="section">
-<h3><a name="Bullet_List"></a>Bullet List</h3>
+<h3><a name="Unordered_List"></a>Unordered List</h3>
 
 <div class="source">
 <div class="source">
-<pre> * Element 1
- * Element 2
- * Element 3
+<pre>* Element 1
+* Element 2
+* Element 3
+* Sublist
+   1. item 1
+   1. item 2
+   1. item 3
 </pre></div></div></div>
 <div class="section">
-<h3><a name="Numbered_List"></a>Numbered List</h3>
+<h3><a name="Ordered_List"></a>Ordered List</h3>
 
 <div class="source">
 <div class="source">
-<pre> 1. Element 1
- 1. Element 2
- 1. Element 3
+<pre>1. Element 1
+1. Element 2
+1. Element 3
+1. Sublist
+   * item 1
+   * item 2
+   * item 3
 </pre></div></div></div>
 <div class="section">
-<h3><a name="Links"></a>Links</h3>
-<div class="section">
-<h4><a name="external_link"></a>external link</h4>
+<h3><a name="Site_Ref_Links"></a>Site Ref Links</h3>
 
 <div class="source">
 <div class="source">
-<pre>[this is a link](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown/)
+<pre>* This one is [inline](http://google.com &quot;Google&quot;).
+* This one is [inline **wo** title](http://google.com).
+* This is my [google] link defined after.
+* This is my [more complex google] link defined after.
+* This is my [relative](relativepage) link defined after.
+* This is my [rel] link defined after.
+
+[rel]: relativeagain
+[more complex google]: http://google.com &quot;Other google&quot;
+[google]: http://google.com
+
 </pre></div></div></div>
 <div class="section">
-<h4><a name="internal_link"></a>internal link</h4>
+<h3><a name="Image_Ref_Link"></a>Image Ref Link</h3>
 
 <div class="source">
 <div class="source">
-<pre>This is an ref link [README.MD]
+<pre>* add an absolute ![conf-icon](http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png &quot;My conf-icon&quot;) with title.
+* add a relative ![conf-icon](conf-icon-64.png &quot;My conf-icon&quot;) with title.
+* add a relative ![conf-icon](conf-icon-64.png) without title.
+* add a ref img ![conf-icon-y][y] with title.
+* add a ref img ![conf-icon-y1][y1] without title.
+* add a ref img ![conf-icon-y2][y2] relative.
+* add a ref img ![conf-icon-none] relative with default refname.
 
-This is an ref link [README.MD][My Readme]
-
-This is an ref link [README.MD][1]
-</pre></div></div></div></div>
-<div class="section">
-<h3><a name="Image"></a>Image</h3>
-<div class="section">
-<h4><a name="external_image"></a>external image</h4>
-
-<div class="source">
-<div class="source">
-<pre>![alt](https://github.com/bsorrentino/..../raw/images/icon48.png &quot;Title&quot;)
-</pre></div></div></div>
+[y]: http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png &quot;My conf-icon&quot;
+[y1]: http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png
+[y2]: conf-icon-64.png
+[conf-icon-none]: conf-icon-64.png
+</pre></div></div>
 <div class="section">
 <h4><a name="confluence_specific"></a>confluence specific</h4>
 
