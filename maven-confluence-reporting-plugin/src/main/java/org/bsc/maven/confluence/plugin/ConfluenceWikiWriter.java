@@ -119,7 +119,15 @@ public class ConfluenceWikiWriter extends PrintWriter {
 	}
 	
 	public void printAnchor( String anchorName, String value ) {
-		printf( "{anchor:%s}%s", anchorName, value );
+		printf( createAnchor(anchorName, value) );
 	}
-	
+
+	static String createLinkToAnchor(String anchorName, String value) {
+		return String.format("[%s|#%s]", value, anchorName);
+	}
+
+	static String createAnchor(String anchorName, String value) {
+		return String.format("{anchor:%s}%s", anchorName, value);
+	}
+
 }
