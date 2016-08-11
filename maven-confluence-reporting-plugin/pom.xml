@@ -18,7 +18,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.11</version>
+        <version>4.12</version>
     </parent>
 
     <properties>
@@ -347,7 +347,9 @@ TEST
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
                         <wikiFilesExt>.confluence</wikiFilesExt>
-                        <templateWiki>${basedir}/src/site/confluence/codehaus-home.confluence</templateWiki>
+                        <!--
+                        <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
+                        -->
                         <removeSnapshots>true</removeSnapshots>
                     </configuration>
                 </plugin>

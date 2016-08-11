@@ -1,25 +1,29 @@
 package org.bsc.maven.confluence.plugin;
 
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
 import org.bsc.confluence.ConfluenceUtils;
-import static org.bsc.confluence.ConfluenceUtils.decode;
+import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.tools.plugin.generator.Generator;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import java.util.Collections;
-import org.apache.maven.tools.plugin.generator.GeneratorException;
+import static org.bsc.confluence.ConfluenceUtils.decode;
+import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createAnchor;
+import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createLinkToAnchor;
 
 /**
  *
@@ -28,6 +32,8 @@ import org.apache.maven.tools.plugin.generator.GeneratorException;
  */
 @SuppressWarnings("unchecked")
 public abstract class PluginConfluenceDocGenerator implements Generator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginConfluenceDocGenerator.class);
 
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
 
@@ -39,11 +45,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             this.descriptor = mojoDescriptor;
         }
 
-        /**
-         *
-         * @param writer
-         * @param mojoDescriptor
-         */
         public void write(ConfluenceWikiWriter w) {
 
             w.appendBigHeading()
@@ -51,7 +52,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                     .println();
 
             String description = (descriptor.getDescription() != null)
-                    ? descriptor.getDescription()
+                    ? decode(descriptor.getDescription())
                     : "No description.";
 
             w.printQuote(description);
@@ -73,7 +74,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         }
 
         public Page generatePage( Confluence confluence,  Page parent, String parentName ) throws Exception {
-            
+
             final String goalName = getPageName( parentName );
 
             Page result = ConfluenceUtils.getOrCreatePage(confluence, parent, goalName);
@@ -86,7 +87,10 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
             writer.flush();
 
-            result.setContent(writer.toString());
+            String content = writer.toString();
+            LOGGER.debug("{} content to write:\n{}", goalName, content);
+
+            result.setContent(content);
 
             result  = confluence.storePage(result);
 
@@ -96,7 +100,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         
         /**
          *
-         * @param mojoDescriptor
          * @param w
          */
         private void writeAttributes(ConfluenceWikiWriter w) {
@@ -120,37 +123,37 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                 w.printBullet("Executes by direct invocation only.");
             }
 
-            value = descriptor.isDependencyResolutionRequired();
+            value = descriptor.getDependencyResolutionRequired();
 
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Requires dependency resolution of artifacts in scope: <code>" + value + "</code>");
+                w.printBullet("Requires dependency resolution of artifacts in scope: {{" + value + "}}");
             }
 
             value = descriptor.getSince();
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Since version: <code>" + value + "</code>");
+                w.printBullet("Since version: {{" + value + "}}");
             }
 
             value = descriptor.getPhase();
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Automatically executes within the lifecycle phase: <code>" + value + "</code>");
+                w.printBullet("Automatically executes within the lifecycle phase: {{" + value + "}}");
             }
 
             value = descriptor.getExecutePhase();
             if (StringUtils.isNotEmpty(value)) {
                 w.printBullet(
-                        "Invokes the execution of the lifecycle phase <code>" + value + "</code> prior to executing itself.");
+                        "Invokes the execution of the lifecycle phase {{" + value + "}} prior to executing itself.");
             }
 
             value = descriptor.getExecuteGoal();
             if (StringUtils.isNotEmpty(value)) {
                 w.printBullet(
-                        "Invokes the execution of this plugin's goal <code>" + value + "</code> prior to executing itself.");
+                        "Invokes the execution of this plugin's goal {{" + value + "}} prior to executing itself.");
             }
 
             value = descriptor.getExecuteLifecycle();
             if (StringUtils.isNotEmpty(value)) {
-                w.printBullet("Executes in its own lifecycle: <code>" + value + "</code>");
+                w.printBullet("Executes in its own lifecycle: {{" + value + "}}");
             }
 
             if (descriptor.isOnlineRequired()) {
@@ -164,7 +167,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
         /**
          *
-         * @param mojoDescriptor
          * @param w
          */
         private void writeParameterTable(ConfluenceWikiWriter w) {
@@ -211,9 +213,8 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
      * 
      * @param writer
      * @param pluginDescriptor
-     * @param mojos 
      */
-    protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor, List<MojoDescriptor> mojos) {
+    protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor) {
 
         ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 
@@ -235,7 +236,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         
         final ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
 
-        w.printBiggerHeading("Plugin Goals");
+        w.printBiggestHeading("Plugin Goals");
 
         w.println("|| Name || Description ||");
         
@@ -246,7 +247,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             w.printf( "[%s|%s]",goal.descriptor.getFullGoalName(),
                                   goal.getPageName(parentName) );		
             w.print('|');
-            w.print(goal.descriptor.getDescription());
+            w.print(decode(goal.descriptor.getDescription()));
             w.println('|');
             
             //w.appendBullet()
@@ -318,7 +319,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
         for (Parameter parameter : parameterList) {
 
-            w.printSmallHeading(parameter.getName());
+            w.printSmallHeading(createAnchor(parameter.getName(), parameter.getName()));
 
             String description = parameter.getDescription();
             if (StringUtils.isEmpty(description)) {
@@ -349,7 +350,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     private void writeDetail(String param, String value, ConfluenceWikiWriter w) {
         if (StringUtils.isNotEmpty(value)) {
-            w.printf("|%s|%s|\n", decode(param), decode(value));
+            w.printf("||%s|%s|\n", decode(param), decode(value));
         }
     }
 
@@ -389,7 +390,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
             w.print('|');
 
-            w.print(parameter.getName());
+            w.print(createLinkToAnchor(parameter.getName(), parameter.getName()));
 
             w.print('|');
 

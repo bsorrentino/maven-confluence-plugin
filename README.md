@@ -16,6 +16,27 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+-  | **Release 4.13-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/4.13-SNAPSHOT/)**  
+---- | ---- | ----
+
+Aug 11,2016  | **Release 4.12** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.12%7Cmaven-plugin)**  
+---- | ---- | ----
+
+#### Issues
+
+  * Refer to [Issue 114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) - Generation plugin doc ignores home page from site inline code format
+  * Refer to [Issue 116](https://github.com/bsorrentino/maven-confluence-plugin/issues/116) - Attachments wrongly assigned
+  * Refer to [Issue 119](https://github.com/bsorrentino/maven-confluence-plugin/issues/119) - Using an Horizontal rules in a MD page breaks
+
+#### Pull Requests - Thanks to [wattazoum](https://github.com/wattazoum) for providing such features
+
+  * Refer to [Pull Request 113](https://github.com/bsorrentino/maven-confluence-plugin/pull/113) - More flexibility to panels
+  * Refer to [Pull Request 115](https://github.com/bsorrentino/maven-confluence-plugin/pull/115) - support more tags in the plugin doc generation
+  * Refer to [Pull Request 117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) - Fix attachments on homepage
+  * Refer to [Pull Request 120](https://github.com/bsorrentino/maven-confluence-plugin/pull/120) - Support simpleNode (Horizontal rules + forced line breaks)
+  * Refer to [Pull Request 121](https://github.com/bsorrentino/maven-confluence-plugin/pull/121) - Some small improvement to the plugin goal page
+
+
 Aug 5,2016  | **Release 4.11** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.11%7Cmaven-plugin)**  
 ---- | ---- | ----
 

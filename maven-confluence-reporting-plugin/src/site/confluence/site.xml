@@ -4,7 +4,7 @@
     xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
     xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-3.4.0.xsd'>
 
-    <home  uri="codehaus-home.confluence">
+    <home  uri="index.md">
 
         <!--child name="Usage" uri="../markdown/usage.md"-->
         <child name="Usage" uri="usage.confluence">
