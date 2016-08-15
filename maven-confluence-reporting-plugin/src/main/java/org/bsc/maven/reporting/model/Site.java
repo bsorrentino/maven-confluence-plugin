@@ -4,6 +4,7 @@
  */
 package org.bsc.maven.reporting.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -18,6 +19,8 @@ import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,6 +33,8 @@ public class Site {
      *
      */
     protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
 
 
     /**
@@ -75,7 +80,7 @@ public class Site {
      * @return
      * @throws Exception
      */
-    public static java.io.InputStream processUri( java.net.URI uri, final String homePageTitle ) throws /*ProcessUri*/Exception {
+    public static java.io.InputStream processUri( java.net.URI uri, final String homePageTitle ) throws Exception {
             if( uri == null ) {
                 throw new IllegalArgumentException( "uri is null!" );
             }
@@ -83,7 +88,7 @@ public class Site {
             String scheme = uri.getScheme();
 
             if (scheme == null) {
-                throw new /*ProcessUri*/Exception( String.format("uri [%s] is invalid!", String.valueOf(uri) ));
+                throw new Exception( String.format("uri [%s] is invalid!", String.valueOf(uri) ));
             }
 
             
@@ -93,7 +98,7 @@ public class Site {
             
             final boolean isMarkdown = (path !=null && path.endsWith(".md"));
 
-            java.io.InputStream result = null;
+            java.io.InputStream result;
 
             if ("classpath".equalsIgnoreCase(scheme)) {
                 ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -110,7 +115,7 @@ public class Site {
                     result = (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
 
                     if (result == null) {
-                        throw new /*ProcessUri*/Exception(String.format("resource [%s] doesn't exist in classloader", source));
+                        throw new Exception(String.format("resource [%s] doesn't exist in classloader", source));
                     }
 
                 }
@@ -125,8 +130,14 @@ public class Site {
                     result =  (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
 
                 } catch (IOException e) {
-                    throw new /*ProcessUri*/Exception(String.format("error opening url [%s]!", source), e);
+                    throw new Exception(String.format("error opening url [%s]!", source), e);
                 }
+            }
+
+            if (LOGGER.isDebugEnabled()) {
+                String resultString = IOUtils.toString(result);
+                LOGGER.debug("Result: {}", resultString);
+                result = new ByteArrayInputStream(resultString.getBytes());
             }
 
             return result;
@@ -179,13 +190,11 @@ public class Site {
         
         @Override
         public String toString() {
-            return new StringBuilder()
-                    .append( getClass().getSimpleName())
-                    .append(": ")
-                    .append( getName() )
-                    .append( " - ")
-                    .append( String.valueOf( getUri()))
-                    .toString();
+            return getClass().getSimpleName() +
+                    ": " +
+                    getName() +
+                    " - " +
+                    String.valueOf(getUri());
         }
 
         protected void validateSource() {

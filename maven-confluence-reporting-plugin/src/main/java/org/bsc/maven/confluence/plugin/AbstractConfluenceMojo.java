@@ -264,7 +264,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             Page p = ConfluenceUtils.getOrCreatePage(confluence, spaceKey, parentPageTitle, pageName);
 
-            if( source != null /*&& source.isFile() && source.exists() */) {
+            if ( source != null ) {
 
                 final java.io.InputStream is = Site.processUri(source, this.getTitle()) ;
 
@@ -298,7 +298,6 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         } catch (Exception e) {
             final String msg = "error loading template";
             getLog().error(msg, e);
-            //throw new MavenReportException(msg, e);
 
             return null;
         }
