@@ -346,7 +346,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(HeaderNode hn) {
-        _buffer.append( format( "h%s.", hn.getLevel()) );
+        _buffer.append( format( "\n\nh%s.", hn.getLevel()) );
         visitChildren(hn);
         _buffer.append("\n\n");
     }
@@ -405,29 +405,23 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
         final String lines[] = vn.getText().split("\n");
         if( lines.length == 1 ) {
-            _buffer.append( "{noformat}")
+            _buffer.append( "\n{noformat}")
                    .append(vn.getText())
-                   .append( "{noformat}");
+                   .append( "{noformat}\n\n");
             return;
         }
 
         if( vn.getType()==null || vn.getType().isEmpty() ) {
-            _buffer.append( "{noformat}")
-                    .append('\n')
+            _buffer.append( "\n{noformat}\n")
                     .append(vn.getText())
-                    .append('\n')
-                    .append("{noformat}")
-                    .append('\n')
+                    .append("\n{noformat}\n\n")
                     ;
             return;
         }
 
-        _buffer.append( format("{code:%s}", vn.getType()) )
-                .append('\n')
+        _buffer.append( format("\n{code:%s}\n", vn.getType()) )
                 .append(vn.getText())
-                .append('\n')
-                .append("{code}")
-                .append('\n')
+                .append("\n{code}\n\n")
                 ;
     }
 
@@ -448,7 +442,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         }
 
         _buffer
-            .append( "{code}")
+            .append( "\n{code}")
             .append('\n')
             .append(text)
             .append( "{code}")
