@@ -16,6 +16,17 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+  | **Release 4.13-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/4.13-SNAPSHOT/)**  
+---- | ---- | ----
+
+#### Issues
+
+  * Refer to [Issue 122](https://github.com/bsorrentino/maven-confluence-plugin/issues/122) - Table not generated correctly 
+
+#### Pull Requests - Thanks to [wattazoum](https://github.com/wattazoum) for providing such features
+
+  * Refer to [Pull Request 123](https://github.com/bsorrentino/maven-confluence-plugin/pull/123) - Add some line breaks (fixes #122) 
+
 Aug 11,2016  | **Release 4.12** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.12%7Cmaven-plugin)**  
 ---- | ---- | ----
 
