@@ -4,6 +4,7 @@
  */
 package org.bsc.maven.reporting.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -20,6 +21,8 @@ import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 import rx.functions.Func2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,6 +35,8 @@ public class Site {
      *
      */
     protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
 
 
     /**
@@ -90,7 +95,7 @@ public class Site {
             String scheme = uri.getScheme();
 
             if (scheme == null) {
-                throw new /*ProcessUri*/Exception( String.format("uri [%s] is invalid!", String.valueOf(uri) ));
+                throw new Exception( String.format("uri [%s] is invalid!", String.valueOf(uri) ));
             }
 
             
@@ -120,7 +125,7 @@ public class Site {
                     result = (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
 
                     if (result == null) {
-                        throw new /*ProcessUri*/Exception(String.format("resource [%s] doesn't exist in classloader", source));
+                        throw new Exception(String.format("resource [%s] doesn't exist in classloader", source));
                     }
 
                 }
@@ -135,10 +140,15 @@ public class Site {
                     result =  (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
 
                 } catch (IOException e) {
-                    throw new /*ProcessUri*/Exception(String.format("error opening url [%s]!", source), e);
+                    throw new Exception(String.format("error opening url [%s]!", source), e);
                 }
             }
 
+            if (LOGGER.isDebugEnabled()) {
+                String resultString = IOUtils.toString(result);
+                LOGGER.debug("Result: {}", resultString);
+                result = new ByteArrayInputStream(resultString.getBytes());
+            }
             return onSuccess.call(result, representation);
     }
 
@@ -189,13 +199,11 @@ public class Site {
         
         @Override
         public String toString() {
-            return new StringBuilder()
-                    .append( getClass().getSimpleName())
-                    .append(": ")
-                    .append( getName() )
-                    .append( " - ")
-                    .append( String.valueOf( getUri()))
-                    .toString();
+            return getClass().getSimpleName() +
+                    ": " +
+                    getName() +
+                    " - " +
+                    String.valueOf(getUri());
         }
 
         protected void validateSource() {
