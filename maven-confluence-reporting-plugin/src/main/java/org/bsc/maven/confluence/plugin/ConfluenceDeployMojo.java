@@ -49,6 +49,7 @@ import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import static java.lang.String.format;
+import static java.lang.String.format;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
@@ -879,46 +880,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             
         }) ;
             
-
-/*
-        if (templateWiki == null || !templateWiki.exists()) {
-
-            getLog().warn("template not set! default using ...");
-
-            java.net.URL sourceUrl = getClass().getClassLoader().getResource(DEFAULT_PLUGIN_TEMPLATE_WIKI);
-
-            if (sourceUrl == null) {
-                final String msg = "default template cannot be found";
-                getLog().error(msg);
-                throw new MavenReportException(msg);
-            }
-
-            try {
-
-                t = new MiniTemplator.Builder()
-                        .setSkipUndefinedVars(true)
-                        .build(sourceUrl, getCharset());
-
-            } catch (Exception e) {
-                final String msg = "error loading template";
-                getLog().error(msg, e);
-                throw new MavenReportException(msg, e);
-            }
-        } else {
-            try {
-                t = new MiniTemplator.Builder()
-                        .setSkipUndefinedVars(true)
-                        .build(templateWiki.toURI().toURL(), getCharset());
-
-                //t = new MiniTemplator(templateWiki);
-            } catch (Exception e) {
-                final String msg = "error loading template";
-                getLog().error(msg, e);
-                throw new MavenReportException(msg, e);
-            }
-
-        }
-*/
         }
     }
 }
