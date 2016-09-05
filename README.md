@@ -22,6 +22,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 #### Issues
 
   * Refer to [Issue 122](https://github.com/bsorrentino/maven-confluence-plugin/issues/122) - Table not generated correctly 
+  * Refer to [Issue 124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) - Render templates variables (ie. plugin.* ) in any page 
 
 #### Pull Requests - Thanks to [wattazoum](https://github.com/wattazoum) for providing such features
 
