@@ -820,6 +820,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         
                         try {
                             final String summary = writer.toString();
+
+                            getProperties().put( PLUGIN_SUMMARY_VAR, summary );
                             
                             t.setVariable(PLUGIN_SUMMARY_VAR, summary);
                             
@@ -845,7 +847,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         writer.flush();
                         
                         try {
-                            t.setVariable(PLUGIN_GOALS_VAR, writer.toString());
+                            final String plugin_goals = writer.toString();
+                            
+                            getProperties().put( PLUGIN_GOALS_VAR, plugin_goals );
+                            
+                            t.setVariable(PLUGIN_GOALS_VAR, plugin_goals );
+                            
                         } catch (VariableNotDefinedException e) {
                             getLog().debug(String.format("variable %s not defined in template", "plugin.goals"));
                         }
