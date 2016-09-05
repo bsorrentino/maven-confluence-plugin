@@ -48,8 +48,7 @@ import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.reporting.MavenReportException;
-import static org.bsc.maven.confluence.plugin.PluginConfluenceDocGenerator.DEFAULT_PLUGIN_TEMPLATE_WIKI;
+import static java.lang.String.format;
 import static java.lang.String.format;
 /**
  * 
@@ -830,6 +829,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             try {
                 final String summary = writer.toString();
                 
+                getProperties().put(PLUGIN_SUMMARY_VAR, summary); // to share with children
+
                 t.setVariable(PLUGIN_SUMMARY_VAR, summary);
                 
             } catch (VariableNotDefinedException e) {
@@ -855,7 +856,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 writer.flush();
 
                 try {
-                    t.setVariable(PLUGIN_GOALS_VAR, writer.toString());
+                    
+                    final String theGoals = writer.toString();
+                    
+                    getProperties().put(PLUGIN_GOALS_VAR, theGoals); // to share with children
+
+                    t.setVariable(PLUGIN_GOALS_VAR, theGoals);
+                    
+                    
                 } catch (VariableNotDefinedException e) {
                     getLog().warn(String.format("variable %s not defined in template", "plugin.goals"));
                 }
