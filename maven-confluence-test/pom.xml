@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.0-beta1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
