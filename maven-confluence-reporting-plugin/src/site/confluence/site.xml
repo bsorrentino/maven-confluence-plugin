@@ -11,10 +11,14 @@
             <attachment name="gitlog-sample02.png" uri="../resources/images/gitlog-sample02.png" comment="gitlog to jira sample" contentType="image/png" version="1"></attachment>
         </child>
 
-        <child name="Use Markdown" uri="markdown_guide.confluence">
+        <!--child name="Use Markdown" uri="../markdown/markdown_guide.md"-->
+        <child name="Use Markdown" uri="markdown_guide.confluence"></child>
+
+        <child name="Use Storage Format" uri="../markdown/storageformat_guide.md">
         </child>
 
-        <child name="Use Site Definition" uri="site_guide.confluence">
+        <child name="Use Site Definition" uri="../markdown/site_guide.md">
+        <!--child name="Use Site Definition" uri="site_guide.confluence"-->
         </child>
 
     </home>
