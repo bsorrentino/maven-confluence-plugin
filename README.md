@@ -16,7 +16,10 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
- Sep 24,2016 | **Release 5.0-beta1** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-beta1/)**  |
+- | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+---- | ---- | ---- |
+
+Sep 24,2016 | **Release 5.0-beta1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-beta1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
  * Refer to [Issue 108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) - StorageFormat Support
