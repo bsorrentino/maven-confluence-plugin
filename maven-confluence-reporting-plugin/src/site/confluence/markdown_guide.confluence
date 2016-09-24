@@ -62,9 +62,9 @@ h3. Site Ref Links
 
 * This one is [inline](http://google.com "Google").
 * This one is [inline **wo** title](http://google.com).
-* This is my [google] link defined after. 
-* This is my [more complex google] link defined after. 
-* This is my [relative](relativepage) link defined after. 
+* This is my [google] link defined after.
+* This is my [more complex google] link defined after.
+* This is my [relative](relativepage) link defined after.
 * This is my [rel] link defined after.
 
 [rel]: relativeagain
@@ -130,12 +130,65 @@ h3.table
 | Content Cell  | Content Cell  |
 {noformat}
 
-h3.Blockquote
+h2. InlineCode with macro syntax
+
+h3. Imbricated info
+
 {noformat}
-> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-Aenean massa. Cum sociis natoque
+> **info:** About me
+>
+>> tposidufsqdf qsfpqs dfopqsdijf q
+>>  mldjkflqsdif sqj
+>
+{noformat}
 
-> Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus.
-Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt.
+h3. Note without title
 
+{noformat}
+> **Note:**
+>
+> Contents of my note
+>
+{noformat}
+
+
+h3. tip without imbrication
+
+{noformat}
+> **tip:** About you
+>
+> tposidufsqdf qsfpqs dfopqsdijf q
+>  mldjkflqsdif sqj
+>
+{noformat}
+
+
+h3. warning with complex content
+
+{noformat}
+> **warning:** About him
+>
+> tposidufsqdf qsfpqs dfopqsdijf q
+>  mldjkflqsdif sqj
+>
+> - one
+> - two
+>
+> have a **strong** and _pure_ feeling
+{noformat}
+
+
+h3. oneline blockquote
+
+{noformat}
+> test a simple
+> blockquote
+{noformat}
+
+h3. blockquote block
+
+{noformat}
+> test a 2 paragraph block
+>
+> this is my second part
 {noformat}
