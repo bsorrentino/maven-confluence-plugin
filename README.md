@@ -16,17 +16,24 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+ Sep 24,2016 | **Release 5.0-beta1** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-beta1/)**  |
+---- | ---- | ---- |
+
+ * Refer to [Issue 108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) - StorageFormat Support
+
+ > Starting to implement REST API support
+
 Sep 5,2016  | **Release 4.13** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.13%7Cmaven-plugin)**  
 ---- | ---- | ----
 
 #### Issues
 
-  * Refer to [Issue 122](https://github.com/bsorrentino/maven-confluence-plugin/issues/122) - Table not generated correctly 
-  * Refer to [Issue 124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) - Render templates variables (ie. plugin.* ) in any page 
+  * Refer to [Issue 122](https://github.com/bsorrentino/maven-confluence-plugin/issues/122) - Table not generated correctly
+  * Refer to [Issue 124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) - Render templates variables (ie. plugin.* ) in any page
 
 #### Pull Requests - Thanks to [wattazoum](https://github.com/wattazoum) for providing such features
 
-  * Refer to [Pull Request 123](https://github.com/bsorrentino/maven-confluence-plugin/pull/123) - Add some line breaks (fixes #122) 
+  * Refer to [Pull Request 123](https://github.com/bsorrentino/maven-confluence-plugin/pull/123) - Add some line breaks (fixes #122)
 
 Aug 11,2016  | **Release 4.12** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.12%7Cmaven-plugin)**  
 ---- | ---- | ----
@@ -53,8 +60,6 @@ Aug 5,2016  | **Release 4.11** | available from  **[MAVEN CENTRAL REPO](http://s
   * Refer to [Pull Request 112](https://github.com/bsorrentino/maven-confluence-plugin/pull/112) - Markdown **referencenode** support
 
    > **Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature**.
-
-
 
 |Jul 1,2016  | **Release 4.10** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.10%7Cmaven-plugin)**  |
 |:-----------|:-----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|

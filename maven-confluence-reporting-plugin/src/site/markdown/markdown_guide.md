@@ -117,7 +117,7 @@ _Italic text_
 
 #### inline
 <pre><![CDATA[
-```this is inline```  
+`this is inline`  
 ]]></pre>
 
 ### table
@@ -130,12 +130,71 @@ _Italic text_
 | Content Cell  | Content Cell  |
 ```
 
-### Blockquote
+## InlineCode with macro syntax
 
-```
-> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-Aenean massa. Cum sociis natoque
+### Imbricated info
 
-> Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus.
-Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt.
-```
+<pre><![CDATA[
+> **info:** About me
+>
+>> tposidufsqdf qsfpqs dfopqsdijf q
+>>  mldjkflqsdif sqj
+>
+
+]]></pre>
+
+### Note without title
+
+<pre><![CDATA[
+> **Note:**
+>
+> Contents of my note
+>
+
+]]></pre>
+
+
+### tip without imbrication
+
+<pre><![CDATA[
+> **tip:** About you
+>
+> tposidufsqdf qsfpqs dfopqsdijf q
+>  mldjkflqsdif sqj
+>
+
+]]></pre>
+
+
+### warning with complex content
+
+<pre><![CDATA[
+> **warning:** About him
+>
+> tposidufsqdf qsfpqs dfopqsdijf q
+>  mldjkflqsdif sqj
+>
+> - one
+> - two
+>
+> have a **strong** and _pure_ feeling
+
+]]></pre>
+
+
+### oneline blockquote
+
+<pre><![CDATA[
+> test a simple
+> blockquote
+
+]]></pre>
+
+### blockquote block
+
+<pre><![CDATA[
+> test a 2 paragraph block
+>
+> this is my second part
+
+]]></pre>

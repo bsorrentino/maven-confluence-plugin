@@ -4,21 +4,24 @@ import java.io.File;
 import java.util.Collections;
 
 import org.apache.maven.project.MavenProject;
-import org.bsc.confluence.ConfluenceUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.maven.reporting.model.ProcessUriException;
 import org.bsc.maven.reporting.model.Site;
+import rx.functions.Func2;
 
 /**
  *
@@ -206,14 +209,13 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         processProperties();
 
         getProperties().put("pageTitle", getTitle());
-        //getProperties().put("parentPageTitle", getParentPageTitle());
         getProperties().put("artifactId", project.getArtifactId());
         getProperties().put("version", project.getVersion());
         getProperties().put("groupId", project.getGroupId());
         getProperties().put("name", project.getName());
         getProperties().put("description", project.getDescription());
 
-        java.util.Properties projectProps = project.getProperties();
+        final java.util.Properties projectProps = project.getProperties();
 
         if( projectProps!=null ) {
 
@@ -235,14 +237,14 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 try {
                     t.setVariable(e.getKey(), e.getValue(), true /* isOptional */);
                 } catch (VariableNotDefinedException e1) {
-                    getLog().warn(String.format("variable %s not defined in template", e.getKey()));
+                    getLog().debug(String.format("variable %s not defined in template", e.getKey()));
                 }
             }
         }
 
     }
 
-    protected <T extends Site.Page> Page  generateChild(Confluence confluence,  T child, String spaceKey, String parentPageTitle, String titlePrefix) {
+    protected <T extends Site.Page> Model.Page  generateChild(final ConfluenceService confluence,  final T child, String spaceKey, String parentPageTitle, String titlePrefix) {
 
         java.net.URI source = child.getUri(getProject(), getFileExt());
 
@@ -252,7 +254,10 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             if (!isSnapshot() && isRemoveSnapshots()) {
                 final String snapshot = titlePrefix.concat("-SNAPSHOT");
-                boolean deleted = ConfluenceUtils.removePage(confluence, spaceKey, parentPageTitle, snapshot);
+
+                final Model.Page page = confluence.getPage(spaceKey, parentPageTitle);
+
+                boolean deleted = confluence.removePage(page, snapshot);
 
                 if (deleted) {
                     getLog().info(String.format("Page [%s] has been removed!", snapshot));
@@ -262,38 +267,52 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             final String pageName = !isChildrenTitlesPrefixed()
                 ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
 
-            Page p = ConfluenceUtils.getOrCreatePage(confluence, spaceKey, parentPageTitle, pageName);
+            Model.Page result = confluence.getOrCreatePage(spaceKey, parentPageTitle, pageName);
 
             if ( source != null ) {
 
-                final java.io.InputStream is = Site.processUri(source, this.getTitle()) ;
+                final Model.Page pageToUpdate = result;
+                
+                result = Site.processUri(source, this.getTitle(), new Func2<InputStream,Storage.Representation,Model.Page>() {
+                    @Override
+                    public Model.Page call(InputStream is, Representation r) {
 
-                final MiniTemplator t = new MiniTemplator.Builder()
-                    .setSkipUndefinedVars(true)
-                    .build( is, getCharset() );
+                        try {
+                            final MiniTemplator t = new MiniTemplator.Builder()
+                                    .setSkipUndefinedVars(true)
+                                    .build( is, getCharset() );
+                            
+                            if( !child.isIgnoreVariables() ) {
+                                
+                                addStdProperties(t);
+                                
+                                t.setVariableOpt("childTitle", pageName);
+                            }
+                            
+                            return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), r) );
+                            
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    
+                }) ;
 
-                if( !child.isIgnoreVariables() ) {
-
-                    addStdProperties(t);
-
-                    t.setVariableOpt("childTitle", pageName);
-                }
-
-
-                p.setContent(t.generateOutput());
             }
+            else {
 
+                result = confluence.storePage(result);
 
-            p = confluence.storePage(p);
+            }
 
             for( String label : child.getComputedLabels() ) {
 
-                confluence.addLabelByName(label, Long.parseLong(p.getId()) );
+                confluence.addLabelByName(label, Long.parseLong(result.getId()) );
             }
 
             child.setName( pageName );
 
-            return p;
+            return result;
 
         } catch (Exception e) {
             final String msg = "error loading template";
@@ -347,12 +366,20 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @return
      * @throws org.bsc.maven.reporting.AbstractConfluenceMojo.ProcessUriException
      */
-    private String processUri( java.net.URI uri, Charset charset ) throws ProcessUriException {
+    private String processUri( java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            final java.io.InputStream is = Site.processUri(uri, this.getTitle()) ;
+            return  Site.processUri(uri, this.getTitle(), new Func2<InputStream, Representation, String>() {
+                @Override
+                public String call(InputStream is, Representation r) {
+                    try {
+                        return AbstractConfluenceMojo.this.toString( is, charset );
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }) ;
 
-            return toString( is, charset );
         } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
         }
@@ -369,27 +396,17 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             throw new IllegalArgumentException("stream");
         }
 
-        java.io.Reader r = null;
+        try( final java.io.Reader r = new java.io.InputStreamReader(stream, charset) ) {
 
-        try {
-
-            r = new java.io.InputStreamReader(stream, charset);
-
-            StringBuilder contents = new StringBuilder(4096);
+            final StringBuilder contents = new StringBuilder(4096);
 
             int c;
             while ((c = r.read()) != -1) {
-
                 contents.append((char) c);
             }
 
             return contents.toString();
 
-        }
-        finally {
-            if( r!= null ) {
-                r.close();
-            }
         }
     }
 

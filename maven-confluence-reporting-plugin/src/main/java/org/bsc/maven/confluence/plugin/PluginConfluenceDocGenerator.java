@@ -1,15 +1,6 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.generator.Generator;
-import org.apache.maven.tools.plugin.generator.GeneratorException;
-import org.bsc.confluence.ConfluenceUtils;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.Page;
+import org.bsc.confluence.ConfluenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +9,19 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.generator.Generator;
+import org.codehaus.plexus.util.StringUtils;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import java.util.Collections;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import static org.bsc.confluence.ConfluenceUtils.decode;
 import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createAnchor;
 import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createLinkToAnchor;
@@ -73,11 +74,11 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             return goalName;
         }
 
-        public Page generatePage( Confluence confluence,  Page parent, String parentName ) throws Exception {
-
+        public Model.Page generatePage( ConfluenceService confluence,  Model.Page parent, String parentName ) throws Exception {
+            
             final String goalName = getPageName( parentName );
 
-            Page result = ConfluenceUtils.getOrCreatePage(confluence, parent, goalName);
+            Model.Page result = confluence.getOrCreatePage(parent, goalName);
 
             final StringWriter writer = new StringWriter(100 * 1024);
 
@@ -87,12 +88,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
             writer.flush();
 
-            String content = writer.toString();
-            LOGGER.debug("{} content to write:\n{}", goalName, content);
-
-            result.setContent(content);
-
-            result  = confluence.storePage(result);
+            result  = confluence.storePage(result,new Storage(writer.toString(), Representation.WIKI));
 
             return result;
                 
@@ -230,7 +226,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     }
     
-    protected java.util.List<Goal> writeGoalsAsChildren( Writer writer, Page parent, String parentName, List<MojoDescriptor> mojos ) {
+    protected java.util.List<Goal> writeGoalsAsChildren( Writer writer, String parentName, List<MojoDescriptor> mojos ) {
 
         final java.util.List<Goal> result = new java.util.ArrayList<Goal>(mojos.size());
         
@@ -249,9 +245,6 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             w.print('|');
             w.print(decode(goal.descriptor.getDescription()));
             w.println('|');
-            
-            //w.appendBullet()
-            //         .printLink(goal.getPageName(parentName),goal.descriptor.getGoal() );
             
             result.add(goal);
             

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>confluence-reporting-maven-plugin</artifactId>
 <packaging>maven-plugin</packaging>
-    
+
     <description>
   plugin that document a project (using maven site style) and send result to a live confluence site [http://www.atlassian.com/software/confluence/]
     </description>
@@ -18,7 +18,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.13</version>
+        <version>5.0-beta1</version>
     </parent>
 
     <properties>
@@ -227,7 +227,6 @@ TEST
          <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
 
