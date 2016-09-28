@@ -62,9 +62,7 @@
                         <page>classpath:plugin-report.properties</page>
                         <page1>file://${basedir}/src/main/resources/confluence.html</page1>
                     </properties>
-
                     <sslCertificate />
-
                     <!--
                     <sslCertificate>
                         <ignore>true</ignore>
@@ -73,6 +71,10 @@
 
                 </configuration>
                 <executions>
+                    <!-- 
+                    mvn confluence-reporting:deploy@softphone
+                    mvn confluence-reporting:delete@softphone
+                    -->
                     <execution>
                         <id>softphone</id>
                         <goals>
@@ -91,6 +93,10 @@
                             <serverId>softphone-server</serverId>
                         </configuration>
                     </execution>
+                    <!-- 
+                    mvn confluence-reporting:deploy@local
+                    mvn confluence-reporting:delete@local
+                    -->
                     <execution>
                         <id>local</id>
                         <goals>
@@ -111,6 +117,10 @@
                             <serverId>confluence-local</serverId>                         
                         </configuration>
                     </execution>
+                    <!-- 
+                    mvn confluence-reporting:deploy@issue129
+                    mvn confluence-reporting:delete@issue129
+                    -->
                     <execution>
                         <id>issue129</id>
                         <goals>
