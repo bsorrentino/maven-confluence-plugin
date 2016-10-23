@@ -13,8 +13,8 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.maven.reporting.model.Site;
-import org.bsc.maven.reporting.model.SiteFactory;
+import org.bsc.confluence.model.Site;
+import org.bsc.confluence.model.SiteFactory;
 
 import static java.lang.String.format;
 

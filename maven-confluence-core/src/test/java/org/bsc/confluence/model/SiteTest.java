@@ -1,5 +1,6 @@
-package org.bsc.maven.reporting.model;
+package org.bsc.confluence.model;
 
+import org.bsc.confluence.model.Site;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 

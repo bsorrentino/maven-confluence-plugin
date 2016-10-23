@@ -88,7 +88,7 @@
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
-                            <siteDescriptor>${basedir}/src/site/confluence/site5.xml</siteDescriptor>
+                            <siteDescriptor>${basedir}/src/site/confluence/site4confluence.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
                             <serverId>softphone-server</serverId>
                         </configuration>

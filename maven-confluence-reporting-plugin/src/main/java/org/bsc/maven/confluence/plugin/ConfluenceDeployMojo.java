@@ -32,7 +32,7 @@ import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
-import org.bsc.maven.reporting.model.Site;
+import org.bsc.confluence.model.Site;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
 import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
