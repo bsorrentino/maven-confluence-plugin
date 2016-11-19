@@ -8,6 +8,7 @@ package org.codehaus.swizzle.confluence;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Ignore;
 import org.junit.After;
@@ -38,9 +39,11 @@ public class SwizzleTest {
         
         final ConfluenceService.Credentials credentials = 
                 new ConfluenceService.Credentials(USER, PASSWORD );
+        
+        final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
 
         confluence = 
-            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(URL, credentials,proxyInfo);
+            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(URL, credentials,proxyInfo, sslInfo);
         
 
     }

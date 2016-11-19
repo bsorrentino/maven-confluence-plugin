@@ -15,8 +15,10 @@ import static java.lang.String.format;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import javax.net.ssl.HttpsURLConnection;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ExportFormat;
+import org.bsc.ssl.SSLCertificateInfo;
 import rx.functions.Action1;
 
 /**
@@ -37,12 +39,22 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      * @throws SwizzleException
      * @throws URISyntaxException 
      */
-    public static XMLRPCConfluenceServiceImpl createInstanceDetectingVersion( String url, Credentials credentials, ConfluenceProxy proxyInfo ) throws Exception {
+    public static XMLRPCConfluenceServiceImpl createInstanceDetectingVersion( String url, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo ) throws Exception {
         if( url == null ) {
             throw new IllegalArgumentException("url argument is null!");
         }
         if( credentials == null ) {
             throw new IllegalArgumentException("credentials argument is null!");
+        }
+        if( sslInfo == null ) {
+            throw new IllegalArgumentException("sslInfo argument is null!");
+        }
+
+        if (!sslInfo.isIgnore() && url.startsWith("https")) {
+            
+            HttpsURLConnection.setDefaultSSLSocketFactory( sslInfo.getSSLSocketFactory());
+
+            HttpsURLConnection.setDefaultHostnameVerifier( sslInfo.getHostnameVerifier() );
         }
         
         final Confluence c = new Confluence(url, proxyInfo);

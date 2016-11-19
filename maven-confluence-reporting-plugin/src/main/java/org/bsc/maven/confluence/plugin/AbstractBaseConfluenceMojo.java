@@ -106,7 +106,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * <pre>
      *
      * < sslCertificate>
-     *  < ignore>true|false</ignore>  // default true
+     *  < ignore>true|false</ignore>  // default false
      *  < hostNameVerifierClass>FQN</hostNameVerifierClass> //default null
      *  < trustManagerClass>FQN</trustManagerClass> // default null
      * < /sslCertificate>
@@ -154,12 +154,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     protected <T extends Action1<ConfluenceService>> void confluenceExecute(T task) throws MojoExecutionException {
 
-        if (sslCertificate != null) {
-            getLog().debug(String.valueOf(sslCertificate));
-
-            sslCertificate.setup(this.getEndPoint());
-        }
-
         ConfluenceService confluence = null;
         
         try {
@@ -183,7 +177,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             final ConfluenceService.Credentials credentials = 
                 new ConfluenceService.Credentials(getUsername(), getPassword());
 
-            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), credentials, proxyInfo);
+            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), credentials, proxyInfo, sslCertificate);
 
             getLog().info( String.valueOf(confluence) );
 

@@ -21,22 +21,27 @@ import rx.functions.Action1;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
 import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.Is;
 import org.junit.Ignore;
+
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
-public class RestConfluenceIntegrationTest {
+public class RestConfluenceTest {
+    //private static final String URL = "http://192.168.99.100:8090/rest/api";
+    protected static String URL = "http://localhost:8090/rest/api";;
     
     RESTConfluenceServiceImpl service;
     
     @Before
-    public void initService() {
+    public void initService() throws Exception {
       
         final Credentials credentials = new Credentials("admin", "admin");
+        final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
         
-        service = new RESTConfluenceServiceImpl("http://192.168.99.100:8090/rest/api", credentials );
+        service = new RESTConfluenceServiceImpl(URL, credentials, sslInfo );
     }
     
     @Test @Ignore
