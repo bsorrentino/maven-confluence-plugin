@@ -70,21 +70,6 @@ public class SSLCertificateInfo {
             
             return hostnameVerifier;
         }
-        
-        private void setup(String endpoint ) {
-
-            if( endpoint == null ) {
-                throw new IllegalArgumentException("endpoint argument is null!");
-            }
-            
-            if ((ignore || hostnameVerifierClass != null || trustManagerClass != null)
-                    && endpoint.startsWith("https://")) {
-                HttpsURLConnection.setDefaultSSLSocketFactory( getSSLSocketFactory() );
-                
-                HttpsURLConnection.setDefaultHostnameVerifier( getHostnameVerifier() );
-            }
-
-        }
 
         @Override
         public String toString() {
