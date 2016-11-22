@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.ssl.SSLCertificateInfo;
 
 /**
  *
@@ -50,12 +51,13 @@ public class SwizzleApp {
         ConfluenceProxy proxyInfo = null;
 
         final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials(app.username,app.password);
+        final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
         
         final XMLRPCConfluenceServiceImpl confluence = 
             XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
                     app.url.concat("/rpc/xmlrpc"),
                     credentials,
-                    proxyInfo);
+                    proxyInfo, sslInfo);
 
         ConfluenceExportDecorator exporter = 
                 new ConfluenceExportDecorator(  confluence.connection, 
@@ -77,11 +79,13 @@ public class SwizzleApp {
         final ConfluenceService.Credentials credentials = 
                 new ConfluenceService.Credentials(username /*args[1]*/,password/*args[2]*/);
 
+        final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
+
         final XMLRPCConfluenceServiceImpl confluence = 
             XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
                         url.concat("/rpc/xmlrpc"), //args[0],
                         credentials,
-                        proxyInfo); 
+                        proxyInfo, sslInfo); 
 
         Model.Page page = confluence.getPage("CIRC", "Best Movies");
 

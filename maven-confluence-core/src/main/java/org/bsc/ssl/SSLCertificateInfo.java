@@ -8,14 +8,15 @@ package org.bsc.ssl;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.TrustManager;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 
 /**
  *
  * @author softphone
  */
 public class SSLCertificateInfo {
-        boolean ignore = true;
+        boolean ignore = false;
         String hostnameVerifierClass;
         String trustManagerClass;
 
@@ -37,21 +38,37 @@ public class SSLCertificateInfo {
             }
         }
 
-        public void setup( String endpoint ) {
+        public final boolean isIgnore() {
+            return ignore;
+        }
+        
+        public X509TrustManager getTrustManager() {
 
-            if ((ignore || hostnameVerifierClass != null || trustManagerClass != null)
-                    && endpoint.startsWith("https://")) {
-                try {
-                    HttpsURLConnection.setDefaultSSLSocketFactory(
-                            SSLFactories.newInstance(trustManagerClass != null ?
-                                    newClass(trustManagerClass, TrustManager.class) : new YesTrustManager()));
-                } catch (final Exception e) {
-                    throw new IllegalStateException(e);
-                }
-                HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifierClass != null ?
-                        newClass(hostnameVerifierClass, HostnameVerifier.class) : new YesHostnameVerifier());
+            final X509TrustManager trustManager = (trustManagerClass != null) ?
+                                    newClass(trustManagerClass, X509TrustManager.class) : 
+                                    new YesTrustManager();
+            return trustManager;
+            
+        }
+        public SSLSocketFactory getSSLSocketFactory()  {
+
+            try {
+                
+                final SSLSocketFactory sslSocketFactory = SSLFactories.newInstance( getTrustManager() );
+    
+                return sslSocketFactory;
+                
+            } catch (Exception ex) {
+               throw new IllegalStateException(ex);
             }
-
+        }
+        
+        public HostnameVerifier getHostnameVerifier() {
+            
+            final HostnameVerifier hostnameVerifier = (hostnameVerifierClass != null ?
+                        newClass(hostnameVerifierClass, HostnameVerifier.class) : new YesHostnameVerifier());
+            
+            return hostnameVerifier;
         }
 
         @Override

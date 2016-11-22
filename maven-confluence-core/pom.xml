@@ -127,53 +127,36 @@
   <build>
 
     <plugins>
+        
+      <!-- Separates the unit tests from the integration tests. -->
       <plugin>
-        <!-- Separates the unit tests from the integration tests. -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-
-        <configuration>
-           <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
+        <configuration>           
            <skip>true</skip>
-           <!-- Show 100% of the lines from the stack trace (doesn't work) -->
            <trimStackTrace>false</trimStackTrace>
-        </configuration>
+        </configuration>       
         <executions>
+           <!-- mvn surefire:test@utests --> 
            <execution>
-              <id>unit-tests</id>
+              <id>utests</id>
               <phase>test</phase>
               <goals>
                  <goal>test</goal>
               </goals>
               <configuration>
                  <skip>false</skip>
-                 <includes>
-                    <include>**/*Test.java</include>
-                 </includes>
                  <excludes>
                     <exclude>**/*IntegrationTest.java</exclude>
                 </excludes>
+                 <includes>
+                    <include>**/*Test.java</include>
+                 </includes>
               </configuration>
            </execution>
-
-        </executions>
-      </plugin>
-    </plugins>
-
-  </build>
-
- <profiles>
-  <profile>
-    <id>itest</id>
-    <build>
-      <plugins>
-        <plugin>
-          <!-- Separates the unit tests from the integration tests. -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <executions>
-             <execution>
-                <id>integration-tests</id>
+           <!-- mvn surefire:test@itests --> 
+           <execution>
+                <id>itests</id>
                 <phase>integration-test</phase>
                 <goals>
                    <goal>test</goal>
@@ -185,12 +168,14 @@
                    </includes>
                 </configuration>
              </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
-</profiles>
+           
+        </executions>
+        
+      </plugin>
+    
+    </plugins>
+
+  </build>
 
   <dependencyManagement>
     <dependencies>

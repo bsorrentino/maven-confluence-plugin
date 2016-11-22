@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.hamcrest.CoreMatchers.not;
+import org.hamcrest.core.IsNull;
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
@@ -15,9 +16,11 @@ public class SiteTest {
 
     @Test
     public void shouldSupportReferenceNode() throws IOException {
-        InputStream stream = getClass().getResourceAsStream("withRefLink.md");
-        InputStream inputStream = Site.processMarkdown(stream, "Test");
-        String converted = IOUtils.toString(inputStream);
+        final InputStream stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
+        assertThat( stream, IsNull.notNullValue());
+        final InputStream inputStream = Site.processMarkdown(stream, "Test");
+        assertThat( inputStream, IsNull.notNullValue());
+        final String converted = IOUtils.toString(inputStream);
 
         assertThat(converted, containsString("[rel|Test - relativeagain]"));
         assertThat(converted, containsString("[more complex google|http://google.com|Other google]"));
@@ -26,9 +29,11 @@ public class SiteTest {
 
     @Test
     public void shouldSupportImgRefLink() throws IOException {
-        InputStream stream = getClass().getResourceAsStream("withImgRefLink.md");
-        InputStream inputStream = Site.processMarkdown(stream, "Test IMG");
-        String converted = IOUtils.toString(inputStream);
+        final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
+        assertThat( stream, IsNull.notNullValue());
+        final InputStream inputStream = Site.processMarkdown(stream, "Test IMG");
+        assertThat( inputStream, IsNull.notNullValue());
+        final String converted = IOUtils.toString(inputStream);
 
         assertThat(converted, containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|alt=\"conf-icon\"|title=\"My conf-icon\"!"));
         assertThat(converted, containsString("!conf-icon-64.png|alt=\"conf-icon\"|title=\"My conf-icon\"!"));
@@ -41,9 +46,11 @@ public class SiteTest {
 
     @Test
     public void shouldSupportSimpleNode() throws IOException {
-        InputStream stream = getClass().getResourceAsStream("simpleNodes.md");
-        InputStream inputStream = Site.processMarkdown(stream, "Test");
-        String converted = IOUtils.toString(inputStream);
+        final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
+        assertThat( stream, IsNull.notNullValue());
+        final InputStream inputStream = Site.processMarkdown(stream, "Test");
+        assertThat( inputStream, IsNull.notNullValue());
+        final String converted = IOUtils.toString(inputStream);
 
         assertThat("All forms of HRules should be supported", converted, containsString("----\n1\n----\n2\n----\n3\n----\n4\n----"));
         /* only when Extensions.SMARTS is activated
@@ -57,9 +64,11 @@ public class SiteTest {
     
     @Test
     public void shouldCreateSpecificNoticeBlock() throws IOException {
-        InputStream stream = getClass().getResourceAsStream("createSpecificNoticeBlock.md");
-        InputStream inputStream = Site.processMarkdown(stream, "Test Macro");
-        String converted = IOUtils.toString(inputStream);
+        final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
+        assertThat( stream, IsNull.notNullValue());
+        final InputStream inputStream = Site.processMarkdown(stream, "Test Macro");
+        assertThat( inputStream, IsNull.notNullValue());
+        final String converted = IOUtils.toString(inputStream);
 
         assertThat(converted, containsString("{info:title=About me}\n"));
         assertThat("Should not generate unneeded param 'title'", converted, not(containsString("{note:title=}\n")));
