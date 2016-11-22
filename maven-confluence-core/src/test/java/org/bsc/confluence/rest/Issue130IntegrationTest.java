@@ -19,7 +19,7 @@ import org.junit.Before;
  *
  * @author bsorrentino
  */
-public class Issue130IntegrationTest extends RestConfluenceTest {
+public class Issue130IntegrationTest extends AbstractRestConfluence {
     
     static {
         URL = "https://localhost:8443/rest/api";

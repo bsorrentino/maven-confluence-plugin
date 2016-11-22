@@ -23,8 +23,8 @@ import static org.hamcrest.core.IsNull.*;
  *
  * @author softphone
  */
-@Ignore
-public class SwizzleTest {
+//@Ignore
+public class SwizzleIntegrationTest {
 
     public static final String PASSWORD = "admin";
     public static final String USER = "admin";
@@ -57,7 +57,7 @@ public class SwizzleTest {
     }
 
     @Test @Ignore 
-    public void fakeTest() {}
+    public void dummy() {}
     
     @Test
     public void showInfo() throws Exception {
@@ -68,8 +68,7 @@ public class SwizzleTest {
         
     }
        
-    @Test 
-    @Ignore
+    @Test @Ignore
     public void addAttachment() throws Exception {
 
         Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
@@ -91,8 +90,7 @@ public class SwizzleTest {
 
     }
 
-    @Test 
-    @Ignore
+    @Test @Ignore
     public void findAttachment() throws Exception {
         Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
 

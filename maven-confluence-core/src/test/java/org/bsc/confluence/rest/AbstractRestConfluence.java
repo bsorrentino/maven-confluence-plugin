@@ -29,7 +29,7 @@ import org.junit.Ignore;
  *
  * @author bsorrentino
  */
-public class RestConfluenceTest {
+public class AbstractRestConfluence {
     //private static final String URL = "http://192.168.99.100:8090/rest/api";
     protected static String URL = "http://localhost:8090/rest/api";;
     
