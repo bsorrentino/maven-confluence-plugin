@@ -15,9 +15,3 @@ ${project.team}
 ${project.scmManager}
 
 ----
-
-${plugin.goals}
-
-----
-
-${project.dependencies}

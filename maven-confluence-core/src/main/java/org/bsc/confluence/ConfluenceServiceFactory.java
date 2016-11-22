@@ -13,6 +13,7 @@ import javax.json.JsonObjectBuilder;
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
+import org.bsc.ssl.SSLCertificateInfo;
 import org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl;
 import static org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
 import rx.functions.Action1;
@@ -27,10 +28,10 @@ public class ConfluenceServiceFactory {
         final XMLRPCConfluenceServiceImpl   xmlrpcService;
         final RESTConfluenceServiceImpl     restService;
 
-        public MixedConfluenceService(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo) throws Exception {
+        public MixedConfluenceService(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
             
-            this.xmlrpcService = createInstanceDetectingVersion(endPoint, credentials, proxyInfo);
-            this.restService = new RESTConfluenceServiceImpl(endPoint, credentials);
+            this.xmlrpcService = createInstanceDetectingVersion(endPoint, credentials, proxyInfo, sslInfo);
+            this.restService = new RESTConfluenceServiceImpl(endPoint, credentials, sslInfo);
         }
         
         @Override
@@ -147,9 +148,9 @@ public class ConfluenceServiceFactory {
         
     }
     
-    public static ConfluenceService createInstance(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo) throws Exception {
+    public static ConfluenceService createInstance(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
 
-        return new MixedConfluenceService(endPoint, credentials, proxyInfo);
+        return new MixedConfluenceService(endPoint, credentials, proxyInfo, sslInfo);
     }
     
 }

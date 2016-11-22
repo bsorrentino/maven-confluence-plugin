@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<Server port="8000" shutdown="SHUTDOWN">
+  <Service name="Tomcat-Standalone">
+    <Connector port="8090" connectionTimeout="20000" redirectPort="8443" maxThreads="48" minSpareThreads="10" enableLookups="false" acceptCount="10" URIEncoding="UTF-8" protocol="org.apache.coyote.http11.Http11NioProtocol"/>
+    <Engine name="Standalone" defaultHost="localhost">
+      <Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="false">
+        <Context path="" docBase="../confluence" reloadable="false" useHttpOnly="true">
+          <!-- Logger is deprecated in Tomcat 5.5. Logging configuration for Confluence is specified in confluence/WEB-INF/classes/log4j.properties -->
+          <Manager pathname=""/>
+          <Valve className="org.apache.catalina.valves.StuckThreadDetectionValve" threshold="60"/>
+        </Context>
+      </Host>
+    </Engine>
+    <!--
+            To run Confluence via HTTPS:
+             * Uncomment the Connector below
+             * Execute:
+                 %JAVA_HOME%\bin\keytool -genkey -alias tomcat -keyalg RSA (Windows)
+                 $JAVA_HOME/bin/keytool -genkey -alias tomcat -keyalg RSA  (Unix)
+               with a password value of "changeit" for both the certificate and the keystore itself.
+             * Restart and visit https://localhost:8443/
+
+             For more info, see https://confluence.atlassian.com/display/DOC/Running+Confluence+Over+SSL+or+HTTPS
+        -->
+
+        <!--
+        <Connector port="8443" maxHttpHeaderSize="8192"
+                   maxThreads="150" minSpareThreads="25"
+                   protocol="org.apache.coyote.http11.Http11NioProtocol"
+                   enableLookups="false" disableUploadTimeout="true"
+                   acceptCount="100" scheme="https" secure="true"
+                   clientAuth="false" sslProtocols="TLSv1,TLSv1.1,TLSv1.2" sslEnabledProtocols="TLSv1,TLSv1.1,TLSv1.2" SSLEnabled="true"
+                   URIEncoding="UTF-8" keystorePass="<MY_CERTIFICATE_PASSWORD>"/>
+       -->
+       <Connector port="8443" maxHttpHeaderSize="8192"
+            maxThreads="150" minSpareThreads="25"
+            protocol="org.apache.coyote.http11.Http11NioProtocol"
+            enableLookups="false" disableUploadTimeout="true"
+            acceptCount="100" scheme="https" secure="true"
+            clientAuth="false" sslProtocols="TLSv1.2" sslEnabledProtocols="TLSv1.2" SSLEnabled="true"
+            URIEncoding="UTF-8" keystorePass="password"
+            keystoreFile="/root/.keystore" />
+  </Service>
+</Server>

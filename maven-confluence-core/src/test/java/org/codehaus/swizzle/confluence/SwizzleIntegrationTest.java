@@ -8,6 +8,7 @@ package org.codehaus.swizzle.confluence;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Ignore;
 import org.junit.After;
@@ -22,8 +23,8 @@ import static org.hamcrest.core.IsNull.*;
  *
  * @author softphone
  */
-@Ignore
-public class SwizzleTest {
+//@Ignore
+public class SwizzleIntegrationTest {
 
     public static final String PASSWORD = "admin";
     public static final String USER = "admin";
@@ -38,9 +39,11 @@ public class SwizzleTest {
         
         final ConfluenceService.Credentials credentials = 
                 new ConfluenceService.Credentials(USER, PASSWORD );
+        
+        final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
 
         confluence = 
-            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(URL, credentials,proxyInfo);
+            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(URL, credentials,proxyInfo, sslInfo);
         
 
     }
@@ -54,7 +57,7 @@ public class SwizzleTest {
     }
 
     @Test @Ignore 
-    public void fakeTest() {}
+    public void dummy() {}
     
     @Test
     public void showInfo() throws Exception {
@@ -65,8 +68,7 @@ public class SwizzleTest {
         
     }
        
-    @Test 
-    @Ignore
+    @Test @Ignore
     public void addAttachment() throws Exception {
 
         Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
@@ -88,8 +90,7 @@ public class SwizzleTest {
 
     }
 
-    @Test 
-    @Ignore
+    @Test @Ignore
     public void findAttachment() throws Exception {
         Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
 

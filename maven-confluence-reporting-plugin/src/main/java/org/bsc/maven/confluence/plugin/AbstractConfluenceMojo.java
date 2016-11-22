@@ -19,8 +19,8 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
-import org.bsc.maven.reporting.model.ProcessUriException;
-import org.bsc.maven.reporting.model.Site;
+import org.bsc.confluence.model.ProcessUriException;
+import org.bsc.confluence.model.Site;
 import rx.functions.Func2;
 
 /**
@@ -246,7 +246,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     protected <T extends Site.Page> Model.Page  generateChild(final ConfluenceService confluence,  final T child, String spaceKey, String parentPageTitle, String titlePrefix) {
 
-        java.net.URI source = child.getUri(getProject(), getFileExt());
+        java.net.URI source = child.getUri(getFileExt());
 
         getLog().info( String.format("generateChild spacekey=[%s] parentPageTtile=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
 

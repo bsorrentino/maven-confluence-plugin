@@ -6,7 +6,7 @@ package org.bsc.maven.reporting.test;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import org.bsc.maven.reporting.model.Site;
+import org.bsc.confluence.model.Site;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsInstanceOf;

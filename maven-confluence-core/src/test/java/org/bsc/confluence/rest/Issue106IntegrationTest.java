@@ -32,12 +32,19 @@ import org.junit.Test;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 @Ignore
 public class Issue106IntegrationTest {
+    //private static final String HOST = "192.168.99.100";
+    //private static final int PORT = 8090;
+    //private static final String SCHEME = "http";
+    private static final String HOST = "localhost";
+    private static final int PORT = 8443;
+    private static final String SCHEME = "https";
     
     OkHttpClient.Builder client;
+    
     
     private int responseCount(Response response) {
         int result = 1;
@@ -87,9 +94,9 @@ public class Issue106IntegrationTest {
         final String credential = Credentials.basic("admin", "admin");
 
         final HttpUrl url =   new HttpUrl.Builder()
-                                    .scheme("http")
-                                    .host("192.168.99.100")
-                                    .port(8090)
+                                    .scheme(SCHEME)
+                                    .host(HOST)
+                                    .port(PORT)
                                     .addPathSegments("plugins/viewstorage/viewpagestorage.action")
                                     .addQueryParameter("pageId", "1867778")
                                     .build();
@@ -121,9 +128,9 @@ public class Issue106IntegrationTest {
         final String credential = Credentials.basic("admin", "admin");
 
         final HttpUrl url =   new HttpUrl.Builder()
-                                    .scheme("http")
-                                    .host("192.168.99.100")
-                                    .port(8090)
+                                    .scheme(SCHEME)
+                                    .host(HOST)
+                                    .port(PORT)
                                     .addPathSegments("rest/api/")
                                     .addPathSegment("content")                
                                     .addQueryParameter("spaceKey", "TEST")
@@ -187,9 +194,9 @@ public class Issue106IntegrationTest {
             final String credential = Credentials.basic("admin", "admin");
             
             final HttpUrl.Builder url = new HttpUrl.Builder()
-                    .scheme("http")
-                    .host("192.168.99.100")
-                    .port(8090)
+                    .scheme(SCHEME)
+                    .host(HOST)
+                    .port(PORT)
                     .addPathSegments("rest/api/content")
                     ;
             final Request req1 = new Request.Builder()
@@ -234,9 +241,9 @@ public class Issue106IntegrationTest {
         final String credential = Credentials.basic("admin", "admin");
 
         final HttpUrl.Builder url = new HttpUrl.Builder()
-                                    .scheme("http")
-                                    .host("192.168.99.100")
-                                    .port(8090)
+                                    .scheme(SCHEME)
+                                    .host(HOST)
+                                    .port(PORT)
                                     .addPathSegments("rest/api/content")
                                     ;
         
@@ -308,9 +315,9 @@ public class Issue106IntegrationTest {
         final String credential = Credentials.basic("admin", "admin");
 
         final HttpUrl.Builder url = new HttpUrl.Builder()
-                                    .scheme("http")
-                                    .host("192.168.99.100")
-                                    .port(8090)
+                                    .scheme(SCHEME)
+                                    .host(HOST)
+                                    .port(PORT)
                                     .addPathSegments("rest/api/content")
                                     ;
         

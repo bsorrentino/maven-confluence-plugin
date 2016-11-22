@@ -1,5 +1,6 @@
 package org.bsc.maven.reporting.model;
 
+import org.bsc.confluence.model.Site;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**

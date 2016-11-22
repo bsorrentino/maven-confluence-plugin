@@ -2,27 +2,28 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.maven.reporting.model;
+package org.bsc.confluence.model;
 
+import static com.sun.javafx.scene.CameraHelper.project;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.project.MavenProject;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 import rx.functions.Func2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -36,7 +37,7 @@ public class Site {
      */
     protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
 
 
     /**
@@ -144,11 +145,13 @@ public class Site {
                 }
             }
 
+            /*
             if (LOGGER.isDebugEnabled()) {
                 String resultString = IOUtils.toString(result);
                 LOGGER.debug("Result: {}", resultString);
                 result = new ByteArrayInputStream(resultString.getBytes());
             }
+            */
             return onSuccess.call(result, representation);
     }
 
@@ -373,12 +376,9 @@ public class Site {
         }
 
 
-        public java.net.URI getUri(MavenProject project, String ext) {
+        public java.net.URI getUri( String ext) {
 
             if (getUri() == null) {
-                if (project == null) {
-                    throw new IllegalArgumentException("project is null");
-                }
                 if (getName() == null) {
                     throw new IllegalStateException("name is null");
                 }

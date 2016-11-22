@@ -32,6 +32,7 @@ import okhttp3.RequestBody;
 import org.bsc.confluence.rest.model.Page;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
+import org.bsc.ssl.SSLCertificateInfo;
 import rx.functions.Action1;
 
 /**
@@ -45,12 +46,15 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
     final OkHttpClient.Builder client = new OkHttpClient.Builder();
     final java.net.URL endpoint ;
     
-    public RESTConfluenceServiceImpl( String url , Credentials credentials) {
+    public RESTConfluenceServiceImpl( String url , Credentials credentials, SSLCertificateInfo sslInfo) {
         if( credentials==null ) {
             throw new IllegalArgumentException("credentials argument is null!");
         } 
         if( url==null ) {
             throw new IllegalArgumentException("url argument is null!");
+        } 
+        if( sslInfo==null ) {
+            throw new IllegalArgumentException("sslInfo argument is null!");
         } 
         
         try {
@@ -66,6 +70,14 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
         client.connectTimeout(10, TimeUnit.SECONDS);
         client.writeTimeout(10, TimeUnit.SECONDS);
         client.readTimeout(30, TimeUnit.SECONDS);
+        
+        if( !sslInfo.isIgnore() && "https".equals(this.endpoint.getProtocol()) ) {
+                    
+            client.hostnameVerifier(sslInfo.getHostnameVerifier())
+                    .sslSocketFactory(sslInfo.getSSLSocketFactory(), sslInfo.getTrustManager())
+                    
+                 ;
+        }
         
     }
     
@@ -105,7 +117,7 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                     final Response res = client.build().newCall(req).execute();
 
                     t.onNext(res);
-                    t.onCompleted();
+                    t.onCompleted();                        
                                         
                 } catch (IOException ex) {
                     
@@ -132,9 +144,16 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
 
                             final JsonObject root = rdr.readObject();
 
+                            // {"statusCode":404,"data":{"authorized":false,"valid":true,"errors":[],"successful":false,"notSuccessful":true},"message":"No space with key : TEST"}
                             final JsonArray results = root.getJsonArray("results");
+
+                            //System.out.println( root.toString() );
+
+                            if( results == null ) {
+                                return Observable.empty();
+                            }
                             
-                            return Observable.just(results);
+                            return  Observable.just(results);
 
 
                         } catch (IOException ex) {
