@@ -25,9 +25,15 @@ var Confluence = (function () {
     Confluence.prototype.getDescendents = function (pageId) {
         return this.call("getDescendents", [this.token, pageId]);
     };
+    Confluence.prototype.storePage = function (page) {
+        return this.call2("confluence1.", "storePage", [page]);
+    };
     Confluence.prototype.call = function (op, args) {
+        return this.call2(this.servicePrefix, op, args);
+    };
+    Confluence.prototype.call2 = function (servicePrefix, op, args) {
         var _this = this;
-        var operation = this.servicePrefix.concat(op);
+        var operation = servicePrefix.concat(op);
         return new Promise(function (resolve, reject) {
             _this.client.methodCall(operation, args, function (error, value) {
                 if (error) {

@@ -76,8 +76,16 @@ export class Confluence {
     return this.call("getDescendents", [this.token,pageId] );
   }
 
-  private call<T>( op:string, args:Array<string> ):Promise<T> {
-    let operation = this.servicePrefix.concat( op );
+  storePage(page:Page):Promise<Page>  {
+       return this.call2("confluence1.", "storePage", [page] );
+  }
+  
+  private call<T>( op:string, args:Array<any> ):Promise<T> {
+    return this.call2( this.servicePrefix, op, args );
+  }
+
+  private call2<T>( servicePrefix:string, op:string, args:Array<any> ):Promise<T> {
+    let operation = servicePrefix.concat( op );
 
     return new Promise<T>( (resolve: (value?: T | Thenable<T>) => void, reject: (error?: any) => void) => {
 
