@@ -1,0 +1,17 @@
+{
+  "name": "confluence-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bsorrentino <bartolomeo.sorrentino@gmail.com> (http://soulsoftware-bsc.blogspot.it/)",
+  "license": "MIT",
+  "dependencies": {
+    "es6-promise": "^4.0.5",
+    "xml2js": "^0.4.17",
+    "xmlrpc": "^1.3.2",
+    "xmlrpc-lite": "0.0.4"
+  }
+}
