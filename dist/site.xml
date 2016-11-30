@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <child name="" uri="">
+        </child>
+        <child name="" uri="">
+        </child>
+
+-->
+
+
+<ns1:site
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:ns1='https://github.com/bsorrentino/maven-confluence-plugin'
+    xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
+
+    <home  uri="encoding.confluence">
+
+        <child name="Pull Request 112" uri="PR112.md">
+            <attachment name="conf-icon-64.png" uri="attachments/conf-icon-64.png" comment="" contentType="image/png" version="1"></attachment>
+            <attachment name="conf-icon2-64.png" uri="attachments/conf-icon2-64.png" comment="" contentType="image/png" version="1"></attachment>
+        </child>
+
+        <child name="ISSUE 111" uri="Issue111/issue111.md">
+            <label>Issue 111</label>
+            <child name="greenpepper" uri="Issue111/runner-ref.md"></child>
+        </child>
+
+        <child name="Pull Request 113" uri="PR113/createSpecificNoticeBlock.md">
+            <label>PR 113</label>
+        </child>
+
+        <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
+        <child name="child1" uri="child1.md" >
+            <label>label_child_1</label>
+
+            <child name="child1.1" uri="children/child1.confluence">
+
+            <label>label_child_1_1</label>
+            </child>
+        </child>
+
+        <child name="from classpath" uri="classpath:template1.confluence"></child>
+
+    </home>
+
+    <label>encoding</label>
+    <label>test</label>
+
+<!--
+    <home  uri="classpath:template1.confluence">
+        <label>label_home</label>
+
+        <attachment name="gvp dashboard" uri="attachments/GvpDashboard.png" comment="gvp dashboard image" contentType="image/png" version="1"></attachment>
+        <child name="child1" >
+            <label>label_child_1</label>
+
+            <child name="child1.1" uri="children/child1.confluence">
+
+            <label>label_child_1_1</label>
+            </child>
+        </child>
+    </home>
+
+    <label>label_site</label>
+-->
+</ns1:site>
