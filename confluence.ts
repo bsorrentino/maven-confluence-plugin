@@ -20,24 +20,24 @@ export interface ServerInfo {
 }
 
 export interface PageSummary {
-    url:string;
-    id:string;
-    version:number;
+    url?:string;
+    id?:number;
+    version?:number;
     title:string;
     space:string;
     parentId:number;
-    permissions:string;
+    permissions?:string;
 }
 
 export interface Page extends PageSummary {
-    current:boolean;
+    current?:boolean;
     content:string;
-    modifier:string;
-    homePage:boolean;
-    creator:string;
-    contentStatus:string;
-    modified: Date;
-    created: Date;
+    modifier?:string;
+    homePage?:boolean;
+    creator?:string;
+    contentStatus?:string;
+    modified?: Date;
+    created?: Date;
 }
 
 export class Confluence {
@@ -77,9 +77,13 @@ export class Confluence {
   }
 
   storePage(page:Page):Promise<Page>  {
-       return this.call2("confluence1.", "storePage", [page] );
+       return this.call2("confluence1.", "storePage", [this.token,page] );
   }
-  
+
+  removePage(pageId:string):Promise<boolean> {
+    return this.call("removePage", [this.token,pageId]);
+  }
+
   private call<T>( op:string, args:Array<any> ):Promise<T> {
     return this.call2( this.servicePrefix, op, args );
   }

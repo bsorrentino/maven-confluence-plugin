@@ -1,7 +1,13 @@
 
 import {Confluence,PageSummary,Page,ServerInfo,Config} from "./confluence";
 
-let config:Config = require( "./config.json").local;
+interface ConfigTest extends Config {
+  spaceId:string;
+  pageTitle:string;
+}
+
+//let config:ConfigTest = require( "./config.json").local;
+let config:ConfigTest = require( "./config.json").softphone;
 
 let confluence;
 
@@ -12,12 +18,27 @@ Confluence.createDetectingVersion(config).then( (c:Confluence) => {
   return confluence.getServerInfo();
 }).then( (value:ServerInfo) => {
   console.log( "server majorVersion:", value.majorVersion);
-  return confluence.getPage( "TEST", "TEST");
+  return confluence.getPage( config.spaceId, config.pageTitle);
 }).then( (value:Page) => {
   console.log( "page", value);
-  return confluence.getDescendents( value.id );
-}).then( ( pages:Array<PageSummary> ) => {
-  console.log( "pages", pages);
+
+  let newPage:Page = {
+    title:"CLI",
+    space:config.spaceId,
+    parentId:value.id,
+    content:"{TOC}"
+  };
+
+  return Promise.all([
+    confluence.getDescendents( value.id ),
+    confluence.storePage(newPage)
+    ]);
+
+}).then( ( result:[Array<PageSummary>, Page] ) => {
+  console.log( "pages", result[0], "new page", result[1]);
+  return confluence.removePage( result[1].id );
+}).then( removed => {
+  console.log( "page removed:", removed);
 }).then( () => {
   return confluence.logout();
 }).then( (value) => {

@@ -26,7 +26,10 @@ var Confluence = (function () {
         return this.call("getDescendents", [this.token, pageId]);
     };
     Confluence.prototype.storePage = function (page) {
-        return this.call2("confluence1.", "storePage", [page]);
+        return this.call2("confluence1.", "storePage", [this.token, page]);
+    };
+    Confluence.prototype.removePage = function (pageId) {
+        return this.call("removePage", [this.token, pageId]);
     };
     Confluence.prototype.call = function (op, args) {
         return this.call2(this.servicePrefix, op, args);

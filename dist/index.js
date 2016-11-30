@@ -1,6 +1,6 @@
 "use strict";
 var confluence_1 = require("./confluence");
-var config = require("./config.json").local;
+var config = require("./config.json").softphone;
 var confluence;
 confluence_1.Confluence.createDetectingVersion(config).then(function (c) {
     confluence = c;
@@ -9,12 +9,24 @@ confluence_1.Confluence.createDetectingVersion(config).then(function (c) {
     return confluence.getServerInfo();
 }).then(function (value) {
     console.log("server majorVersion:", value.majorVersion);
-    return confluence.getPage("TEST", "TEST");
+    return confluence.getPage(config.spaceId, config.pageTitle);
 }).then(function (value) {
     console.log("page", value);
-    return confluence.getDescendents(value.id);
-}).then(function (pages) {
-    console.log("pages", pages);
+    var newPage = {
+        title: "CLI",
+        space: config.spaceId,
+        parentId: value.id,
+        content: "{TOC}"
+    };
+    return Promise.all([
+        confluence.getDescendents(value.id),
+        confluence.storePage(newPage)
+    ]);
+}).then(function (result) {
+    console.log("pages", result[0], "new page", result[1]);
+    return confluence.removePage(result[1].id);
+}).then(function (removed) {
+    console.log("page removed:", removed);
 }).then(function () {
     return confluence.logout();
 }).then(function (value) {
