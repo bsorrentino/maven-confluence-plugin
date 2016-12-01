@@ -1,10 +1,13 @@
+
+
 import * as xml from "xml2js";
 import * as filesystem from "fs";
 import * as path from "path";
 import traverse = require('traverse');
+import Rx = require("rx");
+
 
 let parser = new xml.Parser();
-
 
 function removeSingleArrays(obj, filter?:(key:string) => boolean ) {
   // Traverse all the elements of the object
@@ -17,6 +20,17 @@ function removeSingleArrays(obj, filter?:(key:string) => boolean ) {
   });
 }
 
+let readFile    = Rx.Observable.fromNodeCallback( filesystem.readFile );
+let parseString = Rx.Observable.fromNodeCallback( parser.parseString );
+
+readFile( path.join(__dirname,'site.xml') )
+  .flatMap( (value:Buffer) => parseString( value.toString() ) )
+  .doOnCompleted( () => console.log('Done') )
+  .subscribe( (data:Object) => {
+    console.dir(data, {depth:8});
+  });
+
+/*
 filesystem.readFile( path.join(__dirname,'site.xml'), (err, data) => {
     parser.parseString(data.toString(), (err, result) => {
         //removeSingleArrays( result );
@@ -24,3 +38,4 @@ filesystem.readFile( path.join(__dirname,'site.xml'), (err, data) => {
         console.log('Done');
     });
 });
+*/
