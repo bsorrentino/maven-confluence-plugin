@@ -535,6 +535,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             public void call(ConfluenceService confluence)  {
                 try {
                     generateProjectReport(confluence, site, locale);
+                } catch( RuntimeException re ) {
+                    throw re;
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }

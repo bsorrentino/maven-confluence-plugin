@@ -177,17 +177,28 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             final ConfluenceService.Credentials credentials = 
                 new ConfluenceService.Credentials(getUsername(), getPassword());
 
-            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), credentials, proxyInfo, sslCertificate);
+            confluence = 
+                    ConfluenceServiceFactory.createInstance(
+                            getEndPoint(), 
+                            credentials, 
+                            proxyInfo, 
+                            sslCertificate
+                    );
 
             getLog().info( String.valueOf(confluence) );
 
             confluence.call(task);
             
+        } catch( RuntimeException re ) {
+            
+            throw re;
+            
         } catch (Exception e) {
 
-            getLog().error("has been impossible connect to confluence due exception", e);
+            final String msg = "has been impossible connect to confluence due exception";
+            //getLog().error(msg, e);
 
-            throw new MojoExecutionException("has been impossible connect to confluence due exception", e);
+            throw new MojoExecutionException(msg, e);
         }
 
     }

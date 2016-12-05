@@ -19,6 +19,8 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 - | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
 ---- | ---- | ---- |
 
+ * Refer to [Issue 110](https://github.com/bsorrentino/maven-confluence-plugin/issues/110) - mvn build should fail in case of an exception
+
 Nov 23,2016 | **Release 5.0-beta2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-beta2%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
