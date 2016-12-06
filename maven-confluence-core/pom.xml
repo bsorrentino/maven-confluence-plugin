@@ -4,7 +4,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0-beta2</version>
+        <version>5.0-rc1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -127,17 +127,17 @@
   <build>
 
     <plugins>
-        
+
       <!-- Separates the unit tests from the integration tests. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>           
+        <configuration>
            <skip>true</skip>
            <trimStackTrace>false</trimStackTrace>
-        </configuration>       
+        </configuration>
         <executions>
-           <!-- mvn surefire:test@utests --> 
+           <!-- mvn surefire:test@utests -->
            <execution>
               <id>utests</id>
               <phase>test</phase>
@@ -155,9 +155,9 @@
               </configuration>
            </execution>
         </executions>
-        
+
       </plugin>
-    
+
     </plugins>
 
   </build>
@@ -180,12 +180,12 @@
                 <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>           
+                  <configuration>
                      <skip>true</skip>
                      <trimStackTrace>false</trimStackTrace>
-                  </configuration>       
+                  </configuration>
                   <executions>
-                     <!-- mvn surefire:test@itests --> 
+                     <!-- mvn surefire:test@itests -->
                      <execution>
                           <id>itests</id>
                           <phase>integration-test</phase>
@@ -203,7 +203,7 @@
                   </executions>
 
                 </plugin>
-                  
+
               </plugins>
           </build>
       </profile>
