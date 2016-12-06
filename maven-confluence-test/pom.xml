@@ -160,7 +160,8 @@
                             <parentPageTitle>Home</parentPageTitle>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/site-issue110.xml</siteDescriptor>
-                            <serverId>softphone-server</serverId>    
+                            <serverId>softphone-server</serverId>   
+                            <failOnError>false</failOnError> 
                         </configuration>
                     </execution>
                     

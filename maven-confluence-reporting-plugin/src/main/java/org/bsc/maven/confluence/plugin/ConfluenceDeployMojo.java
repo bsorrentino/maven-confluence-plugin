@@ -256,25 +256,45 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         super.initTemplateProperties();
 
 
-
-        if ( project.getPackaging().equals( "maven-plugin" ) )
-       /////////////////////////////////////////////////////////////////
-       // PLUGIN
-       /////////////////////////////////////////////////////////////////
-        {
-            generatePluginReport(site, locale);
-        }
-        else
-       /////////////////////////////////////////////////////////////////
-       // PROJECT
-       /////////////////////////////////////////////////////////////////
-        {
-            generateProjectReport(site, locale);
+        try {
+            
+            if ( project.getPackaging().equals( "maven-plugin" ) )
+           /////////////////////////////////////////////////////////////////
+           // PLUGIN
+           /////////////////////////////////////////////////////////////////
+            {
+                generatePluginReport(site, locale);
+            }
+            else
+           /////////////////////////////////////////////////////////////////
+           // PROJECT
+           /////////////////////////////////////////////////////////////////
+            {
+                generateProjectReport(site, locale);
+            }
+            
+        } catch( MojoExecutionException e ) {
+            final String msg = "error generating report";
+            if( isFailOnError() ) {
+                throw e;
+            }
+            else {
+                getLog().error( msg, e);
+            }
+        } catch( Exception e ) {
+            final String msg = "error generating report";
+            final Throwable cause = e.getCause();     
+            if( isFailOnError() ) {
+                throw new MojoExecutionException(msg, (cause!=null) ? cause : e);
+            }
+            else {
+                getLog().error( msg, (cause!=null) ? cause : e);
+            }
         }
 
     }
 
-    protected String createProjectHome( final Site site, final Locale locale) throws MojoExecutionException {
+    protected String createProjectHome( final Site site, final Locale locale)  {
 
         try {
             
@@ -296,10 +316,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 
             }) ;
 
+        } catch (RuntimeException re ) {
+            throw re;
         } catch (Exception e) {
-            final String msg = "error loading template";
-            getLog().error(msg, e);
-            throw new MojoExecutionException(msg, e);
+            throw new RuntimeException(e);
         }
 
     }
@@ -668,92 +688,90 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         pluginDescriptor.setVersion(project.getVersion());
         pluginDescriptor.setGoalPrefix(goalPrefix);
 
+        final java.util.List deps = new java.util.ArrayList();
+
+        deps.addAll(toComponentDependencies(project.getRuntimeDependencies()));
+        deps.addAll(toComponentDependencies(project.getCompileDependencies()));
+
+        pluginDescriptor.setDependencies(deps);
+        pluginDescriptor.setDescription(project.getDescription());
+
+        PluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
+        request.setEncoding(getEncoding());
+        request.setLocal(local);
+        request.setRemoteRepos(remoteRepos);
+        request.setSkipErrorNoDescriptorsFound(false);
+        request.setDependencies(dependencies);
+
         try {
-            final java.util.List deps = new java.util.ArrayList();
 
-            deps.addAll(toComponentDependencies(project.getRuntimeDependencies()));
-            deps.addAll(toComponentDependencies(project.getCompileDependencies()));
+            mojoScanner.populatePluginDescriptor(request);
 
-            pluginDescriptor.setDependencies(deps);
-            pluginDescriptor.setDescription(project.getDescription());
+        } catch (InvalidPluginDescriptorException e) {
+            // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
+            getLog().warn(format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
 
-            PluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
-            request.setEncoding(getEncoding());
-            request.setLocal(local);
-            request.setRemoteRepos(remoteRepos);
-            request.setSkipErrorNoDescriptorsFound(false);
-            request.setDependencies(dependencies);
-
-
-            try {
-
-                mojoScanner.populatePluginDescriptor(request);
-
-            } catch (InvalidPluginDescriptorException e) {
-                // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
-                getLog().warn(format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
-
-            }
-
-            // Generate the plugin's documentation
-            super.confluenceExecute(new P1<ConfluenceService>() {
-
-                @Override
-                public void call(ConfluenceService confluence)  {
-
-                    try {
-
-                        final Model.Page parentPage = loadParentPage(confluence);
-
-                        outputDirectory.mkdirs();
-
-                        getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
-
-                        final PluginGenerator generator = new PluginGenerator();
-
-                        final PluginToolsRequest request =
-                                new DefaultPluginToolsRequest(project, pluginDescriptor);
-
-                        Model.Page confluenceHomePage = generator.processMojoDescriptors(
-                            request.getPluginDescriptor(),
-                            confluence,
-                            parentPage,
-                            site,
-                            locale );
-
-                        for( String label : site.getHome().getComputedLabels() ) {
-
-                            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
-
-                        }
-
-                        // Issue 32
-                        final String title = getTitle();
-
-                        generateChildren(   confluence, 
-                                        site.getHome(),
-                                        confluenceHomePage,
-                                        title, 
-                                        title);
-                    }
-                    catch( Exception ex ) {
-                        throw new RuntimeException(ex);
-                    }
-
-                }
-            });
-
-            //
-            // Write the overview
-            // PluginOverviewRenderer r = new PluginOverviewRenderer( getSink(), pluginDescriptor, locale );
-            // r.render();
-            //
         } catch (ExtractionException e) {
             throw new MojoExecutionException(
                     format("Error extracting plugin descriptor: %s",
                     e.getLocalizedMessage()),
                     e);
         }
+
+        
+        // Generate the plugin's documentation
+        super.confluenceExecute(new P1<ConfluenceService>() {
+
+            @Override
+            public void call(ConfluenceService confluence)  {
+
+                try {
+
+                    final Model.Page parentPage = loadParentPage(confluence);
+
+                    outputDirectory.mkdirs();
+
+                    getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
+
+                    final PluginGenerator generator = new PluginGenerator();
+
+                    final PluginToolsRequest request =
+                            new DefaultPluginToolsRequest(project, pluginDescriptor);
+
+                    Model.Page confluenceHomePage = generator.processMojoDescriptors(
+                        request.getPluginDescriptor(),
+                        confluence,
+                        parentPage,
+                        site,
+                        locale );
+
+                    for( String label : site.getHome().getComputedLabels() ) {
+
+                        confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+
+                    }
+
+                    // Issue 32
+                    final String title = getTitle();
+
+                    generateChildren(   confluence, 
+                                    site.getHome(),
+                                    confluenceHomePage,
+                                    title, 
+                                    title);
+                }
+                catch( Exception ex ) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
+
+        //
+        // Write the overview
+        // PluginOverviewRenderer r = new PluginOverviewRenderer( getSink(), pluginDescriptor, locale );
+        // r.render();
+        //
     }
 
     class PluginGenerator extends PluginConfluenceDocGenerator {

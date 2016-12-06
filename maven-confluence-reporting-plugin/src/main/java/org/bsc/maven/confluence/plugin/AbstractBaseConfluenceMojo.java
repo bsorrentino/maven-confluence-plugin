@@ -75,7 +75,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Parameter(readonly = true, property = "settings")
     protected org.apache.maven.settings.Settings mavenSettings;
 
-
     /**
      * Issue 39
      *
@@ -117,6 +116,26 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Parameter
     protected SSLCertificateInfo sslCertificate = new SSLCertificateInfo();
 
+    /**
+     * Issue 110
+     *
+     * Indicates whether the build will continue even if there are clean errors.     
+     *
+     * @since 5.0-rc1
+     */
+    @Parameter(property = "confluence.failOnError",defaultValue = "true")
+    private boolean failOnError = true;
+
+    /**
+     * 
+     * Indicates whether the build will continue even if there are clean errors.     
+     * 
+     * @return true if build have to fail on error, otherwise false
+     */
+    public boolean isFailOnError() {
+        return failOnError;
+    }
+  
     /**
      *
      */
