@@ -75,7 +75,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Parameter(readonly = true, property = "settings")
     protected org.apache.maven.settings.Settings mavenSettings;
 
-
     /**
      * Issue 39
      *
@@ -117,6 +116,26 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Parameter
     protected SSLCertificateInfo sslCertificate = new SSLCertificateInfo();
 
+    /**
+     * Issue 110
+     *
+     * Indicates whether the build will continue even if there are clean errors.     
+     *
+     * @since 5.0-rc1
+     */
+    @Parameter(property = "confluence.failOnError",defaultValue = "true")
+    private boolean failOnError = true;
+
+    /**
+     * 
+     * Indicates whether the build will continue even if there are clean errors.     
+     * 
+     * @return true if build have to fail on error, otherwise false
+     */
+    public boolean isFailOnError() {
+        return failOnError;
+    }
+  
     /**
      *
      */
@@ -177,17 +196,28 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             final ConfluenceService.Credentials credentials = 
                 new ConfluenceService.Credentials(getUsername(), getPassword());
 
-            confluence = ConfluenceServiceFactory.createInstance(getEndPoint(), credentials, proxyInfo, sslCertificate);
+            confluence = 
+                    ConfluenceServiceFactory.createInstance(
+                            getEndPoint(), 
+                            credentials, 
+                            proxyInfo, 
+                            sslCertificate
+                    );
 
             getLog().info( String.valueOf(confluence) );
 
             confluence.call(task);
             
+        } catch( RuntimeException re ) {
+            
+            throw re;
+            
         } catch (Exception e) {
 
-            getLog().error("has been impossible connect to confluence due exception", e);
+            final String msg = "has been impossible connect to confluence due exception";
+            //getLog().error(msg, e);
 
-            throw new MojoExecutionException("has been impossible connect to confluence due exception", e);
+            throw new MojoExecutionException(msg, e);
         }
 
     }

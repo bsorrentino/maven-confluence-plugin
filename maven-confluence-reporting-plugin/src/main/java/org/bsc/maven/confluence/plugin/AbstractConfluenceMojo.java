@@ -22,7 +22,7 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
 import rx.functions.Func2;
-
+import static java.lang.String.format;
 /**
  *
  * @author bsorrentino
@@ -292,7 +292,8 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                             return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), r) );
                             
                         } catch (Exception ex) {
-                            throw new RuntimeException(ex);
+                            final String msg = format("error storing page [%s]", pageToUpdate.getTitle());
+                            throw new RuntimeException(msg, ex);
                         }
                     }
                     
@@ -314,11 +315,12 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
             return result;
 
+        } catch (RuntimeException re ){
+            throw re;
         } catch (Exception e) {
             final String msg = "error loading template";
-            getLog().error(msg, e);
-
-            return null;
+            //getLog().error(msg, e);
+            throw new RuntimeException(msg, e);
         }
 
     }

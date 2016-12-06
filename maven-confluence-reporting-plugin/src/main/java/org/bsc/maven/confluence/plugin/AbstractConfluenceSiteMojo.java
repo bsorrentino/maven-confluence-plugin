@@ -116,7 +116,10 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
             try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
                 confluence.addAttchment(confluencePage, confluenceAttachment, is );
             } catch (Exception e) {
-                getLog().error(format("Error uploading attachment [%s] ", attachment.getName()), e);
+                final String msg = format("Error uploading attachment [%s] ", attachment.getName());
+                //getLog().error(msg);
+                throw new RuntimeException(msg,e);
+                
             }
 
         }
