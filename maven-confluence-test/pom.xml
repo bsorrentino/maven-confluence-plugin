@@ -2,12 +2,11 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.0-rc1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-confluence-test</artifactId>
-    <version>5.0-SNAPSHOT</version>
     <name>CONFLUENCE-REPORTING::Test - ${project.version}</name>
     <description>description</description>
 
@@ -72,7 +71,7 @@
 
                 </configuration>
                 <executions>
-                    <!-- 
+                    <!--
                     mvn confluence-reporting:deploy@softphone
                     mvn confluence-reporting:delete@softphone
                     -->
@@ -94,7 +93,7 @@
                             <serverId>softphone-server</serverId>
                         </configuration>
                     </execution>
-                    <!-- 
+                    <!--
                     mvn confluence-reporting:deploy@local
                     mvn confluence-reporting:delete@local
                     -->
@@ -105,7 +104,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            
+
                             <!--endPoint>http://localhost:8090/rpc/xmlrpc</endPoint-->
                             <endPoint>https://localhost:8443/rpc/xmlrpc</endPoint>
                             <spaceKey>TEST</spaceKey>
@@ -117,10 +116,10 @@
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/site5.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>confluence-local</serverId>                         
+                            <serverId>confluence-local</serverId>
                         </configuration>
                     </execution>
-                    <!-- 
+                    <!--
                     mvn confluence-reporting:deploy@issue129
                     mvn confluence-reporting:delete@issue129
                     -->
@@ -138,10 +137,10 @@
                             <templateWiki>${basedir}/src/site/confluence/issue129/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>confluence-local</serverId>                         
+                            <serverId>confluence-local</serverId>
                         </configuration>
                     </execution>
-                    <!-- 
+                    <!--
                     mvn confluence-reporting:deploy@issue110
                     mvn confluence-reporting:delete@issue110
                     -->
@@ -160,11 +159,11 @@
                             <parentPageTitle>Home</parentPageTitle>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/site-issue110.xml</siteDescriptor>
-                            <serverId>softphone-server</serverId>   
-                            <failOnError>false</failOnError> 
+                            <serverId>softphone-server</serverId>
+                            <failOnError>false</failOnError>
                         </configuration>
                     </execution>
-                    
+
                 </executions>
             </plugin>
         </plugins>

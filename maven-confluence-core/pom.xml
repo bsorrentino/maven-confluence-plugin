@@ -4,12 +4,11 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0-SNAPSHOT</version>
+        <version>5.0-rc1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-confluence-core</artifactId>
-    <version>5.0-SNAPSHOT</version>
     <name>CONFLUENCE-REPORTING::Core - ${project.version}</name>
 
     <scm>
@@ -128,17 +127,17 @@
   <build>
 
     <plugins>
-        
+
       <!-- Separates the unit tests from the integration tests. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>           
+        <configuration>
            <skip>true</skip>
            <trimStackTrace>false</trimStackTrace>
-        </configuration>       
+        </configuration>
         <executions>
-           <!-- mvn surefire:test@utests --> 
+           <!-- mvn surefire:test@utests -->
            <execution>
               <id>utests</id>
               <phase>test</phase>
@@ -156,9 +155,9 @@
               </configuration>
            </execution>
         </executions>
-        
+
       </plugin>
-    
+
     </plugins>
 
   </build>
@@ -181,12 +180,12 @@
                 <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>           
+                  <configuration>
                      <skip>true</skip>
                      <trimStackTrace>false</trimStackTrace>
-                  </configuration>       
+                  </configuration>
                   <executions>
-                     <!-- mvn surefire:test@itests --> 
+                     <!-- mvn surefire:test@itests -->
                      <execution>
                           <id>itests</id>
                           <phase>integration-test</phase>
@@ -204,7 +203,7 @@
                   </executions>
 
                 </plugin>
-                  
+
               </plugins>
           </build>
       </profile>
