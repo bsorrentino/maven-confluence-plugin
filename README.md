@@ -21,6 +21,12 @@ Dec 6,2016  | **Release 5.0-rc1** | available from  **[MAVEN CENTRAL REPO](http:
 
  * Refer to [Issue 110](https://github.com/bsorrentino/maven-confluence-plugin/issues/110) - mvn build should fail in case of an exception
 
+ *Note:*
+ > From this version the build will fail in case occurs an exception.
+ >
+ > If you want have backward compatibility set `<failOnError>false</failOnError>` in configuration
+
+
 Nov 23,2016 | **Release 5.0-beta2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-beta2%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
