@@ -117,7 +117,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     protected SSLCertificateInfo sslCertificate = new SSLCertificateInfo();
 
     /**
-     * Issue 110
      *
      * Indicates whether the build will continue even if there are clean errors.     
      *
