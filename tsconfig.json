@@ -12,7 +12,7 @@
         "noImplicitUseStrict": false,
         "removeComments": true,
         "noLib": false,
-        "preserveConstEnums": true,
+        "preserveConstEnums": false,
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "dist"
     },

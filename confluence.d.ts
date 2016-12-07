@@ -1,0 +1,78 @@
+
+declare enum Representation {
+  STORAGE, WIKI
+}
+
+interface Config {
+  host:string,
+  port:number,
+  path:string
+}
+
+interface Storage {
+  rapresentation:Representation;
+  value:string;
+}
+
+interface Credentials {
+  username:string;
+  password:string;
+}
+
+declare module Model {
+
+  export interface Attachment {
+    fileName:string;
+    contentType:string;
+    comment:string;
+    created?:Date;
+  }
+
+  export interface PageSummary {
+    id:string;
+    title:string;
+    space:string;
+    parentId:any;
+  }
+
+  export interface Page extends PageSummary {
+    version?:number;
+  }
+
+}
+
+interface ConfluenceService {
+
+    readonly credentials:Credentials;
+
+    getPage( spaceKey:string, pageTitle:string ):Promise<Model.Page>;
+
+    getPageByTitle( parentPageId:string, title:string):Promise<Model.PageSummary>;
+
+    getPageById( pageId:string ):Promise<Model.Page>;
+
+    getDescendents(pageId:string):Promise<Array<Model.PageSummary>>;
+
+    getAttachment?( pageId:string, name:string, version:string ):Promise<Model.Attachment>;
+
+    getOrCreatePage( spaceKey:string , parentPageTitle:string , title:string  ):Promise<Model.Page>;
+
+    getOrCreatePage2( parentPage:Model.Page , title:string  ):Promise<Model.Page>;
+
+    removePage( parentPage:Model.Page , title:string  ):Promise<boolean>;
+
+    removePageById( pageId:string  ):Promise<boolean>;
+
+    addLabelByName( label:string , id:number ):Promise<boolean>;
+
+    addAttchment( page:Model.Page, attachment:Model.Attachment, content:any ):Promise<Model.Attachment>;
+
+    storePage2( page:Model.Page, content:Storage  ):Promise<Model.Page>;
+
+    storePage( page:Model.Page ):Promise<Model.Page>;
+
+    call?( task:(ConfluenceService) => void );
+
+
+
+}

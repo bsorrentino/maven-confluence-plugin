@@ -1,7 +1,8 @@
 
-import {Confluence,PageSummary,Page,ServerInfo,Config} from "./confluence";
+import {XMLRPCConfluenceService} from "./confluence-xmlrpc";
 
 interface ConfigTest extends Config {
+  credentials:Credentials;
   spaceId:string;
   pageTitle:string;
 }
@@ -11,17 +12,23 @@ let config:ConfigTest = require( "./config.json").softphone;
 
 let confluence;
 
-Confluence.createDetectingVersion(config).then( (c:Confluence) => {
-  confluence = c;
-}).then( () => {
+XMLRPCConfluenceService.create(config,config.credentials)
+.then( (c:ConfluenceService) => confluence = c )
+.then( () => {
   console.log( "logged in");
-  return confluence.getServerInfo();
-}).then( (value:ServerInfo) => {
-  console.log( "server majorVersion:", value.majorVersion);
   return confluence.getPage( config.spaceId, config.pageTitle);
-}).then( (value:Page) => {
-  console.log( "page", value);
+})
+.then( (value:Model.Page) => console.log( "page", value) )
+.then( () => confluence.logout() )
+.then( (value) => console.log( "logged out", value) )
+.catch( (error) => {
+  console.log( "error", error);
+  return confluence.logout();
+});
 
+/*
+}).then( (value:Model.Page) => {
+  console.log( "page", value);
   let newPage:Page = {
     title:"CLI",
     space:config.spaceId,
@@ -47,3 +54,4 @@ Confluence.createDetectingVersion(config).then( (c:Confluence) => {
   console.log( "error", error);
   return confluence.logout();
 });
+*/
