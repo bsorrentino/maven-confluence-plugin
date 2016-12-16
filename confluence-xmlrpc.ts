@@ -220,7 +220,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
       let p:Page = {
         space:parentPage.space,
-        parentId:parentPage.parentId,
+        parentId:parentPage.id,
         title:title
       };
 
@@ -250,7 +250,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
     return null;
   }
 
-  storePageContent( page:Model.Page, content:Storage  ):Promise<Model.Page>
+  storePageContent( page:Model.Page, content:ContentStorage  ):Promise<Model.Page>
   {
     if( content == null ) {
         throw "content argument is null!";

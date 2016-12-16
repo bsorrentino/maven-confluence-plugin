@@ -143,7 +143,7 @@ var XMLRPCConfluenceService = (function () {
                 return _this.connection.getPageById(result.id);
             var p = {
                 space: parentPage.space,
-                parentId: parentPage.parentId,
+                parentId: parentPage.id,
                 title: title
             };
             return Promise.resolve(p);

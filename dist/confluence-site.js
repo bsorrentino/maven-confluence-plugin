@@ -2,16 +2,11 @@
 var xml = require("xml2js");
 var filesystem = require("fs");
 var Rx = require("rx");
-(function (ElementType) {
-    ElementType[ElementType["PAGE"] = 0] = "PAGE";
-    ElementType[ElementType["ATTACHMENT"] = 1] = "ATTACHMENT";
-})(exports.ElementType || (exports.ElementType = {}));
-var ElementType = exports.ElementType;
 var toPage = function (v) {
-    return Object.assign(v, { type: ElementType.PAGE });
+    return Object.assign(v, { type: 0 });
 };
 var toAttachment = function (v) {
-    return Object.assign(v, { type: ElementType.ATTACHMENT });
+    return Object.assign(v, { type: 1 });
 };
 function rxProcessChild(child) {
     if (!child || child.length == 0)
@@ -34,7 +29,6 @@ var rxParseString = Rx.Observable.fromNodeCallback(parser.parseString);
 function rxSite(sitePath) {
     return rxReadFile(sitePath)
         .flatMap(function (value) { return rxParseString(value.toString()); })
-        .doOnCompleted(function () { return console.log('Done'); })
         .map(function (value) {
         for (var first in value)
             return value[first]['home'];

@@ -1,6 +1,6 @@
 
-declare enum Representation {
-  STORAGE, WIKI
+declare const enum Representation {
+  STORAGE=0 , WIKI=1
 }
 
 interface Config {
@@ -9,10 +9,17 @@ interface Config {
   path:string
 }
 
-interface Storage {
-  rapresentation:Representation;
+interface ContentStorage {
+  representation:Representation;
   value:string;
 }
+
+/*
+declare var ContentStorage: {
+    prototype: ContentStorage;
+    new( value:string, rapresentation:Representation ): ContentStorage;
+}
+*/
 
 interface Credentials {
   username:string;
@@ -67,7 +74,7 @@ interface ConfluenceService {
 
     addAttchment( page:Model.Page, attachment:Model.Attachment, content:any ):Promise<Model.Attachment>;
 
-    storePageContent( page:Model.Page, content:Storage  ):Promise<Model.Page>;
+    storePageContent( page:Model.Page, content:ContentStorage  ):Promise<Model.Page>;
 
     storePage( page:Model.Page ):Promise<Model.Page>;
 

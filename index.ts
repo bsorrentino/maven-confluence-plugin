@@ -1,5 +1,8 @@
 
 import {XMLRPCConfluenceService} from "./confluence-xmlrpc";
+import {ElementType, rxSite} from "./confluence-site";
+import * as path from "path";
+import Rx = require("rx");
 
 interface ConfigTest extends Config {
   credentials:Credentials;
@@ -7,56 +10,31 @@ interface ConfigTest extends Config {
   pageTitle:string;
 }
 
-//let config:ConfigTest = require( "./config.json").local;
-let config:ConfigTest = require( "./config.json").softphone;
+let config:ConfigTest = require( "./config.json").local;
+//let config:ConfigTest = require( "./config.json").softphone;
 
-let confluence;
 
 XMLRPCConfluenceService.create(config,config.credentials)
-.then( (c:ConfluenceService) => confluence = c )
-.then( () => {
-  console.log( "logged in");
-  return confluence.getPage( config.spaceId, config.pageTitle);
-})
-.then( (value:Model.Page) => console.log( "page", value) )
-.then( () => {
-  return confluence.getOrCreatePage(config.spaceId, config.pageTitle, "mytitle")
-          .then( (result) => console.log( "mytitle", result) )
-          ;
-})
-.then( () => confluence.connection.logout() )
-.then( (value) => console.log( "logged out", value) )
-.catch( (error) => {
-  console.log( "error", error);
-  return confluence.connection.logout();
+.then( (confluence:XMLRPCConfluenceService) => {
+
+  rxSite(path.join(__dirname,'site.xml'))
+    .filter( (data) => data.type==ElementType.PAGE )
+    .concatMap( (data) =>  {
+      return Rx.Observable.fromPromise(confluence.getOrCreatePage( config.spaceId, config.pageTitle, data.$.name ))
+              .flatMap( (page) => {
+                  if( page.id ) {
+                    console.log( "remove page", page.id );
+                    return Rx.Observable.fromPromise( confluence.connection.removePage(page.id) ).map( () => page) ;
+                  }
+                  console.log( "create page", page.title, page.id );
+                  let storage:ContentStorage = {value:data.$.uri, representation:Representation.WIKI};
+                  return Rx.Observable.fromPromise(confluence.storePageContent( page, storage ));
+              })
+    })
+    .doOnCompleted( () => confluence.connection.logout().then( ()=> console.log("logged out!") ))
+    .subscribe( (page) => {
+      console.log( "page", page.title, "stored!" )
+    });
+
+
 });
-
-/*
-}).then( (value:Model.Page) => {
-  console.log( "page", value);
-  let newPage:Page = {
-    title:"CLI",
-    space:config.spaceId,
-    parentId:value.id,
-    content:"{TOC}"
-  };
-
-  return Promise.all([
-    confluence.getDescendents( value.id ),
-    confluence.storePage(newPage)
-    ]);
-
-}).then( ( result:[Array<PageSummary>, Page] ) => {
-  console.log( "pages", result[0], "new page", result[1]);
-  return confluence.removePage( result[1].id );
-}).then( removed => {
-  console.log( "page removed:", removed);
-}).then( () => {
-  return confluence.logout();
-}).then( (value) => {
-  console.log( "logged out", value);
-}).catch( (error) => {
-  console.log( "error", error);
-  return confluence.logout();
-});
-*/

@@ -3,9 +3,9 @@ import * as filesystem from "fs";
 import * as path from "path";
 import Rx = require("rx");
 
-export enum ElementType {
-    PAGE,
-    ATTACHMENT
+export const enum ElementType {
+    PAGE = 0,
+    ATTACHMENT = 1
 }
 
 export interface ElementAttributes {
@@ -57,10 +57,9 @@ let rxParseString = Rx.Observable.fromNodeCallback( parser.parseString );
 export function rxSite( sitePath:string ):Rx.Observable<Element> {
     return rxReadFile( sitePath )
   .flatMap( (value:Buffer) => rxParseString( value.toString() ) )
-  .doOnCompleted( () => console.log('Done') )
+  //.doOnCompleted( () => console.log('Done') )
   .map( (value:Object) => {
     for( let first in value ) return value[first]['home'];
   })
   .flatMap( (value:Array<Object>) => rxProcessChild(value) );
 }
-
