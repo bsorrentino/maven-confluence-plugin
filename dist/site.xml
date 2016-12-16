@@ -49,7 +49,7 @@ and open the template in the editor.
             </child>
         </child>
 
-        <child name="child5" uri="classpath:template1.confluence"></child>
+        <child name="child5" uri="template1.confluence"></child>
 
     </home>
 

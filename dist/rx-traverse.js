@@ -1,5 +1,5 @@
 "use strict";
-var traverse = require("traverse");
+var traverse = require('traverse');
 var Rx = require("rx");
 function removeSingleArrays(obj, filter) {
     traverse(obj).forEach(function traversing(value) {

@@ -29,7 +29,7 @@ declare module Model {
   }
 
   export interface PageSummary {
-    id:string;
+    id?:string;
     title:string;
     space:string;
     parentId:any;
@@ -67,7 +67,7 @@ interface ConfluenceService {
 
     addAttchment( page:Model.Page, attachment:Model.Attachment, content:any ):Promise<Model.Attachment>;
 
-    storePage2( page:Model.Page, content:Storage  ):Promise<Model.Page>;
+    storePageContent( page:Model.Page, content:Storage  ):Promise<Model.Page>;
 
     storePage( page:Model.Page ):Promise<Model.Page>;
 

@@ -9,9 +9,13 @@ confluence_xmlrpc_1.XMLRPCConfluenceService.create(config, config.credentials)
     return confluence.getPage(config.spaceId, config.pageTitle);
 })
     .then(function (value) { return console.log("page", value); })
-    .then(function () { return confluence.logout(); })
+    .then(function () {
+    return confluence.getOrCreatePage(config.spaceId, config.pageTitle, "mytitle")
+        .then(function (result) { return console.log("mytitle", result); });
+})
+    .then(function () { return confluence.connection.logout(); })
     .then(function (value) { return console.log("logged out", value); })
     .catch(function (error) {
     console.log("error", error);
-    return confluence.logout();
+    return confluence.connection.logout();
 });

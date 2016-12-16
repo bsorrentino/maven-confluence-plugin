@@ -19,11 +19,16 @@ XMLRPCConfluenceService.create(config,config.credentials)
   return confluence.getPage( config.spaceId, config.pageTitle);
 })
 .then( (value:Model.Page) => console.log( "page", value) )
-.then( () => confluence.logout() )
+.then( () => {
+  return confluence.getOrCreatePage(config.spaceId, config.pageTitle, "mytitle")
+          .then( (result) => console.log( "mytitle", result) )
+          ;
+})
+.then( () => confluence.connection.logout() )
 .then( (value) => console.log( "logged out", value) )
 .catch( (error) => {
   console.log( "error", error);
-  return confluence.logout();
+  return confluence.connection.logout();
 });
 
 /*

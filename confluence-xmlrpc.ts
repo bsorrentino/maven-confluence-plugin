@@ -19,7 +19,7 @@ interface PageSummary extends Model.PageSummary {
 
 interface Page extends PageSummary, Model.Page {
     current?:boolean;
-    content:string;
+    content?:string;
     modifier?:string;
     homePage?:boolean;
     creator?:string;
@@ -43,14 +43,20 @@ class Confluence {
   login( user:string, password:string ):Promise<string> {
     if( this.token != null ) return Promise.resolve(this.token);
     return this.call("login", [user,password] )
-      .then( (token:string) => this.token = token )
+      .then( (token:string) => {
+        this.token = token;
+        return Promise.resolve(token);
+      })
       ;
   }
 
   logout():Promise<boolean> {
     if( this.token == null ) return Promise.resolve(true);
     return this.call("logout", [this.token] )
-      .then( (success:boolean) => this.token = null )
+      .then( (success:boolean) => {
+        this.token = null;
+        return Promise.resolve(success);
+      })
       ;
 }
 
@@ -64,6 +70,10 @@ class Confluence {
 
   getPageById( id:string ):Promise<Page> {
     return this.call("getPage", [this.token,id] );
+  }
+
+  getChildren(pageId:string):Promise<Array<PageSummary>> {
+      return this.call("getChildren", [this.token,pageId]);
   }
 
   getDescendents(pageId:string):Promise<Array<PageSummary>> {
@@ -149,7 +159,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   }
 
-  private constructor( private connection:Confluence, credentials:Credentials) {
+  private constructor( public connection:Confluence, credentials:Credentials) {
   }
 
   get credentials():Credentials {
@@ -163,7 +173,20 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   getPageByTitle( parentPageId:string, title:string):Promise<Model.PageSummary>
   {
-    return null;
+    if( parentPageId == null ) throw "parentPageId argument is null!";
+    if( title == null ) throw "title argument is null!";
+
+    return this.connection.getChildren(parentPageId)
+    .then( (children:Array<PageSummary>) => {
+
+        for( let i = 0 ; i<children.length; ++i ) {
+          if( title === children[i].title ) {
+            return Promise.resolve( children[i] );
+          }
+        }
+
+        return Promise.resolve(null);
+    });
   }
 
   getPageById( pageId:string ):Promise<Model.Page>
@@ -183,12 +206,28 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   getOrCreatePage( spaceKey:string , parentPageTitle:string , title:string  ):Promise<Model.Page>
   {
-    return null;
+    return this.connection.getPage(spaceKey, parentPageTitle)
+    .then( (parentPage:Page) => this.getOrCreatePage2(parentPage, title) )
+    ;
   }
 
   getOrCreatePage2( parentPage:Model.Page , title:string  ):Promise<Model.Page>
   {
-    return null;
+    return this.getPageByTitle(parentPage.id, title)
+    .then( (result:PageSummary) => {
+      if( result != null )
+        return this.connection.getPageById(result.id);
+
+      let p:Page = {
+        space:parentPage.space,
+        parentId:parentPage.parentId,
+        title:title
+      };
+
+      return Promise.resolve(p);
+    })
+    ;
+
   }
 
   removePage( parentPage:Model.Page , title:string  ):Promise<boolean>
@@ -211,14 +250,23 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
     return null;
   }
 
-  storePage2( page:Model.Page, content:Storage  ):Promise<Model.Page>
+  storePageContent( page:Model.Page, content:Storage  ):Promise<Model.Page>
   {
-    return null;
+    if( content == null ) {
+        throw "content argument is null!";
+    }
+
+    let p = page as Page;
+    p.content = content.value;
+
+    return this.connection.storePage(p);
   }
 
   storePage( page:Model.Page ):Promise<Model.Page>
   {
-    return null;
+    let p = page as Page;
+
+    return this.connection.storePage(p);
   }
 
   /*
