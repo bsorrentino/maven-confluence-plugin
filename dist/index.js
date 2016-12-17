@@ -4,10 +4,12 @@ var confluence_site_1 = require("./confluence-site");
 var path = require("path");
 var Rx = require("rx");
 var config = require("./config.json").local;
+var sitePath = __dirname;
 confluence_xmlrpc_1.XMLRPCConfluenceService.create(config, config.credentials)
     .then(function (confluence) {
-    confluence_site_1.rxSite(path.join(__dirname, 'site.xml'))
+    confluence_site_1.rxSite(path.join(sitePath, 'site.1.xml'))
         .filter(function (data) { return data.type == 0; })
+        .doOnNext((function (data) { return console.log("name", data.$.name, "type", data.type); }))
         .concatMap(function (data) {
         return Rx.Observable.fromPromise(confluence.getOrCreatePage(config.spaceId, config.pageTitle, data.$.name))
             .flatMap(function (page) {
@@ -16,8 +18,8 @@ confluence_xmlrpc_1.XMLRPCConfluenceService.create(config, config.credentials)
                 return Rx.Observable.fromPromise(confluence.connection.removePage(page.id)).map(function () { return page; });
             }
             console.log("create page", page.title, page.id);
-            var storage = { value: data.$.uri, representation: 1 };
-            return Rx.Observable.fromPromise(confluence.storePageContent(page, storage));
+            return confluence_site_1.rxReadContent(sitePath, data)
+                .flatMap(function (storage) { return Rx.Observable.fromPromise(confluence.storePageContent(page, storage)); });
         });
     })
         .doOnCompleted(function () { return confluence.connection.logout().then(function () { return console.log("logged out!"); }); })

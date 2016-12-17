@@ -118,21 +118,14 @@ class Confluence {
 export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   static  create( config:{host:string, port:number, path:string}, credentials:Credentials /*, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo*/ ):Promise<XMLRPCConfluenceService> {
-      if( config == null ) {
-          throw "config argument is null!";
-      }
-      if( credentials == null ) {
-          throw "credentials argument is null!";
-      }
+      if( config == null ) throw "config argument is null!";
+      if( credentials == null ) throw "credentials argument is null!";
+      
       /*
-      if( sslInfo == null ) {
-          throw new IllegalArgumentException("sslInfo argument is null!");
-      }
+      if( sslInfo == null ) throw new IllegalArgumentException("sslInfo argument is null!");
 
       if (!sslInfo.isIgnore() && url.startsWith("https")) {
-
           HttpsURLConnection.setDefaultSSLSocketFactory( sslInfo.getSSLSocketFactory());
-
           HttpsURLConnection.setDefaultHostnameVerifier( sslInfo.getHostnameVerifier() );
       }
       */

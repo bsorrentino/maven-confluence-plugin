@@ -1,6 +1,6 @@
 
 import {XMLRPCConfluenceService} from "./confluence-xmlrpc";
-import {ElementType, rxSite} from "./confluence-site";
+import {ElementType, rxSite, rxReadContent} from "./confluence-site";
 import * as path from "path";
 import Rx = require("rx");
 
@@ -12,13 +12,14 @@ interface ConfigTest extends Config {
 
 let config:ConfigTest = require( "./config.json").local;
 //let config:ConfigTest = require( "./config.json").softphone;
-
+let sitePath = __dirname;
 
 XMLRPCConfluenceService.create(config,config.credentials)
 .then( (confluence:XMLRPCConfluenceService) => {
 
-  rxSite(path.join(__dirname,'site.xml'))
+  rxSite(path.join(sitePath,'site.1.xml'))
     .filter( (data) => data.type==ElementType.PAGE )
+    .doOnNext( (data => console.log( "name", data.$.name, "type", data.type)))
     .concatMap( (data) =>  {
       return Rx.Observable.fromPromise(confluence.getOrCreatePage( config.spaceId, config.pageTitle, data.$.name ))
               .flatMap( (page) => {
@@ -27,8 +28,8 @@ XMLRPCConfluenceService.create(config,config.credentials)
                     return Rx.Observable.fromPromise( confluence.connection.removePage(page.id) ).map( () => page) ;
                   }
                   console.log( "create page", page.title, page.id );
-                  let storage:ContentStorage = {value:data.$.uri, representation:Representation.WIKI};
-                  return Rx.Observable.fromPromise(confluence.storePageContent( page, storage ));
+                  return rxReadContent( sitePath, data)
+                    .flatMap( (storage) => Rx.Observable.fromPromise(confluence.storePageContent( page, storage )));
               })
     })
     .doOnCompleted( () => confluence.connection.logout().then( ()=> console.log("logged out!") ))

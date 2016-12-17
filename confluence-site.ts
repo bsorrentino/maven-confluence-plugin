@@ -19,11 +19,13 @@ export interface Element {
 }
 
 let toPage = ( v:Object ) => {
-    return Object.assign( v, { type:ElementType.PAGE}) as Element;
+    v['type'] = ElementType.PAGE; 
+    return v as Element;
 }
 
 let toAttachment = ( v:Object ) => {
-    return Object.assign( v, { type:ElementType.ATTACHMENT}) as Element;
+    v['type'] = ElementType.ATTACHMENT; 
+    return v as Element;
 }
 
 function rxProcessChild( child:Array<Object> ):Rx.Observable<Element> {
@@ -38,7 +40,7 @@ function rxProcessChild( child:Array<Object> ):Rx.Observable<Element> {
         .concatMap( value => {
           let o1 = Rx.Observable.just(value).map(toPage);
           let o2 = Rx.Observable.fromArray(value['attachment'] || []).map(toAttachment);
-          let o3 = rxProcessChild(value['child'] || []).map(toPage);
+          let o3 = rxProcessChild(value['child'] || []);
           return Rx.Observable.concat( o1, o2, o3  );
         });
 
@@ -53,13 +55,28 @@ let parser = new xml.Parser();
 let rxReadFile    = Rx.Observable.fromNodeCallback( filesystem.readFile );
 let rxParseString = Rx.Observable.fromNodeCallback( parser.parseString );
 
-
+/**
+ * 
+ */
 export function rxSite( sitePath:string ):Rx.Observable<Element> {
     return rxReadFile( sitePath )
-  .flatMap( (value:Buffer) => rxParseString( value.toString() ) )
-  //.doOnCompleted( () => console.log('Done') )
-  .map( (value:Object) => {
+.flatMap( (value:Buffer) => rxParseString( value.toString() ) )
+//.doOnCompleted( () => console.log('Done') )
+.map( (value:Object) => {
     for( let first in value ) return value[first]['home'];
-  })
-  .flatMap( (value:Array<Object>) => rxProcessChild(value) );
+})
+.flatMap( (value:Array<Object>) => rxProcessChild(value) );
+}
+
+/**
+ * 
+ */
+export function rxReadContent(sitePath:string, data:Element):Rx.Observable<ContentStorage> {
+    
+    return rxReadFile( path.join(sitePath,data.$.uri) )
+        .map( (value:Buffer) => {
+            let storage:ContentStorage = {value:value.toString(), representation:Representation.WIKI};
+            return storage;
+        });
+    
 }

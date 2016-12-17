@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <child name="" uri="">
+        </child>
+        <child name="" uri="">
+        </child>
+
+-->
+
+
+<ns1:site
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:ns1='https://github.com/bsorrentino/maven-confluence-plugin'
+    xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
+
+    <home  name="home" uri="pages/home.wiki">
+
+        <child name="child1" uri="pages/child1.wiki">
+            <attachment name="child1.attachment1" uri="attachments/conf-icon-64.png" comment="" contentType="image/png" version="1"></attachment>
+            <attachment name="child1.attachment2" uri="attachments/conf-icon2-64.png" comment="" contentType="image/png" version="1"></attachment>
+        </child>
+
+    </home>
+
+    <label>encoding</label>
+    <label>test</label>
+
+
+</ns1:site>

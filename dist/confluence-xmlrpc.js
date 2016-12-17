@@ -76,12 +76,10 @@ var XMLRPCConfluenceService = (function () {
         this.connection = connection;
     }
     XMLRPCConfluenceService.create = function (config, credentials) {
-        if (config == null) {
+        if (config == null)
             throw "config argument is null!";
-        }
-        if (credentials == null) {
+        if (credentials == null)
             throw "credentials argument is null!";
-        }
         return new Promise(function (resolve, reject) {
             var confluence = new Confluence(config);
             confluence.login(credentials.username, credentials.password).then(function (token) {

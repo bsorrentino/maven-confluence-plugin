@@ -1,12 +1,15 @@
 "use strict";
 var xml = require("xml2js");
 var filesystem = require("fs");
+var path = require("path");
 var Rx = require("rx");
 var toPage = function (v) {
-    return Object.assign(v, { type: 0 });
+    v['type'] = 0;
+    return v;
 };
 var toAttachment = function (v) {
-    return Object.assign(v, { type: 1 });
+    v['type'] = 1;
+    return v;
 };
 function rxProcessChild(child) {
     if (!child || child.length == 0)
@@ -18,7 +21,7 @@ function rxProcessChild(child) {
         .concatMap(function (value) {
         var o1 = Rx.Observable.just(value).map(toPage);
         var o2 = Rx.Observable.fromArray(value['attachment'] || []).map(toAttachment);
-        var o3 = rxProcessChild(value['child'] || []).map(toPage);
+        var o3 = rxProcessChild(value['child'] || []);
         return Rx.Observable.concat(o1, o2, o3);
     });
     return Rx.Observable.concat(childObservable, attachmentsObservable, childrenObservable);
@@ -36,3 +39,11 @@ function rxSite(sitePath) {
         .flatMap(function (value) { return rxProcessChild(value); });
 }
 exports.rxSite = rxSite;
+function rxReadContent(sitePath, data) {
+    return rxReadFile(path.join(sitePath, data.$.uri))
+        .map(function (value) {
+        var storage = { value: value.toString(), representation: 1 };
+        return storage;
+    });
+}
+exports.rxReadContent = rxReadContent;
