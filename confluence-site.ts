@@ -4,19 +4,16 @@ import * as filesystem from "fs";
 import * as path from "path";
 import Rx = require("rx");
 
-export const enum ElementType {
-    PAGE = 0,
-    ATTACHMENT = 1
-}
-
-export interface ElementAttributes {
+interface ElementAttributes {
     name?:string;
     uri?:string;
     [n: string]: any;
 }
-export interface Element {
+
+interface Element {
     $:ElementAttributes;
-    type:ElementType;
+    attachment?:Array<Element>;
+    child?:Array<Element>
 }
 
 interface PageContext {
@@ -24,19 +21,9 @@ interface PageContext {
     parent?:Model.Page;
 }
 
-let toPage = ( v:Object ) => {
-    v['type'] = ElementType.PAGE; 
-    return v as Element;
-}
-
-let toAttachment = ( v:Object ) => {
-    v['type'] = ElementType.ATTACHMENT; 
-    return v as Element;
-}
-
 let parser = new xml.Parser();
 let rxParseString = Rx.Observable.fromNodeCallback( parser.parseString );
-let rxReadFile    = Rx.Observable.fromNodeCallback( filesystem.readFile );
+export let rxReadFile    = Rx.Observable.fromNodeCallback( filesystem.readFile );
 
 export class SiteProcessor {
     /**
@@ -53,14 +40,14 @@ export class SiteProcessor {
     /**
      * 
      */
-    rxStart():Rx.Observable<Element> {
-        return rxReadFile( this.sitePath )
+    rxStart( fileName:string ):Rx.Observable<any> {
+        return rxReadFile( path.join(this.sitePath, fileName) )
                 .flatMap( (value:Buffer) => rxParseString( value.toString() ) )
                 //.doOnCompleted( () => console.log('Done') )
                 .map( (value:Object) => {
                     for( let first in value ) return value[first]['home'];
                 })
-                .flatMap( (value:Array<Object>) => rxProcessChild(value) );
+                .flatMap( (value:Array<Object>) => this.rxProcessChild(value) );
     }
 
     /**
@@ -75,7 +62,25 @@ export class SiteProcessor {
             });
         
     }
-    
+
+    /**
+     * 
+     */
+    rxCreateAttachment( ctx:PageContext ) {
+        let confluence = this.confluence;
+
+        let attachment:Model.Attachment =  {
+                comment:ctx.meta.$['comment'],
+                contentType:ctx.meta.$['contentType'],
+                fileName:ctx.meta.$.name
+            };
+        return rxReadFile( path.join(this.sitePath, ctx.meta.$.uri) )
+                .doOnCompleted( () => console.log( "created attachment ", attachment.fileName ))
+                .flatMap( (buffer:Buffer) => 
+                            Rx.Observable.fromPromise(confluence.addAttachment( ctx.parent, attachment, buffer )));
+
+    } 
+
     /**
      * 
      */
@@ -88,33 +93,49 @@ export class SiteProcessor {
                     Rx.Observable.fromPromise(confluence.getOrCreatePage2( ctx.parent, ctx.meta.$.name ))
                     ;
         return getOrCreatePage
+                .doOnNext( (page) => console.log( "creating page ", page.title ))
                 .flatMap( (page) => {
                     return this.rxReadContent( path.join(this.sitePath, ctx.meta.$.uri) )
                         .flatMap( (storage) => Rx.Observable.fromPromise(confluence.storePageContent( page, storage )));
                 })                   
     }   
 
+    private rxProcessAttachments( ctx:PageContext ) {
+        return Rx.Observable.fromArray( ctx.meta.attachment || [])
+                    .map( (data:Element) => { return { meta:data, parent:ctx.parent }} )
+                    .flatMap( (ctx:PageContext) => this.rxCreateAttachment( ctx ) ) 
+                    ;        
+    } 
 
-    rxProcessChild( child:Array<Object>, parent?:Model.Page ):Rx.Observable<Element> {
-        if( !child || child.length == 0 ) return Rx.Observable.empty<Element>();
+    rxProcessChild( child:Array<Object>, parent?:Model.Page ):Rx.Observable<any> {
+        if( !child || child.length == 0 ) return Rx.Observable.empty<any>();
 
-        let first = child[0];
+        let first = child[0] as Element ;
+        
+        let childObservable = 
+            this.rxCreatePage( {meta:first, parent:parent } )
+                .flatMap( (page:Model.Page) => {
 
-        let childObservable = Rx.Observable.just(first).map(toPage);
-        let attachmentsObservable = Rx.Observable.fromArray( first['attachment'] || []).map(toAttachment);
+                    let o1 = this.rxProcessAttachments( {meta:first, parent:page} ); 
 
-        let childrenObservable = Rx.Observable.fromArray( first['child'] || [] )
-                .concatMap( value => {
-                let o1 = Rx.Observable.just(value).map(toPage);
-                let o2 = Rx.Observable.fromArray(value['attachment'] || []).map(toAttachment);
-                let o3 = this.rxProcessChild(value['child'] || [], parent );
-                return Rx.Observable.concat( o1, o2, o3  );
+                    let o2 = Rx.Observable.fromArray( first.child || [] )
+                            .map( (data:Element) => { return { meta:data, parent:page } })                            
+                            .concatMap( (ctx:PageContext) => {
+                    
+                                return this.rxCreatePage( ctx )
+                                        .flatMap( (child:Model.Page) => {
+                                            let o1 = this.rxProcessAttachments( {meta:ctx.meta, parent:child} );    
+                                            let o2 = this.rxProcessChild(ctx.meta.child || [], child );
+                                            return Rx.Observable.concat( o1, o2 );
+                                        })
+                            });
+                                
+                                                
+                    return Rx.Observable.concat( o1, o2 );
                 });
 
-        return Rx.Observable.concat( childObservable,
-                                    attachmentsObservable,
-                                    childrenObservable,
-                                    );
+                return childObservable;
+
     }
        
         
