@@ -28,11 +28,16 @@ interface Page extends PageSummary, Model.Page {
     created?: Date;
 }
 
+interface Attachment extends Model.Attachment {
+  creator?:string;
+  fileSize?:number;
+  url?:string;
+}
+
 class Confluence {
 
   client:any;
   token:string; // auth token
-
 
   constructor( config:{host:string, port:number, path:string}, public servicePrefix:string = "confluence1." ) {
     config.path += '/rpc/xmlrpc';
@@ -58,7 +63,7 @@ class Confluence {
         return Promise.resolve(success);
       })
       ;
-}
+  }
 
   getServerInfo():Promise<ServerInfo>  {
     return this.call("getServerInfo", [this.token]);
@@ -73,7 +78,7 @@ class Confluence {
   }
 
   getChildren(pageId:string):Promise<Array<PageSummary>> {
-      return this.call("getChildren", [this.token,pageId]);
+    return this.call("getChildren", [this.token,pageId]);
   }
 
   getDescendents(pageId:string):Promise<Array<PageSummary>> {
@@ -81,11 +86,15 @@ class Confluence {
   }
 
   storePage(page:Page):Promise<Page>  {
-       return this.call2("confluence1.", "storePage", [this.token,page] );
+    return this.call2("confluence1.", "storePage", [this.token,page] );
   }
 
   removePage(pageId:string):Promise<boolean> {
     return this.call("removePage", [this.token,pageId]);
+  }
+
+  addAttachment(parentId:string, attachment:Attachment, data:Buffer):Promise<Attachment>   {
+    return this.call("addAttachment", [this.token,parentId, attachment, data]);
   }
 
   private call<T>( op:string, args:Array<any> ):Promise<T> {
@@ -238,9 +247,9 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
     return null;
   }
 
-  addAttchment( page:Model.Page, attachment:Model.Attachment, content:any ):Promise<Model.Attachment>
+  addAttachment( page:Model.Page, attachment:Model.Attachment, content:Buffer ):Promise<Model.Attachment>
   {
-    return null;
+    return this.connection.addAttachment( page.id, attachment, content) ;
   }
 
   storePageContent( page:Model.Page, content:ContentStorage  ):Promise<Model.Page>

@@ -1,7 +1,6 @@
 "use strict";
 var xml = require("xml2js");
 var filesystem = require("fs");
-var path = require("path");
 var Rx = require("rx");
 var toPage = function (v) {
     v['type'] = 0;
@@ -27,10 +26,10 @@ function rxProcessChild(child) {
     return Rx.Observable.concat(childObservable, attachmentsObservable, childrenObservable);
 }
 var parser = new xml.Parser();
-var rxReadFile = Rx.Observable.fromNodeCallback(filesystem.readFile);
 var rxParseString = Rx.Observable.fromNodeCallback(parser.parseString);
+exports.rxReadFile = Rx.Observable.fromNodeCallback(filesystem.readFile);
 function rxSite(sitePath) {
-    return rxReadFile(sitePath)
+    return exports.rxReadFile(sitePath)
         .flatMap(function (value) { return rxParseString(value.toString()); })
         .map(function (value) {
         for (var first in value)
@@ -39,8 +38,8 @@ function rxSite(sitePath) {
         .flatMap(function (value) { return rxProcessChild(value); });
 }
 exports.rxSite = rxSite;
-function rxReadContent(sitePath, data) {
-    return rxReadFile(path.join(sitePath, data.$.uri))
+function rxReadContent(filePath) {
+    return exports.rxReadFile(filePath)
         .map(function (value) {
         var storage = { value: value.toString(), representation: 1 };
         return storage;

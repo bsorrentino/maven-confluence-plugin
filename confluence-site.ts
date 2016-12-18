@@ -52,8 +52,8 @@ function rxProcessChild( child:Array<Object> ):Rx.Observable<Element> {
 }
 
 let parser = new xml.Parser();
-let rxReadFile    = Rx.Observable.fromNodeCallback( filesystem.readFile );
 let rxParseString = Rx.Observable.fromNodeCallback( parser.parseString );
+export let rxReadFile    = Rx.Observable.fromNodeCallback( filesystem.readFile );
 
 /**
  * 
@@ -71,12 +71,13 @@ export function rxSite( sitePath:string ):Rx.Observable<Element> {
 /**
  * 
  */
-export function rxReadContent(sitePath:string, data:Element):Rx.Observable<ContentStorage> {
+export function rxReadContent( filePath:string ):Rx.Observable<ContentStorage> {
     
-    return rxReadFile( path.join(sitePath,data.$.uri) )
+    return rxReadFile( filePath )
         .map( (value:Buffer) => {
             let storage:ContentStorage = {value:value.toString(), representation:Representation.WIKI};
             return storage;
         });
     
 }
+

@@ -18,7 +18,7 @@ confluence_xmlrpc_1.XMLRPCConfluenceService.create(config, config.credentials)
                 return Rx.Observable.fromPromise(confluence.connection.removePage(page.id)).map(function () { return page; });
             }
             console.log("create page", page.title, page.id);
-            return confluence_site_1.rxReadContent(sitePath, data)
+            return confluence_site_1.rxReadContent(path.join(sitePath, data.$.uri))
                 .flatMap(function (storage) { return Rx.Observable.fromPromise(confluence.storePageContent(page, storage)); });
         });
     })

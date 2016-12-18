@@ -48,6 +48,9 @@ var Confluence = (function () {
     Confluence.prototype.removePage = function (pageId) {
         return this.call("removePage", [this.token, pageId]);
     };
+    Confluence.prototype.addAttachment = function (parentId, attachment, data) {
+        return this.call("addAttachment", [this.token, parentId, attachment, data]);
+    };
     Confluence.prototype.call = function (op, args) {
         return this.call2(this.servicePrefix, op, args);
     };
@@ -156,8 +159,8 @@ var XMLRPCConfluenceService = (function () {
     XMLRPCConfluenceService.prototype.addLabelByName = function (label, id) {
         return null;
     };
-    XMLRPCConfluenceService.prototype.addAttchment = function (page, attachment, content) {
-        return null;
+    XMLRPCConfluenceService.prototype.addAttachment = function (page, attachment, content) {
+        return this.connection.addAttachment(page.id, attachment, content);
     };
     XMLRPCConfluenceService.prototype.storePageContent = function (page, content) {
         if (content == null) {

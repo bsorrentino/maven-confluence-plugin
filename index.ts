@@ -28,7 +28,7 @@ XMLRPCConfluenceService.create(config,config.credentials)
                     return Rx.Observable.fromPromise( confluence.connection.removePage(page.id) ).map( () => page) ;
                   }
                   console.log( "create page", page.title, page.id );
-                  return rxReadContent( sitePath, data)
+                  return rxReadContent( path.join(sitePath, data.$.uri) )
                     .flatMap( (storage) => Rx.Observable.fromPromise(confluence.storePageContent( page, storage )));
               })
     })

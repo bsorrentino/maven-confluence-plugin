@@ -29,6 +29,7 @@ interface Credentials {
 declare module Model {
 
   export interface Attachment {
+    id?:string;
     fileName:string;
     contentType:string;
     comment:string;
@@ -72,7 +73,7 @@ interface ConfluenceService {
 
     addLabelByName( label:string , id:number ):Promise<boolean>;
 
-    addAttchment( page:Model.Page, attachment:Model.Attachment, content:any ):Promise<Model.Attachment>;
+    addAttachment( page:Model.Page, attachment:Model.Attachment, content:Buffer ):Promise<Model.Attachment>;
 
     storePageContent( page:Model.Page, content:ContentStorage  ):Promise<Model.Page>;
 
