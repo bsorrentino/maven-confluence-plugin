@@ -21,7 +21,7 @@ XMLRPCConfluenceService.create(config,config.credentials)
   site.rxStart( 'site.1.xml' )
     .doOnCompleted( () => confluence.connection.logout().then( () => console.log("logged out!") ))
     .subscribe( (elem) => {
-      console.log( "element", elem , "processed!" )
+      //console.log( "element", elem , "processed!" )
     });
 
 });

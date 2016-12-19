@@ -56,6 +56,13 @@ var SiteProcessor = (function () {
                 .flatMap(function (storage) { return Rx.Observable.fromPromise(confluence.storePageContent(page, storage)); });
         });
     };
+    SiteProcessor.prototype.rxProcessLabels = function (ctx) {
+        var _this = this;
+        return Rx.Observable.fromArray(ctx.meta.label || [])
+            .flatMap(function (data) {
+            return Rx.Observable.fromPromise(_this.confluence.addLabelByName(ctx.parent, data));
+        });
+    };
     SiteProcessor.prototype.rxProcessAttachments = function (ctx) {
         var _this = this;
         return Rx.Observable.fromArray(ctx.meta.attachment || [])
@@ -70,17 +77,19 @@ var SiteProcessor = (function () {
         var childObservable = this.rxCreatePage({ meta: first, parent: parent })
             .flatMap(function (page) {
             var o1 = _this.rxProcessAttachments({ meta: first, parent: page });
-            var o2 = Rx.Observable.fromArray(first.child || [])
+            var o2 = _this.rxProcessLabels({ meta: first, parent: page });
+            var o3 = Rx.Observable.fromArray(first.child || [])
                 .map(function (data) { return { meta: data, parent: page }; })
                 .concatMap(function (ctx) {
                 return _this.rxCreatePage(ctx)
                     .flatMap(function (child) {
                     var o1 = _this.rxProcessAttachments({ meta: ctx.meta, parent: child });
-                    var o2 = _this.rxProcessChild(ctx.meta.child || [], child);
-                    return Rx.Observable.concat(o1, o2);
+                    var o2 = _this.rxProcessLabels({ meta: ctx.meta, parent: child });
+                    var o3 = _this.rxProcessChild(ctx.meta.child || [], child);
+                    return Rx.Observable.concat(o1, o2, o3);
                 });
             });
-            return Rx.Observable.concat(o1, o2);
+            return Rx.Observable.concat(o1, o2, o3);
         });
         return childObservable;
     };

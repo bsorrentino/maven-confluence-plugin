@@ -14,6 +14,7 @@ interface Element {
     $:ElementAttributes;
     attachment?:Array<Element>;
     child?:Array<Element>
+    label?:Array<string>
 }
 
 interface PageContext {
@@ -43,7 +44,7 @@ export class SiteProcessor {
     rxStart( fileName:string ):Rx.Observable<any> {
         return rxReadFile( path.join(this.sitePath, fileName) )
                 .flatMap( (value:Buffer) => rxParseString( value.toString() ) )
-                //.doOnCompleted( () => console.log('Done') )
+                //.doOnNext( (value) => console.dir( value, { depth:4 }) )
                 .map( (value:Object) => {
                     for( let first in value ) return value[first]['home'];
                 })
@@ -100,6 +101,13 @@ export class SiteProcessor {
                 })                   
     }   
 
+    private rxProcessLabels( ctx:PageContext ) {
+        return Rx.Observable.fromArray( ctx.meta.label || [])
+                    .flatMap( (data:string) => 
+                        Rx.Observable.fromPromise(this.confluence.addLabelByName( ctx.parent, data )) ) 
+                    ;        
+    } 
+
     private rxProcessAttachments( ctx:PageContext ) {
         return Rx.Observable.fromArray( ctx.meta.attachment || [])
                     .map( (data:Element) => { return { meta:data, parent:ctx.parent }} )
@@ -117,21 +125,22 @@ export class SiteProcessor {
                 .flatMap( (page:Model.Page) => {
 
                     let o1 = this.rxProcessAttachments( {meta:first, parent:page} ); 
-
-                    let o2 = Rx.Observable.fromArray( first.child || [] )
+                    let o2 = this.rxProcessLabels( {meta:first, parent:page} ); 
+                    let o3 = Rx.Observable.fromArray( first.child || [] )
                             .map( (data:Element) => { return { meta:data, parent:page } })                            
                             .concatMap( (ctx:PageContext) => {
                     
                                 return this.rxCreatePage( ctx )
                                         .flatMap( (child:Model.Page) => {
                                             let o1 = this.rxProcessAttachments( {meta:ctx.meta, parent:child} );    
-                                            let o2 = this.rxProcessChild(ctx.meta.child || [], child );
-                                            return Rx.Observable.concat( o1, o2 );
+                                            let o2 = this.rxProcessLabels( {meta:ctx.meta, parent:child} ); 
+                                            let o3 = this.rxProcessChild(ctx.meta.child || [], child );
+                                            return Rx.Observable.concat( o1, o2, o3 );
                                         })
                             });
                                 
                                                 
-                    return Rx.Observable.concat( o1, o2 );
+                    return Rx.Observable.concat( o1, o2, o3 );
                 });
 
                 return childObservable;

@@ -97,6 +97,14 @@ class Confluence {
     return this.call("addAttachment", [this.token,parentId, attachment, data]);
   }
 
+  /**
+   * Adds a label to the object with the given ContentEntityObject ID.
+   */
+  addLabelByName(page:Model.Page, labelName:string):Promise<boolean> {
+      return this.call("addLabelByName", [this.token,labelName,page.id]);
+  }
+
+ 
   private call<T>( op:string, args:Array<any> ):Promise<T> {
     return this.call2( this.servicePrefix, op, args );
   }
@@ -242,9 +250,9 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
     return null;
   }
 
-  addLabelByName( label:string , id:number ):Promise<boolean>
+  addLabelByName( page:Model.Page, label:string  ):Promise<boolean>
   {
-    return null;
+    return this.connection.addLabelByName(page,label);
   }
 
   addAttachment( page:Model.Page, attachment:Model.Attachment, content:Buffer ):Promise<Model.Attachment>

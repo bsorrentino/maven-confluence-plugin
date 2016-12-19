@@ -25,6 +25,8 @@ and open the template in the editor.
             <attachment name="child1.attachment1" uri="pages/appicon.png" comment="attachment test1" contentType="image/png" version="1"></attachment>
 
             <child name="child1.1" uri="pages/child1.wiki">
+                <label>child1_1</label>
+                <label>test</label>
             </child>
         </child>
         <child name="child2" uri="pages/child2.wiki">
@@ -35,10 +37,14 @@ and open the template in the editor.
             </child>
         </child>
 
+        <label>nodejs</label>
+        <label>test</label>
+
     </home>
 
-    <label>encoding</label>
+<!--
+    <label>nodejs</label>
     <label>test</label>
-
+-->
 
 </ns1:site>

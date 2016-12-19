@@ -71,7 +71,7 @@ interface ConfluenceService {
 
     removePageById( pageId:string  ):Promise<boolean>;
 
-    addLabelByName( label:string , id:number ):Promise<boolean>;
+    addLabelByName( page:Model.Page, label:string ):Promise<boolean>;
 
     addAttachment( page:Model.Page, attachment:Model.Attachment, content:Buffer ):Promise<Model.Attachment>;
 
