@@ -105,12 +105,13 @@
                         </goals>
                         <configuration>
 
-                            <!--endPoint>http://localhost:8090/rpc/xmlrpc</endPoint-->
-                            <endPoint>https://localhost:8443/rpc/xmlrpc</endPoint>
+                            <endPoint>http://localhost:8090/rpc/xmlrpc</endPoint>
+                            <!--endPoint>https://localhost:8443/rpc/xmlrpc</endPoint-->
                             <spaceKey>TEST</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
-                            <!-- TEST ISSUE 107 -->
+                            <!-- TEST ISSUE 107 
                             <parentPageId>18677788</parentPageId>
+                            -->
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
