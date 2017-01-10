@@ -1,5 +1,6 @@
 
 import Rx = require("rx");
+import clean = require("clean");
 
 const figlet = require('figlet');
 
@@ -58,6 +59,8 @@ function showAllFont() {
         console.log(data['data']) 
     });
 }
+
+clean();
 
 Rx.Observable.of( "Larry 3D 2", "Stick Letters")
 .flatMap( rxShowFont )

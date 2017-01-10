@@ -4,6 +4,8 @@ import {SiteProcessor} from "./confluence-site";
 import * as path from "path";
 import Rx = require("rx");
 
+import Preferences = require("preferences");
+
 interface ConfigTest extends Config {
   credentials:Credentials;
   spaceId:string;

@@ -1,8 +1,13 @@
 {
   "globalDependencies": {
+    "clean": "file:./ts/clean.d.ts",
     "es6-promise": "registry:dt/es6-promise#0.0.0+20160614011821",
     "node": "registry:dt/node#6.0.0+20161110151007",
+    "preferences": "file:./ts/preferences.d.ts",
     "rx": "npm:rx/ts/rx.all.d.ts",
     "xml2js": "registry:dt/xml2js#0.0.0+20160317120654"
+  },
+  "dependencies": {
+    "chalk": "registry:dt/chalk#0.4.0+20161012090828"
   }
 }

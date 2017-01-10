@@ -1,5 +1,6 @@
 "use strict";
 var Rx = require("rx");
+var clean = require("clean");
 var figlet = require('figlet');
 var rxFonts = Rx.Observable.fromNodeCallback(figlet.fonts);
 var rxFiglet = Rx.Observable.fromNodeCallback(figlet);
@@ -35,6 +36,7 @@ function showAllFont() {
         console.log(data['data']);
     });
 }
+clean();
 Rx.Observable.of("Larry 3D 2", "Stick Letters")
     .flatMap(rxShowFont)
     .subscribe(function (data) { return console.log(data['data']); });
