@@ -1,12 +1,10 @@
 "use strict";
 var Preferences = require("preferences");
-var init = {
-    account: { username: "bartolo", password: "password" },
-    data: {
-        url: "http://localhost",
-        cycle: 0
+var prefs = new Preferences("org.bsc.test", {
+    cycle: 0,
+    confluence: {
+        password: "mypassword",
     }
-};
-var prefs = new Preferences("org.bsc.test", init);
-prefs.data.cycle++;
+});
+prefs.cycle++;
 console.dir(prefs);

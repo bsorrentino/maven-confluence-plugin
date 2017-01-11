@@ -2,6 +2,7 @@
 import {XMLRPCConfluenceService} from "./confluence-xmlrpc";
 import {SiteProcessor} from "./confluence-site";
 import * as path from "path";
+import * as fs from "fs";
 import Rx = require("rx");
 
 import Preferences = require("preferences");
@@ -11,6 +12,7 @@ interface ConfigTest extends Config {
   spaceId:string;
   pageTitle:string;
 }
+
 
 let config:ConfigTest = require( "./config.json").local;
 //let config:ConfigTest = require( "./config.json").softphone;
