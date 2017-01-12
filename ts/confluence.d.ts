@@ -4,6 +4,7 @@ declare const enum Representation {
 }
 
 interface Config {
+  protocol:string, //"http"|"https",
   host:string,
   port:number,
   path:string
