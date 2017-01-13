@@ -1,0 +1,17 @@
+<bsc:site
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
+    xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
+
+<!--
+        <child name="child1" uri="PR112.md">
+            <attachment name="child1.attachment1" uri="attachments/conf-icon-64.png" comment="" contentType="image/png" version="1"></attachment>
+            <attachment name="child1.attachment2" uri="attachments/conf-icon2-64.png" comment="" contentType="image/png" version="1"></attachment>
+        </child>
+-->
+
+    <home  name="first" uri="first.confluence">
+
+    </home>
+
+</bsc:site>

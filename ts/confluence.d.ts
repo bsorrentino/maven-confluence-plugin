@@ -7,7 +7,10 @@ interface Config {
   protocol:string, //"http"|"https",
   host:string,
   port:number,
-  path:string
+  path:string,
+  spaceId:string,
+  parentPageTitle:string,
+  sitePath:string
 }
 
 interface ContentStorage {

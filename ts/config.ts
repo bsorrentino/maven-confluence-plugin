@@ -18,6 +18,37 @@ function modulePath() {
 
 namespace ConfigUtils {
 
+    export class MaskedValue {
+        private _value:string;
+
+        constructor( public value:any ) {
+            this._value = ( util.isNullOrUndefined(value) ) ?  "" : 
+                            (util.isObject(value) ? value['_value'] : value) ;
+            //console.log( "value", this.value );        
+        }
+     
+        mask() {
+            //console.log( "value", this.value );
+            return Array(this._value.length+1).join("*") ;
+        }
+
+        toString() { 
+            return this.mask(); 
+        }
+
+        static validate( value:any ):boolean {
+            if( util.isNullOrUndefined(value) ) return false;
+            if( util.isObject(value) ) return MaskedValue.validate(value["_value"]);
+            return true;
+        }
+
+        static getValue( value:any ):string {
+            assert( MaskedValue.validate(value) );
+            return ( util.isObject(value) ) ? value["_value"] : value;       
+        }
+    }
+
+
     export namespace Port {
         export function isValid(port:string|number):boolean {
         return (util.isNullOrUndefined(port) || util.isNumber(port) || Number(port) !== NaN ) 
@@ -47,17 +78,18 @@ namespace ConfigUtils {
 
     }
 
+
 }
 
-function config( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
+export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
     
     let configPath = path.join(__dirname, CONFIG_FILE);
     
-    console.log( "configPath", configPath );
-    console.log( "relative",  modulePath() );
+    //console.log( "configPath", configPath );
+    //console.log( "relative",  modulePath() );
 
     let defaultConfig:Config = {
-        host:"",path:"",port:null,protocol:"http"
+        host:"",path:"",port:null,protocol:"http", spaceId:"",parentPageTitle:"Home","sitePath":"site/site.xml"
     };
 
     let defaultCredentials:Credentials = {
@@ -95,6 +127,18 @@ function config( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
             },
             { 
                 type: "input",
+                name: "spaceId",
+                message: "confluence space id:",
+                default: defaultConfig.spaceId
+            },
+            { 
+                type: "input",
+                name: "parentPageTitle",
+                message: "confluence parent page title:",
+                default:defaultConfig.parentPageTitle
+            },
+            { 
+                type: "input",
                 name: "username",
                 message: "confluence username:",
                 default: defaultCredentials.username,
@@ -106,10 +150,9 @@ function config( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
                 type: "password",
                 name: "password",
                 message: "confluence password:",
-                default: defaultCredentials.password,
-                validate: ( value ) => { 
-                    return util.isNullOrUndefined(value) ? "password must be specified!" : true;
-                }
+                default: new ConfigUtils.MaskedValue(defaultCredentials.password),
+                validate: ( value ) => { return ConfigUtils.MaskedValue.validate(value) } ,
+                filter: (value) => { return ConfigUtils.MaskedValue.getValue( value  ) }
             }
             
         ] );
@@ -126,7 +169,10 @@ function config( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
                             path:p.path || "",
                             protocol:p.protocol,
                             host:p.hostname,
-                            port:ConfigUtils.Port.value(p.port)
+                            port:ConfigUtils.Port.value(p.port),
+                            spaceId:answers['spaceId'],
+                            parentPageTitle:answers['parentPageTitle'],
+                            sitePath:"site/site.xml"
                         }
                         /*
                         let credentials:Credentials = {
@@ -145,8 +191,12 @@ function config( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
                             .map( (res) => result ) );
 }
 
-config( true )
-.subscribe( ( result ) => {
 
-    console.dir( result, {depth:2} );
-});
+function main() {
+    rxConfig( true )
+    .subscribe( ( result ) => {
+
+        console.dir( result, {depth:2} );
+    });
+
+}

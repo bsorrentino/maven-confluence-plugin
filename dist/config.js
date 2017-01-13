@@ -14,6 +14,32 @@ function modulePath() {
 }
 var ConfigUtils;
 (function (ConfigUtils) {
+    var MaskedValue = (function () {
+        function MaskedValue(value) {
+            this.value = value;
+            this._value = (util.isNullOrUndefined(value)) ? "" :
+                (util.isObject(value) ? value['_value'] : value);
+        }
+        MaskedValue.prototype.mask = function () {
+            return Array(this._value.length + 1).join("*");
+        };
+        MaskedValue.prototype.toString = function () {
+            return this.mask();
+        };
+        MaskedValue.validate = function (value) {
+            if (util.isNullOrUndefined(value))
+                return false;
+            if (util.isObject(value))
+                return MaskedValue.validate(value["_value"]);
+            return true;
+        };
+        MaskedValue.getValue = function (value) {
+            assert(MaskedValue.validate(value));
+            return (util.isObject(value)) ? value["_value"] : value;
+        };
+        return MaskedValue;
+    }());
+    ConfigUtils.MaskedValue = MaskedValue;
     var Port;
     (function (Port) {
         function isValid(port) {
@@ -37,13 +63,11 @@ var ConfigUtils;
         Url.format = format;
     })(Url = ConfigUtils.Url || (ConfigUtils.Url = {}));
 })(ConfigUtils || (ConfigUtils = {}));
-function config(force) {
+function rxConfig(force) {
     if (force === void 0) { force = false; }
     var configPath = path.join(__dirname, CONFIG_FILE);
-    console.log("configPath", configPath);
-    console.log("relative", modulePath());
     var defaultConfig = {
-        host: "", path: "", port: null, protocol: "http"
+        host: "", path: "", port: null, protocol: "http", spaceId: "", parentPageTitle: "Home", "sitePath": "site/site.xml"
     };
     var defaultCredentials = {
         username: "",
@@ -72,6 +96,18 @@ function config(force) {
         },
         {
             type: "input",
+            name: "spaceId",
+            message: "confluence space id:",
+            default: defaultConfig.spaceId
+        },
+        {
+            type: "input",
+            name: "parentPageTitle",
+            message: "confluence parent page title:",
+            default: defaultConfig.parentPageTitle
+        },
+        {
+            type: "input",
             name: "username",
             message: "confluence username:",
             default: defaultCredentials.username,
@@ -83,10 +119,9 @@ function config(force) {
             type: "password",
             name: "password",
             message: "confluence password:",
-            default: defaultCredentials.password,
-            validate: function (value) {
-                return util.isNullOrUndefined(value) ? "password must be specified!" : true;
-            }
+            default: new ConfigUtils.MaskedValue(defaultCredentials.password),
+            validate: function (value) { return ConfigUtils.MaskedValue.validate(value); },
+            filter: function (value) { return ConfigUtils.MaskedValue.getValue(value); }
         }
     ]);
     var rxCreateConfigFile = Rx.Observable.fromNodeCallback(fs.writeFile);
@@ -97,7 +132,10 @@ function config(force) {
             path: p.path || "",
             protocol: p.protocol,
             host: p.hostname,
-            port: ConfigUtils.Port.value(p.port)
+            port: ConfigUtils.Port.value(p.port),
+            spaceId: answers['spaceId'],
+            parentPageTitle: answers['parentPageTitle'],
+            sitePath: "site/site.xml"
         };
         var c = new Preferences(PREFERENCES_ID, defaultCredentials);
         c.username = answers['username'];
@@ -109,7 +147,10 @@ function config(force) {
             .map(function (res) { return result; });
     });
 }
-config(true)
-    .subscribe(function (result) {
-    console.dir(result, { depth: 2 });
-});
+exports.rxConfig = rxConfig;
+function main() {
+    rxConfig(true)
+        .subscribe(function (result) {
+        console.dir(result, { depth: 2 });
+    });
+}
