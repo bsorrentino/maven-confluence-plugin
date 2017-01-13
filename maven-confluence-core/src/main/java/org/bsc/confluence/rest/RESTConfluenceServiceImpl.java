@@ -83,10 +83,17 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
     
     private HttpUrl.Builder urlBuilder() {
         
+        int port = endpoint.getPort();
+        port = (port > -1 ) ? port : endpoint.getDefaultPort();
+
+        String path = endpoint.getPath();
+        path = (path.startsWith("/")) ? path.substring(1) : path;
+
         return new HttpUrl.Builder()
                       .scheme(endpoint.getProtocol())
                       .host(endpoint.getHost())
-                      .port(endpoint.getPort())
+                      .port(port)
+                      .addPathSegments(path)
                       .addPathSegments("rest/api") 
                     ; 
     }
