@@ -73,7 +73,7 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
         FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
 
 
-        final String url = ConfluenceExportMojo.super.getEndPoint().replace("/rpc/xmlrpc", "");  // /rpc/xmlrpc
+        final String url = ConfluenceService.Protocol.XMLRPC.removeFrom(ConfluenceExportMojo.super.getEndPoint()); 
 
         confluence.exportPage(  url, 
                                 parentPage.getSpace(), 
