@@ -55,7 +55,7 @@ public class SwizzleApp {
         
         final XMLRPCConfluenceServiceImpl confluence = 
             XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
-                    app.url.concat("/rpc/xmlrpc"),
+                    ConfluenceService.Protocol.XMLRPC.addTo(app.url),
                     credentials,
                     proxyInfo, sslInfo);
 
@@ -83,7 +83,7 @@ public class SwizzleApp {
 
         final XMLRPCConfluenceServiceImpl confluence = 
             XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
-                        url.concat("/rpc/xmlrpc"), //args[0],
+                        ConfluenceService.Protocol.XMLRPC.addTo(url), //args[0],
                         credentials,
                         proxyInfo, sslInfo); 
 
