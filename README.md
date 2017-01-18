@@ -16,6 +16,11 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+Jan 18,2016  | **Release 5.0-rc2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc2%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+ * Refer to [Issue 133](https://github.com/bsorrentino/maven-confluence-plugin/issues/133) - Storage Format - `error generating report: unexpected port: -1`
+
 Dec 6,2016  | **Release 5.0-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 

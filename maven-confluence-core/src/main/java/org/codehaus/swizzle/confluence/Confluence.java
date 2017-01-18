@@ -25,6 +25,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService;
 
 /**
  * @version $Revision$ $Date$
@@ -85,9 +86,7 @@ class Confluence {
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
 
-        if (!endpoint.endsWith("/rpc/xmlrpc")) {
-            endpoint += "/rpc/xmlrpc";
-        }
+        endpoint = ConfluenceService.Protocol.XMLRPC.addTo(endpoint);
     
         final java.net.URI serviceURI = new java.net.URI(endpoint);
 

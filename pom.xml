@@ -4,7 +4,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>5.0-rc1</version>
+    <version>5.0-rc2</version>
     <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
     <description><![CDATA[
     Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
@@ -206,7 +206,8 @@
                 <!--
                     jgitflow:feature-start Starts a feature branch
                     jgitflow:feature-finish Finishes a feature branch
-                    jgitflow:release-start Starts a release
+                    # Starts a release
+                    jgitflow:release-start -DreleaseVersion=  -DdevelopmentVersion=
                     jgitflow:release-finish Finishes a release
                     jgitflow:hotfix-start Starts a hotfix
                     jgitflow:hotfix-finish Finishes a hotfix

@@ -32,6 +32,7 @@ import okhttp3.RequestBody;
 import org.bsc.confluence.rest.model.Page;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
+import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.ssl.SSLCertificateInfo;
 import rx.functions.Action1;
 
@@ -83,11 +84,17 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
     
     private HttpUrl.Builder urlBuilder() {
         
+        int port = endpoint.getPort();
+        port = (port > -1 ) ? port : endpoint.getDefaultPort();
+
+        final String path = ConfluenceService.Protocol.XMLRPC.removeFrom(endpoint.getPath());
+
         return new HttpUrl.Builder()
                       .scheme(endpoint.getProtocol())
                       .host(endpoint.getHost())
-                      .port(endpoint.getPort())
-                      .addPathSegments("rest/api") 
+                      .port(port)
+                      .addPathSegments(path)
+                      .addPathSegments(ConfluenceService.Protocol.REST.path()) 
                     ; 
     }
     

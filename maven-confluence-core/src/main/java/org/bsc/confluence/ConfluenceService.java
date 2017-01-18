@@ -13,6 +13,61 @@ import rx.functions.Action1;
  */
 public interface ConfluenceService {
 
+    public enum Protocol {
+        
+        XMLRPC ("rpc/xmlrpc"),
+        REST ("rest/api");
+        
+        private final String path;
+        
+        Protocol( String path ) {
+            this.path = path;
+        }   
+        
+        public String path() { return path; }
+        
+        /**
+         * add protocol path segment as suffix 
+         * 
+         * @param endpoint
+         * @return 
+         */
+        public String addTo( String endpoint ) {
+            if( null == endpoint ) {
+                throw new IllegalArgumentException("endpoint argument is null!");
+            }
+            if( endpoint.endsWith(path) ) {
+                return endpoint;
+            }
+            
+            if (!endpoint.endsWith("/")) {
+                endpoint = endpoint.concat("/");
+            } 
+            
+            return endpoint.concat(path);
+        }
+        
+        /**
+         * remove protocol path segment from given string
+         * 
+         * @param endpoint
+         * @return endpoint without 
+         */
+        public String removeFrom( String endpoint ) {
+            if( null==endpoint ) {
+                throw new IllegalArgumentException( "endpoint argument is null!");
+            }
+
+            String result = endpoint.replace(path, "");
+            result = (result.startsWith("/")) ? result.substring(1) : result;
+
+            return result;
+
+        }
+        
+    }
+        
+        
     public static class Storage {
         
         public enum Representation {
