@@ -206,7 +206,8 @@
                 <!--
                     jgitflow:feature-start Starts a feature branch
                     jgitflow:feature-finish Finishes a feature branch
-                    jgitflow:release-start Starts a release
+                    # Starts a release
+                    jgitflow:release-start -DreleaseVersion=  -DdevelopmentVersion=
                     jgitflow:release-finish Finishes a release
                     jgitflow:hotfix-start Starts a hotfix
                     jgitflow:hotfix-finish Finishes a hotfix
