@@ -14,6 +14,11 @@ function modulePath() {
 }
 var ConfigUtils;
 (function (ConfigUtils) {
+    function maskPassword(value) {
+        assert.ok(!util.isNullOrUndefined(value));
+        return Array(value.length + 1).join("*");
+    }
+    ConfigUtils.maskPassword = maskPassword;
     var MaskedValue = (function () {
         function MaskedValue(value) {
             this.value = value;
@@ -21,7 +26,7 @@ var ConfigUtils;
                 (util.isObject(value) ? value['_value'] : value);
         }
         MaskedValue.prototype.mask = function () {
-            return Array(this._value.length + 1).join("*");
+            return maskPassword(this._value);
         };
         MaskedValue.prototype.toString = function () {
             return this.mask();
@@ -63,11 +68,23 @@ var ConfigUtils;
         Url.format = format;
     })(Url = ConfigUtils.Url || (ConfigUtils.Url = {}));
 })(ConfigUtils || (ConfigUtils = {}));
+function printConfig(value) {
+    var cfg = value[0];
+    var crd = value[1];
+    var out = util.format("\n\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n\n", "confluence url:", ConfigUtils.Url.format(cfg), "confluence space id:", cfg.spaceId, "confluence parent page:", cfg.parentPageTitle, "confluence username:", crd.username, "confluence password:", ConfigUtils.maskPassword(crd.password));
+    console.log(out);
+}
 function rxConfig(force) {
     if (force === void 0) { force = false; }
     var configPath = path.join(__dirname, CONFIG_FILE);
     var defaultConfig = {
-        host: "", path: "", port: null, protocol: "http", spaceId: "", parentPageTitle: "Home", "sitePath": "site/site.xml"
+        host: "",
+        path: "",
+        port: null,
+        protocol: "http",
+        spaceId: "",
+        parentPageTitle: "Home",
+        "sitePath": "site/site.xml"
     };
     var defaultCredentials = {
         username: "",
@@ -79,7 +96,8 @@ function rxConfig(force) {
         defaultCredentials = new Preferences(PREFERENCES_ID, defaultCredentials);
         if (!force) {
             var data = [defaultConfig, defaultCredentials];
-            return Rx.Observable.just(data);
+            return Rx.Observable.just(data)
+                .do(printConfig);
         }
     }
     var answers = inquirer.prompt([

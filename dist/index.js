@@ -1,39 +1,57 @@
 "use strict";
 var confluence_xmlrpc_1 = require("./confluence-xmlrpc");
 var confluence_site_1 = require("./confluence-site");
+var config_1 = require("./config");
 var path = require("path");
-var minimist = require("minimist");
+var util = require("util");
 var chalk = require("chalk");
+var minimist = require("minimist");
 var Rx = require("rx");
 var figlet = require('figlet');
-var config_1 = require("./config");
 var LOGO = 'Confluence CLI';
 var LOGO_FONT = 'Stick Letters';
 var rxFiglet = Rx.Observable.fromNodeCallback(figlet);
 var argv = process.argv.slice(2);
 var args = minimist(argv, {});
 clrscr();
-if (args._['help'] || false) {
-    usage();
-}
-else {
-    main();
+console.dir(args);
+var command = (args._.length === 0) ? "help" : args._[0];
+switch (command) {
+    case "deploy":
+        main();
+        break;
+    case "config":
+        config_1.rxConfig(args['update']).subscribe(function (value) { }, function (err) { return console.error(err); });
+        break;
+    default:
+        usage();
 }
 function clrscr() {
     process.stdout.write('\x1Bc');
+}
+function usageCommand(cmd, desc) {
+    var args = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        args[_i - 2] = arguments[_i];
+    }
+    desc = chalk.italic.gray("// " + desc);
+    return args.reduce(function (previousValue, currentValue, currentIndex, array) {
+        return util.format("%s %s", previousValue, chalk.yellow(currentValue));
+    }, "\n\n" + cmd) + "\t" + desc;
 }
 function usage() {
     rxFiglet(LOGO, LOGO_FONT)
         .doOnCompleted(function () { return process.exit(-1); })
         .subscribe(function (logo) {
-        console.log(logo, "\n" +
+        console.log(chalk.bold.magenta(logo), "\n" +
             chalk.cyan("Usage:") +
             " confluence-cli " +
-            chalk.yellow("[--config]") +
+            usageCommand("deploy", "deploy site to confluence", "[--config]") +
+            usageCommand("config", "show/create/update configuration", "[--update]") +
             "\n\n" +
             chalk.cyan("Options:") +
             "\n\n" +
-            " --config\t force reconfiguration" +
+            " --config | --update\t" + chalk.italic.gray("// force reconfiguration") +
             "\n");
     });
 }
@@ -60,7 +78,5 @@ function main() {
         .flatMap(config_1.rxConfig)
         .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
         .flatMap(function (result) { return rxGenerateSite(result[1], result[0]); })
-        .subscribe(function (result) {
-        console.dir(result, { depth: 2 });
-    });
+        .subscribe(function (result) { return console.dir(result, { depth: 2 }); }, function (err) { return console.error(err); });
 }

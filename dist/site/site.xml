@@ -11,7 +11,7 @@
 -->
 
     <home  name="first" uri="first.confluence">
-
+        <attachment name="Notation Guide.pdf" uri="Notation Guide.pdf" comment="" contentType="application/pdf" version="1"></attachment>
     </home>
 
 </bsc:site>

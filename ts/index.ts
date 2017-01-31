@@ -1,14 +1,18 @@
 
 import {XMLRPCConfluenceService} from "./confluence-xmlrpc";
 import {SiteProcessor} from "./confluence-site";
+import {rxConfig} from "./config";
+
 import * as path from "path";
 import * as fs from "fs";
-import minimist = require("minimist");
+import * as util from "util";
 import * as chalk from "chalk";
+
+import minimist = require("minimist");
 import Rx = require("rx");
-const figlet = require('figlet');
-import {rxConfig} from "./config";
 import Preferences = require("preferences");
+
+const figlet = require('figlet');
 
 const LOGO = 'Confluence CLI';
 const LOGO_FONT = 'Stick Letters';
@@ -22,11 +26,22 @@ let args = minimist( argv, {
 
 clrscr();
 
-if( args._['help'] || false ) {
-  usage();
-}
-else {
-  main();
+console.dir( args );
+
+let command = (args._.length===0) ? "help" : args._[0];
+
+switch( command ) {
+  case "deploy":
+    main();
+  break;
+  case "config":
+    rxConfig( args['update'] ).subscribe( 
+      (value)=> {},
+      (err)=> console.error( err )
+    );
+  break;
+  default:
+    usage();
 }
 
 /**
@@ -38,6 +53,12 @@ function clrscr() {
 
 }
 
+function usageCommand( cmd:string, desc:string, ...args: string[]) {
+  desc = chalk.italic.gray("// " + desc);
+  return args.reduce( (previousValue, currentValue, currentIndex, array)=> {
+    return util.format( "%s %s", previousValue, chalk.yellow(currentValue) );
+  }, "\n\n" + cmd ) + "\t" + desc;
+}
 
 function usage() {
   
@@ -45,16 +66,17 @@ function usage() {
   .doOnCompleted( () => process.exit(-1) )
   .subscribe( (logo) => {
 
-    console.log( logo,
+    console.log( chalk.bold.magenta(logo as string),
       "\n" +
       chalk.cyan( "Usage:") +
-      " confluence-cli " + 
-      chalk.yellow( "[--config]" ) + 
+      " confluence-cli " +
+      usageCommand( "deploy", "deploy site to confluence", "[--config]" ) +
+      usageCommand( "config", "show/create/update configuration", "[--update]" ) +
       "\n\n" +
       chalk.cyan("Options:") + 
       "\n\n" +
-      " --config\t force reconfiguration" + 
-      "\n" 
+      " --config | --update\t" + chalk.italic.gray("// force reconfiguration") + 
+      "\n"  
     );
 
   });
@@ -110,8 +132,9 @@ function main() {
     .flatMap( rxConfig )
     .flatMap( (result) => rxConfluenceConnection( result[0] as Config, result[1] as Credentials ) )
     .flatMap( (result) => rxGenerateSite( result[1] as Config, result[0] as XMLRPCConfluenceService ) )
-    .subscribe( (result) => {
-      console.dir( result, {depth:2} );
-    });
+    .subscribe( 
+      (result) => console.dir( result, {depth:2} ),
+      (err) => console.error( err )    
+    );
 
 }

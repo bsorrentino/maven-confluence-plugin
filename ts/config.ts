@@ -15,21 +15,29 @@ function modulePath() {
     return  "." + path.sep + CONFIG_FILE;
 }
 
-
 namespace ConfigUtils {
 
+    /**
+     * masked password
+     */
+    export function maskPassword( value:string ) {
+        assert.ok( !util.isNullOrUndefined(value) );
+        return Array(value.length+1).join("*") ;
+    }
+
+    /**
+     * MaskedValue
+     */
     export class MaskedValue {
         private _value:string;
 
         constructor( public value:any ) {
             this._value = ( util.isNullOrUndefined(value) ) ?  "" : 
                             (util.isObject(value) ? value['_value'] : value) ;
-            //console.log( "value", this.value );        
         }
      
         mask() {
-            //console.log( "value", this.value );
-            return Array(this._value.length+1).join("*") ;
+            return maskPassword(this._value);
         }
 
         toString() { 
@@ -81,6 +89,24 @@ namespace ConfigUtils {
 
 }
 
+function printConfig( value:(Config|Credentials)[]) {
+    let cfg = value[0] as Config;
+    let crd = value[1] as Credentials;
+
+    let out = util.format( "\n\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n\n",   
+         "confluence url:",                 ConfigUtils.Url.format(cfg),
+         "confluence space id:",            cfg.spaceId,
+         "confluence parent page:",         cfg.parentPageTitle,
+         "confluence username:",            crd.username,
+         "confluence password:",            ConfigUtils.maskPassword(crd.password)
+    );
+
+    console.log( out );
+}
+
+/**
+ * 
+ */
 export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
     
     let configPath = path.join(__dirname, CONFIG_FILE);
@@ -89,7 +115,13 @@ export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credenti
     //console.log( "relative",  modulePath() );
 
     let defaultConfig:Config = {
-        host:"",path:"",port:null,protocol:"http", spaceId:"",parentPageTitle:"Home","sitePath":"site/site.xml"
+        host:"",
+        path:"",
+        port:null,
+        protocol:"http", 
+        spaceId:"",
+        parentPageTitle:"Home",
+        "sitePath":"site/site.xml"
     };
 
     let defaultCredentials:Credentials = {
@@ -108,7 +140,8 @@ export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credenti
 
             let data = [ defaultConfig, defaultCredentials ];
 
-            return Rx.Observable.just(data);
+            return Rx.Observable.just(data)
+                    .do( printConfig );
         }
     }
 
@@ -188,7 +221,9 @@ export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credenti
                     })
                     .flatMap( ( result ) =>  
                         rxCreateConfigFile( configPath, JSON.stringify(result[0]) )
-                            .map( (res) => result ) );
+                            .map( (res) => result ) )
+                    ;
+                    
 }
 
 
