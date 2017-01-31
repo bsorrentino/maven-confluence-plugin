@@ -38,7 +38,7 @@ var SiteProcessor = (function () {
             fileName: ctx.meta.$.name
         };
         return exports.rxReadFile(path.join(this.sitePath, ctx.meta.$.uri))
-            .doOnCompleted(function () { return console.log("created attachment ", attachment.fileName); })
+            .doOnCompleted(function () { return console.log("created attachment:", attachment.fileName); })
             .flatMap(function (buffer) {
             return Rx.Observable.fromPromise(confluence.addAttachment(ctx.parent, attachment, buffer));
         });
@@ -50,7 +50,7 @@ var SiteProcessor = (function () {
             Rx.Observable.fromPromise(confluence.getOrCreatePage(this.spaceId, this.parentTitle, ctx.meta.$.name)) :
             Rx.Observable.fromPromise(confluence.getOrCreatePage2(ctx.parent, ctx.meta.$.name));
         return getOrCreatePage
-            .doOnNext(function (page) { return console.log("creating page ", page.title); })
+            .doOnNext(function (page) { return console.log("creating page:", page.title); })
             .flatMap(function (page) {
             return _this.rxReadContent(path.join(_this.sitePath, ctx.meta.$.uri))
                 .flatMap(function (storage) { return Rx.Observable.fromPromise(confluence.storePageContent(page, storage)); });

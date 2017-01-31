@@ -102,7 +102,6 @@ function rxConfig(force) {
         password: ""
     };
     if (fs.existsSync(configPath)) {
-        console.log("found!");
         defaultConfig = require(modulePath());
         defaultCredentials = new Preferences(PREFERENCES_ID, defaultCredentials);
         if (!force) {

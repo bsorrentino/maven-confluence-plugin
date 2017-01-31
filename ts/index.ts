@@ -26,7 +26,7 @@ let args = minimist( argv, {
 
 clrscr();
 
-console.dir( args );
+//console.dir( args );
 
 let command = (args._.length===0) ? "help" : args._[0];
 
@@ -105,9 +105,7 @@ function rxGenerateSite( config:Config, confluence:XMLRPCConfluenceService ):Rx.
 
     let siteFile = path.basename( config.sitePath );
 
-    console.log( "siteHome", siteHome, "siteFile", siteFile );
-
-    //return Rx.Observable.just( [ siteHome, siteFile ]);
+    //console.log( "siteHome", siteHome, "siteFile", siteFile );
 
     let site = new SiteProcessor( confluence, 
                                   config.spaceId, 
@@ -116,7 +114,9 @@ function rxGenerateSite( config:Config, confluence:XMLRPCConfluenceService ):Rx.
                                 );
 
     return site.rxStart( siteFile )
-      .doOnCompleted( () => confluence.connection.logout().then( () => console.log("logged out!") ));
+      .doOnCompleted( () => confluence.connection.logout().then( () => {
+        //console.log("logged out!"); 
+      }));
  
 }
 
@@ -126,14 +126,15 @@ function main() {
   //console.dir( args );
 
   rxFiglet( LOGO, )
-    .doOnNext( (logo) => console.log(logo) )
+    .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
     .map( (logo) => args['config'] || false )
     //.doOnNext( (v) => console.log( "force config", v, args))
     .flatMap( rxConfig )
     .flatMap( (result) => rxConfluenceConnection( result[0] as Config, result[1] as Credentials ) )
     .flatMap( (result) => rxGenerateSite( result[1] as Config, result[0] as XMLRPCConfluenceService ) )
     .subscribe( 
-      (result) => console.dir( result, {depth:2} ),
+      //(result) => console.dir( result, {depth:2} ),
+      (result) => {},
       (err) => console.error( err )    
     );
 

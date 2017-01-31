@@ -140,7 +140,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
     
     if( fs.existsSync( configPath ) ) {
 
-        console.log( "found!" );
+        //console.log( configPath, "found!" );
 
         defaultConfig = require( modulePath() );
         defaultCredentials = new Preferences( PREFERENCES_ID, defaultCredentials) ;

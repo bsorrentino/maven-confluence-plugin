@@ -14,7 +14,6 @@ var rxFiglet = Rx.Observable.fromNodeCallback(figlet);
 var argv = process.argv.slice(2);
 var args = minimist(argv, {});
 clrscr();
-console.dir(args);
 var command = (args._.length === 0) ? "help" : args._[0];
 switch (command) {
     case "deploy":
@@ -66,17 +65,17 @@ function rxGenerateSite(config, confluence) {
         path.dirname(config.sitePath) :
         path.join(__dirname, path.dirname(config.sitePath));
     var siteFile = path.basename(config.sitePath);
-    console.log("siteHome", siteHome, "siteFile", siteFile);
     var site = new confluence_site_1.SiteProcessor(confluence, config.spaceId, config.parentPageTitle, siteHome);
     return site.rxStart(siteFile)
-        .doOnCompleted(function () { return confluence.connection.logout().then(function () { return console.log("logged out!"); }); });
+        .doOnCompleted(function () { return confluence.connection.logout().then(function () {
+    }); });
 }
 function main() {
     rxFiglet(LOGO)
-        .doOnNext(function (logo) { return console.log(logo); })
+        .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
         .map(function (logo) { return args['config'] || false; })
         .flatMap(config_1.rxConfig)
         .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
         .flatMap(function (result) { return rxGenerateSite(result[1], result[0]); })
-        .subscribe(function (result) { return console.dir(result, { depth: 2 }); }, function (err) { return console.error(err); });
+        .subscribe(function (result) { }, function (err) { return console.error(err); });
 }

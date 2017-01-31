@@ -76,7 +76,7 @@ export class SiteProcessor {
                 fileName:ctx.meta.$.name
             };
         return rxReadFile( path.join(this.sitePath, ctx.meta.$.uri) )
-                .doOnCompleted( () => console.log( "created attachment ", attachment.fileName ))
+                .doOnCompleted( () => console.log( "created attachment:", attachment.fileName ))
                 .flatMap( (buffer:Buffer) => 
                             Rx.Observable.fromPromise(confluence.addAttachment( ctx.parent, attachment, buffer )));
 
@@ -94,7 +94,7 @@ export class SiteProcessor {
                     Rx.Observable.fromPromise(confluence.getOrCreatePage2( ctx.parent, ctx.meta.$.name ))
                     ;
         return getOrCreatePage
-                .doOnNext( (page) => console.log( "creating page ", page.title ))
+                .doOnNext( (page) => console.log( "creating page:", page.title ))
                 .flatMap( (page) => {
                     return this.rxReadContent( path.join(this.sitePath, ctx.meta.$.uri) )
                         .flatMap( (storage) => Rx.Observable.fromPromise(confluence.storePageContent( page, storage )));
