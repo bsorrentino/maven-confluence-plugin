@@ -3,13 +3,17 @@ import * as path from "path";
 import * as url from "url";
 import * as util from "util";
 import * as assert from "assert";
+import * as chalk from "chalk";
+import * as inquirer from "inquirer";
 
 import Rx = require("rx");
 import Preferences = require("preferences");
-import * as inquirer from "inquirer";
+
+type ConfigAndCredentials = [Config,Credentials];
 
 const CONFIG_FILE       = "config.json";
 const PREFERENCES_ID    = "org.bsc.confluence-cli";
+const SITE_PATH         = "site/site.xml"
 
 function modulePath() {
     return  "." + path.sep + CONFIG_FILE;
@@ -89,17 +93,22 @@ namespace ConfigUtils {
 
 }
 
-function printConfig( value:(Config|Credentials)[]) {
-    let cfg = value[0] as Config;
-    let crd = value[1] as Credentials;
+function printConfig( value:ConfigAndCredentials) {
+    let [cfg, crd] = value ;
 
-    let out = util.format( "\n\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n\n",   
-         "confluence url:",                 ConfigUtils.Url.format(cfg),
-         "confluence space id:",            cfg.spaceId,
-         "confluence parent page:",         cfg.parentPageTitle,
-         "confluence username:",            crd.username,
-         "confluence password:",            ConfigUtils.maskPassword(crd.password)
-    );
+    let out = [
+         
+         ["site path:\t",                    cfg.sitePath],
+         ["confluence url:\t",               ConfigUtils.Url.format(cfg)],
+         ["confluence space id:",            cfg.spaceId],
+         ["confluence parent page:",         cfg.parentPageTitle],
+         ["confluence username:",            crd.username],
+         ["confluence password:",            ConfigUtils.maskPassword(crd.password)]
+
+    ].reduce( (prev, curr, index, array ) => {
+        let [label,value] = curr;
+        return util.format("%s%s\t%s\n", prev, chalk.cyan(label), chalk.yellow(value) );
+    }, "\n\n") 
 
     console.log( out );
 }
@@ -107,7 +116,7 @@ function printConfig( value:(Config|Credentials)[]) {
 /**
  * 
  */
-export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credentials)[]> {
+export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredentials> {
     
     let configPath = path.join(__dirname, CONFIG_FILE);
     
@@ -121,7 +130,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credenti
         protocol:"http", 
         spaceId:"",
         parentPageTitle:"Home",
-        "sitePath":"site/site.xml"
+        sitePath:SITE_PATH
     };
 
     let defaultCredentials:Credentials = {
@@ -138,7 +147,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credenti
 
         if( !force ) {
 
-            let data = [ defaultConfig, defaultCredentials ];
+            let data:ConfigAndCredentials = [ defaultConfig, defaultCredentials ];
 
             return Rx.Observable.just(data)
                     .do( printConfig );
@@ -205,7 +214,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credenti
                             port:ConfigUtils.Port.value(p.port),
                             spaceId:answers['spaceId'],
                             parentPageTitle:answers['parentPageTitle'],
-                            sitePath:"site/site.xml"
+                            sitePath:SITE_PATH
                         }
                         /*
                         let credentials:Credentials = {
@@ -217,7 +226,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<(Config|Credenti
                         c.username = answers['username']
                         c.password = answers['password'];
 
-                        return [ config, c ];
+                        return [ config, c ] as ConfigAndCredentials;
                     })
                     .flatMap( ( result ) =>  
                         rxCreateConfigFile( configPath, JSON.stringify(result[0]) )

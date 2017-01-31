@@ -4,11 +4,13 @@ var path = require("path");
 var url = require("url");
 var util = require("util");
 var assert = require("assert");
+var chalk = require("chalk");
+var inquirer = require("inquirer");
 var Rx = require("rx");
 var Preferences = require("preferences");
-var inquirer = require("inquirer");
 var CONFIG_FILE = "config.json";
 var PREFERENCES_ID = "org.bsc.confluence-cli";
+var SITE_PATH = "site/site.xml";
 function modulePath() {
     return "." + path.sep + CONFIG_FILE;
 }
@@ -69,9 +71,18 @@ var ConfigUtils;
     })(Url = ConfigUtils.Url || (ConfigUtils.Url = {}));
 })(ConfigUtils || (ConfigUtils = {}));
 function printConfig(value) {
-    var cfg = value[0];
-    var crd = value[1];
-    var out = util.format("\n\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n\n", "confluence url:", ConfigUtils.Url.format(cfg), "confluence space id:", cfg.spaceId, "confluence parent page:", cfg.parentPageTitle, "confluence username:", crd.username, "confluence password:", ConfigUtils.maskPassword(crd.password));
+    var cfg = value[0], crd = value[1];
+    var out = [
+        ["site path:\t", cfg.sitePath],
+        ["confluence url:\t", ConfigUtils.Url.format(cfg)],
+        ["confluence space id:", cfg.spaceId],
+        ["confluence parent page:", cfg.parentPageTitle],
+        ["confluence username:", crd.username],
+        ["confluence password:", ConfigUtils.maskPassword(crd.password)]
+    ].reduce(function (prev, curr, index, array) {
+        var label = curr[0], value = curr[1];
+        return util.format("%s%s\t%s\n", prev, chalk.cyan(label), chalk.yellow(value));
+    }, "\n\n");
     console.log(out);
 }
 function rxConfig(force) {
@@ -84,7 +95,7 @@ function rxConfig(force) {
         protocol: "http",
         spaceId: "",
         parentPageTitle: "Home",
-        "sitePath": "site/site.xml"
+        sitePath: SITE_PATH
     };
     var defaultCredentials = {
         username: "",
@@ -153,7 +164,7 @@ function rxConfig(force) {
             port: ConfigUtils.Port.value(p.port),
             spaceId: answers['spaceId'],
             parentPageTitle: answers['parentPageTitle'],
-            sitePath: "site/site.xml"
+            sitePath: SITE_PATH
         };
         var c = new Preferences(PREFERENCES_ID, defaultCredentials);
         c.username = answers['username'];
