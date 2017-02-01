@@ -1,1 +1,4 @@
-require("./dist/index.js");
+#!/usr/bin/env node 
+"use strict";
+
+require("./dist/index");

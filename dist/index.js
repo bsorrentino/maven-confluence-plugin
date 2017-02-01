@@ -63,7 +63,7 @@ function rxConfluenceConnection(config, credentials) {
 function rxGenerateSite(config, confluence) {
     var siteHome = (path.isAbsolute(config.sitePath)) ?
         path.dirname(config.sitePath) :
-        path.join(__dirname, path.dirname(config.sitePath));
+        path.join(process.cwd(), path.dirname(config.sitePath));
     var siteFile = path.basename(config.sitePath);
     var site = new confluence_site_1.SiteProcessor(confluence, config.spaceId, config.parentPageTitle, siteHome);
     return site.rxStart(siteFile)

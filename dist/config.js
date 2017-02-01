@@ -11,9 +11,6 @@ var Preferences = require("preferences");
 var CONFIG_FILE = "config.json";
 var PREFERENCES_ID = "org.bsc.confluence-cli";
 var SITE_PATH = "site/site.xml";
-function modulePath() {
-    return "." + path.sep + CONFIG_FILE;
-}
 var ConfigUtils;
 (function (ConfigUtils) {
     function maskPassword(value) {
@@ -87,7 +84,7 @@ function printConfig(value) {
 }
 function rxConfig(force) {
     if (force === void 0) { force = false; }
-    var configPath = path.join(__dirname, CONFIG_FILE);
+    var configPath = path.join(process.cwd(), CONFIG_FILE);
     var defaultConfig = {
         host: "",
         path: "",
@@ -102,7 +99,7 @@ function rxConfig(force) {
         password: ""
     };
     if (fs.existsSync(configPath)) {
-        defaultConfig = require(modulePath());
+        defaultConfig = require(path.join(process.cwd(), CONFIG_FILE));
         defaultCredentials = new Preferences(PREFERENCES_ID, defaultCredentials);
         if (!force) {
             var data = [defaultConfig, defaultCredentials];

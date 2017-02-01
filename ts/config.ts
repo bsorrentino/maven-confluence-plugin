@@ -15,10 +15,6 @@ const CONFIG_FILE       = "config.json";
 const PREFERENCES_ID    = "org.bsc.confluence-cli";
 const SITE_PATH         = "site/site.xml"
 
-function modulePath() {
-    return  "." + path.sep + CONFIG_FILE;
-}
-
 namespace ConfigUtils {
 
     /**
@@ -36,16 +32,16 @@ namespace ConfigUtils {
         private _value:string;
 
         constructor( public value:any ) {
-            this._value = ( util.isNullOrUndefined(value) ) ?  "" : 
+            this._value = ( util.isNullOrUndefined(value) ) ?  "" :
                             (util.isObject(value) ? value['_value'] : value) ;
         }
-     
+
         mask() {
             return maskPassword(this._value);
         }
 
-        toString() { 
-            return this.mask(); 
+        toString() {
+            return this.mask();
         }
 
         static validate( value:any ):boolean {
@@ -56,14 +52,14 @@ namespace ConfigUtils {
 
         static getValue( value:any ):string {
             assert( MaskedValue.validate(value) );
-            return ( util.isObject(value) ) ? value["_value"] : value;       
+            return ( util.isObject(value) ) ? value["_value"] : value;
         }
     }
 
 
     export namespace Port {
         export function isValid(port:string|number):boolean {
-        return (util.isNullOrUndefined(port) || util.isNumber(port) || Number(port) !== NaN ) 
+        return (util.isNullOrUndefined(port) || util.isNumber(port) || Number(port) !== NaN )
         }
 
         export function value( port:string|number, def:number = 80 ) {
@@ -81,9 +77,9 @@ namespace ConfigUtils {
                 assert( !util.isNullOrUndefined(config) );
 
                 let port = util.isNull(config.port) ? "" : (config.port===80 ) ? "" : ":" + config.port
-                return util.format( "%s//%s%s%s", 
-                                config.protocol, 
-                                config.host, 
+                return util.format( "%s//%s%s%s",
+                                config.protocol,
+                                config.host,
                                 port,
                                 config.path);
         }
@@ -97,7 +93,7 @@ function printConfig( value:ConfigAndCredentials) {
     let [cfg, crd] = value ;
 
     let out = [
-         
+
          ["site path:\t",                    cfg.sitePath],
          ["confluence url:\t",               ConfigUtils.Url.format(cfg)],
          ["confluence space id:",            cfg.spaceId],
@@ -108,18 +104,18 @@ function printConfig( value:ConfigAndCredentials) {
     ].reduce( (prev, curr, index, array ) => {
         let [label,value] = curr;
         return util.format("%s%s\t%s\n", prev, chalk.cyan(label), chalk.yellow(value) );
-    }, "\n\n") 
+    }, "\n\n")
 
     console.log( out );
 }
 
 /**
- * 
+ *
  */
 export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredentials> {
-    
-    let configPath = path.join(__dirname, CONFIG_FILE);
-    
+
+    let configPath = path.join(process.cwd(), CONFIG_FILE);
+
     //console.log( "configPath", configPath );
     //console.log( "relative",  modulePath() );
 
@@ -127,7 +123,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
         host:"",
         path:"",
         port:null,
-        protocol:"http", 
+        protocol:"http",
         spaceId:"",
         parentPageTitle:"Home",
         sitePath:SITE_PATH
@@ -137,12 +133,12 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
         username:"",
         password:""
     };
-    
+
     if( fs.existsSync( configPath ) ) {
 
         //console.log( configPath, "found!" );
 
-        defaultConfig = require( modulePath() );
+        defaultConfig = require( path.join( process.cwd(), CONFIG_FILE) );
         defaultCredentials = new Preferences( PREFERENCES_ID, defaultCredentials) ;
 
         if( !force ) {
@@ -155,40 +151,40 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
     }
 
     let answers = inquirer.prompt( [
-            { 
+            {
                 type: "input",
                 name: "url",
                 message: "confluence url:",
-                default: ConfigUtils.Url.format( defaultConfig ), 
-                validate: ( value ) => { 
+                default: ConfigUtils.Url.format( defaultConfig ),
+                validate: ( value ) => {
                         let p = url.parse(value);
                         //console.log( "parsed url", p );
                         let valid = (p.protocol && p.host  && ConfigUtils.Port.isValid(p.port) );
                         return (valid) ? true : "url is not valid!";
                     }
             },
-            { 
+            {
                 type: "input",
                 name: "spaceId",
                 message: "confluence space id:",
                 default: defaultConfig.spaceId
             },
-            { 
+            {
                 type: "input",
                 name: "parentPageTitle",
                 message: "confluence parent page title:",
                 default:defaultConfig.parentPageTitle
             },
-            { 
+            {
                 type: "input",
                 name: "username",
                 message: "confluence username:",
                 default: defaultCredentials.username,
-                validate: ( value ) => { 
+                validate: ( value ) => {
                     return value.length==0 ? "username must be specified!" : true;
                 }
             },
-            { 
+            {
                 type: "password",
                 name: "password",
                 message: "confluence password:",
@@ -196,10 +192,10 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
                 validate: ( value ) => { return ConfigUtils.MaskedValue.validate(value) } ,
                 filter: (value) => { return ConfigUtils.MaskedValue.getValue( value  ) }
             }
-            
+
         ] );
 
-    let rxCreateConfigFile = 
+    let rxCreateConfigFile =
         Rx.Observable.fromNodeCallback( fs.writeFile )
         ;
 
@@ -228,11 +224,11 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
 
                         return [ config, c ] as ConfigAndCredentials;
                     })
-                    .flatMap( ( result ) =>  
+                    .flatMap( ( result ) =>
                         rxCreateConfigFile( configPath, JSON.stringify(result[0]) )
                             .map( (res) => result ) )
                     ;
-                    
+
 }
 
 
