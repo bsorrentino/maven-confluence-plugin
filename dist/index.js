@@ -13,14 +13,45 @@ var LOGO_FONT = 'Stick Letters';
 var rxFiglet = Rx.Observable.fromNodeCallback(figlet);
 var argv = process.argv.slice(2);
 var args = minimist(argv, {});
+var commands;
+(function (commands) {
+    function deploy() {
+        rxFiglet(LOGO)
+            .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
+            .map(function (logo) { return args['config'] || false; })
+            .flatMap(config_1.rxConfig)
+            .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
+            .flatMap(function (result) { return rxGenerateSite(result[1], result[0]); })
+            .subscribe(function (result) { }, function (err) { return console.error(err); });
+    }
+    commands.deploy = deploy;
+    function config() {
+        rxFiglet(LOGO)
+            .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
+            .map(function (logo) { return args['update'] || false; })
+            .flatMap(config_1.rxConfig)
+            .subscribe(function (value) { }, function (err) { return console.error(err); });
+    }
+    commands.config = config;
+    function remove() {
+        rxFiglet(LOGO)
+            .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
+            .map(function (logo) { return args['recursive'] || false; })
+            .subscribe(function (value) { }, function (err) { return console.error(err); });
+    }
+    commands.remove = remove;
+})(commands || (commands = {}));
 clrscr();
 var command = (args._.length === 0) ? "help" : args._[0];
 switch (command) {
     case "deploy":
-        main();
+        commands.deploy();
         break;
     case "config":
-        config_1.rxConfig(args['update']).subscribe(function (value) { }, function (err) { return console.error(err); });
+        commands.config();
+        break;
+    case "delete":
+        commands.remove();
         break;
     default:
         usage();
@@ -47,10 +78,13 @@ function usage() {
             " confluence-cli " +
             usageCommand("deploy", "deploy site to confluence", "[--config]") +
             usageCommand("config", "show/create/update configuration", "[--update]") +
+            usageCommand("delete", "delete page tree", "[--recursive]") +
             "\n\n" +
             chalk.cyan("Options:") +
             "\n\n" +
             " --config | --update\t" + chalk.italic.gray("// force reconfiguration") +
+            "\n" +
+            " --recursive\t" + chalk.italic.gray("// delete page tree") +
             "\n");
     });
 }
@@ -69,13 +103,4 @@ function rxGenerateSite(config, confluence) {
     return site.rxStart(siteFile)
         .doOnCompleted(function () { return confluence.connection.logout().then(function () {
     }); });
-}
-function main() {
-    rxFiglet(LOGO)
-        .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
-        .map(function (logo) { return args['config'] || false; })
-        .flatMap(config_1.rxConfig)
-        .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
-        .flatMap(function (result) { return rxGenerateSite(result[1], result[0]); })
-        .subscribe(function (result) { }, function (err) { return console.error(err); });
 }

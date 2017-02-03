@@ -24,6 +24,61 @@ let argv = process.argv.slice(2);
 let args = minimist( argv, {
 });
 
+
+namespace commands {
+
+//
+//
+// COMMAND
+//
+//
+export function deploy() {
+
+  //console.log( "args", process.argv.slice(2));
+  //console.dir( args );
+
+  rxFiglet( LOGO )
+    .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
+    .map( (logo) => args['config'] || false )
+    //.doOnNext( (v) => console.log( "force config", v, args))
+    .flatMap( rxConfig )
+    .flatMap( (result) => rxConfluenceConnection( result[0] as Config, result[1] as Credentials ) )
+    .flatMap( (result) => rxGenerateSite( result[1] as Config, result[0] as XMLRPCConfluenceService ) )
+    .subscribe(
+      //(result) => console.dir( result, {depth:2} ),
+      (result) => {},
+      (err) => console.error( err )
+    );
+
+}
+
+export function config() {
+    rxFiglet( LOGO )
+    .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
+    .map( (logo) => args['update'] || false )
+    .flatMap( rxConfig )
+    .subscribe(
+      (value)=> {},
+      (err)=> console.error( err )
+    );
+
+}
+
+export function remove() {
+    rxFiglet( LOGO )
+    .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
+    .map( (logo) => args['recursive'] || false )
+    .subscribe(
+      (value)=> {},
+      (err)=> console.error( err )
+    );
+    
+
+}
+
+} // end namespace command
+
+
 clrscr();
 
 //console.dir( args );
@@ -32,13 +87,13 @@ let command = (args._.length===0) ? "help" : args._[0];
 
 switch( command ) {
   case "deploy":
-    main();
+    commands.deploy();
   break;
   case "config":
-    rxConfig( args['update'] ).subscribe(
-      (value)=> {},
-      (err)=> console.error( err )
-    );
+    commands.config();
+  break;
+  case "delete":
+    commands.remove();
   break;
   default:
     usage();
@@ -72,10 +127,13 @@ function usage() {
       " confluence-cli " +
       usageCommand( "deploy", "deploy site to confluence", "[--config]" ) +
       usageCommand( "config", "show/create/update configuration", "[--update]" ) +
+      usageCommand( "delete", "delete page tree", "[--recursive]" ) +
       "\n\n" +
       chalk.cyan("Options:") +
       "\n\n" +
       " --config | --update\t" + chalk.italic.gray("// force reconfiguration") +
+      "\n" +
+      " --recursive\t" + chalk.italic.gray("// delete page tree") +
       "\n"
     );
 
@@ -120,22 +178,3 @@ function rxGenerateSite( config:Config, confluence:XMLRPCConfluenceService ):Rx.
 
 }
 
-function main() {
-
-  //console.log( "args", process.argv.slice(2));
-  //console.dir( args );
-
-  rxFiglet( LOGO, )
-    .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
-    .map( (logo) => args['config'] || false )
-    //.doOnNext( (v) => console.log( "force config", v, args))
-    .flatMap( rxConfig )
-    .flatMap( (result) => rxConfluenceConnection( result[0] as Config, result[1] as Credentials ) )
-    .flatMap( (result) => rxGenerateSite( result[1] as Config, result[0] as XMLRPCConfluenceService ) )
-    .subscribe(
-      //(result) => console.dir( result, {depth:2} ),
-      (result) => {},
-      (err) => console.error( err )
-    );
-
-}
