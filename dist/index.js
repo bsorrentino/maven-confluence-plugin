@@ -36,8 +36,11 @@ var commands;
     function remove() {
         rxFiglet(LOGO)
             .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
-            .map(function (logo) { return args['recursive'] || false; })
-            .subscribe(function (value) { }, function (err) { return console.error(err); });
+            .map(function () { return false; })
+            .flatMap(config_1.rxConfig)
+            .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
+            .flatMap(function (result) { return rxDelete(result[0], result[1]); })
+            .subscribe(function (value) { console.log("# page(s) removed ", value); }, function (err) { return console.error(err); });
     }
     commands.remove = remove;
 })(commands || (commands = {}));
@@ -88,18 +91,46 @@ function usage() {
             "\n");
     });
 }
-function rxConfluenceConnection(config, credentials) {
-    var p = confluence_xmlrpc_1.XMLRPCConfluenceService.create(config, credentials);
-    var rxConnection = Rx.Observable.fromPromise(p);
-    var rxCfg = Rx.Observable.just(config);
-    return Rx.Observable.combineLatest(rxConnection, rxCfg, function (conn, conf) { return [conn, conf]; });
-}
-function rxGenerateSite(config, confluence) {
+function newSiteProcessor(confluence, config) {
     var siteHome = (path.isAbsolute(config.sitePath)) ?
         path.dirname(config.sitePath) :
         path.join(process.cwd(), path.dirname(config.sitePath));
-    var siteFile = path.basename(config.sitePath);
     var site = new confluence_site_1.SiteProcessor(confluence, config.spaceId, config.parentPageTitle, siteHome);
+    return site;
+}
+function rxConfluenceConnection(config, credentials) {
+    var service = confluence_xmlrpc_1.XMLRPCConfluenceService.create(config, credentials);
+    var rxConnection = Rx.Observable.fromPromise(service);
+    var rxCfg = Rx.Observable.just(config);
+    return Rx.Observable.combineLatest(rxConnection, rxCfg, function (conn, conf) { return [conn, conf]; });
+}
+function rxDelete(confluence, config) {
+    var recursive = args['recursive'] || false;
+    var siteFile = path.basename(config.sitePath);
+    var site = newSiteProcessor(confluence, config);
+    var rxParentPage = Rx.Observable.fromPromise(confluence.getPage(config.spaceId, config.parentPageTitle));
+    var rxParseSite = site.rxParse(siteFile);
+    return Rx.Observable.combineLatest(rxParentPage, rxParseSite, function (parent, home) { return [parent, home]; })
+        .doOnNext(function (result) { return console.dir(result); })
+        .flatMap(function (result) {
+        var parent = result[0], pages = result[1];
+        var first = pages[0];
+        return Rx.Observable.fromPromise(confluence.getPageByTitle(parent.id, first.$.name))
+            .flatMap(function (home) {
+            return Rx.Observable.fromPromise(confluence.getDescendents(home.id))
+                .flatMap(Rx.Observable.fromArray)
+                .flatMap(function (page) { return Rx.Observable.fromPromise(confluence.removePageById(page.id)); })
+                .reduce(function (acc, x) { return ++acc; }, 0)
+                .flatMap(function (n) {
+                return Rx.Observable.fromPromise(confluence.removePageById(home.id))
+                    .map(function (value) { return ++n; });
+            });
+        });
+    });
+}
+function rxGenerateSite(config, confluence) {
+    var siteFile = path.basename(config.sitePath);
+    var site = newSiteProcessor(confluence, config);
     return site.rxStart(siteFile)
         .doOnCompleted(function () { return confluence.connection.logout().then(function () {
     }); });

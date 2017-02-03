@@ -13,14 +13,17 @@ var SiteProcessor = (function () {
         this.parentTitle = parentTitle;
         this.sitePath = sitePath;
     }
-    SiteProcessor.prototype.rxStart = function (fileName) {
-        var _this = this;
+    SiteProcessor.prototype.rxParse = function (fileName) {
         return exports.rxReadFile(path.join(this.sitePath, fileName))
             .flatMap(function (value) { return rxParseString(value.toString()); })
             .map(function (value) {
             for (var first in value)
                 return value[first]['home'];
-        })
+        });
+    };
+    SiteProcessor.prototype.rxStart = function (fileName) {
+        var _this = this;
+        return this.rxParse(fileName)
             .flatMap(function (value) { return _this.rxProcessChild(value); });
     };
     SiteProcessor.prototype.rxReadContent = function (filePath) {

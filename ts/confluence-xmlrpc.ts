@@ -206,7 +206,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   getDescendents(pageId:string):Promise<Array<Model.PageSummary>>
   {
-    return null;
+    return this.connection.getDescendents( pageId );
   }
 
   getAttachment?( pageId:string, name:string, version:string ):Promise<Model.Attachment>
@@ -247,7 +247,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   removePageById( pageId:string  ):Promise<boolean>
   {
-    return null;
+    return this.connection.removePage( pageId );
   }
 
   addLabelByName( page:Model.Page, label:string  ):Promise<boolean>

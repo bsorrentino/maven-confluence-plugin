@@ -129,7 +129,7 @@ var XMLRPCConfluenceService = (function () {
         return null;
     };
     XMLRPCConfluenceService.prototype.getDescendents = function (pageId) {
-        return null;
+        return this.connection.getDescendents(pageId);
     };
     XMLRPCConfluenceService.prototype.getAttachment = function (pageId, name, version) {
         return null;
@@ -157,7 +157,7 @@ var XMLRPCConfluenceService = (function () {
         return null;
     };
     XMLRPCConfluenceService.prototype.removePageById = function (pageId) {
-        return null;
+        return this.connection.removePage(pageId);
     };
     XMLRPCConfluenceService.prototype.addLabelByName = function (page, label) {
         return this.connection.addLabelByName(page, label);

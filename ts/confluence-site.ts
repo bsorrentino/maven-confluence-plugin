@@ -4,13 +4,13 @@ import * as filesystem from "fs";
 import * as path from "path";
 import Rx = require("rx");
 
-interface ElementAttributes {
+export interface ElementAttributes {
     name?:string;
     uri?:string;
     [n: string]: any;
 }
 
-interface Element {
+export interface Element {
     $:ElementAttributes;
     attachment?:Array<Element>;
     child?:Array<Element>
@@ -41,14 +41,21 @@ export class SiteProcessor {
     /**
      * 
      */
-    rxStart( fileName:string ):Rx.Observable<any> {
+    rxParse( fileName:string ):Rx.Observable<Array<Object>> {
         return rxReadFile( path.join(this.sitePath, fileName) )
                 .flatMap( (value:Buffer) => rxParseString( value.toString() ) )
                 //.doOnNext( (value) => console.dir( value, { depth:4 }) )
                 .map( (value:Object) => {
                     for( let first in value ) return value[first]['home'];
                 })
-                .flatMap( (value:Array<Object>) => this.rxProcessChild(value) );
+    }
+
+    /**
+     * 
+     */
+    rxStart( fileName:string ):Rx.Observable<any> {
+        return this.rxParse( fileName )
+                .flatMap( (value) => this.rxProcessChild(value) );
     }
 
     /**

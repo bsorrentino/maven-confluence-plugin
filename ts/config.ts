@@ -9,7 +9,7 @@ import * as inquirer from "inquirer";
 import Rx = require("rx");
 import Preferences = require("preferences");
 
-type ConfigAndCredentials = [Config,Credentials];
+export type ConfigAndCredentials = [Config,Credentials];
 
 const CONFIG_FILE       = "config.json";
 const PREFERENCES_ID    = "org.bsc.confluence-cli";
