@@ -81,14 +81,11 @@ function usage() {
             " confluence-cli " +
             usageCommand("deploy", "deploy site to confluence", "[--config]") +
             usageCommand("config", "show/create/update configuration", "[--update]") +
-            usageCommand("delete", "delete page tree", "[--recursive]") +
+            usageCommand("delete", "delete page tree") +
             "\n\n" +
             chalk.cyan("Options:") +
             "\n\n" +
-            " --config | --update\t" + chalk.italic.gray("// force reconfiguration") +
-            "\n" +
-            " --recursive\t" + chalk.italic.gray("// delete page tree") +
-            "\n");
+            " --config | --update\t" + chalk.italic.gray("// force reconfiguration"));
     });
 }
 function newSiteProcessor(confluence, config) {
@@ -105,24 +102,26 @@ function rxConfluenceConnection(config, credentials) {
     return Rx.Observable.combineLatest(rxConnection, rxCfg, function (conn, conf) { return [conn, conf]; });
 }
 function rxDelete(confluence, config) {
-    var recursive = args['recursive'] || false;
     var siteFile = path.basename(config.sitePath);
     var site = newSiteProcessor(confluence, config);
     var rxParentPage = Rx.Observable.fromPromise(confluence.getPage(config.spaceId, config.parentPageTitle));
     var rxParseSite = site.rxParse(siteFile);
     return Rx.Observable.combineLatest(rxParentPage, rxParseSite, function (parent, home) { return [parent, home]; })
-        .doOnNext(function (result) { return console.dir(result); })
         .flatMap(function (result) {
         var parent = result[0], pages = result[1];
         var first = pages[0];
-        return Rx.Observable.fromPromise(confluence.getPageByTitle(parent.id, first.$.name))
+        var getHome = Rx.Observable.fromPromise(confluence.getPageByTitle(parent.id, first.$.name));
+        return getHome
+            .filter(function (home) { return home != null; })
             .flatMap(function (home) {
             return Rx.Observable.fromPromise(confluence.getDescendents(home.id))
                 .flatMap(Rx.Observable.fromArray)
-                .flatMap(function (page) { return Rx.Observable.fromPromise(confluence.removePageById(page.id)); })
+                .flatMap(function (page) { return Rx.Observable.fromPromise(confluence.removePageById(page.id))
+                .doOnNext(function (r) { return console.log("page:", page.title, "removed!", r); }); })
                 .reduce(function (acc, x) { return ++acc; }, 0)
                 .flatMap(function (n) {
                 return Rx.Observable.fromPromise(confluence.removePageById(home.id))
+                    .doOnNext(function (r) { return console.log("page:", home.title, "removed!", r); })
                     .map(function (value) { return ++n; });
             });
         });

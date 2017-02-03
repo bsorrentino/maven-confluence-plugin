@@ -132,14 +132,11 @@ function usage() {
       " confluence-cli " +
       usageCommand( "deploy", "deploy site to confluence", "[--config]" ) +
       usageCommand( "config", "show/create/update configuration", "[--update]" ) +
-      usageCommand( "delete", "delete page tree", "[--recursive]" ) +
+      usageCommand( "delete", "delete page tree" ) +
       "\n\n" +
       chalk.cyan("Options:") +
       "\n\n" +
-      " --config | --update\t" + chalk.italic.gray("// force reconfiguration") +
-      "\n" +
-      " --recursive\t" + chalk.italic.gray("// delete page tree") +
-      "\n"
+      " --config | --update\t" + chalk.italic.gray("// force reconfiguration")
     );
 
   });
@@ -186,7 +183,7 @@ function rxConfluenceConnection(
  * 
  */
 function rxDelete( confluence:XMLRPCConfluenceService, config:Config  ):Rx.Observable<number> {
-    let recursive = args['recursive'] || false;
+    //let recursive = args['recursive'] || false;
 
     let siteFile = path.basename( config.sitePath );
 
@@ -197,22 +194,27 @@ function rxDelete( confluence:XMLRPCConfluenceService, config:Config  ):Rx.Obser
 
     return Rx.Observable.combineLatest( rxParentPage, rxParseSite, 
             (parent,home) => [parent,home] as [Model.Page,Array<Object>])
-              .doOnNext( (result) => console.dir( result ) )
+              //.doOnNext( (result) => console.dir( result ) )
               .flatMap( (result) => {
                 
                 let [parent,pages] = result;
                 let first = pages[0] as Element ;
                 
-                return Rx.Observable.fromPromise( confluence.getPageByTitle( parent.id, first.$.name) )
+                let getHome = Rx.Observable.fromPromise( confluence.getPageByTitle( parent.id, first.$.name) );
+
+                return getHome
+                        .filter( (home) => home!=null )
                         .flatMap( (home) => {
                              return Rx.Observable.fromPromise(confluence.getDescendents( home.id ))
                                         .flatMap( Rx.Observable.fromArray )
-                                        .flatMap( (page) => Rx.Observable.fromPromise(confluence.removePageById( page.id )) )
+                                        .flatMap( (page:Model.PageSummary) => Rx.Observable.fromPromise(confluence.removePageById( page.id ))
+                                                                  .doOnNext( (r) => console.log( "page:", page.title, "removed!", r )) )
                                         .reduce( ( acc, x ) => ++acc, 0 )
-                                        .flatMap( (n) => {
-                                              return Rx.Observable.fromPromise(confluence.removePageById(home.id) )
-                                                              .map( (value) => ++n );
-                                        })
+                                        .flatMap( (n) => 
+                                              Rx.Observable.fromPromise(confluence.removePageById(home.id) )
+                                                              .doOnNext( (r) => console.log( "page:", home.title, "removed!", r ))
+                                                              .map( (value) => ++n )
+                                        )
                         })
                         ;
                         

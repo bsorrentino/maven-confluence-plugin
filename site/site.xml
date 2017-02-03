@@ -10,12 +10,12 @@
         </child>
 -->
 
-    <home  name="first" uri="first.confluence">
+    <home  name="the first" uri="first.confluence">
         <attachment name="Notation Guide.pdf" uri="Notation Guide.pdf" comment="" contentType="application/pdf" version="1"></attachment>
 
-        <child name="second" uri="second.confluence">
+        <child name="the second" uri="second.confluence">
 
-            <child name="third" uri="third.confluence">
+            <child name="the third" uri="third.confluence">
             </child>  
 
         </child>  
