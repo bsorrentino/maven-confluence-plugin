@@ -12,11 +12,29 @@ import Preferences = require("preferences");
 export type ConfigAndCredentials = [Config,Credentials];
 
 const CONFIG_FILE       = "config.json";
-const PREFERENCES_ID    = "org.bsc.confluence-cli";
 const SITE_PATH         = "site/site.xml"
 
 namespace ConfigUtils {
 
+    export function getServerId():string {
+        let p = path.join( process.cwd(), "package.json") ;
+        
+        try {
+
+            let id = require( p )['serverId'];
+
+            if( id ) {
+                //console.log( "use serverId:", id);
+                return id;                
+            }
+        }
+        catch( e ) {
+            console.error( path.basename(p), "not found in path ", path.dirname(p) );
+        }
+
+        //console.log( "use serverId:", DEFAULT_ID);
+        return "org.bsc.confluence-cli";
+    }
     /**
      * masked password
      */
@@ -139,7 +157,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
         //console.log( configPath, "found!" );
 
         defaultConfig = require( path.join( process.cwd(), CONFIG_FILE) );
-        defaultCredentials = new Preferences( PREFERENCES_ID, defaultCredentials) ;
+        defaultCredentials = new Preferences( ConfigUtils.getServerId(), defaultCredentials) ;
 
         if( !force ) {
 
@@ -218,7 +236,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
                             password:answers['password']
                         };
                         */
-                        let c = new Preferences(PREFERENCES_ID, defaultCredentials );
+                        let c = new Preferences(ConfigUtils.getServerId(), defaultCredentials );
                         c.username = answers['username']
                         c.password = answers['password'];
 

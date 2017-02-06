@@ -13,6 +13,8 @@
     <home  name="the first" uri="first.confluence">
         <attachment name="Notation Guide.pdf" uri="Notation Guide.pdf" comment="" contentType="application/pdf" version="1"></attachment>
 
+        <child name="markdown demo1" uri="demo1.md"></child>
+        
         <child name="the second" uri="second.confluence">
 
             <child name="the third" uri="third.confluence">

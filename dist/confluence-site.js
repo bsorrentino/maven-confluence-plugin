@@ -3,6 +3,7 @@ var xml = require("xml2js");
 var filesystem = require("fs");
 var path = require("path");
 var Rx = require("rx");
+var md_1 = require("./md");
 var parser = new xml.Parser();
 var rxParseString = Rx.Observable.fromNodeCallback(parser.parseString);
 exports.rxReadFile = Rx.Observable.fromNodeCallback(filesystem.readFile);
@@ -29,7 +30,19 @@ var SiteProcessor = (function () {
     SiteProcessor.prototype.rxReadContent = function (filePath) {
         return exports.rxReadFile(filePath)
             .map(function (value) {
-            var storage = { value: value.toString(), representation: 1 };
+            var storage;
+            var ext = path.extname(filePath);
+            switch (ext) {
+                case ".md":
+                    storage = {
+                        value: md_1.markdown2wiki(value),
+                        representation: 1
+                    };
+                    break;
+                default:
+                    storage = { value: value.toString(), representation: 1 };
+                    break;
+            }
             return storage;
         });
     };

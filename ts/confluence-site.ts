@@ -3,6 +3,7 @@ import * as xml from "xml2js";
 import * as filesystem from "fs";
 import * as path from "path";
 import Rx = require("rx");
+import {markdown2wiki} from "./md";
 
 export interface ElementAttributes {
     name?:string;
@@ -65,7 +66,23 @@ export class SiteProcessor {
         
         return rxReadFile( filePath )
             .map( (value:Buffer) => {
-                let storage:ContentStorage = {value:value.toString(), representation:Representation.WIKI};
+                let storage:ContentStorage ;
+
+                let ext = path.extname(filePath);
+                
+                switch( ext) {
+                    case ".md":
+                        storage = {
+                            value:markdown2wiki(value), 
+                            representation:Representation.WIKI
+                        };
+                    break;
+                    default:
+                        storage = {value:value.toString(), representation:Representation.WIKI};
+
+                    break;               
+                }
+
                 return storage;
             });
         

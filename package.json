@@ -2,7 +2,7 @@
   "name": "confluence-cli",
   "version": "0.0.1",
   "description": "",
-  "bin":"./main.js",
+  "bin": "./main.js",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,7 @@
     "chalk": "^1.1.3",
     "es6-promise": "^4.0.5",
     "inquirer": "^2.0.0",
+    "marked": "^0.3.6",
     "preferences": "^0.2.1",
     "rx": "^4.1.0",
     "traverse": "^0.6.6",
@@ -25,5 +26,6 @@
   },
   "devDependencies": {
     "figlet": "^1.2.0"
-  }
+  },
+  "serverId":"softphone"
 }

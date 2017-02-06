@@ -9,10 +9,23 @@ var inquirer = require("inquirer");
 var Rx = require("rx");
 var Preferences = require("preferences");
 var CONFIG_FILE = "config.json";
-var PREFERENCES_ID = "org.bsc.confluence-cli";
 var SITE_PATH = "site/site.xml";
 var ConfigUtils;
 (function (ConfigUtils) {
+    function getServerId() {
+        var p = path.join(process.cwd(), "package.json");
+        try {
+            var id = require(p)['serverId'];
+            if (id) {
+                return id;
+            }
+        }
+        catch (e) {
+            console.error(path.basename(p), "not found in path ", path.dirname(p));
+        }
+        return "org.bsc.confluence-cli";
+    }
+    ConfigUtils.getServerId = getServerId;
     function maskPassword(value) {
         assert.ok(!util.isNullOrUndefined(value));
         return Array(value.length + 1).join("*");
@@ -100,7 +113,7 @@ function rxConfig(force) {
     };
     if (fs.existsSync(configPath)) {
         defaultConfig = require(path.join(process.cwd(), CONFIG_FILE));
-        defaultCredentials = new Preferences(PREFERENCES_ID, defaultCredentials);
+        defaultCredentials = new Preferences(ConfigUtils.getServerId(), defaultCredentials);
         if (!force) {
             var data = [defaultConfig, defaultCredentials];
             return Rx.Observable.just(data)
@@ -162,7 +175,7 @@ function rxConfig(force) {
             parentPageTitle: answers['parentPageTitle'],
             sitePath: SITE_PATH
         };
-        var c = new Preferences(PREFERENCES_ID, defaultCredentials);
+        var c = new Preferences(ConfigUtils.getServerId(), defaultCredentials);
         c.username = answers['username'];
         c.password = answers['password'];
         return [config, c];
