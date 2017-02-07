@@ -13,15 +13,16 @@ var SITE_PATH = "site.xml";
 var ConfigUtils;
 (function (ConfigUtils) {
     function getServerId() {
-        var p = path.join(process.cwd(), "package.json");
+        var p = path.join(process.cwd(), CONFIG_FILE);
         try {
             var id = require(p)['serverId'];
             if (id) {
                 return id;
             }
+            console.log(chalk.red.underline(" no 'serverId' found in " + path.basename(p) + " default is used!"));
         }
         catch (e) {
-            console.error(path.basename(p), "not found in path ", path.dirname(p));
+            console.error(chalk.red.underline(path.basename(p) + " not found in path " + path.dirname(p)));
         }
         return "org.bsc.confluence-cli";
     }

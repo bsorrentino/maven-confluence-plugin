@@ -17,7 +17,8 @@ const SITE_PATH         = "site.xml"
 namespace ConfigUtils {
 
     export function getServerId():string {
-        let p = path.join( process.cwd(), "package.json") ;
+        //let p = path.join( process.cwd(), "package.json") ;
+        let p = path.join( process.cwd(), CONFIG_FILE) ;
         
         try {
 
@@ -27,9 +28,15 @@ namespace ConfigUtils {
                 //console.log( "use serverId:", id);
                 return id;                
             }
+
+            console.log(    chalk.red.underline( 
+                                " no 'serverId' found in " + path.basename(p) + " default is used!" 
+                            ));
+
         }
         catch( e ) {
-            console.error( path.basename(p), "not found in path ", path.dirname(p) );
+            
+            console.error( chalk.red.underline( path.basename(p) + " not found in path " + path.dirname(p) ) );
         }
 
         //console.log( "use serverId:", DEFAULT_ID);
