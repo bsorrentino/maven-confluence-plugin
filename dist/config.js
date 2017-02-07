@@ -9,7 +9,7 @@ var inquirer = require("inquirer");
 var Rx = require("rx");
 var Preferences = require("preferences");
 var CONFIG_FILE = "config.json";
-var SITE_PATH = "site/site.xml";
+var SITE_PATH = "site.xml";
 var ConfigUtils;
 (function (ConfigUtils) {
     function getServerId() {

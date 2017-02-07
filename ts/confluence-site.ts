@@ -32,7 +32,7 @@ export class SiteProcessor {
      * 
      */
     constructor( 
-        public confluence:XMLRPCConfluenceService,
+        public confluence:ConfluenceService,
         public spaceId:string,
         public parentTitle:string,
         public sitePath:string 

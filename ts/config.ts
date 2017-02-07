@@ -12,7 +12,7 @@ import Preferences = require("preferences");
 export type ConfigAndCredentials = [Config,Credentials];
 
 const CONFIG_FILE       = "config.json";
-const SITE_PATH         = "site/site.xml"
+const SITE_PATH         = "site.xml"
 
 namespace ConfigUtils {
 

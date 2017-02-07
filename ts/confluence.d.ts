@@ -83,7 +83,7 @@ interface ConfluenceService {
 
     storePage( page:Model.Page ):Promise<Model.Page>;
 
-    call?( task:(ConfluenceService) => void );
+    //call?( task:(ConfluenceService) => void );
 
 
 
