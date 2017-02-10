@@ -18,21 +18,19 @@ var commands;
     function deploy() {
         rxFiglet(LOGO)
             .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
-            .map(function (logo) { return args['config'] || false; })
-            .flatMap(config_1.rxConfig)
+            .flatMap(function (logo) { return config_1.rxConfig(args['config'] || false); })
             .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
             .flatMap(function (result) { return rxGenerateSite(result[1], result[0]); })
             .subscribe(function (result) { }, function (err) { return console.error(err); });
     }
     commands.deploy = deploy;
-    function config() {
+    function init() {
         rxFiglet(LOGO)
             .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
-            .map(function (logo) { return args['update'] || false; })
-            .flatMap(config_1.rxConfig)
+            .flatMap(function () { return config_1.rxConfig(true, args['serverid']); })
             .subscribe(function (value) { }, function (err) { return console.error(err); });
     }
-    commands.config = config;
+    commands.init = init;
     function remove() {
         rxFiglet(LOGO)
             .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
@@ -45,13 +43,14 @@ var commands;
     commands.remove = remove;
 })(commands || (commands = {}));
 clrscr();
+console.dir(args);
 var command = (args._.length === 0) ? "help" : args._[0];
 switch (command) {
     case "deploy":
         commands.deploy();
         break;
-    case "config":
-        commands.config();
+    case "init":
+        commands.init();
         break;
     case "delete":
         commands.remove();
@@ -67,10 +66,10 @@ function usageCommand(cmd, desc) {
     for (var _i = 2; _i < arguments.length; _i++) {
         args[_i - 2] = arguments[_i];
     }
-    desc = chalk.italic.gray("// " + desc);
+    desc = chalk.italic.gray(desc);
     return args.reduce(function (previousValue, currentValue, currentIndex, array) {
-        return util.format("%s %s", previousValue, chalk.yellow(currentValue));
-    }, "\n\n" + cmd) + "\t" + desc;
+        return util.format("%s%s", previousValue, chalk.yellow(currentValue));
+    }, "\n\n" + cmd) + desc;
 }
 function usage() {
     rxFiglet(LOGO, LOGO_FONT)
@@ -79,13 +78,16 @@ function usage() {
         console.log(chalk.bold.magenta(logo), "\n" +
             chalk.cyan("Usage:") +
             " confluence-cli " +
-            usageCommand("deploy", "deploy site to confluence", "[--config]") +
-            usageCommand("config", "show/create/update configuration", "[--update]") +
-            usageCommand("delete", "delete page tree") +
+            usageCommand("init", "\t// create/update configuration", "--serverid <serverid>") +
+            usageCommand("deploy", "\t\t// deploy site to confluence", "[--config]") +
+            usageCommand("delete", "\t\t\t\t// delete page tree") +
             "\n\n" +
             chalk.cyan("Options:") +
             "\n\n" +
-            " --config | --update\t" + chalk.italic.gray("// force reconfiguration"));
+            " --serverid \t" + chalk.italic.gray("// it is the credentials' profile.") +
+            "\n" +
+            " --config\t" + chalk.italic.gray("// force reconfiguration") +
+            "\n");
     });
 }
 function newSiteProcessor(confluence, config) {

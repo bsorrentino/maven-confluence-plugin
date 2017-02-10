@@ -32,14 +32,13 @@ namespace commands {
 //
 export function deploy() {
 
-  //console.log( "args", process.argv.slice(2));
   //console.dir( args );
 
   rxFiglet( LOGO )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
-    .map( (logo) => args['config'] || false )
+    //.map( (logo) => args['config'] || false )
     //.doOnNext( (v) => console.log( "force config", v, args))
-    .flatMap( rxConfig )
+    .flatMap( (logo) => rxConfig(args['config'] || false ) )
     .flatMap( (result) => rxConfluenceConnection( result[0], result[1]  ) )
     .flatMap( (result) => rxGenerateSite( result[1] as Config, result[0] as XMLRPCConfluenceService ) )
     .subscribe(
@@ -50,11 +49,12 @@ export function deploy() {
 
 }
 
-export function config() {
+export function init() {
     rxFiglet( LOGO )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
-    .map( (logo) => args['update'] || false )
-    .flatMap( rxConfig )
+    //.map( (logo) => args['update'] || false )
+    //.map( (logo) => true )
+    .flatMap( () => rxConfig( true, args['serverid']) )
     .subscribe(
       (value)=> {},
       (err)=> console.error( err )
@@ -80,7 +80,7 @@ export function remove() {
 
 clrscr();
 
-//console.dir( args );
+console.dir( args );
 
 let command = (args._.length===0) ? "help" : args._[0];
 
@@ -88,8 +88,8 @@ switch( command ) {
   case "deploy":
     commands.deploy();
   break;
-  case "config":
-    commands.config();
+  case "init":
+    commands.init();
   break;
   case "delete":
     commands.remove();
@@ -111,10 +111,10 @@ function clrscr() {
  * 
  */
 function usageCommand( cmd:string, desc:string, ...args: string[]) {
-  desc = chalk.italic.gray("// " + desc);
+  desc = chalk.italic.gray(desc);
   return args.reduce( (previousValue, currentValue, currentIndex, array)=> {
-    return util.format( "%s %s", previousValue, chalk.yellow(currentValue) );
-  }, "\n\n" + cmd ) + "\t" + desc;
+    return util.format( "%s%s", previousValue, chalk.yellow(currentValue) );
+  }, "\n\n" + cmd ) + desc;
 }
 
 /**
@@ -130,13 +130,16 @@ function usage() {
       "\n" +
       chalk.cyan( "Usage:") +
       " confluence-cli " +
-      usageCommand( "deploy", "deploy site to confluence", "[--config]" ) +
-      usageCommand( "config", "show/create/update configuration", "[--update]" ) +
-      usageCommand( "delete", "delete page tree" ) +
+      usageCommand( "init", "\t// create/update configuration", "--serverid <serverid>" ) +
+      usageCommand( "deploy", "\t\t// deploy site to confluence", "[--config]" ) +
+      usageCommand( "delete", "\t\t\t\t// delete page tree" ) +
       "\n\n" +
       chalk.cyan("Options:") +
       "\n\n" +
-      " --config | --update\t" + chalk.italic.gray("// force reconfiguration")
+      " --serverid \t" + chalk.italic.gray("// it is the credentials' profile.") +
+      "\n" +
+      " --config\t" + chalk.italic.gray("// force reconfiguration") +
+      "\n"
     );
 
   });

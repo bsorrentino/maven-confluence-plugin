@@ -26,6 +26,5 @@
   },
   "devDependencies": {
     "figlet": "^1.2.0"
-  },
-  "serverId":"softphone"
+  }
 }

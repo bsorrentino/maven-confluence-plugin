@@ -10,7 +10,8 @@ interface Config {
   path:string,
   spaceId:string,
   parentPageTitle:string,
-  sitePath:string
+  sitePath:string,
+  serverId?:string
 }
 
 interface ContentStorage {

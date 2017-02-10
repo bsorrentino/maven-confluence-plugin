@@ -16,32 +16,6 @@ const SITE_PATH         = "site.xml"
 
 namespace ConfigUtils {
 
-    export function getServerId():string {
-        //let p = path.join( process.cwd(), "package.json") ;
-        let p = path.join( process.cwd(), CONFIG_FILE) ;
-        
-        try {
-
-            let id = require( p )['serverId'];
-
-            if( id ) {
-                //console.log( "use serverId:", id);
-                return id;                
-            }
-
-            console.log(    chalk.red.underline( 
-                                " no 'serverId' found in " + path.basename(p) + " default is used!" 
-                            ));
-
-        }
-        catch( e ) {
-            
-            console.error( chalk.red.underline( path.basename(p) + " not found in path " + path.dirname(p) ) );
-        }
-
-        //console.log( "use serverId:", DEFAULT_ID);
-        return "org.bsc.confluence-cli";
-    }
     /**
      * masked password
      */
@@ -123,6 +97,7 @@ function printConfig( value:ConfigAndCredentials) {
          ["confluence url:\t",               ConfigUtils.Url.format(cfg)],
          ["confluence space id:",            cfg.spaceId],
          ["confluence parent page:",         cfg.parentPageTitle],
+         ["serverid:",                       cfg.serverId],
          ["confluence username:",            crd.username],
          ["confluence password:",            ConfigUtils.maskPassword(crd.password)]
 
@@ -137,7 +112,7 @@ function printConfig( value:ConfigAndCredentials) {
 /**
  *
  */
-export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredentials> {
+export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<ConfigAndCredentials> {
 
     let configPath = path.join(process.cwd(), CONFIG_FILE);
 
@@ -151,7 +126,8 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
         protocol:"http",
         spaceId:"",
         parentPageTitle:"Home",
-        sitePath:SITE_PATH
+        sitePath:SITE_PATH,
+        serverId:serverId
     };
 
     let defaultCredentials:Credentials = {
@@ -164,7 +140,12 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
         //console.log( configPath, "found!" );
 
         defaultConfig = require( path.join( process.cwd(), CONFIG_FILE) );
-        defaultCredentials = new Preferences( ConfigUtils.getServerId(), defaultCredentials) ;
+
+        if( util.isNullOrUndefined(defaultConfig.serverId) ) {
+            return Rx.Observable.throw<ConfigAndCredentials>( "'serverId' is not defined!");
+        }
+
+        defaultCredentials = new Preferences( defaultConfig.serverId, defaultCredentials) ;
 
         if( !force ) {
 
@@ -174,6 +155,15 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
                     .do( printConfig );
         }
     }
+    else {
+
+        if( util.isNullOrUndefined(defaultConfig.serverId)  ) {
+            return Rx.Observable.throw<ConfigAndCredentials>( "'serverId' is not defined!");
+        }
+        
+    }
+
+    console.log( chalk.green(">"), chalk.bold("serverId:"), chalk.cyan(defaultConfig.serverId) );
 
     let answers = inquirer.prompt( [
             {
@@ -235,7 +225,8 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
                             port:ConfigUtils.Port.value(p.port),
                             spaceId:answers['spaceId'],
                             parentPageTitle:answers['parentPageTitle'],
-                            sitePath:SITE_PATH
+                            sitePath:SITE_PATH,
+                            serverId:serverId
                         }
                         /*
                         let credentials:Credentials = {
@@ -243,7 +234,7 @@ export function rxConfig( force:boolean = false ):Rx.Observable<ConfigAndCredent
                             password:answers['password']
                         };
                         */
-                        let c = new Preferences(ConfigUtils.getServerId(), defaultCredentials );
+                        let c = new Preferences(config.serverId, defaultCredentials );
                         c.username = answers['username']
                         c.password = answers['password'];
 

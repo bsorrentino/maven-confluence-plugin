@@ -12,21 +12,6 @@ var CONFIG_FILE = "config.json";
 var SITE_PATH = "site.xml";
 var ConfigUtils;
 (function (ConfigUtils) {
-    function getServerId() {
-        var p = path.join(process.cwd(), CONFIG_FILE);
-        try {
-            var id = require(p)['serverId'];
-            if (id) {
-                return id;
-            }
-            console.log(chalk.red.underline(" no 'serverId' found in " + path.basename(p) + " default is used!"));
-        }
-        catch (e) {
-            console.error(chalk.red.underline(path.basename(p) + " not found in path " + path.dirname(p)));
-        }
-        return "org.bsc.confluence-cli";
-    }
-    ConfigUtils.getServerId = getServerId;
     function maskPassword(value) {
         assert.ok(!util.isNullOrUndefined(value));
         return Array(value.length + 1).join("*");
@@ -88,6 +73,7 @@ function printConfig(value) {
         ["confluence url:\t", ConfigUtils.Url.format(cfg)],
         ["confluence space id:", cfg.spaceId],
         ["confluence parent page:", cfg.parentPageTitle],
+        ["serverid:", cfg.serverId],
         ["confluence username:", crd.username],
         ["confluence password:", ConfigUtils.maskPassword(crd.password)]
     ].reduce(function (prev, curr, index, array) {
@@ -96,8 +82,7 @@ function printConfig(value) {
     }, "\n\n");
     console.log(out);
 }
-function rxConfig(force) {
-    if (force === void 0) { force = false; }
+function rxConfig(force, serverId) {
     var configPath = path.join(process.cwd(), CONFIG_FILE);
     var defaultConfig = {
         host: "",
@@ -106,7 +91,8 @@ function rxConfig(force) {
         protocol: "http",
         spaceId: "",
         parentPageTitle: "Home",
-        sitePath: SITE_PATH
+        sitePath: SITE_PATH,
+        serverId: serverId
     };
     var defaultCredentials = {
         username: "",
@@ -114,13 +100,22 @@ function rxConfig(force) {
     };
     if (fs.existsSync(configPath)) {
         defaultConfig = require(path.join(process.cwd(), CONFIG_FILE));
-        defaultCredentials = new Preferences(ConfigUtils.getServerId(), defaultCredentials);
+        if (util.isNullOrUndefined(defaultConfig.serverId)) {
+            return Rx.Observable.throw("'serverId' is not defined!");
+        }
+        defaultCredentials = new Preferences(defaultConfig.serverId, defaultCredentials);
         if (!force) {
             var data = [defaultConfig, defaultCredentials];
             return Rx.Observable.just(data)
                 .do(printConfig);
         }
     }
+    else {
+        if (util.isNullOrUndefined(defaultConfig.serverId)) {
+            return Rx.Observable.throw("'serverId' is not defined!");
+        }
+    }
+    console.log(chalk.green(">"), chalk.bold("serverId:"), chalk.cyan(defaultConfig.serverId));
     var answers = inquirer.prompt([
         {
             type: "input",
@@ -174,9 +169,10 @@ function rxConfig(force) {
             port: ConfigUtils.Port.value(p.port),
             spaceId: answers['spaceId'],
             parentPageTitle: answers['parentPageTitle'],
-            sitePath: SITE_PATH
+            sitePath: SITE_PATH,
+            serverId: serverId
         };
-        var c = new Preferences(ConfigUtils.getServerId(), defaultCredentials);
+        var c = new Preferences(config.serverId, defaultCredentials);
         c.username = answers['username'];
         c.password = answers['password'];
         return [config, c];
