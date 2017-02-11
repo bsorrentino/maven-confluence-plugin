@@ -14,7 +14,7 @@ import Preferences  = require("preferences");
 
 const figlet    = require('figlet');
 
-const LOGO      = 'Confluence CLI';
+const LOGO      = 'Confluence Site';
 const LOGO_FONT = 'Stick Letters';
 
 let rxFiglet =  Rx.Observable.fromNodeCallback( figlet );
@@ -44,7 +44,7 @@ export function deploy() {
     .subscribe(
       //(result) => console.dir( result, {depth:2} ),
       (result) => {},
-      (err) => console.error( err )
+      (err) => console.error( chalk.red(err) )
     );
 
 }
@@ -52,12 +52,21 @@ export function deploy() {
 export function init() {
     rxFiglet( LOGO )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
-    //.map( (logo) => args['update'] || false )
-    //.map( (logo) => true )
     .flatMap( () => rxConfig( true, args['serverid']) )
     .subscribe(
       (value)=> {},
-      (err)=> console.error( err )
+      (err)=> console.error( chalk.red(err) )
+    );
+
+}
+
+export function info() {
+    rxFiglet( LOGO )
+    .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
+    .flatMap( () => rxConfig( false ) )
+    .subscribe(
+      (value)=> {},
+      (err)=> console.error( chalk.red(err) )
     );
 
 }
@@ -71,7 +80,7 @@ export function remove() {
     .flatMap( (result) => rxDelete( result[0], result[1] ) )
     .subscribe(
       (value)=> { console.log( "# page(s) removed ", value )},
-      (err)=> console.error( err )
+      (err)=> console.error( chalk.red(err) )
     ); 
 }
 
@@ -80,7 +89,7 @@ export function remove() {
 
 clrscr();
 
-console.dir( args );
+//console.dir( args );
 
 let command = (args._.length===0) ? "help" : args._[0];
 
@@ -93,6 +102,9 @@ switch( command ) {
   break;
   case "delete":
     commands.remove();
+  break;
+  case "info":
+    commands.info();
   break;
   default:
     usage();
@@ -113,7 +125,7 @@ function clrscr() {
 function usageCommand( cmd:string, desc:string, ...args: string[]) {
   desc = chalk.italic.gray(desc);
   return args.reduce( (previousValue, currentValue, currentIndex, array)=> {
-    return util.format( "%s%s", previousValue, chalk.yellow(currentValue) );
+    return util.format( "%s %s", previousValue, chalk.yellow(currentValue) );
   }, "\n\n" + cmd ) + desc;
 }
 
@@ -129,10 +141,11 @@ function usage() {
     console.log( chalk.bold.magenta(logo as string),
       "\n" +
       chalk.cyan( "Usage:") +
-      " confluence-cli " +
+      " confluence-site " +
       usageCommand( "init", "\t// create/update configuration", "--serverid <serverid>" ) +
       usageCommand( "deploy", "\t\t// deploy site to confluence", "[--config]" ) +
-      usageCommand( "delete", "\t\t\t\t// delete page tree" ) +
+      usageCommand( "delete", "\t\t\t\t// delete site" ) +
+      usageCommand( "info", "\t\t\t\t// show configuration" ) +
       "\n\n" +
       chalk.cyan("Options:") +
       "\n\n" +

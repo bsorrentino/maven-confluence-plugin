@@ -8,7 +8,7 @@ var chalk = require("chalk");
 var minimist = require("minimist");
 var Rx = require("rx");
 var figlet = require('figlet');
-var LOGO = 'Confluence CLI';
+var LOGO = 'Confluence Site';
 var LOGO_FONT = 'Stick Letters';
 var rxFiglet = Rx.Observable.fromNodeCallback(figlet);
 var argv = process.argv.slice(2);
@@ -21,16 +21,23 @@ var commands;
             .flatMap(function (logo) { return config_1.rxConfig(args['config'] || false); })
             .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
             .flatMap(function (result) { return rxGenerateSite(result[1], result[0]); })
-            .subscribe(function (result) { }, function (err) { return console.error(err); });
+            .subscribe(function (result) { }, function (err) { return console.error(chalk.red(err)); });
     }
     commands.deploy = deploy;
     function init() {
         rxFiglet(LOGO)
             .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
             .flatMap(function () { return config_1.rxConfig(true, args['serverid']); })
-            .subscribe(function (value) { }, function (err) { return console.error(err); });
+            .subscribe(function (value) { }, function (err) { return console.error(chalk.red(err)); });
     }
     commands.init = init;
+    function info() {
+        rxFiglet(LOGO)
+            .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
+            .flatMap(function () { return config_1.rxConfig(false); })
+            .subscribe(function (value) { }, function (err) { return console.error(chalk.red(err)); });
+    }
+    commands.info = info;
     function remove() {
         rxFiglet(LOGO)
             .doOnNext(function (logo) { return console.log(chalk.magenta(logo)); })
@@ -38,12 +45,11 @@ var commands;
             .flatMap(config_1.rxConfig)
             .flatMap(function (result) { return rxConfluenceConnection(result[0], result[1]); })
             .flatMap(function (result) { return rxDelete(result[0], result[1]); })
-            .subscribe(function (value) { console.log("# page(s) removed ", value); }, function (err) { return console.error(err); });
+            .subscribe(function (value) { console.log("# page(s) removed ", value); }, function (err) { return console.error(chalk.red(err)); });
     }
     commands.remove = remove;
 })(commands || (commands = {}));
 clrscr();
-console.dir(args);
 var command = (args._.length === 0) ? "help" : args._[0];
 switch (command) {
     case "deploy":
@@ -54,6 +60,9 @@ switch (command) {
         break;
     case "delete":
         commands.remove();
+        break;
+    case "info":
+        commands.info();
         break;
     default:
         usage();
@@ -68,7 +77,7 @@ function usageCommand(cmd, desc) {
     }
     desc = chalk.italic.gray(desc);
     return args.reduce(function (previousValue, currentValue, currentIndex, array) {
-        return util.format("%s%s", previousValue, chalk.yellow(currentValue));
+        return util.format("%s %s", previousValue, chalk.yellow(currentValue));
     }, "\n\n" + cmd) + desc;
 }
 function usage() {
@@ -77,10 +86,11 @@ function usage() {
         .subscribe(function (logo) {
         console.log(chalk.bold.magenta(logo), "\n" +
             chalk.cyan("Usage:") +
-            " confluence-cli " +
+            " confluence-site " +
             usageCommand("init", "\t// create/update configuration", "--serverid <serverid>") +
             usageCommand("deploy", "\t\t// deploy site to confluence", "[--config]") +
-            usageCommand("delete", "\t\t\t\t// delete page tree") +
+            usageCommand("delete", "\t\t\t\t// delete site") +
+            usageCommand("info", "\t\t\t\t// show configuration") +
             "\n\n" +
             chalk.cyan("Options:") +
             "\n\n" +

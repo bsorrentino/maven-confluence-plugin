@@ -1,5 +1,5 @@
 {
-  "name": "confluence-cli",
+  "name": "confluence-site",
   "version": "0.0.1",
   "description": "",
   "bin": "./main.js",
@@ -22,9 +22,9 @@
     "traverse": "^0.6.6",
     "xml2js": "^0.4.17",
     "xmlrpc": "^1.3.2",
-    "xmlrpc-lite": "0.0.4"
+    "xmlrpc-lite": "0.0.4",
+    "figlet": "^1.2.0"
   },
   "devDependencies": {
-    "figlet": "^1.2.0"
   }
 }

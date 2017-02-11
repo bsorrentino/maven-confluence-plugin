@@ -97,7 +97,7 @@ function printConfig( value:ConfigAndCredentials) {
          ["confluence url:\t",               ConfigUtils.Url.format(cfg)],
          ["confluence space id:",            cfg.spaceId],
          ["confluence parent page:",         cfg.parentPageTitle],
-         ["serverid:",                       cfg.serverId],
+         ["serverid:\t",                       cfg.serverId],
          ["confluence username:",            crd.username],
          ["confluence password:",            ConfigUtils.maskPassword(crd.password)]
 
