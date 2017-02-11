@@ -1,9 +1,14 @@
 {
   "name": "confluence-site",
-  "version": "0.0.1",
-  "description": "",
+  "version": "1.0.0",
+  "description": "A Command Line Interface (CLI) to manage a Confluence's Site. ",
   "bin": "./main.js",
   "main": "main.js",
+  "homepage":"https://github.com/bsorrentino/maven-confluence-plugin/tree/cli",
+  "bugs": {
+    "url":"https://github.com/bsorrentino/maven-confluence-plugin/issues",
+    "email":"bartolomeo.sorrentino@gmail.com"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
