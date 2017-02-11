@@ -16,6 +16,10 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+- | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+---- | ---- | ---- |
+
+
 Feb 11,2017  | **confluence-site** has been released | available from  **[NPM](https://www.npmjs.com/package/confluence-site)**  |
 ---- | ---- | ---- |
 
