@@ -226,7 +226,7 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
                             spaceId:answers['spaceId'],
                             parentPageTitle:answers['parentPageTitle'],
                             sitePath:SITE_PATH,
-                            serverId:serverId
+                            serverId:defaultConfig.serverId
                         }
                         /*
                         let credentials:Credentials = {

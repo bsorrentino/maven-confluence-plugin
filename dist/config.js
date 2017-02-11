@@ -170,7 +170,7 @@ function rxConfig(force, serverId) {
             spaceId: answers['spaceId'],
             parentPageTitle: answers['parentPageTitle'],
             sitePath: SITE_PATH,
-            serverId: serverId
+            serverId: defaultConfig.serverId
         };
         var c = new Preferences(config.serverId, defaultCredentials);
         c.username = answers['username'];
