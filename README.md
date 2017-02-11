@@ -54,6 +54,8 @@ spaceId | Confluence target *space identifier* |
 parentPageTitle | Confluence container page|
 sitePath | Path where the *site descriptor* is located. By default is `./site.xml`|
 
+> Credentials are stored into a separate crypted file (see [preferences](https://www.npmjs.com/package/preferences)) indentified by **serverId** 
+
 ## deploy
 
 Deploy pages defined into **site descriptor** directly in confluence 
