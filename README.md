@@ -16,6 +16,16 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+Feb 11,2017  | **confluence-site** has been released | available from  **[NPM](https://www.npmjs.com/package/confluence-site)**  |
+---- | ---- | ---- |
+
+**confluence-site** is a command line interface (*CLI*) to manage a Confluence's Site.
+
+This project should be considered as **[NodeJS](https://nodejs.org/)** version of the **confluence maven plugin** developed using [reactive javascript extension](https://github.com/Reactive-Extensions/RxJS)
+
+The Site is described using a [Site descriptor](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html) that is compatible with the one used by **confluence maven plugin**
+
+
 Jan 18,2017  | **Release 5.0-rc2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc2%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
