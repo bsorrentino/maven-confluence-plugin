@@ -5,16 +5,26 @@
 \__, \__/ | \| |    |___ \__/ |___ | \| \__, |___    .__/ |  |  |___ 
 ```
 
+## Description 
+
 A CLI (*Command Line Interface*) to manage a Confluence's Site. 
 
 This project should be considered as **[NodeJS](https://nodejs.org/)** version of the [confluence maven plugin](https://github.com/bsorrentino/maven-confluence-plugin) developed using [reactive javascript extension](https://github.com/Reactive-Extensions/RxJS)
 
 The Site is described using a [Site descriptor](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html) that is compatible with the one used by [confluence maven plugin](https://github.com/bsorrentino/maven-confluence-plugin)
 
+### Supported Formats
+
+ format | usage note |
+   ---- | ---- |
+   **[Confluence wiki](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)**  | use `.wiki` or `.confluence` extension | 
+  **Markdown** (throught package [marked](https://www.npmjs.com/package/marked)) | use `.md` extension  |  
+
+### Notes
 
 > Currently only **xmlrpc** protocol is supported (*REST coming soon*)
 
-## Intall 
+## Install 
 
 ```
 npm install confluence-site -g
@@ -39,7 +49,9 @@ Options:
  --config	// force reconfiguration
 ```
 
-## init 
+## Commands
+
+### init 
 
 Initilaize (create/update) the configuration. The configuration is stored into file `./config.json`
 
@@ -56,15 +68,15 @@ sitePath | Path where the *site descriptor* is located. By default is `./site.xm
 
 > Credentials are stored into a separate crypted file (see [preferences](https://www.npmjs.com/package/preferences)) indentified by **serverId** 
 
-## deploy
+### deploy
 
 Deploy pages defined into **site descriptor** directly in confluence 
 
-## delete
+### delete
 
 Delete pages tree startig from *home* defined into **site descriptor**
 
-## info
+### info
 
 Show current configuration
 
