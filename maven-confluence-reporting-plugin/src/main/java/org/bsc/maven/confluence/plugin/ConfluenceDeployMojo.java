@@ -750,8 +750,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             for (PluginConfluenceDocGenerator.Goal goal : goals) {
                 try {
-                    getLog().info(format("- generating: %s", goal.getPageName(goalsParentPage.getTitle()) ));
-                    goal.generatePage(confluence, goalsParentPage, goalsParentPage.getTitle());
+                    getLog().info(format("- generating: %s", goal.getPageName(confluenceHome.getTitle()) ));
+                    goal.generatePage(confluence, goalsParentPage, confluenceHome.getTitle());
                 } catch (Exception ex) {
                     getLog().warn(format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
                 }

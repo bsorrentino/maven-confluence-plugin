@@ -190,9 +190,9 @@ public class TemplateVariablesInPagesTest {
         String pluginGoalsPath = testDir.getAbsolutePath() + "/results/Hello Plugin=>Hello Plugin - Goals";
         assertTrue(fileExists(pluginGoalsPath));
 
-        String pluginGoalhelpPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals=>Hello Plugin - Goals - help";
+        String pluginGoalhelpPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals=>Hello Plugin - help";
         assertTrue("help goal should be a subpage of Goals", fileExists(pluginGoalhelpPath));
-        String pluginGoaltouchPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals=>Hello Plugin - Goals - touch";
+        String pluginGoaltouchPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals=>Hello Plugin - touch";
         assertTrue("touch goal should be a subpage of Goals", fileExists(pluginGoaltouchPath));
     }
 }
