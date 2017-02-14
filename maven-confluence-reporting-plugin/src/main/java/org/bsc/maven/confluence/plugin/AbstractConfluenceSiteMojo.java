@@ -7,6 +7,7 @@ package org.bsc.maven.confluence.plugin;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URISyntaxException;
+import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -131,15 +132,13 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param parentPage
      * @param confluenceParentPage
-     * @param spaceKey
-     * @param parentPageTitle
-     * @param titlePrefix 
+     * @param titlePrefix
      */
     protected void generateChildren(    final Confluence confluence, 
                                         final Site.Page parentPage,
                                         final Page confluenceParentPage,  
-                                        final String parentPageTitle, 
-                                        final String titlePrefix) 
+                                        final String titlePrefix,
+                                        final Map<String, Page> varsToParentPageMap)
     {
 
         getLog().info(format("generateChildren # [%d]", parentPage.getChildren().size()));
@@ -150,10 +149,14 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         for( Site.Page child : parentPage.getChildren() ) {
 
             final Page confluencePage = generateChild(confluence, child, confluenceParentPage.getSpace(), parentPage.getName(), titlePrefix);
-            
+
+            for (Site.Page.Generated generated : child.getGenerateds()) {
+                varsToParentPageMap.put(generated.getRef(), confluencePage);
+            }
+
             if( confluencePage != null  ) {
 
-                generateChildren(confluence, child, confluencePage, child.getName(), titlePrefix );    
+                generateChildren(confluence, child, confluencePage, titlePrefix, varsToParentPageMap );
             }
             
         }

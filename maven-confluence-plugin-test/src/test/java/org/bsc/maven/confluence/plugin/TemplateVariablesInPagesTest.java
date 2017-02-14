@@ -109,11 +109,45 @@ public class TemplateVariablesInPagesTest {
                 Map<String, String> pageMap = (Map) invocationOnMock.getArguments()[1];
                 hashtable.putAll(pageMap);
                 Page page = new Page(pageMap);
-                fileWrite(results + "/" + page.getTitle(), page.getContent());
+
+                String parentId = page.getParentId();
+                if (parentId != null) {
+                    String parentTitle = null;
+                    for (Map map : titleToPage.values()) {
+                        Page p = new Page(map);
+                        if (parentId.equals(p.getId())) {
+                            parentTitle = p.getTitle();
+                            break;
+                        }
+                    }
+                    if (parentTitle == null) {
+                        throw new IllegalStateException(format("pageId '%s' not found", parentId));
+                    }
+
+                    fileWrite(results + "/" + parentTitle + "=>" + page.getTitle(), page.getContent());
+                } else {
+                    fileWrite(results + "/" + page.getTitle(), page.getContent());
+                }
+
                 hashtable.put("id",DigestUtils.md5Hex(page.getTitle()));
                 hashtable.put("space", "DOC");
                 titleToPage.put(page.getTitle(), hashtable);
                 return hashtable;
+            }
+        });
+
+        when(handler.getChildren(anyString(), anyString())).then(new Answer<List>() {
+            @Override
+            public List answer(InvocationOnMock invocationOnMock) throws Throwable {
+                String parentPageId = (String)invocationOnMock.getArguments()[1];
+                Vector<Map> children = new Vector<Map>();
+                for (Map pageMap : titleToPage.values()) {
+                    Page page = new Page(pageMap);
+                    if (parentPageId.equals(page.getParentId())) {
+                        children.add(pageMap);
+                    }
+                }
+                return children;
             }
         });
 
@@ -135,16 +169,30 @@ public class TemplateVariablesInPagesTest {
     public void shouldRenderTheIndexPage() throws IOException, VerificationException, InterruptedException {
         File testDir = simpleExtractResources(getClass(), "/simple-plugin-project");
         testLaunchingMaven(testDir, new ArrayList<String>() {}, "clean", "package", "confluence-reporting:deploy");
-        assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin"));
-        assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin - Summary"));
+        assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Fake Root=>Hello Plugin"));
+        assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin=>Hello Plugin - Summary"));
 
-        String pluginGoalsPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals";
+        String pluginGoalsPath = testDir.getAbsolutePath() + "/results/Hello Plugin=>Hello Plugin - Goals";
         assertTrue(fileExists(pluginGoalsPath));
         assertThat(fileRead(pluginGoalsPath), not(containsString("${plugin.goals}")));
 
-        String pluginsSummaryPath = testDir.getAbsolutePath() + "/results/Hello Plugin - PluginsSummary";
+        String pluginsSummaryPath = testDir.getAbsolutePath() + "/results/Hello Plugin=>Hello Plugin - PluginsSummary";
         assertTrue(fileExists(pluginsSummaryPath));
         String pluginsSummary = fileRead(pluginsSummaryPath);
         assertThat(pluginsSummary, not(containsString("${plugin.summary}")));
+    }
+
+    @Test
+    public void shouldPutTheGoalsAsChildrenOfGoalsPage() throws IOException, VerificationException, InterruptedException {
+        File testDir = simpleExtractResources(getClass(), "/plugin-project-goals-in-subpage");
+        testLaunchingMaven(testDir, new ArrayList<String>() {}, "clean", "package", "confluence-reporting:deploy");
+        assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Fake Root=>Hello Plugin"));
+        String pluginGoalsPath = testDir.getAbsolutePath() + "/results/Hello Plugin=>Hello Plugin - Goals";
+        assertTrue(fileExists(pluginGoalsPath));
+
+        String pluginGoalhelpPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals=>Hello Plugin - Goals - help";
+        assertTrue("help goal should be a subpage of Goals", fileExists(pluginGoalhelpPath));
+        String pluginGoaltouchPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals=>Hello Plugin - Goals - touch";
+        assertTrue("touch goal should be a subpage of Goals", fileExists(pluginGoaltouchPath));
     }
 }
