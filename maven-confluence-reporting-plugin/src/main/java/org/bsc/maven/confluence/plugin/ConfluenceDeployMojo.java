@@ -49,7 +49,7 @@ import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import static java.lang.String.format;
-import static java.lang.String.format;
+
 /**
  * 
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -516,7 +516,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
                 }
                 
-                generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
+                generateChildren( confluence, site.getHome(), confluenceHomePage, titlePrefix, new HashMap<String, Page>());
             }
 
         });
@@ -704,12 +704,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     // Issue 32
                     final String title = getTitle();
 
-                    generateChildren(   confluence, 
+                    Map<String, Page> varsToParentPageMap = new HashMap<String, Page>();
+
+                    generateChildren(   confluence,
                                         site.getHome(),
                                         confluenceHomePage,
-                                        title, 
-                                        title);
+                                        title, varsToParentPageMap);
 
+                    generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
 
                 }
             });
@@ -728,7 +730,35 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     }
     
     class PluginGenerator extends PluginConfluenceDocGenerator {
-        
+
+        final java.util.List<Goal> goals = new ArrayList<Goal>();
+
+        void generateGoalsPages(final Confluence confluence,
+                                final Page confluenceHome,
+                                final Map<String, Page> varsToParentPageMap) {
+
+            // GENERATE GOAL
+            getLog().info(format("Get the right page to generate the %s pages under", PLUGIN_GOALS_VAR));
+
+            Page goalsParentPage = confluenceHome;
+
+            if (varsToParentPageMap.containsKey(PLUGIN_GOALS_VAR)) {
+                goalsParentPage = varsToParentPageMap.get(PLUGIN_GOALS_VAR);
+            }
+
+            getLog().info(format("Plugin Goals parentPage is: %s", goalsParentPage.getTitle()));
+
+            for (PluginConfluenceDocGenerator.Goal goal : goals) {
+                try {
+                    getLog().info(format("- generating: %s", goal.getPageName(confluenceHome.getTitle()) ));
+                    goal.generatePage(confluence, goalsParentPage, confluenceHome.getTitle());
+                } catch (Exception ex) {
+                    getLog().warn(format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
+                }
+            }
+
+        }
+
    /**
      *
      * @throws IOException
@@ -764,45 +794,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                                             .setSkipUndefinedVars(true)
                                             .build( is, getCharset() );
 
-/*
-        if (templateWiki == null || !templateWiki.exists()) {
-
-            getLog().warn("template not set! default using ...");
-
-            java.net.URL sourceUrl = getClass().getClassLoader().getResource(DEFAULT_PLUGIN_TEMPLATE_WIKI);
-
-            if (sourceUrl == null) {
-                final String msg = "default template cannot be found";
-                getLog().error(msg);
-                throw new MavenReportException(msg);
-            }
-
-            try {
-
-                t = new MiniTemplator.Builder()
-                        .setSkipUndefinedVars(true)
-                        .build(sourceUrl, getCharset());
-
-            } catch (Exception e) {
-                final String msg = "error loading template";
-                getLog().error(msg, e);
-                throw new MavenReportException(msg, e);
-            }
-        } else {
-            try {
-                t = new MiniTemplator.Builder()
-                        .setSkipUndefinedVars(true)
-                        .build(templateWiki.toURI().toURL(), getCharset());
-
-                //t = new MiniTemplator(templateWiki);
-            } catch (Exception e) {
-                final String msg = "error loading template";
-                getLog().error(msg, e);
-                throw new MavenReportException(msg, e);
-            }
-
-        }
-*/
         Page page = ConfluenceUtils.getOrCreatePage(confluence, parentPage, title);
 
         if (!isSnapshot() && isRemoveSnapshots()) {
@@ -844,7 +835,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         /////////////////////////////////////////////////////////////////
         // GOALS
         /////////////////////////////////////////////////////////////////
-        final java.util.List<Goal> goals = new ArrayList<Goal>();
+
 
         if (mojos != null) {
             {
@@ -881,15 +872,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         page.setContent(t.generateOutput());
 
         page = confluence.storePage(page);
-
-        // GENERATE GOAL
-        for (Goal goal : goals) {
-            try {
-                goal.generatePage(confluence, page, title);
-            } catch (Exception ex) {
-                getLog().warn(format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
-            }
-        }
 
         return page;
     }
