@@ -5,13 +5,13 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>4.13-SNAPSHOT</version>
+        <version>5.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>maven-confluence-plugin-test</artifactId>
-    <name>Integration testing project</name>
-
+    <name>CONFLUENCE-REPORTING::ITest - ${project.version}</name>
+    <description>Integration Test</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -62,7 +62,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.3</version>
         </dependency>
