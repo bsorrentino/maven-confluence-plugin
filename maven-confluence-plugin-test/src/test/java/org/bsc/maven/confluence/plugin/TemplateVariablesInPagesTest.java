@@ -5,7 +5,6 @@ import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
 import org.apache.maven.it.util.ResourceExtractor;
 import org.apache.xmlrpc.WebServer;
-import org.apache.xmlrpc.XmlRpc;
 import org.codehaus.swizzle.confluence.Page;
 import org.junit.*;
 import org.mockito.invocation.InvocationOnMock;
