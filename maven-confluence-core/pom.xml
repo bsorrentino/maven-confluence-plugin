@@ -204,7 +204,7 @@
 
     <profiles>
         <profile>
-            <id>itest</id>
+            <id>itest-core</id>
             <build>
                 <plugins>
                     <plugin>
