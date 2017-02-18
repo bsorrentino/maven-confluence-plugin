@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:bsc="https://github.com/bsorrentino/maven-confluence-plugin" targetNamespace="https://github.com/bsorrentino/maven-confluence-plugin" version="1.0">
+
+  <xs:element name="site" type="bsc:site"/>
+
+  <xs:complexType name="site">
+    <xs:annotation>
+      <xs:documentation><![CDATA[(author): bsorrentino]]></xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="basedir" type="xs:string"/>
+      <xs:element name="home" type="bsc:page"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="label" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="page">
+    <xs:complexContent>
+      <xs:extension base="bsc:source">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="generated">
+            <xs:complexType>
+              <xs:sequence/>
+              <xs:attribute name="ref" type="xs:string"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="attachment" type="bsc:attachment"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="child" type="bsc:page"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="label" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="ignore-variables" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="source">
+    <xs:sequence/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="uri" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="attachment">
+    <xs:complexContent>
+      <xs:extension base="bsc:source">
+        <xs:sequence/>
+        <xs:attribute name="comment" type="xs:string"/>
+        <xs:attribute name="contentType" type="xs:string"/>
+        <xs:attribute name="version" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

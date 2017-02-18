@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>maven-confluence-plugin-test</artifactId>
+    <artifactId>maven-confluence-plugin-itest</artifactId>
     <name>CONFLUENCE-REPORTING::ITest - ${project.version}</name>
     <description>Integration Test</description>
     <properties>

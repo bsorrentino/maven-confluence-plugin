@@ -1,0 +1,22 @@
+h1. Index
+{panel}
+{toc}
+{panel}
+
+
+${project.summary}
+
+----
+
+${project.team}
+
+----
+
+${project.scmManager}
+
+----
+
+${plugin.goals}
+
+----
+
