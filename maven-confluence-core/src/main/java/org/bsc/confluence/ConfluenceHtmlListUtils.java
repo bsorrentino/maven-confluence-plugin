@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class ConfluenceHtmlListUtils {
     private static final String LIST_TAGS_PATTERN = "<ol>|<ul>|</ul>|</ol>";

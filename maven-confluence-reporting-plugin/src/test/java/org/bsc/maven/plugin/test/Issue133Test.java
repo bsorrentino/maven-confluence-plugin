@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class Issue133Test {
  

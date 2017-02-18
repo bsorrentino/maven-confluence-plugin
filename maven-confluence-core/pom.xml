@@ -175,6 +175,16 @@
                         <source>src/main/java/org/bsc/confluence/model/package-info.java</source>
                     </sources>
                     <outputDirectory>${project.build.directory}/schemas</outputDirectory>
+                    
+                    <!-- Post-processing 2: Transform the generated XML Schemas.-->
+                    <transformSchemas>
+                        <transformSchema>
+                            <uri>https://github.com/bsorrentino/maven-confluence-plugin</uri>
+                            <toPrefix>bsc</toPrefix>
+                            <toFile>site-schema-${project.version}.xsd</toFile>
+                        </transformSchema>  
+                    </transformSchemas>    
+          
                 </configuration>
             </plugin>
 

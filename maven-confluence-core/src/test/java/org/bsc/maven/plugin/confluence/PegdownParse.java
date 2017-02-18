@@ -44,7 +44,7 @@ import org.pegdown.ast.Visitor;
 */
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public abstract class PegdownParse {
 

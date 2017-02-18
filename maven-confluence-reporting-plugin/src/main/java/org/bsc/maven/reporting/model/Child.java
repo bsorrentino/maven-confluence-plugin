@@ -5,7 +5,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * 
- * @author softphone
+ * @author bsorrentino
  *
  */
 public class Child extends Site.Page {

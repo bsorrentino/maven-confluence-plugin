@@ -6,7 +6,7 @@ package org.bsc.confluence.model;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class ProcessUriException extends Exception {
 

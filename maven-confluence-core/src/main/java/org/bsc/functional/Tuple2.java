@@ -7,7 +7,7 @@ package org.bsc.functional;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class Tuple2<V1,V2> {
     

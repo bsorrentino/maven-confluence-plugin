@@ -22,16 +22,17 @@ import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 import rx.functions.Func2;
-//import org.slf4j.Logger;
+//import org.slf4j.Logger;  
 //import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
-@XmlRootElement( name="site", namespace = "https://github.com/bsorrentino/maven-confluence-plugin")
+@XmlRootElement( name="site", namespace = Site.NAMESPACE)
 public class Site {
 
+    public static final String NAMESPACE = "https://github.com/bsorrentino/maven-confluence-plugin";
     /**
      *
      */
@@ -158,6 +159,7 @@ public class Site {
     /**
      * class Source
      */
+    @XmlType(namespace = Site.NAMESPACE)
     protected static class Source {
 
         protected  transient final Site site;
@@ -219,6 +221,7 @@ public class Site {
     /**
      * class Attachment
      */
+    @XmlType(name="attachment", namespace = Site.NAMESPACE)
     public static class Attachment extends Source {
         public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
         public static final String DEFAULT_VERSION = "0";
@@ -290,6 +293,7 @@ public class Site {
     /**
      * class Page
      */
+    @XmlType(name="page", namespace = Site.NAMESPACE)
     public static class Page extends Source {
 
 

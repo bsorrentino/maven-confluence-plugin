@@ -9,7 +9,7 @@ import rx.functions.Action1;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public interface ConfluenceService {
 
