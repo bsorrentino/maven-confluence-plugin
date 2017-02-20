@@ -16,14 +16,19 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
-- | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+Feb 20,2017  | **Release 5.0-rc3** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc3%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
+ * Refer to [Pull Request 135](https://github.com/bsorrentino/maven-confluence-plugin/pull/135) - Plugins goals as child - Solves the [issue 118](https://github.com/bsorrentino/maven-confluence-plugin/issues/118)
+ 
+ With this new feature the **XML Site Schema** has been changed. So we have to move from schema **site-schema-3.4.0.xsd** to **site-schema-5.0.xsd** (see [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition) )
+
+ > Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature 
 
 Feb 11,2017  | **confluence-site** has been released | available from  **[NPM](https://www.npmjs.com/package/confluence-site)**  |
 ---- | ---- | ---- |
 
-**confluence-site** is a command line interface (*CLI*) to manage a Confluence's Site.
+**[confluence-site](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli)** is a command line interface (*CLI*) to manage a Confluence's Site.
 
 This project should be considered as **[NodeJS](https://nodejs.org/)** version of the **confluence maven plugin** developed using [reactive javascript extension](https://github.com/Reactive-Extensions/RxJS)
 
