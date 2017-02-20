@@ -16,6 +16,10 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+- | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+---- | ---- | ---- |
+
+
 Feb 20,2017  | **Release 5.0-rc3** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc3%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
