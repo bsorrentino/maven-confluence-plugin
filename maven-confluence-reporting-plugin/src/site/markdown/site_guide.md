@@ -84,10 +84,10 @@ To simplify understanding, below there is a simple site descriptor template
 
 | Attribute| Description | mandatory |
 |:-------------|:----------------|:--------------|
-| ref | built-in generated pages Id. *Currently only **plugin.goals** is supported* | yes |
+| ref | built-in generated pages Id. Currently only **plugin.goals** is supported | yes |
 
 #### Usage example
-```xml
+> ```xml
 <home uri="index.confluence">
     <child name="Summary" uri="summary.confluence"/>
     <child name="Goals" uri="goals.confluence">
