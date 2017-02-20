@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class ProxyTest {
     

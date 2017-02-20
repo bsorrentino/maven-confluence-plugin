@@ -32,7 +32,6 @@ import okhttp3.RequestBody;
 import org.bsc.confluence.rest.model.Page;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
-import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.ssl.SSLCertificateInfo;
 import rx.functions.Action1;
 

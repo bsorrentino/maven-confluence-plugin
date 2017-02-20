@@ -7,7 +7,7 @@ package org.bsc.confluence;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class ConfluenceProxy {
 

@@ -48,13 +48,14 @@ import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import static java.lang.String.format;
-import static java.lang.String.format;
+
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import rx.functions.Action1;
 import rx.functions.Func2;
+
+import static java.lang.String.format;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -211,13 +212,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private Boolean gitLogGroupByVersions;
 
 
-    /**
-     *
-     */
-    public ConfluenceDeployMojo() {
-        super();
-    }
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Locale locale = Locale.getDefault();
@@ -257,7 +251,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
 
         try {
-            
+
             if ( project.getPackaging().equals( "maven-plugin" ) )
            /////////////////////////////////////////////////////////////////
            // PLUGIN
@@ -272,7 +266,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             {
                 generateProjectReport(site, locale);
             }
-            
+
         } catch( MojoExecutionException e ) {
             final String msg = "error generating report";
             if( isFailOnError() ) {
@@ -283,7 +277,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
         } catch( Exception e ) {
             final String msg = "error generating report";
-            final Throwable cause = e.getCause();     
+            final Throwable cause = e.getCause();
             if( isFailOnError() ) {
                 throw new MojoExecutionException(msg, (cause!=null) ? cause : e);
             }
@@ -305,15 +299,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         final MiniTemplator t = new MiniTemplator.Builder()
                                 .setSkipUndefinedVars(true)
                                 .build( is, getCharset() );
-                        
+
                         generateProjectHomeTemplate( t, site, locale );
-                        
+
                         return t.generateOutput();
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
                 }
-                
+
             }) ;
 
         } catch (RuntimeException re ) {
@@ -510,7 +504,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     }
 
     private void generateProjectReport( ConfluenceService confluence, Site site, Locale locale ) throws Exception {
-      
+
         final Model.Page parentPage = loadParentPage(confluence);
 
         //
@@ -542,15 +536,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
         }
 
-        generateChildren( confluence, site.getHome(), confluenceHomePage, title, titlePrefix);
-        
+        generateChildren( confluence, site.getHome(), confluenceHomePage, titlePrefix, new HashMap<String, Model.Page>());
+
     }
 
     private void generateProjectReport( final Site site, final Locale locale ) throws MojoExecutionException
     {
 
         super.confluenceExecute(new Action1<ConfluenceService>() {
-            
+
             @Override
             public void call(ConfluenceService confluence)  {
                 try {
@@ -718,7 +712,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     e);
         }
 
-        
+
         // Generate the plugin's documentation
         super.confluenceExecute(new P1<ConfluenceService>() {
 
@@ -754,13 +748,16 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     // Issue 32
                     final String title = getTitle();
 
-                    generateChildren(   confluence, 
-                                    site.getHome(),
-                                    confluenceHomePage,
-                                    title, 
-                                    title);
-                }
-                catch( Exception ex ) {
+                    Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
+
+                    generateChildren(   confluence,
+                                        site.getHome(),
+                                        confluenceHomePage,
+                                        title, varsToParentPageMap);
+
+                    generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
+
+                } catch( Exception ex ) {
                     throw new RuntimeException(ex);
                 }
 
@@ -775,6 +772,35 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     }
 
     class PluginGenerator extends PluginConfluenceDocGenerator {
+
+
+        final java.util.List<Goal> goals = new ArrayList<Goal>();
+
+        void generateGoalsPages(final ConfluenceService confluence,
+                                final Model.Page confluenceHome,
+                                final Map<String, Model.Page> varsToParentPageMap) {
+
+            // GENERATE GOAL
+            getLog().info(format("Get the right page to generate the %s pages under", PLUGIN_GOALS_VAR));
+
+            Model.Page goalsParentPage = confluenceHome;
+
+            if (varsToParentPageMap.containsKey(PLUGIN_GOALS_VAR)) {
+                goalsParentPage = varsToParentPageMap.get(PLUGIN_GOALS_VAR);
+            }
+
+            getLog().info(format("Plugin Goals parentPage is: %s", goalsParentPage.getTitle()));
+
+            for (PluginConfluenceDocGenerator.Goal goal : goals) {
+                try {
+                    getLog().info(format("- generating: %s", goal.getPageName(confluenceHome.getTitle()) ));
+                    goal.generatePage(confluence, goalsParentPage, confluenceHome.getTitle());
+                } catch (Exception ex) {
+                    getLog().warn(format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
+                }
+            }
+
+        }
 
    /**
      *
@@ -809,76 +835,75 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             @Override
             public Model.Page call( java.io.InputStream is ,Storage.Representation sr) {
-                
+
                 try {
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
                             .build( is, getCharset() );
-                    
+
                     Model.Page page = confluence.getOrCreatePage(parentPage, title);
-                    
+
                     if (!isSnapshot() && isRemoveSnapshots()) {
                         final String snapshot = title.concat("-SNAPSHOT");
                         getLog().info(format("removing page [%s]!", snapshot));
                         boolean deleted = confluence.removePage( parentPage, snapshot);
-                        
+
                         if (deleted) {
                             getLog().info(format("Page [%s] has been removed!", snapshot));
                         }
                     }
-                    
+
                     /////////////////////////////////////////////////////////////////
                     // SUMMARY
                     /////////////////////////////////////////////////////////////////
-                    
+
                     {
                         final StringWriter writer = new StringWriter(100 * 1024);
-                        
+
                         writeSummary(writer, pluginDescriptor);
-                        
+
                         writer.flush();
-                        
+
                         try {
                             final String summary = writer.toString();
 
                             getProperties().put( PLUGIN_SUMMARY_VAR, summary );
-                            
+
                             t.setVariable(PLUGIN_SUMMARY_VAR, summary);
-                            
+
                         } catch (VariableNotDefinedException e) {
                             getLog().debug(format("variable %s or %s not defined in template", PLUGIN_SUMMARY_VAR, PROJECT_SUMMARY_VAR));
                         }
-                        
+
                     }
-                    
+
                     generateProjectHomeTemplate(t, site, locale);
-                    
+
                     /////////////////////////////////////////////////////////////////
                     // GOALS
                     /////////////////////////////////////////////////////////////////
-                    
-                    final java.util.List<Goal> goals;
+
                     {
                         StringWriter writer = new StringWriter(100 * 1024);
-                        
+
                         //writeGoals(writer, mojos);
-                        goals = writeGoalsAsChildren(writer, title, mojos);
-                        
+                        goals.addAll(writeGoalsAsChildren(writer, title, mojos));
+
                         writer.flush();
-                        
+
                         try {
                             final String plugin_goals = writer.toString();
-                            
+
                             getProperties().put( PLUGIN_GOALS_VAR, plugin_goals );
-                            
+
                             t.setVariable(PLUGIN_GOALS_VAR, plugin_goals );
-                            
+
                         } catch (VariableNotDefinedException e) {
                             getLog().debug(String.format("variable %s not defined in template", "plugin.goals"));
                         }
-                        
+
                     }
-                    
+
                     /*
                     // issue#102
                     final StringBuilder wiki = new StringBuilder()
@@ -886,27 +911,17 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     .append(t.generateOutput());
                     page.setContent(wiki.toString());
                     */
-                    
+
                     page = confluence.storePage(page,new Storage(t.generateOutput(), Representation.WIKI));
-                    
-                    // GENERATE GOAL
-                    for( Goal goal : goals ) {
-                        try {
-                            goal.generatePage(confluence, page, title);
-                        }
-                        catch( Exception ex ) {
-                            getLog().warn( format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
-                        }
-                    }
-                    
+
                     return page;
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
             }
-            
+
         }) ;
-            
+
         }
     }
 }

@@ -4,7 +4,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0-rc2</version>
+        <version>5.0-rc3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -89,123 +89,153 @@
   		<scope>system</scope>
   		<systemPath>${project.basedir}/lib/miniTemplator-1.0.jar</systemPath>
 
+          </dependency>
+        -->
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
         </dependency>
-      -->
 
-      <dependency>
-          <groupId>commons-io</groupId>
-          <artifactId>commons-io</artifactId>
-          <version>1.4</version>
-      </dependency>
+        <dependency>
+            <groupId>org.bsc.util</groupId>
+            <artifactId>minitemplator-repackaged</artifactId>
+        </dependency>
 
-      <dependency>
-          <groupId>org.bsc.util</groupId>
-          <artifactId>minitemplator-repackaged</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.32</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-          <groupId>com.beust</groupId>
-          <artifactId>jcommander</artifactId>
-          <version>1.32</version>
-          <type>jar</type>
-          <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.pegdown</groupId>
+            <artifactId>pegdown</artifactId>
+        </dependency>
 
-      <dependency>
-          <groupId>org.pegdown</groupId>
-          <artifactId>pegdown</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxjava</artifactId>
+        </dependency>
 
-      <dependency>
-      <groupId>io.reactivex</groupId>
-      <artifactId>rxjava</artifactId>
-    </dependency>
-
-  </dependencies>
-
-
-  <build>
-
-    <plugins>
-
-      <!-- Separates the unit tests from the integration tests. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-           <skip>true</skip>
-           <trimStackTrace>false</trimStackTrace>
-        </configuration>
-        <executions>
-           <!-- mvn surefire:test@utests -->
-           <execution>
-              <id>utests</id>
-              <phase>test</phase>
-              <goals>
-                 <goal>test</goal>
-              </goals>
-              <configuration>
-                 <skip>false</skip>
-                 <excludes>
-                    <exclude>**/*IntegrationTest.java</exclude>
-                </excludes>
-                 <includes>
-                    <include>**/*Test.java</include>
-                 </includes>
-              </configuration>
-           </execution>
-        </executions>
-
-      </plugin>
-
-    </plugins>
-
-  </build>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.reactivex</groupId>
-        <artifactId>rxjava</artifactId>
-        <version>1.1.8</version>
-      </dependency>
     </dependencies>
-  </dependencyManagement>
 
-  <profiles>
-      <profile>
-          <id>itest</id>
-          <build>
-              <plugins>
-                <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>
-                     <skip>true</skip>
-                     <trimStackTrace>false</trimStackTrace>
-                  </configuration>
-                  <executions>
-                     <!-- mvn surefire:test@itests -->
-                     <execution>
-                          <id>itests</id>
-                          <phase>integration-test</phase>
-                          <goals>
-                             <goal>test</goal>
-                          </goals>
-                          <configuration>
-                             <skip>false</skip>
-                             <includes>
-                               <include>**/*IntegrationTest.java</include>
-                             </includes>
-                          </configuration>
-                       </execution>
 
-                  </executions>
+    <build>
 
-                </plugin>
+        <plugins>
 
-              </plugins>
-          </build>
-      </profile>
-  </profiles>
+            <!-- Separates the unit tests from the integration tests. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+                <executions>
+                    <!-- mvn surefire:test@utests -->
+                    <execution>
+                        <id>utests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <excludes>
+                                <exclude>**/*IntegrationTest.java</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
+            
+            <!--
+            ===================================
+            JAXB SCHEMA GENERATION
+
+            jaxb2:schemagen
+            ===================================
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <sources>
+                        <source>src/main/java/org/bsc/confluence/model/Site.java</source>
+                        <source>src/main/java/org/bsc/confluence/model/package-info.java</source>
+                    </sources>
+                    <outputDirectory>${project.build.directory}/schemas</outputDirectory>
+                    
+                    <!-- Post-processing 2: Transform the generated XML Schemas.-->
+                    <transformSchemas>
+                        <transformSchema>
+                            <uri>https://github.com/bsorrentino/maven-confluence-plugin</uri>
+                            <toPrefix>bsc</toPrefix>
+                            <toFile>site-schema-${project.version}.xsd</toFile>
+                        </transformSchema>  
+                    </transformSchemas>    
+          
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.reactivex</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>1.1.8</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>itest-core</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                            <trimStackTrace>false</trimStackTrace>
+                        </configuration>
+                        <executions>
+                            <!-- mvn surefire:test@itests -->
+                            <execution>
+                                <id>itests</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                    <includes>
+                                        <include>**/*IntegrationTest.java</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

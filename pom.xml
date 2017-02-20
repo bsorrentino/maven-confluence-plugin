@@ -4,7 +4,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>5.0-rc2</version>
+    <version>5.0-rc3</version>
     <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
     <description><![CDATA[
     Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
@@ -27,6 +27,8 @@
         <module>maven-confluence-core</module>
         <module>maven-confluence-reporting-plugin</module>
         <module>maven-confluence-test</module>
+        <module>maven-confluence-test/plugin-test</module>
+        <module>maven-confluence-itest</module>
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>

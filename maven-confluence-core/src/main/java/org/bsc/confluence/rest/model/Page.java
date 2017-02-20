@@ -10,7 +10,7 @@ import org.bsc.confluence.ConfluenceService.Model;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class Page implements Model.Page {
 

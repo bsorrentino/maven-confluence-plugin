@@ -7,6 +7,7 @@ package org.bsc.maven.confluence.plugin;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URISyntaxException;
+import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -119,7 +120,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                 final String msg = format("Error uploading attachment [%s] ", attachment.getName());
                 //getLog().error(msg);
                 throw new RuntimeException(msg,e);
-                
+
             }
 
         }
@@ -132,14 +133,13 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param parentPage
      * @param confluenceParentPage
-     * @param parentPageTitle
-     * @param titlePrefix 
+     * @param titlePrefix
      */
-    protected void generateChildren(    final ConfluenceService confluence, 
+    protected void generateChildren(    final ConfluenceService confluence,
                                         final Site.Page parentPage,
-                                        final Model.Page confluenceParentPage,  
-                                        final String parentPageTitle, 
-                                        final String titlePrefix) 
+                                        final Model.Page confluenceParentPage,
+                                        final String titlePrefix,
+                                        final Map<String, Model.Page> varsToParentPageMap)
     {
 
         getLog().info(format("generateChildren # [%d]", parentPage.getChildren().size()));
@@ -150,10 +150,14 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         for( Site.Page child : parentPage.getChildren() ) {
 
             final Model.Page confluencePage = generateChild(confluence, child, confluenceParentPage.getSpace(), parentPage.getName(), titlePrefix);
-            
+
+            for (Site.Page.Generated generated : child.getGenerateds()) {
+                varsToParentPageMap.put(generated.getRef(), confluencePage);
+            }
+
             if( confluencePage != null  ) {
 
-                generateChildren(confluence, child, confluencePage, child.getName(), titlePrefix );    
+                generateChildren(confluence, child, confluencePage, titlePrefix, varsToParentPageMap );
             }
             
         }

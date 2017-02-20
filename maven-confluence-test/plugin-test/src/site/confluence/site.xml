@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bsc:site
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
+    xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin site-schema-5.0.xsd'>
+
+    <home uri="index.confluence">
+        <child name="Summary"           uri="summary.confluence"/>
+        <child name="PluginsSummary"    uri="plugins-summary.confluence"/>
+    </home>
+
+
+</bsc:site>

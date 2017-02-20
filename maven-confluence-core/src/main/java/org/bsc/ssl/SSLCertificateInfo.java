@@ -13,7 +13,7 @@ import javax.net.ssl.X509TrustManager;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class SSLCertificateInfo {
         boolean ignore = false;

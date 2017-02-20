@@ -3,7 +3,7 @@
 
 From release 3.3.0 we can describe a complete site's layout using an xml file. Through site schema you can set root page (called home) its children's tree, add attachments and labels.
 
-Use it is pretty straightforward, put your **`site.xml`** in **`${basedir}/src/site/confluence`** folder and describe your preferred layout following the [site schema](https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-3.4.0.xsd).
+Use it is pretty straightforward, put your **`site.xml`** in **`${basedir}/src/site/confluence`** folder and describe your preferred layout following the [site schema](https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-5.0.xsd).
 
 ## Site template
 
@@ -16,7 +16,7 @@ To simplify understanding, below there is a simple site descriptor template
 <bsc:site
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
-    xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-3.4.0.xsd'>
+    xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-5.0.xsd'>
     <home name="" uri="">
 
         <attachment name="" uri="" comment="" contentType="" version=""></attachment>
@@ -78,6 +78,24 @@ To simplify understanding, below there is a simple site descriptor template
 
 > The content of label's tag is the label's value
 
+### generated
+> This tag has been added from version **5.0-rc3** and allows to choose where put the **built-in generated pages**
+> Currently only **plugin.goals** is supported therefore such tag is useful when we are dealing with **Maven Plugin Documentation**
+
+| Attribute| Description | mandatory |
+|:-------------|:----------------|:--------------|
+| ref | built-in generated pages Id. Currently only **plugin.goals** is supported | yes |
+
+#### Usage example
+> ```xml
+<home uri="index.confluence">
+    <child name="Summary" uri="summary.confluence"/>
+    <child name="Goals" uri="goals.confluence">
+        <generated ref="plugin.goals"/>
+    </child>
+    <child name="PluginsSummary" uri="plugins-summary.confluence"/>
+</home>
+```
 
 ## Example
 
@@ -88,7 +106,7 @@ The example below is the [site.xml](https://raw.githubusercontent.com/bsorrentin
 <bsc:site
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
-    xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-3.4.0.xsd'>
+    xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-5.0.xsd'>
 
     <home  uri="codehaus-home.confluence">
 

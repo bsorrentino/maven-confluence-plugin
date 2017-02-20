@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.core.IsNull.*;
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 //@Ignore
 public class SwizzleIntegrationTest {

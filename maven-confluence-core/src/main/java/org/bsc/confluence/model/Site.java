@@ -4,13 +4,13 @@
  */
 package org.bsc.confluence.model;
 
-import static com.sun.javafx.scene.CameraHelper.project;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import javax.xml.bind.annotation.*;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,16 +22,17 @@ import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 import rx.functions.Func2;
-//import org.slf4j.Logger;
+//import org.slf4j.Logger;  
 //import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
-@XmlRootElement( name="site", namespace = "https://github.com/bsorrentino/maven-confluence-plugin")
+@XmlRootElement( name="site", namespace = Site.NAMESPACE)
 public class Site {
 
+    public static final String NAMESPACE = "https://github.com/bsorrentino/maven-confluence-plugin";
     /**
      *
      */
@@ -77,17 +78,17 @@ public class Site {
        
         return new java.io.ByteArrayInputStream( ser.toString().getBytes() );
     }
-    
+
     /**
      *
      * @param uri
      * @return
      * @throws Exception
      */
-    public static <T> T processUri( 
-                                final java.net.URI uri, 
-                                final String homePageTitle, 
-                                final Func2<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception 
+    public static <T> T processUri(
+                                final java.net.URI uri,
+                                final String homePageTitle,
+                                final Func2<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception
     {
             if( uri == null ) {
                 throw new IllegalArgumentException( "uri is null!" );
@@ -108,7 +109,7 @@ public class Site {
             final boolean isStorage = (path !=null && (path.endsWith(".xml") || path.endsWith(".xhtml")));
 
             final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE : Storage.Representation.WIKI;
-            
+
             java.io.InputStream result = null;
 
             if ("classpath".equalsIgnoreCase(scheme)) {
@@ -158,6 +159,7 @@ public class Site {
     /**
      * class Source
      */
+    @XmlType(namespace = Site.NAMESPACE)
     protected static class Source {
 
         protected  transient final Site site;
@@ -219,6 +221,7 @@ public class Site {
     /**
      * class Attachment
      */
+    @XmlType(name="attachment", namespace = Site.NAMESPACE)
     public static class Attachment extends Source {
         public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
         public static final String DEFAULT_VERSION = "0";
@@ -290,6 +293,7 @@ public class Site {
     /**
      * class Page
      */
+    @XmlType(name="page", namespace = Site.NAMESPACE)
     public static class Page extends Source {
 
 
@@ -402,7 +406,73 @@ public class Site {
         public void setIgnoreVariables(boolean value) {
             this.ignoreVariables = value;
         }
-        
+
+
+        @XmlElement(name = "generated")
+        protected List<Generated> generateds;
+
+        /**
+         * Gets the value of the generateds property.
+         *
+         * <p>
+         * This accessor method returns a reference to the live list,
+         * not a snapshot. Therefore any modification you make to the
+         * returned list will be present inside the JAXB object.
+         * This is why there is not a <CODE>set</CODE> method for the generateds property.
+         *
+         * <p>
+         * For example, to add a new item, do as follows:
+         * <pre>
+         *    getGenerateds().add(newItem);
+         * </pre>
+         *
+         *
+         * <p>
+         * Objects of the following type(s) are allowed in the list
+         * {@link Generated }
+         *
+         *
+         */
+        public List<Page.Generated> getGenerateds() {
+            if (generateds == null) {
+                generateds = new ArrayList<Generated>();
+            }
+            return this.generateds;
+        }
+
+        @XmlAccessorType(XmlAccessType.FIELD)
+        @XmlType(name = "")
+        public static class Generated {
+
+            @XmlAttribute(name = "ref")
+            protected String ref;
+
+            /**
+             * Obtient la valeur de la propriété ref.
+             *
+             * @return
+             *     possible object is
+             *     {@link String }
+             *
+             */
+            public String getRef() {
+                return ref;
+            }
+
+            /**
+             * Définit la valeur de la propriété ref.
+             *
+             * @param value
+             *     allowed object is
+             *     {@link String }
+             *
+             */
+            public void setRef(String value) {
+                this.ref = value;
+            }
+
+        }
+
     }
 
     public Site() {

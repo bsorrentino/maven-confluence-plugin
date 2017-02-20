@@ -29,7 +29,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  *
- * @author softphone
+ * @author bsorrentino
  */
 public class PluginsRenderer extends AbstractMavenReportRenderer
     {
