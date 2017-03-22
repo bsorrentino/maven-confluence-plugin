@@ -42,7 +42,6 @@ class Confluence {
   constructor( config:BaseConfig, public servicePrefix:string = "confluence1." ) {
     config.path += '/rpc/xmlrpc';
     //let data = Object.assign( info, {path: '/rpc/xmlrpc'});
-    console.log( "==> PROTOCOL", config.protocol);
     this.client = ( config.protocol === "https:") ? 
         xmlrpc.createSecureClient(config) :
         xmlrpc.createClient(config);
