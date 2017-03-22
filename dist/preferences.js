@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Preferences = require("preferences");
 var prefs = new Preferences("org.bsc.test", {
     cycle: 0,

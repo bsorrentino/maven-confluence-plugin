@@ -1,11 +1,15 @@
 "use strict";
-var xmlrpc = require('xmlrpc');
+Object.defineProperty(exports, "__esModule", { value: true });
+var xmlrpc = require("xmlrpc");
 var Confluence = (function () {
     function Confluence(config, servicePrefix) {
         if (servicePrefix === void 0) { servicePrefix = "confluence1."; }
         this.servicePrefix = servicePrefix;
         config.path += '/rpc/xmlrpc';
-        this.client = xmlrpc.createClient(config);
+        console.log("==> PROTOCOL", config.protocol);
+        this.client = (config.protocol === "https:") ?
+            xmlrpc.createSecureClient(config) :
+            xmlrpc.createClient(config);
     }
     Confluence.prototype.login = function (user, password) {
         var _this = this;

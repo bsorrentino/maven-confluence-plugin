@@ -39,10 +39,13 @@ class Confluence {
   client:any;
   token:string; // auth token
 
-  constructor( config:{host:string, port:number, path:string}, public servicePrefix:string = "confluence1." ) {
+  constructor( config:BaseConfig, public servicePrefix:string = "confluence1." ) {
     config.path += '/rpc/xmlrpc';
     //let data = Object.assign( info, {path: '/rpc/xmlrpc'});
-    this.client = xmlrpc.createClient(config);
+    console.log( "==> PROTOCOL", config.protocol);
+    this.client = ( config.protocol === "https:") ? 
+        xmlrpc.createSecureClient(config) :
+        xmlrpc.createClient(config);
   }
 
   login( user:string, password:string ):Promise<string> {
@@ -134,7 +137,7 @@ class Confluence {
 
 export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
-  static  create( config:{host:string, port:number, path:string}, credentials:Credentials /*, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo*/ ):Promise<XMLRPCConfluenceService> {
+  static  create( config:BaseConfig, credentials:Credentials /*, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo*/ ):Promise<XMLRPCConfluenceService> {
       if( config == null ) throw "config argument is null!";
       if( credentials == null ) throw "credentials argument is null!";
       

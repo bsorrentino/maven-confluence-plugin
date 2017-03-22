@@ -16,6 +16,18 @@ function markdownTest() {
 
 }
 
+function readme2confluenceTest() {
+
+    let file = path.join( process.cwd(), "README.md" );
+
+    console.log( "start test ", file );
+    fs.readFile( file, (err, buff)=> {
+
+        console.log( markdown2wiki( buff ) );
+
+    })
+
+}
 
 function xmlParse() {
     let parser = new xml.Parser();
@@ -31,4 +43,6 @@ function xmlParse() {
     })
 }
 
-xmlParse();
+//markdownTest()
+//xmlParse();
+readme2confluenceTest();
