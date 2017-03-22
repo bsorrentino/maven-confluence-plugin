@@ -6,7 +6,6 @@ var Confluence = (function () {
         if (servicePrefix === void 0) { servicePrefix = "confluence1."; }
         this.servicePrefix = servicePrefix;
         config.path += '/rpc/xmlrpc';
-        console.log("==> PROTOCOL", config.protocol);
         this.client = (config.protocol === "https:") ?
             xmlrpc.createSecureClient(config) :
             xmlrpc.createClient(config);

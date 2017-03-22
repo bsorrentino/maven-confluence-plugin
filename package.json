@@ -1,6 +1,6 @@
 {
   "name": "confluence-site",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Command Line Interface (CLI) to manage a Confluence's Site. ",
   "bin": "./main.js",
   "main": "main.js",
