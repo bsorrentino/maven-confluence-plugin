@@ -1,5 +1,6 @@
 "use strict";
-var traverse = require('traverse');
+Object.defineProperty(exports, "__esModule", { value: true });
+var traverse = require("traverse");
 var Rx = require("rx");
 function removeSingleArrays(obj, filter) {
     traverse(obj).forEach(function traversing(value) {

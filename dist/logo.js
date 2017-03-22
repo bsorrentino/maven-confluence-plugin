@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Rx = require("rx");
 var figlet = require('figlet');
 var rxFonts = Rx.Observable.fromNodeCallback(figlet.fonts);

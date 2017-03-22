@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var markdown = require("marked");
 var WikiRenderer = (function () {
     function WikiRenderer() {

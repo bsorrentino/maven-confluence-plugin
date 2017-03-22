@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var confluence_xmlrpc_1 = require("./confluence-xmlrpc");
 var confluence_site_1 = require("./confluence-site");
 var config_1 = require("./config");

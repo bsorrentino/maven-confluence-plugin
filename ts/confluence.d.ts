@@ -3,11 +3,17 @@ declare const enum Representation {
   STORAGE=0 , WIKI=1
 }
 
-interface Config {
-  protocol:string, //"http"|"https",
+type ServiceProtocol = "http:"|"https:";
+
+interface BaseConfig {
+  protocol:string, // ServiceProtocol
   host:string,
   port:number,
   path:string,
+
+}
+
+interface Config extends BaseConfig {
   spaceId:string,
   parentPageTitle:string,
   sitePath:string,

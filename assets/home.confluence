@@ -1,0 +1,93 @@
+
+{code:}
+ __   __        ___            ___       __   ___     __    ___  ___ 
+/  ` /  \ |\ | |__  |    |  | |__  |\ | /  ` |__     /__` |  |  |__  
+\__, \__/ | \| |    |___ \__/ |___ | \| \__, |___    .__/ |  |  |___
+{code}
+
+h2. Description
+
+A CLI (_Command Line Interface_) to manage a Confluence&#39;s Site. 
+
+This project should be considered as *[NodeJS|https://nodejs.org/]* version of the [confluence maven plugin|https://github.com/bsorrentino/maven-confluence-plugin] developed using [reactive javascript extension|https://github.com/Reactive-Extensions/RxJS]
+
+The Site is described using a [Site descriptor|http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html] that is compatible with the one used by [confluence maven plugin|https://github.com/bsorrentino/maven-confluence-plugin]
+
+h3. Supported Formats
+
+||format||usage note
+|   *[Confluence wiki|http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html]*|use {{.wiki}} or {{.confluence}} extension|
+|  *Markdown* (throught package [marked|https://www.npmjs.com/package/marked])|use {{.md}} extension|
+
+h3. Notes
+
+{quote}Currently only *xmlrpc* protocol is supported (_REST coming soon_)
+
+{quote}h2. Install
+
+{code:}
+npm install confluence-site -g
+{code}
+
+h2. Usage
+
+{code:}
+Usage: confluence-site 
+
+init --serverid <serverid>    // create/update configuration
+
+deploy [--config]        // deploy site to confluence
+
+delete                // delete site
+
+info                // show configuration
+
+Options:
+
+ --serverid     // it is the credentials' profile.
+ --config    // force reconfiguration
+{code}
+
+h2. Commands
+
+h3. init
+
+Initilaize (create/update) the configuration. The configuration is stored into file {{./config.json}}
+
+||key||description
+|serverId|It is the credentials&#39; profile. Provided from command line option {{--serverid}}|
+|protocol|`http|https`. This information is deducted from url|
+|host|host name or ip address. This information is deducted from url|
+|port|port number. This information is deducted from url|
+|path|url path. This information is deducted from url|
+|spaceId|Confluence target _space identifier_|
+|parentPageTitle|Confluence container page|
+|sitePath|Path where the _site descriptor_ is located. By default is {{./site.xml}}|
+
+{quote}Credentials are stored into a separate crypted file (see [preferences|https://www.npmjs.com/package/preferences]) indentified by *serverId* 
+
+{quote}h3. deploy
+
+Deploy pages defined into *site descriptor* directly in confluence 
+
+h3. delete
+
+Delete pages tree startig from _home_ defined into *site descriptor*
+
+h3. info
+
+Show current configuration
+
+{quote}Example
+
+{code:}
+site path:        site.xml
+confluence url:        http://localhost:8080/
+confluence space id:    MySpace
+confluence parent page:    Home
+serverid:        test
+confluence username:    admin
+confluence password:    *****
+{code}
+
+{quote}

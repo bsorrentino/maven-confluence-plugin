@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var xml = require("xml2js");
 var filesystem = require("fs");
 var path = require("path");
