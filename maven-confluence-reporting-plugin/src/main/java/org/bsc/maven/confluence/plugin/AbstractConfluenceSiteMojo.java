@@ -80,51 +80,83 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         getLog().info(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
 
         for( Site.Attachment attachment : page.getAttachments() ) {
+            final File attachmentFile = new File(attachment.getUri());
 
-            Model.Attachment confluenceAttachment = null;
+            if (attachmentFile.isDirectory()) {
+                File[] files = attachmentFile.listFiles();
 
-            try {
-                confluenceAttachment = confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion());
-            } catch (Exception e) {
-                getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
-            }
-
-            if (confluenceAttachment != null) {
-
-                java.util.Date date = confluenceAttachment.getCreated();
-
-                if (date == null) {
-                    getLog().warn(format("creation date of attachments [%s] is undefined. It will be replaced! ", confluenceAttachment.getFileName()));
-                } else {
-                    if (attachment.hasBeenUpdatedFrom(date)) {
-                        getLog().info(format("attachment [%s] is more recent than the remote one. It will be replaced! ", confluenceAttachment.getFileName()));
-                    } else {
-                        getLog().info(format("attachment [%s] skipped! no updated detected", confluenceAttachment.getFileName()));
-                        continue;
-
-                    }
+                if (files == null) {
+                    final String msg = format("Attachment directory is empty [%s] ", attachment.getUri());
+                    throw new RuntimeException(msg);
                 }
+
+                for (File file : files) {
+                    Site.Attachment fileAttachment = new Site.Attachment();
+
+                    fileAttachment.setName(file.getName());
+                    fileAttachment.setUri(file.toURI());
+
+                    fileAttachment.setComment(attachment.getComment());
+                    fileAttachment.setVersion(attachment.getVersion());
+
+                    generateAttachment(confluence, confluencePage, fileAttachment);
+                }
+
             } else {
-                getLog().info(format("Creating new attachment for [%s]", attachment.getName()));
-                confluenceAttachment = confluence.createAttachment();
-                confluenceAttachment.setFileName(attachment.getName());
-                confluenceAttachment.setContentType(attachment.getContentType());
-
+                generateAttachment(confluence, confluencePage, attachment);
             }
+        }
+    }
 
-            confluenceAttachment.setComment( attachment.getComment());
-            
-            try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
-                confluence.addAttchment(confluencePage, confluenceAttachment, is );
-            } catch (Exception e) {
-                final String msg = format("Error uploading attachment [%s] ", attachment.getName());
-                //getLog().error(msg);
-                throw new RuntimeException(msg,e);
+    /**
+     *
+     * @param confluence
+     * @param confluencePage
+     * @param attachment
+     */
+    private void generateAttachment(ConfluenceService confluence, Model.Page confluencePage, Site.Attachment attachment) {
+        getLog().info(format("generateAttachment pageId [%s] title [%s] file [%s]", confluencePage.getId(), confluencePage.getTitle(), attachment.getUri()));
 
-            }
+        Model.Attachment confluenceAttachment = null;
 
+        try {
+            confluenceAttachment = confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion());
+        } catch (Exception e) {
+            getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
         }
 
+        if (confluenceAttachment != null) {
+            java.util.Date date = confluenceAttachment.getCreated();
+
+            if (date == null) {
+                getLog().warn(format("creation date of attachments [%s] is undefined. It will be replaced! ", confluenceAttachment.getFileName()));
+            } else {
+                if (attachment.hasBeenUpdatedFrom(date)) {
+                    getLog().info(format("attachment [%s] is more recent than the remote one. It will be replaced! ", confluenceAttachment.getFileName()));
+                } else {
+                    getLog().info(format("attachment [%s] skipped! no updated detected", confluenceAttachment.getFileName()));
+                    return;
+                }
+            }
+
+        } else {
+            getLog().info(format("Creating new attachment for [%s]", attachment.getName()));
+            confluenceAttachment = confluence.createAttachment();
+            confluenceAttachment.setFileName(attachment.getName());
+            confluenceAttachment.setContentType(attachment.getContentType());
+        }
+
+        confluenceAttachment.setComment( attachment.getComment());
+
+        try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
+            confluence.addAttchment(confluencePage, confluenceAttachment, is );
+
+        } catch (Exception e) {
+            final String msg = format("Error uploading attachment [%s] ", attachment.getName());
+            //getLog().error(msg);
+            throw new RuntimeException(msg,e);
+
+        }
     }
     
     
