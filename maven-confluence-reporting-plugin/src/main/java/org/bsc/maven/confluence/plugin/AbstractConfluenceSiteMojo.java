@@ -6,6 +6,7 @@ package org.bsc.maven.confluence.plugin;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 import javax.xml.bind.JAXBContext;
@@ -18,6 +19,11 @@ import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 
 import static java.lang.String.format;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -69,6 +75,26 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
     }
     
+    private DirectoryStream<Path> newDirectoryStream( Path attachmentPath, Site.Attachment attachment ) throws IOException {
+        
+        if( StringUtils.isNotBlank(attachment.getName())) {
+            return Files.newDirectoryStream(attachmentPath, attachment.getName());
+        }
+
+        final DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {             
+           @Override
+           public boolean accept(Path entry) throws IOException {
+
+               return !(   Files.isDirectory(entry)     || 
+                           Files.isHidden(entry)        || 
+                           Files.isSymbolicLink(entry)  ||
+                           (!Files.isReadable(entry))
+                       );
+           }                
+       };
+       return Files.newDirectoryStream(attachmentPath, filter );
+    }
+    
     /**
      * 
      * @param page
@@ -80,30 +106,36 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         getLog().info(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
 
         for( final Site.Attachment attachment : page.getAttachments() ) {
-            final File attachmentFile = new File(attachment.getUri());
 
-            if (attachmentFile.isDirectory()) {
-                attachmentFile.listFiles( new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
+            final Path attachmentPath = Paths.get(attachment.getUri());
+            
+            if( !Files.isDirectory(attachmentPath) ) {
+                generateAttachment(confluence, confluencePage, attachment);            
+            }
+            else {    
+                try( final DirectoryStream<Path> dirStream = newDirectoryStream(attachmentPath, attachment) ) {
+                    
+                    for( Path p : dirStream ) {
                         
                         final Site.Attachment fileAttachment = new Site.Attachment();
-
-                        fileAttachment.setName(file.getName());
-                        fileAttachment.setUri(file.toURI());
+                        
+                        fileAttachment.setName(p.getFileName().toString());
+                        fileAttachment.setUri(p.toUri());
 
                         fileAttachment.setComment(attachment.getComment());
                         fileAttachment.setVersion(attachment.getVersion());
 
+                        if( StringUtils.isNotEmpty(attachment.getContentType()) ) {
+                            fileAttachment.setContentType(attachment.getContentType());
+                        }
+                        
                         generateAttachment(confluence, confluencePage, fileAttachment);
-
-                        return false;
+                        
                     }
-                });
-
-
-            } else {
-                generateAttachment(confluence, confluencePage, attachment);
+                    
+                } catch (IOException ex) {
+                    getLog().warn(format( "error reading directory [%s]", attachmentPath), ex);
+                }
             }
         }
     }
