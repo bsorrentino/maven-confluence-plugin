@@ -79,8 +79,8 @@ To simplify understanding, below there is a simple site descriptor template
 from version `5.0-rc4` the tag `attachment` support also the file inclusion from directory
 
 **Example**
-```xml
 
+```xml
 <!-- include all png files from myfolder -->
 <attachment
   name="*.png"
