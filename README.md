@@ -21,7 +21,7 @@ Apr 20,2017  | **Release 5.0-rc4** | available from  **[MAVEN CENTRAL REPO](http
 
  * Refer to [Pull Request 137](https://github.com/bsorrentino/maven-confluence-plugin/pull/137) - Allow for attachments to include all files in a directory
 
- Refer to tag `attachment` at [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition) 
+Take a look to tag `attachment` at [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition) 
 
  > Thanks to [jprafael](https://github.com/jprafael) for providing such feature
 
