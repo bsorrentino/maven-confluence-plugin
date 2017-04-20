@@ -66,13 +66,37 @@ To simplify understanding, below there is a simple site descriptor template
 
 ### attachment
 
-| Attribute| Description | mandatory |
-|:-------------|:----------------|:--------------|
-| uri | Content's source | no |
-| name | Name of attachment | no (if uri is defined)|
-| comment |  | no |
-| contentType |  | yes |
-| version | | no |
+ Attribute| Description | mandatory
+ ---- | ----- | ----
+ uri | Content's source or a **directory** | no
+ name | Name of attachment or a [glob pattern]( https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String) ) | no (if uri is defined)
+ comment |  | no
+ contentType |  | yes
+ version | | no
+
+#### Directory support
+
+from version `5.0-rc4` the tag `attachment` support also the file inclusion from directory
+
+**Example**
+
+```xml
+<!-- include all png files from myfolder -->
+<attachment
+  name="*.png"
+  uri="myfolder"
+  comment="file from myfolder"
+  contentType="image/png"
+  version="1"/>
+
+<!-- include all files from myfolder -->
+<attachment  
+  uri="myfolder"
+  comment="file from myfolder"  
+  version="1"/>
+
+```
+
 
 ### label
 
