@@ -16,12 +16,15 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+- | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+---- | ---- | ---- |
+
 Apr 20,2017  | **Release 5.0-rc4** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc4%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
  * Refer to [Pull Request 137](https://github.com/bsorrentino/maven-confluence-plugin/pull/137) - Allow for attachments to include all files in a directory
 
- Refer to tag `attachment` at [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition) 
+ Refer to tag `attachment` at [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition)
 
  > Thanks to [jprafael](https://github.com/jprafael) for providing such feature
 
