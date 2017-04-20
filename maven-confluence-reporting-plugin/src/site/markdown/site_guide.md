@@ -69,7 +69,7 @@ To simplify understanding, below there is a simple site descriptor template
  Attribute| Description | mandatory
  ---- | ----- | ----
  uri | Content's source or a **directory** | no
- name | Name of attachment or a [glob pattern](https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)) | no (if uri is defined)
+ name | Name of attachment or a [glob pattern]( https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String) ) | no (if uri is defined)
  comment |  | no
  contentType |  | yes
  version | | no
