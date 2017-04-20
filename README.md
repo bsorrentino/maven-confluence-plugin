@@ -16,18 +16,24 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
-- | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+Apr 20,2017  | **Release 5.0-rc4** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc4%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
+
+ * Refer to [Pull Request 137](https://github.com/bsorrentino/maven-confluence-plugin/pull/137) - Allow for attachments to include all files in a directory
+
+ Refer to tag `attachment` at [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition) 
+
+ > Thanks to [jprafael](https://github.com/jprafael) for providing such feature
 
 
 Feb 20,2017  | **Release 5.0-rc3** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc3%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
  * Refer to [Pull Request 135](https://github.com/bsorrentino/maven-confluence-plugin/pull/135) - Plugins goals as child - Solves the [issue 118](https://github.com/bsorrentino/maven-confluence-plugin/issues/118)
- 
+
  With this new feature the **XML Site Schema** has been changed. So we have to move from schema **site-schema-3.4.0.xsd** to **site-schema-5.0.xsd** (see [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition) )
 
- > Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature 
+ > Thanks to [wattazoum](https://github.com/wattazoum) for providing such feature
 
 Feb 11,2017  | **confluence-site** has been released | available from  **[NPM](https://www.npmjs.com/package/confluence-site)**  |
 ---- | ---- | ---- |
@@ -37,12 +43,6 @@ Feb 11,2017  | **confluence-site** has been released | available from  **[NPM](h
 This project should be considered as **[NodeJS](https://nodejs.org/)** version of the **confluence maven plugin** developed using [reactive javascript extension](https://github.com/Reactive-Extensions/RxJS)
 
 The Site is described using a [Site descriptor](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html) that is compatible with the one used by **confluence maven plugin**
-
-
-Jan 18,2017  | **Release 5.0-rc2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc2%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
- * Refer to [Issue 133](https://github.com/bsorrentino/maven-confluence-plugin/issues/133) - Storage Format - `error generating report: unexpected port: -1`
 
 Jan 18,2017  | **Release 5.0-rc2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc2%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
