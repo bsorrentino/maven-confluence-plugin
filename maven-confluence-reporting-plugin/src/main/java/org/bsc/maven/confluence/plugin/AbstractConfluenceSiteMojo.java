@@ -75,32 +75,32 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param confluencePage 
      */
-    private void generateAttachments( Site.Page page,  ConfluenceService confluence, Model.Page confluencePage) /*throws MavenReportException*/ {
+    private void generateAttachments( Site.Page page,  final ConfluenceService confluence, final Model.Page confluencePage) /*throws MavenReportException*/ {
 
         getLog().info(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
 
-        for( Site.Attachment attachment : page.getAttachments() ) {
+        for( final Site.Attachment attachment : page.getAttachments() ) {
             final File attachmentFile = new File(attachment.getUri());
 
             if (attachmentFile.isDirectory()) {
-                File[] files = attachmentFile.listFiles();
+                attachmentFile.listFiles( new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        
+                        final Site.Attachment fileAttachment = new Site.Attachment();
 
-                if (files == null) {
-                    final String msg = format("Attachment directory is empty [%s] ", attachment.getUri());
-                    throw new RuntimeException(msg);
-                }
+                        fileAttachment.setName(file.getName());
+                        fileAttachment.setUri(file.toURI());
 
-                for (File file : files) {
-                    Site.Attachment fileAttachment = new Site.Attachment();
+                        fileAttachment.setComment(attachment.getComment());
+                        fileAttachment.setVersion(attachment.getVersion());
 
-                    fileAttachment.setName(file.getName());
-                    fileAttachment.setUri(file.toURI());
+                        generateAttachment(confluence, confluencePage, fileAttachment);
 
-                    fileAttachment.setComment(attachment.getComment());
-                    fileAttachment.setVersion(attachment.getVersion());
+                        return false;
+                    }
+                });
 
-                    generateAttachment(confluence, confluencePage, fileAttachment);
-                }
 
             } else {
                 generateAttachment(confluence, confluencePage, attachment);
