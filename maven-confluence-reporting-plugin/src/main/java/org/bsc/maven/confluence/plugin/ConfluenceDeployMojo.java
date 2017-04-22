@@ -288,36 +288,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     }
 
-    protected String createProjectHome( final Site site, final Locale locale)  {
-
-        try {
-            
-            return Site.processUri(site.getHome().getUri(), this.getTitle(), new Func2<InputStream, Representation, String>() {
-                @Override
-                public String call(InputStream is, Representation r) {
-                    try {
-                        final MiniTemplator t = new MiniTemplator.Builder()
-                                .setSkipUndefinedVars(true)
-                                .build( is, getCharset() );
-
-                        generateProjectHomeTemplate( t, site, locale );
-
-                        return t.generateOutput();
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-
-            }) ;
-
-        } catch (RuntimeException re ) {
-            throw re;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
     protected void generateProjectHomeTemplate( final MiniTemplator t, final Site site, final Locale locale) throws MojoExecutionException {
         if( t == null ) {
             throw new IllegalArgumentException( "templator is null!");
@@ -503,7 +473,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     }
 
-    private void generateProjectReport( ConfluenceService confluence, Site site, Locale locale ) throws Exception {
+    private void generateProjectReport( final ConfluenceService confluence, final Site site, final Locale locale ) throws Exception {
 
         final Model.Page parentPage = loadParentPage(confluence);
 
@@ -525,11 +495,31 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         final String titlePrefix = title;
 
-        final String wiki = createProjectHome(site, locale);
+        final Model.Page confluenceHomePage = Site.processUri(  site.getHome().getUri(), 
+                                                                this.getTitle(), 
+                                                                new Func2<InputStream, Representation, Model.Page>() {
+            @Override
+            public Model.Page call(InputStream is, Representation r) {
+                try {
 
-        Model.Page confluenceHomePage = confluence.getOrCreatePage(parentPage.getSpace(), parentPage.getTitle(), title);
+                    final Model.Page page = 
+                            confluence.getOrCreatePage( parentPage.getSpace(), 
+                                                        parentPage.getTitle(), 
+                                                        title);
+                    final MiniTemplator t = new MiniTemplator.Builder()
+                            .setSkipUndefinedVars(true)
+                            .build( is, getCharset() );
 
-        confluenceHomePage = confluence.storePage(confluenceHomePage, new Storage(wiki, Representation.WIKI) );
+                    generateProjectHomeTemplate( t, site, locale );
+
+                    return confluence.storePage(page, new Storage(t.generateOutput(),r) ); 
+
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
+        }) ;
 
         for( String label : site.getHome().getComputedLabels() ) {
 
