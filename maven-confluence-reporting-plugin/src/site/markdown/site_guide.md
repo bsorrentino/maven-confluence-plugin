@@ -76,7 +76,7 @@ To simplify understanding, below there is a simple site descriptor template
 
 #### Directory support
 
-from version `5.0-rc4` the tag `attachment` support also the file inclusion from directory
+from version `5.0-rc4` the tag `attachment` supports also the file inclusion from directory
 
 **Example**
 

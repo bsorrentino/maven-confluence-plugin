@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0-rc4</version>
+        <version>5.0-rc5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -117,7 +117,8 @@
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
-                            <siteDescriptor>${basedir}/src/site/confluence/site5.xml</siteDescriptor>
+                            <!--siteDescriptor>${basedir}/src/site/confluence/site5.xml</siteDescriptor-->
+                            <siteDescriptor>${basedir}/src/site/confluence/site5-issue108.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
                             <serverId>confluence-local</serverId>
                         </configuration>

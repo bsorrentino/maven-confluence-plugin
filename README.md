@@ -16,12 +16,18 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+Apr 26,2017  | **Release 5.0-rc5** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc5%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+* Refer to [Issue 108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) - StorageFormat Support. **Reopened because 'Home page' doesn't render as StorageFormat**
+
+
 Apr 20,2017  | **Release 5.0-rc4** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc4%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
  * Refer to [Pull Request 137](https://github.com/bsorrentino/maven-confluence-plugin/pull/137) - Allow for attachments to include all files in a directory
 
-Take a look to tag `attachment` at [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition) 
+Take a look to tag `attachment` at [Use Site Definition](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Site-Definition)
 
  > Thanks to [jprafael](https://github.com/jprafael) for providing such feature
 
