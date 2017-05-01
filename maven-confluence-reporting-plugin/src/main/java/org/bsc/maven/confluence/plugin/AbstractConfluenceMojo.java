@@ -248,7 +248,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
         java.net.URI source = child.getUri(getFileExt());
 
-        getLog().info( String.format("generateChild spacekey=[%s] parentPageTtile=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
+        getLog().info( String.format("generateChild spacekey=[%s] parentPageTitle=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
 
         try {
 
