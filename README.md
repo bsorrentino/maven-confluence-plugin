@@ -19,10 +19,12 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 - | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
 ---- | ---- | ---- |
 
+ * Refer to [Issue 138](https://github.com/bsorrentino/maven-confluence-plugin/issues/138) - Incorrect line print in log for deploy goal
+
 Apr 26,2017  | **Release 5.0-rc5** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc5%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
-* Refer to [Issue 108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) - StorageFormat Support. **Reopened because 'Home page' doesn't render as StorageFormat**
+ * Refer to [Issue 108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) - StorageFormat Support. **Reopened because 'Home page' doesn't render as StorageFormat**
 
 
 Apr 20,2017  | **Release 5.0-rc4** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc4%7Cmaven-plugin)**  |
