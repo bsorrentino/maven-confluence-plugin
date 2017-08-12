@@ -115,6 +115,9 @@ public class ScmRenderer extends AbstractProjectInfoRenderer {
 
             return;
         }
+        
+        // fix issue #141
+        startSection( "Source Control Management");
 
         ScmRepository anonymousRepository = getScmRepository(anonymousConnection);
         ScmRepository devRepository = getScmRepository(devConnection);
@@ -136,6 +139,8 @@ public class ScmRenderer extends AbstractProjectInfoRenderer {
 
         // Access through a proxy section if needed
         renderAccessThroughProxySection(anonymousRepository, devRepository);
+        
+        endSection();
     }
 
     /**
