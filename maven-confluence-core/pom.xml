@@ -127,13 +127,20 @@
     <build>
 
         <plugins>
-
+           <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+ 
             <!-- Separates the unit tests from the integration tests. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
                 <executions>
@@ -145,15 +152,12 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <skip>false</skip>
                             <excludes>
                                 <exclude>**/*IntegrationTest.java</exclude>
                             </excludes>
-                            <includes>
-                                <include>**/*Test.java</include>
-                            </includes>
                         </configuration>
                     </execution>
+                    
                 </executions>
 
             </plugin>
@@ -187,6 +191,19 @@
           
                 </configuration>
             </plugin>
+      <plugin>
+        <groupId>net.orfjackal.retrolambda</groupId>
+        <artifactId>retrolambda-maven-plugin</artifactId>
+        <version>2.5.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process-main</goal>
+              <goal>process-test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
         </plugins>
 
@@ -204,38 +221,38 @@
 
     <profiles>
         <profile>
-            <id>itest-core</id>
+            <id>itest</id>
             <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
+            <plugins>    
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <!-- mvn surefire:test@itests -->
+                    <execution>
+                        <id>itests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
                         <configuration>
-                            <skip>true</skip>
-                            <trimStackTrace>false</trimStackTrace>
+                            <skip>false</skip>
+                            <includes>
+                                <include>**/*IntegrationTest.java</include>
+                            </includes>
                         </configuration>
-                        <executions>
-                            <!-- mvn surefire:test@itests -->
-                            <execution>
-                                <id>itests</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                                <configuration>
-                                    <skip>false</skip>
-                                    <includes>
-                                        <include>**/*IntegrationTest.java</include>
-                                    </includes>
-                                </configuration>
-                            </execution>
+                    </execution>
+                    
+                </executions>
 
-                        </executions>
-
-                    </plugin>
-
-                </plugins>
+            </plugin>
+            </plugins>    
             </build>
         </profile>
+        
     </profiles>
 </project>

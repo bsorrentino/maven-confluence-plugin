@@ -60,27 +60,6 @@ public class Issue106IntegrationTest {
     @Before
     public void open() {
          client = new OkHttpClient.Builder(); 
- 
-         /*
-         client.authenticator( new Authenticator() {
-             @Override
-             public Request authenticate(Route route, Response response) throws IOException {
-                System.out.println( "AUTHENTICATOR" );
-
-                if (responseCount(response) >= 3) {
-                    return null; // If we've failed 3 times, give up. - in real life, never give up!!
-                }
-                
-                final String credential = Credentials.basic("admin", "admin");
-                
-                return response.request()
-                                .newBuilder()
-                                .header("Authorization", credential)
-                                .build();
-                 
-             }
-         });
-         */
          
          client.connectTimeout(10, TimeUnit.SECONDS);
          client.writeTimeout(10, TimeUnit.SECONDS);

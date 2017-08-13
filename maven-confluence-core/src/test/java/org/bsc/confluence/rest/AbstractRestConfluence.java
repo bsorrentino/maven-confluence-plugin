@@ -20,6 +20,7 @@ import org.bsc.confluence.ConfluenceService.Model;
 import rx.functions.Action1;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
+import okhttp3.Response;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.Is;
@@ -31,7 +32,7 @@ import org.junit.Ignore;
  */
 public class AbstractRestConfluence {
     //private static final String URL = "http://192.168.99.100:8090/rest/api";
-    protected static String URL = "http://localhost:8090/rest/api";;
+    protected static String URL = "http://localhost:8090/";
     
     RESTConfluenceServiceImpl service;
     
@@ -71,7 +72,6 @@ public class AbstractRestConfluence {
             Observable.concat( service.rxfindPage(spaceKey, parentPageTitle), service.rxfindPage(spaceKey,title) )
             .buffer(2)
             .subscribe(test);
-            ;
 
             test.assertCompleted();
             test.assertValueCount(1);
@@ -165,6 +165,13 @@ public class AbstractRestConfluence {
         Assert.assertThat( p1, IsNull.notNullValue());
         Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
         Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
+        
+        
+        final Model.Page p11 = service.getPage( p1.getId() );
+        
+        Assert.assertThat( p11, IsNull.notNullValue());
+        Assert.assertThat( p11.getTitle(), IsEqual.equalTo(p1.getTitle()));
+        
         
     }
     

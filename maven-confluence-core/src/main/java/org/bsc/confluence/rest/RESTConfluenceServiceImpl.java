@@ -97,25 +97,9 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                     ; 
     }
     
-    private Observable<Response> rxfindPagesResponse( final String spaceKey, final String title ) {
-
-        final String credential = 
-                okhttp3.Credentials.basic(credentials.username, credentials.password);
-
+    private Observable<Response> fromRequest( final Request req ) {
         
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
-                                    .addQueryParameter("spaceKey", spaceKey)
-                                    .addQueryParameter("title", title)
-                                    .addQueryParameter("expand", "space,version,container")
-                                    .build();
-        final Request req = new Request.Builder()
-                .header("Authorization", credential)
-                .url( url )  
-                .get()
-                .build();
-
-        return rx.Observable.create( new Observable.OnSubscribe<Response>() {
+         return rx.Observable.create( new Observable.OnSubscribe<Response>() {
             @Override
             public void call(Subscriber<? super Response> t) {
 
@@ -132,66 +116,145 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
                 
             }
         });
+       
+    }
+    
+    private Observable<Response> fromUrl( final HttpUrl url ) {
+        final String credential = 
+                okhttp3.Credentials.basic(credentials.username, credentials.password);
+
+        final Request req = new Request.Builder()
+                .header("Authorization", credential)
+                .url( url )  
+                .get()
+                .build();
+        
+        return fromRequest(req);
+    }
+
+    private Observable<Response> rxfindContentById( final String id ) {
+
+        final HttpUrl url =  urlBuilder()
+                                    .addPathSegment("content")                
+                                    .addPathSegment(id)
+                                    .addQueryParameter("expand", "space,version,container")
+                                    .build();
+        
+        return fromUrl( url );
+    }
+
+    private Observable<Response> rxfindContent( final String spaceKey, final String title ) {
+
+        final HttpUrl url =  urlBuilder()
+                                    .addPathSegment("content")                
+                                    .addQueryParameter("spaceKey", spaceKey)
+                                    .addQueryParameter("title", title)
+                                    .addQueryParameter("expand", "space,version,container")
+                                    .build();
+        return fromUrl( url );
         
     }
     
-    public Observable<JsonArray> rxfindPagesArray( final String spaceKey, final String title ) {
+    private final Func1<Response, Observable<JsonObject>> mapToArray = new Func1<Response, Observable<JsonObject>>() {
+        @Override
+        public Observable<JsonObject> call(Response res) {
 
-        return rxfindPagesResponse(spaceKey, title)
-                .flatMap( new Func1<Response, Observable<? extends JsonArray>>() {
-                    @Override
-                    public Observable<? extends JsonArray> call(Response res) {
-                        
-                        final ResponseBody body = res.body();
+            final ResponseBody body = res.body();
 
-                        try (Reader r = body.charStream()) {
+            try (Reader r = body.charStream()) {
 
-                            final JsonReader rdr = Json.createReader(r);
+                final JsonReader rdr = Json.createReader(r);
 
-                            final JsonObject root = rdr.readObject();
+                final JsonObject root = rdr.readObject();
 
-                            // {"statusCode":404,"data":{"authorized":false,"valid":true,"errors":[],"successful":false,"notSuccessful":true},"message":"No space with key : TEST"}
-                            final JsonArray results = root.getJsonArray("results");
+                // {"statusCode":404,"data":{"authorized":false,"valid":true,"errors":[],"successful":false,"notSuccessful":true},"message":"No space with key : TEST"}
+                final JsonArray results = root.getJsonArray("results");
 
-                            //System.out.println( root.toString() );
-
-                            if( results == null ) {
-                                return Observable.empty();
-                            }
+                //System.out.println( root.toString() );
+                if (results == null || results.size() == 0) {
+                    return Observable.empty();
+                }
                             
-                            return  Observable.just(results);
+                JsonObject array[] = new JsonObject[ results.size() ];
+                for( int ii = 0 ; ii < results.size() ; ++ii )
+                    array[ii] = results.getJsonObject(ii);
+                
+                return Observable.from( array );
+ 
+            } catch (IOException ex) {
 
-
-                        } catch (IOException ex) {
-                            
-                            return Observable.error(ex);
-                        }
-                                    
+                return Observable.error(ex);
+            }
+        }
+    };
    
-                    }
-            
-        });
+    private  final Func1<Response, JsonObject> mapToObject =  new Func1<Response, JsonObject>() {
+        @Override
+        public JsonObject call(Response res) {
+            final ResponseBody body = res.body();
+
+            try (Reader r = body.charStream()) {
+
+                final JsonReader rdr = Json.createReader(r);
+
+                final JsonObject root = rdr.readObject();
+
+                return root;
+
+            } catch (IOException ex) {
+
+                throw new Error(ex);
+            }
+        }
+
+    };
+
+    public Observable<Response> rxChildrenPageById( final String id ) {
+
+        final HttpUrl url =  urlBuilder()
+                                    .addPathSegment("content")                
+                                    .addPathSegment(id)
+                                    .addPathSegments("child/page")                
+                                    .addQueryParameter("expand", "space,version,container")
+                                    .build();
+        return fromUrl( url );
+        
+    }
+
+    /**
+     * 
+     * @param spaceKey
+     * @param title
+     * @return 
+     */
+    public Observable<JsonObject> rxfindPages( final String spaceKey, final String title ) {
+
+        return rxfindContent(spaceKey, title)
+                .flatMap( mapToArray );
         
     }
     
+    /**
+     * 
+     * @param spaceKey
+     * @param title
+     * @return 
+     */
     public Observable<JsonObject> rxfindPage( final String spaceKey, final String title ) {
         
-        return rxfindPagesArray(spaceKey, title).flatMap(new Func1<JsonArray, Observable<? extends JsonObject>>() {
-            @Override
-            public Observable<? extends JsonObject> call(JsonArray t) {
-                
-                if(  t.size() == 1 ) {
-                    return Observable.just( t.getJsonObject(0) );
-                }
-                if( t.size() == 0 ) {
-                    return Observable.empty();
-                    
-                }
-                return Observable.error( new Exception( format("results contains more than one element [%d]", t.size()) ));
-            }
+        return rxfindContent(spaceKey, title)
+                .flatMap( mapToArray )
+                .take(1);
+    }
+    
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public Observable<JsonObject> rxfindPageById( final String id ) {
         
-            
-        });
+        return rxfindContentById(id).map( mapToObject );
     }
     
     public JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final String title  ) {
@@ -378,14 +441,29 @@ public class RESTConfluenceServiceImpl implements ConfluenceService {
         return new Page(result);
     }
 
+    /**
+     * 
+     * @param pageId
+     * @return
+     * @throws Exception 
+     */
     @Override
     public Model.Page getPage(String pageId) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        final JsonObject result = rxfindPageById(pageId)                                    
+                                    .toBlocking()
+                                    .first();
+        
+        return (result!=null) ? new Page(result) : null;
     }
 
     @Override
     public Model.Page getPage(String spaceKey, String pageTitle) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                
+        final JsonObject result = rxfindPage(spaceKey, pageTitle)                                    
+                     .toBlocking()
+                     .first();
+        return (result!=null) ? new Page(result) : null;
     }
 
     @Override

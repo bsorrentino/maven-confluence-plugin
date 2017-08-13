@@ -14,17 +14,23 @@ import org.bsc.ssl.YesTrustManager;
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
  * @author bsorrentino
  */
+@Ignore
 public class Issue130IntegrationTest extends AbstractRestConfluence {
     
     static {
         URL = "https://localhost:8443/rest/api";
     }
-    
+   
+    @Test @Ignore
+    public void dummy() {}
+
     @Before
     @Override
     public void initService() throws Exception {
