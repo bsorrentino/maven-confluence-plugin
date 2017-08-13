@@ -7,7 +7,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
-import org.bsc.functional.P1;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceServiceFactory;

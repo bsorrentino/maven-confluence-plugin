@@ -20,7 +20,6 @@ import org.bsc.confluence.ConfluenceService.Model;
 import rx.functions.Action1;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
-import okhttp3.Response;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.Is;
@@ -172,6 +171,38 @@ public class AbstractRestConfluence {
         Assert.assertThat( p11, IsNull.notNullValue());
         Assert.assertThat( p11.getTitle(), IsEqual.equalTo(p1.getTitle()));
         
+        final boolean addLabelResult = service.addLabelByName("label", Integer.parseInt(p1.getId()) );
+        
+        Assert.assertThat( addLabelResult, Is.is(true));
+        
+        Model.Attachment att = service.getAttachment(p1.getId(), "foto2.jpg", "");
+        
+        Model.Attachment result;
+        
+        if( att == null ) {
+        
+            att = service.createAttachment();
+        
+            att.setFileName( "foto2.jpg");
+            att.setContentType("image/jpg");
+            att.setComment("test image");
+        
+            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
+  
+            Assert.assertThat( result, IsNull.notNullValue());
+        }
+        else {
+            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
+        
+            Assert.assertThat( result, IsNull.notNullValue());
+            
+        }
+
+        final Model.Attachment att2 = 
+                service.getAttachment(p1.getId(), result.getFileName(), "");
+
+        Assert.assertThat( att2, IsNull.notNullValue());
+
         
     }
     

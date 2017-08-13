@@ -60,8 +60,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.Attachment addAttchment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
-            return xmlrpcService.addAttchment(page, attachment, source);
+        public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
+            return xmlrpcService.addAttachment(page, attachment, source);
         }
 
         @Override

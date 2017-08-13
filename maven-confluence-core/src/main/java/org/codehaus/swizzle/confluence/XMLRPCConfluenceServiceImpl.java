@@ -183,7 +183,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public Model.Attachment addAttchment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
+    public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
         final Page p = cast(page);
         
         if( p.getId() == null ) {

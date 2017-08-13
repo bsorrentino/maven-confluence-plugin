@@ -86,7 +86,7 @@ public class SwizzleIntegrationTest {
         Assert.assertThat( page, notNullValue() );
         Assert.assertThat( page.getId(), notNullValue() );
         
-        confluence.addAttchment(page, a, is);
+        confluence.addAttachment(page, a, is);
 
     }
 
