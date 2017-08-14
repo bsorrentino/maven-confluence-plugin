@@ -331,10 +331,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
                             File outputFile) throws Exception 
     {
             final ConfluenceExportDecorator exporter = 
-                new ConfluenceExportDecorator(  connection, 
-                                                url, 
-                                                credentials.username, 
-                                                credentials.password);
+                new ConfluenceExportDecorator( this, url );
 
             exporter.exportPage(spaceKey, 
                                 pageTitle, 

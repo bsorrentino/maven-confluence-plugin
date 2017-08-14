@@ -22,6 +22,8 @@ import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
 import org.bsc.confluence.rest.model.Attachment;
 import org.bsc.ssl.SSLCertificateInfo;
+import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
+
 import rx.functions.Action1;
 
 /**
@@ -248,8 +250,20 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void exportPage(	String url, 
+    							String spaceKey, 
+    							String pageTitle, 
+    							ExportFormat exfmt, 
+    							File outputFile) throws Exception 
+    {
+
+		final ConfluenceExportDecorator exporter = 
+				new ConfluenceExportDecorator( this, url );
+		
+		exporter.exportPage(spaceKey, 
+		                    pageTitle, 
+		                    exfmt, 
+		                    outputFile);
     }
 
     @Override

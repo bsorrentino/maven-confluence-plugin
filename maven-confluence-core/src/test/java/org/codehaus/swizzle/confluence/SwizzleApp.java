@@ -60,11 +60,12 @@ public class SwizzleApp {
                     proxyInfo, sslInfo);
 
         ConfluenceExportDecorator exporter = 
-                new ConfluenceExportDecorator(  confluence.connection, 
-                                                app.url, 
-                                                app.username, 
-                                                app.password);
-        exporter.exportPage(app.space, app.page, ExportFormat.DOC, new java.io.File("target", app.page.concat(".pdf")));
+                new ConfluenceExportDecorator(confluence, app.url);
+        
+        exporter.exportPage(	app.space, 
+        						app.page, 
+        						ExportFormat.DOC, 
+        						new java.io.File("target", app.page.concat(".pdf")));
       
     }
     
