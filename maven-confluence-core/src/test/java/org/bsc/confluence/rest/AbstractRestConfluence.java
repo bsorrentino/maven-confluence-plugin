@@ -46,7 +46,7 @@ public class AbstractRestConfluence {
     
     @Test @Ignore
     public void dummy() {}
-    
+
     @Test @Ignore
     public void getOrCreatePage() throws Exception  {
         
@@ -81,7 +81,7 @@ public class AbstractRestConfluence {
             final String parentPageTitle0 = "NOTEXISTS";
             
             final Exception ex = new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle0));
-            final Observable error =  Observable.error(ex);
+            final Observable<JsonObject> error =  Observable.error(ex);
             
             TestSubscriber<JsonObject> test = new TestSubscriber<>();
             
@@ -97,22 +97,15 @@ public class AbstractRestConfluence {
         {
             final String title0 = "MyPage";
             
-            final Observable error =  Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
+            final Observable<JsonObject> error =  
+            		Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
             
             TestSubscriber<JsonObject> test = new TestSubscriber<>();
             
             service.rxfindPage(spaceKey, parentPageTitle)
                     .switchIfEmpty( error )
-                    .doOnNext( new Action1<JsonObject>() {
-                        @Override
-                        public void call(JsonObject t) {
-                            System.out.printf( "Parent Id: [%s]\n", t.getString("id"));
-                        }                        
-                    })
-                    .flatMap(new Func1<JsonObject, Observable<JsonObject>>() {
-                          @Override
-                          public Observable<JsonObject> call(JsonObject parent) {
-                            
+                    .doOnNext( (t) -> System.out.printf( "Parent Id: [%s]\n", t.getString("id")) )
+                    .flatMap( (parent) -> {
                             final String id = parent.getString("id");
                             final JsonObjectBuilder input = service.jsonForCreatingPage(spaceKey, Integer.valueOf(id), title0);
                             
@@ -120,7 +113,6 @@ public class AbstractRestConfluence {
                             
                             return service.rxfindPage(spaceKey,title0)                                    
                                     .switchIfEmpty( service.rxCreatePage( input.build() ));
-                          }
                      })
                     .subscribe(test)
                     ;

@@ -34,10 +34,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     final Credentials credentials;
     
     final java.net.URL endpoint ;
-    
-    private static final String EXPAND = "space,version,container";
-     
-   
+        
     /**
      * 
      * @param url
@@ -257,7 +254,10 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
 
     @Override
     public void call(Action1<ConfluenceService> task) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    		if (task == null)
+				throw new java.lang.IllegalArgumentException("task is null!");
+
+    		task.call(this);
     }
 
     @Override
@@ -281,20 +281,19 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         return rxAddAttachment(page.getId(), (Attachment)attachment, source)
                 .map( att -> new Attachment(att) )
                 .toBlocking()
-                .first();
+                .firstOrDefault(null);
     }
     
     @Override
     public boolean removePage(Model.Page parentPage, String title) throws Exception {
         
-        rxChildrenPages(parentPage.getId())
+        return rxChildrenPages(parentPage.getId())
                 .map( page -> new Page(page))
                 .first( page -> page.getTitle().equals(title) )
                 .flatMap( (page) -> rxDeletePageById(page.getId()))
+                .map( res -> true)
                 .toBlocking()
-                .first();
-        
-        return true;
+                .firstOrDefault(false);
         
     }
 
@@ -307,5 +306,6 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         
     }
 
+    
 
 }

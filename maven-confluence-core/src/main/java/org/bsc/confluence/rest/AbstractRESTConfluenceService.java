@@ -40,7 +40,8 @@ public abstract class AbstractRESTConfluenceService {
     
     protected abstract HttpUrl.Builder urlBuilder();
 
-    public static class ServiceException extends Exception {
+    @SuppressWarnings("serial")
+	public static class ServiceException extends Exception {
         public final Response res;
 
         public ServiceException(String message, Response res ) {
@@ -233,8 +234,7 @@ public abstract class AbstractRESTConfluenceService {
      */
     public Observable<JsonObject> rxfindPage( final String spaceKey, final String title ) {
         
-        return rxfindPages(spaceKey, title)
-                .take(1);
+        return rxfindPages(spaceKey, title).take(1);
     }
     
     protected Observable<Response> rxDeletePageById( final String id ) {
@@ -343,7 +343,6 @@ public abstract class AbstractRESTConfluenceService {
         
         return fromUrlGET( url, "get attachment" )
                 .flatMap( this::mapToArray )
-                //.firstOrDefault( null )
                 ;
         
     }
@@ -376,21 +375,20 @@ public abstract class AbstractRESTConfluenceService {
         }
  
         final Observable<Response> post =  fromUrlPOST(builder.build(), inputBody, "create attachment")
+        		/*
                 .onErrorResumeNext((ex) -> {
-                    
                     if( ex instanceof ServiceException ) {
                         final ServiceException rex = (ServiceException)ex;
-                        
-                    }
-                    
+                      
+                    }                    
                     return Observable.error(ex);
                 });
-        
+        		*/
+        		;
         return (att.getId() != null) ? 
                 post.map( this::mapToObject ) : 
                 post.flatMap( this::mapToArray )
                 ;
         
     }
-
 }
