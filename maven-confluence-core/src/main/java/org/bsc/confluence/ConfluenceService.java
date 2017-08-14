@@ -182,7 +182,7 @@ public interface ConfluenceService {
     
     Model.Attachment getAttachment( String pageId, String name, String version) throws Exception;
     
-    Model.Attachment addAttchment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) throws Exception ;
+    Model.Attachment addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) throws Exception ;
 
     
 }

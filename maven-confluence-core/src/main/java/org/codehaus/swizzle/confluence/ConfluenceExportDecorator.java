@@ -6,17 +6,21 @@
 
 package org.codehaus.swizzle.confluence;
 
-import org.bsc.confluence.ExportFormat;
+import static org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY;
+
 import java.io.IOException;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
-import static org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ExportFormat;
 
 /**
  *
@@ -29,10 +33,8 @@ public class ConfluenceExportDecorator {
             
     }
     
-    final Confluence confluence;
+    final ConfluenceService confluence;
     final String url;
-    final String username;
-    final String password;
     
     /**
      * 
@@ -41,32 +43,20 @@ public class ConfluenceExportDecorator {
      * @param username
      * @param password 
      */
-    public ConfluenceExportDecorator(   Confluence confluence, 
-                                        String url, 
-                                        String username, 
-                                        String password) 
+    public ConfluenceExportDecorator(   ConfluenceService confluence, 
+                                        String url ) 
     {
         assert url!= null;
         assert confluence!= null;
-        assert username!= null;
-        assert password!= null;
         
         if( confluence == null ) {
             throw new IllegalArgumentException("confluence is null!");
-        }
-        if( username == null ) {
-            throw new IllegalArgumentException("username is null!");
-        }
-        if( password == null ) {
-            throw new IllegalArgumentException("password is null!");
         }
         if( url == null ) {
             throw new IllegalArgumentException("url is null!");
         }
         
         this.confluence = confluence;
-        this.username = username;
-        this.password = password;
         this.url = url;
     }
     
@@ -100,7 +90,7 @@ public class ConfluenceExportDecorator {
             throw new IllegalArgumentException("outputFile is not a file!");
         }
         
-        final Page page = confluence.getPage(space, pageTitle);
+        final Model.Page page = confluence.getPage(space, pageTitle);
 
         final HttpClient client = new HttpClient();
         client.getParams().setCookiePolicy( CookiePolicy.BROWSER_COMPATIBILITY);
@@ -138,8 +128,8 @@ public class ConfluenceExportDecorator {
             post = new PostMethod(login);
             
             post.setDoAuthentication(true);
-            post.addParameter("os_username", username);
-            post.addParameter("os_password", password);
+            post.addParameter("os_username", confluence.getCredentials().username);
+            post.addParameter("os_password", confluence.getCredentials().password);
             post.addParameter("os_destination", redirectUrl);
             post.addParameter("login", "Log+In");
  

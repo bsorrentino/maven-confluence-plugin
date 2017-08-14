@@ -20,7 +20,6 @@ import org.bsc.confluence.ConfluenceService.Model;
 import rx.functions.Action1;
 import javax.json.JsonObjectBuilder;
 import static java.lang.String.format;
-import okhttp3.Response;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.Is;
@@ -47,7 +46,7 @@ public class AbstractRestConfluence {
     
     @Test @Ignore
     public void dummy() {}
-    
+
     @Test @Ignore
     public void getOrCreatePage() throws Exception  {
         
@@ -82,7 +81,7 @@ public class AbstractRestConfluence {
             final String parentPageTitle0 = "NOTEXISTS";
             
             final Exception ex = new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle0));
-            final Observable error =  Observable.error(ex);
+            final Observable<JsonObject> error =  Observable.error(ex);
             
             TestSubscriber<JsonObject> test = new TestSubscriber<>();
             
@@ -98,22 +97,15 @@ public class AbstractRestConfluence {
         {
             final String title0 = "MyPage";
             
-            final Observable error =  Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
+            final Observable<JsonObject> error =  
+            		Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
             
             TestSubscriber<JsonObject> test = new TestSubscriber<>();
             
             service.rxfindPage(spaceKey, parentPageTitle)
                     .switchIfEmpty( error )
-                    .doOnNext( new Action1<JsonObject>() {
-                        @Override
-                        public void call(JsonObject t) {
-                            System.out.printf( "Parent Id: [%s]\n", t.getString("id"));
-                        }                        
-                    })
-                    .flatMap(new Func1<JsonObject, Observable<JsonObject>>() {
-                          @Override
-                          public Observable<JsonObject> call(JsonObject parent) {
-                            
+                    .doOnNext( (t) -> System.out.printf( "Parent Id: [%s]\n", t.getString("id")) )
+                    .flatMap( (parent) -> {
                             final String id = parent.getString("id");
                             final JsonObjectBuilder input = service.jsonForCreatingPage(spaceKey, Integer.valueOf(id), title0);
                             
@@ -121,7 +113,6 @@ public class AbstractRestConfluence {
                             
                             return service.rxfindPage(spaceKey,title0)                                    
                                     .switchIfEmpty( service.rxCreatePage( input.build() ));
-                          }
                      })
                     .subscribe(test)
                     ;
@@ -172,6 +163,38 @@ public class AbstractRestConfluence {
         Assert.assertThat( p11, IsNull.notNullValue());
         Assert.assertThat( p11.getTitle(), IsEqual.equalTo(p1.getTitle()));
         
+        final boolean addLabelResult = service.addLabelByName("label", Integer.parseInt(p1.getId()) );
+        
+        Assert.assertThat( addLabelResult, Is.is(true));
+        
+        Model.Attachment att = service.getAttachment(p1.getId(), "foto2.jpg", "");
+        
+        Model.Attachment result;
+        
+        if( att == null ) {
+        
+            att = service.createAttachment();
+        
+            att.setFileName( "foto2.jpg");
+            att.setContentType("image/jpg");
+            att.setComment("test image");
+        
+            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
+  
+            Assert.assertThat( result, IsNull.notNullValue());
+        }
+        else {
+            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
+        
+            Assert.assertThat( result, IsNull.notNullValue());
+            
+        }
+
+        final Model.Attachment att2 = 
+                service.getAttachment(p1.getId(), result.getFileName(), "");
+
+        Assert.assertThat( att2, IsNull.notNullValue());
+
         
     }
     
