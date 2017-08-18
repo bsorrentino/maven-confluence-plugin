@@ -15,6 +15,8 @@ import javax.json.JsonObject;
 import okhttp3.HttpUrl;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
+import org.bsc.confluence.ConfluenceService.Model;
+
 import rx.Observable;
 
 import org.bsc.confluence.rest.model.Page;
@@ -78,6 +80,17 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         
     }
 
+    private Attachment cast( Model.Attachment attachment ) {
+        if( attachment == null ) {
+            throw new IllegalArgumentException("attachment argument is null!");
+        }
+        if( !(attachment instanceof Attachment) ) {
+            throw new IllegalArgumentException("page argument is not right type!");
+        }
+        return (Attachment)attachment;
+
+    }
+    
     public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final String title  ) {
           return Json.createObjectBuilder()
                   .add("type","page")
@@ -292,7 +305,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
 
-        return rxAddAttachment(page.getId(), (Attachment)attachment, source)
+        return rxAddAttachment(page.getId(), cast(attachment), source)
                 .map( att -> new Attachment(att) )
                 .toBlocking()
                 .firstOrDefault(null);
