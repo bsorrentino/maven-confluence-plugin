@@ -125,13 +125,7 @@ public class ConfluenceServiceFactory {
 
         @Override
         public void call(Action1<ConfluenceService> task) throws Exception {
-            
-            try {
-                task.call(this);
-            }
-            finally {
-                xmlrpcService.logout();
-            }
+        		xmlrpcService.call(task);
         }
 
         @Override

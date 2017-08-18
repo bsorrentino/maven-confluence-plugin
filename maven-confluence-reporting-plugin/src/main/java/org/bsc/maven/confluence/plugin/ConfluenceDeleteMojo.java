@@ -8,10 +8,11 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.bsc.functional.P1;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Model.PageSummary;
+
+import rx.functions.Action1;
 
 /**
  *
@@ -83,7 +84,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
         
         super.loadUserInfoFromSettings();
         
-        super.confluenceExecute( new P1<ConfluenceService>() {
+        super.confluenceExecute( new Action1<ConfluenceService>() {
 
             @Override
             public void call(ConfluenceService confluence)   {

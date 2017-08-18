@@ -1,11 +1,18 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.bsc.maven.reporting.sink.ConfluenceSink;
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -20,42 +27,40 @@ import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.model.Site;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
 import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
+import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
 import org.bsc.maven.reporting.renderer.ScmRenderer;
+import org.bsc.maven.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.i18n.I18N;
-import org.bsc.functional.P1;
-import org.bsc.confluence.ConfluenceService;
 
-import java.io.StringWriter;
-import java.util.*;
-import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
-import org.bsc.maven.reporting.renderer.ProjectTeamRenderer;
+import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-
-import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import rx.functions.Action1;
 import rx.functions.Func2;
-
-import static java.lang.String.format;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -704,7 +709,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
 
         // Generate the plugin's documentation
-        super.confluenceExecute(new P1<ConfluenceService>() {
+        super.confluenceExecute(new Action1<ConfluenceService>() {
 
             @Override
             public void call(ConfluenceService confluence)  {
