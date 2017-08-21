@@ -5,14 +5,22 @@
  */
 package org.bsc.confluence.rest;
 
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.io.Reader;
-import static java.lang.String.format;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.stream.JsonParsingException;
+
+import org.apache.commons.io.IOUtils;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.rest.model.Attachment;
+
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -21,9 +29,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.apache.commons.io.IOUtils;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.rest.model.Attachment;
 import rx.Observable;
 
 /**
@@ -82,7 +87,9 @@ public abstract class AbstractRESTConfluenceService {
                 .get()
                 .build();
         
-        return fromRequest(req, description);
+        return fromRequest(req, description)
+        				//.doOnNext( this::debugBody )
+;
     }
     
     protected Observable<Response> fromUrlDELETE( final HttpUrl url, final String description ) {
@@ -126,16 +133,31 @@ public abstract class AbstractRESTConfluenceService {
         return fromRequest(req, description);
     }
     
+    protected void debugBody( Response res ) {
+
+    		final ResponseBody body = res.body();
+      
+        try {
+			System.out.printf( "BODY\n%s\n", new String(body.bytes()) );
+		} catch (IOException e) {
+			System.out.printf( "READ BODY EXCEPTION\n%s\n", e.getMessage() );		
+		}
+        
+    }
     protected Observable<JsonObject> mapToArray( Response res)  {
 
         final ResponseBody body = res.body();
-
+        
         try (Reader r = body.charStream()) {
 
             final JsonReader rdr = Json.createReader(r);
-
+            
             final JsonObject root = rdr.readObject();
 
+            if( !root.containsKey("results") ) {
+            		return Observable.error( new Exception(root.toString()) );
+            }
+            
             // {"statusCode":404,"data":{"authorized":false,"valid":true,"errors":[],"successful":false,"notSuccessful":true},"message":"No space with key : TEST"}
             final JsonArray results = root.getJsonArray("results");
 
@@ -150,10 +172,10 @@ public abstract class AbstractRESTConfluenceService {
 
             return Observable.from( array );
 
-        } catch (IOException ex) {
-
-            return Observable.error(ex);
-        }
+        } catch (IOException | JsonParsingException e ) {
+        		return Observable.error(e);
+        	} 
+        
     }
    
     protected JsonObject mapToObject(Response res ) {
@@ -204,11 +226,19 @@ public abstract class AbstractRESTConfluenceService {
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
                                     .addPathSegment(id)
-                                    .addPathSegments("descendant/page")
+                                    //.addPathSegments("descendant/page")
+                                    .addPathSegments("child/page")
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "get descendant pafes" )
-                .flatMap( this::mapToArray );
+        return fromUrlGET( url, "get descendant pages" )
+        			//.doOnNext( this::debugBody )
+                .flatMap( this::mapToArray )
+                .concatMap( (o) -> {
+                		final String childId = o.getString("id");
+                		return Observable.concat( Observable.just(o), rxDescendantPages(childId) );
+                })
+                
+                ;
         
     }
     

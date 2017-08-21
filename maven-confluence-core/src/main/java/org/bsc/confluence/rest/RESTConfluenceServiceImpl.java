@@ -5,27 +5,27 @@
  */
 package org.bsc.confluence.rest;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import javax.json.Json;
 import javax.json.JsonObject;
-import okhttp3.HttpUrl;
+import javax.json.JsonObjectBuilder;
+
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.ConfluenceService.Model;
-
-import rx.Observable;
-
-import org.bsc.confluence.rest.model.Page;
-import javax.json.JsonObjectBuilder;
-import static java.lang.String.format;
 import org.bsc.confluence.rest.model.Attachment;
+import org.bsc.confluence.rest.model.Page;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
 
+import okhttp3.HttpUrl;
+import rx.Observable;
 import rx.functions.Action1;
 
 /**
@@ -125,14 +125,16 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         int port = endpoint.getPort();
         port = (port > -1 ) ? port : endpoint.getDefaultPort();
 
-        final String path = ConfluenceService.Protocol.XMLRPC.removeFrom(endpoint.getPath());
-
+        String path = endpoint.getPath();
+        
+        path = (path.startsWith("/")) ? path.substring(1) : path;
+        
         return new HttpUrl.Builder()
                       .scheme(endpoint.getProtocol())
                       .host(endpoint.getHost())
                       .port(port)
                       .addPathSegments(path)
-                      .addPathSegments(ConfluenceService.Protocol.REST.path()) 
+                      //.addPathSegments(ConfluenceService.Protocol.REST.path()) 
                     ; 
     }
     
@@ -148,7 +150,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                 .map( page -> new Page(page) )
                 .filter( page -> page.getTitle().equals( title ))
                 .toBlocking()
-                .first();
+                .firstOrDefault(null);
     }
 
     @Override
