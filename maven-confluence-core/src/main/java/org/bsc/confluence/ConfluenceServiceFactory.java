@@ -36,8 +36,11 @@ public class ConfluenceServiceFactory {
             
             this.xmlrpcService = createInstanceDetectingVersion(endpoint, credentials, proxyInfo, sslInfo);
             
-            final String restEndpoint = ConfluenceService.Protocol.XMLRPC.removeFrom(endpoint);
-                
+            final String restEndpoint = new StringBuilder()
+            		.append(ConfluenceService.Protocol.XMLRPC.removeFrom(endpoint))
+            		.append(ConfluenceService.Protocol.REST.path())
+            		.toString();
+            
             this.restService = new RESTConfluenceServiceImpl(restEndpoint, credentials, sslInfo);
         }
         
@@ -73,11 +76,13 @@ public class ConfluenceServiceFactory {
 
         @Override
         public Model.Page storePage(Model.Page page) throws Exception {
+        		System.out.printf( "==>  STORE PAGE SIMPLE[%s]\n", page.getId());
             return xmlrpcService.storePage(page);
         }
 
         @Override
         public Model.Page storePage(Model.Page page, Storage content) throws Exception {
+            
             if( Storage.Representation.STORAGE == content.rapresentation ) {
                 
                 if( page.getId()==null ) { 
@@ -95,6 +100,7 @@ public class ConfluenceServiceFactory {
                     return new Page(result);
                     
                 }
+
                 return restService.storePage(page, content);
             }
             return xmlrpcService.storePage(page, content);
@@ -131,8 +137,13 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public void call(Action1<ConfluenceService> task) throws Exception {
-        		xmlrpcService.call(task);
+        public void call(Action1<ConfluenceService> task) throws Exception {       
+            try {
+                task.call(this);
+            }
+            finally {
+            		xmlrpcService.logout();
+            }
         }
 
         @Override
