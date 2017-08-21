@@ -27,9 +27,11 @@ Currently | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](ht
   >   <endPoint>http://support.softphone.it/confluence/rest/api</endPoint>
   >  ```
 
-  * Refer to [Issue 142](https://github.com/bsorrentino/maven-confluence-plugin/issues/142) - Attachment creation fails if storage format is used for page definition
-
   * Refer to [Issue 138](https://github.com/bsorrentino/maven-confluence-plugin/issues/138) - Incorrect line print in log for deploy goal
+
+  * Refer to [Issue 141](https://github.com/bsorrentino/maven-confluence-plugin/issues/141) - No single first level heading for scm section
+
+  * Refer to [Issue 142](https://github.com/bsorrentino/maven-confluence-plugin/issues/142) - Attachment creation fails if storage format is used for page definition
 
 Apr 26,2017  | **Release 5.0-rc5** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc5%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
