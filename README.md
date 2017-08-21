@@ -20,7 +20,7 @@ Currently | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](ht
 ---- | ---- | ---- |
 
  * Refer to [Issue 96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) - Support of Confluence REST API
-  > To enable REST API instead of XMLRPC it is enough update your endpoint should be end with `/rest/api`
+  > To enable REST API instead of XMLRPC it is enough update your endpoint (should end with `/rest/api`)
   >
   > Example:
   >  ```xml
