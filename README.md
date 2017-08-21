@@ -19,6 +19,16 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 - | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
 ---- | ---- | ---- |
 
+ * Refer to [Issue 96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) - Support of Confluence REST API
+ > To enable REST API instead of XMLRPC it is enough update your endpoint should be end with `/rest/api`
+ >
+ > Example:
+ >  ```xml
+ >   <endPoint>http://support.softphone.it/confluence/rest/api</endPoint>
+ >  ```
+
+ * Refer to [Issue 142](https://github.com/bsorrentino/maven-confluence-plugin/issues/142) - Attachment creation fails if storage format is used for page definition
+
  * Refer to [Issue 138](https://github.com/bsorrentino/maven-confluence-plugin/issues/138) - Incorrect line print in log for deploy goal
 
 Apr 26,2017  | **Release 5.0-rc5** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc5%7Cmaven-plugin)**  |
