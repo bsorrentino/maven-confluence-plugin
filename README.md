@@ -24,7 +24,7 @@ Currently | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](ht
   >
   > Example:
   >  ```xml
-  >   <endPoint>http://support.softphone.it/confluence/rest/api</endPoint>
+  >   <endPoint>http://<your_confluence-site>/rest/api</endPoint>
   >  ```
 
   * Refer to [Issue 129](https://github.com/bsorrentino/maven-confluence-plugin/issues/129) - The macro `plugin.dependencies` is unknown
