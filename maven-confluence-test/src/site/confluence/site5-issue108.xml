@@ -24,7 +24,9 @@ and open the template in the editor.
     <home  uri="home-issue108.xhtml">
         
         
-        <child name="Storage Format" uri="storageFormat.xhtml"></child>
+        <child name="Storage Format" uri="storageFormat.xhtml">
+        		<attachment name="conf-icon-64.png" uri="attachments/conf-icon-64.png" comment="" contentType="image/png" version="1"></attachment>
+        </child>
 
     </home>
     

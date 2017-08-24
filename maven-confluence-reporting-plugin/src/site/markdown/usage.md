@@ -9,7 +9,7 @@
   <groupId>org.bsc.maven</groupId>
   <artifactId>confluence-reporting-maven-plugin</artifactId>
   <configuration>
-        <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+        <endPoint>${confluence.home}/rest/api</endPoint>
         <spaceKey>TEST</spaceKey>
         <parentPageTitle>Home</parentPageTitle>
         <title>my-site-generation-test</title>
@@ -34,7 +34,7 @@
 
 ```xml
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -51,7 +51,7 @@
 
 ```xml
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -75,7 +75,7 @@
 
 ```xml
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -126,8 +126,8 @@ Variable | Description
 
 -----------------|-----------------
 ```${plugin.summary}```| plugin summary **DEPRECATED** (use project.summary instead)
-```${plugin.goals}```| plugin goals 
- 
+```${plugin.goals}```| plugin goals
+
 
 ### Images
 

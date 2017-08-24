@@ -29,22 +29,22 @@ Repository
 Usage
 
 
-  Basic Declaration 
-  
+  Basic Declaration
+
 +-------------------------------------------+
 
  <plugin>
   <groupId>org.bsc.maven</groupId>
   <artifactId>confluence-reporting-maven-plugin</artifactId>
   <configuration>
-        <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+        <endPoint>${confluence.home}/rest/api</endPoint>
         <spaceKey>TEST</spaceKey>
         <parentPageTitle>Home</parentPageTitle>
         <title>my-site-generation-test</title>
         <labels>
                 <label>test</label>
-                <label>confluence</label>                                           
-        </labels> 
+                <label>confluence</label>
+        </labels>
         <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
         <wikiFilesExt>.confluence</wikiFilesExt>
         <serverId>confluence-server-id</serverId>
@@ -58,12 +58,12 @@ Usage
 
 +-------------------------------------------+
 
-  Add labels 
-  
+  Add labels
+
 +-------------------------------------------+
-    
+
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -71,18 +71,18 @@ Usage
 
     <labels>
         <label>label_value_1</label>
-        <label>label_value_2</label>                                           
-    </labels> 
+        <label>label_value_2</label>
+    </labels>
  </configuration>
 
 +-------------------------------------------+
 
   Inject custom properties within template
-  
+
 +-------------------------------------------+
-    
+
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -92,7 +92,7 @@ Usage
 
        <scm-url>${project.scm.url}</scm-url>
        <version>${project.version}</version>
-       <build>${build.number}</build> 
+       <build>${build.number}</build>
 
         <myprop>classpath:plugin-report.properties</myprop><!-- SINCE 3.2.4 -->
         <htmlpage>file://${basedir}/src/main/resources/confluence.html</htmlpage><!-- SINCE 3.2.4 -->
@@ -103,12 +103,12 @@ Usage
 
 +-------------------------------------------+
 
-  Change wiki files extension 
-  
+  Change wiki files extension
+
 +-------------------------------------------+
-    
+
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -123,7 +123,7 @@ Usage
 
 Authentication Tip
 
-  Put yours confluence credential within settings.xml as server 
+  Put yours confluence credential within settings.xml as server
 
 -----------------------------------------
     <server>
@@ -132,15 +132,15 @@ Authentication Tip
         <password>my_password</password>
     </server>
 ------------------------------------------
-  
+
   Take note that also {{{http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords} maven encryption}} is supported
 
 
 Use template variables
 
   By default the plugin use an internal template to generate confluence page. You can customize the generated page creating a personal template into  folder <<<$\{basedir\}/src/site/confluence>>> named <<<template.wiki>>>.
-  The template can include all valid confluence contents plus the following built-in variables 
-  
+  The template can include all valid confluence contents plus the following built-in variables
+
 *---------------------------+-----------------+
 | $\{project.summary\}      | project summary |
 *---------------------------+-----------------+
@@ -174,10 +174,10 @@ Tips & Tricks
 
 
 Git log template variables
-  
+
   Main idea is automated creating of release notes with list of resolved JIRA issues utilizing integration between JIRA and Confluence.
   Prerequrements:
-   
+
   * Include JIRA issue key in git commit message
 
   * Using git as SCM and using version tags in git
@@ -191,7 +191,7 @@ Git log configuration options
  * <<<gitLogUntilTagName>>>     Parse git log commits until first occurrence of specified tag name.
 
  * <<<gitLogCalculateRuleForSinceTagName>>>    If specified, plugin will try to calculate and replace actual gitLogSinceTagName value based on current project version $\{project.version} and provided rule. Possible values are
-      
+
       * <<NO_RULE>>
 
       * <<CURRENT_MAJOR_VERSION>>. For example 1.2.3 will be resolved to 1.0.0
@@ -208,7 +208,7 @@ Git log configuration options
 
  ** Sample produced output of <<<$\{gitlog.jiraIssues\}>>>  with  <<<gitLogGroupByVersions=true>>>
 
-[./images/gitlog-sample02.png] 
+[./images/gitlog-sample02.png]
 
 
 Template example
@@ -224,7 +224,7 @@ This page has been generated by [maven-confluence-plugin|https://github.com/bsor
 h1. Introduction
 
 {panel}
-project description 
+project description
 {panel}
 
 h1. Usage
@@ -240,7 +240,5 @@ ${project.scmManager}
 
 
 ${project.dependencies}
-  
+
 +-------------------------------------------+
-  
- 

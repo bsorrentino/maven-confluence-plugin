@@ -5,8 +5,11 @@
  */
 package org.bsc.confluence;
 
+import java.util.regex.Pattern;
+
 import rx.functions.Action1;
 
+import static java.lang.String.format;
 /**
  *
  * @author bsorrentino
@@ -63,6 +66,10 @@ public interface ConfluenceService {
 
             return result;
 
+        }
+        
+        public boolean match( String endpoint )  {
+        		return Pattern.matches( format(".+(%s)[/]?", path), endpoint );
         }
         
     }

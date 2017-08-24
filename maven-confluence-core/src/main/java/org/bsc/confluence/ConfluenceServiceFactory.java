@@ -5,19 +5,23 @@
  */
 package org.bsc.confluence;
 
+import static java.lang.String.format;
+import static org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl;
-import static org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
-import rx.functions.Action1;
 
+import rx.functions.Action1;
 /**
  *
  * @author bsorrentino
@@ -28,10 +32,16 @@ public class ConfluenceServiceFactory {
         final XMLRPCConfluenceServiceImpl   xmlrpcService;
         final RESTConfluenceServiceImpl     restService;
 
-        public MixedConfluenceService(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
+        public MixedConfluenceService(String endpoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
             
-            this.xmlrpcService = createInstanceDetectingVersion(endPoint, credentials, proxyInfo, sslInfo);
-            this.restService = new RESTConfluenceServiceImpl(endPoint, credentials, sslInfo);
+            this.xmlrpcService = createInstanceDetectingVersion(endpoint, credentials, proxyInfo, sslInfo);
+            
+            final String restEndpoint = new StringBuilder()
+            		.append(ConfluenceService.Protocol.XMLRPC.removeFrom(endpoint))
+            		.append(ConfluenceService.Protocol.REST.path())
+            		.toString();
+            
+            this.restService = new RESTConfluenceServiceImpl(restEndpoint, credentials, sslInfo);
         }
         
         @Override
@@ -66,11 +76,13 @@ public class ConfluenceServiceFactory {
 
         @Override
         public Model.Page storePage(Model.Page page) throws Exception {
+        		System.out.printf( "==>  STORE PAGE SIMPLE[%s]\n", page.getId());
             return xmlrpcService.storePage(page);
         }
 
         @Override
         public Model.Page storePage(Model.Page page, Storage content) throws Exception {
+            
             if( Storage.Representation.STORAGE == content.rapresentation ) {
                 
                 if( page.getId()==null ) { 
@@ -88,6 +100,7 @@ public class ConfluenceServiceFactory {
                     return new Page(result);
                     
                 }
+
                 return restService.storePage(page, content);
             }
             return xmlrpcService.storePage(page, content);
@@ -124,13 +137,12 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public void call(Action1<ConfluenceService> task) throws Exception {
-            
+        public void call(Action1<ConfluenceService> task) throws Exception {       
             try {
                 task.call(this);
             }
             finally {
-                xmlrpcService.logout();
+            		xmlrpcService.logout();
             }
         }
 
@@ -151,9 +163,36 @@ public class ConfluenceServiceFactory {
         
     }
     
-    public static ConfluenceService createInstance(String endPoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
+    /**
+     * return XMLRPC based Confluence services
+     * 
+     * @param endpoint
+     * @param credentials
+     * @param proxyInfo
+     * @param sslInfo
+     * @return XMLRPC based Confluence services
+     * @throws Exception
+     */
+    public static ConfluenceService createInstance(	String endpoint, 
+    													Credentials credentials, 
+    													ConfluenceProxy proxyInfo, 
+    													SSLCertificateInfo sslInfo) throws Exception 
+    {
+    		if( ConfluenceService.Protocol.XMLRPC.match(endpoint)) {
+    	        return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);    			
+    		}
+    		if( ConfluenceService.Protocol.REST.match(endpoint)) {
+    			return new RESTConfluenceServiceImpl(endpoint, credentials /*, proxyInfo*/, sslInfo);    			
+    		}
+    		
+    		throw new IllegalArgumentException( 
+    				format("endpoint doesn't contain a valid API protocol\nIt must be '%s' or '%s'",
+    						ConfluenceService.Protocol.XMLRPC.path(),
+    						ConfluenceService.Protocol.REST.path()) 
+    				);
 
-        return new MixedConfluenceService(endPoint, credentials, proxyInfo, sslInfo);
+
     }
     
+     
 }
