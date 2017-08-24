@@ -16,7 +16,7 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
-Currently | **Release 5.0-SNAPSHOT** | available from  **[MAVEN CENTRAL REPO](https://oss.sonatype.org/content/repositories/snapshots/org/bsc/maven/confluence-reporting-maven-plugin/5.0-SNAPSHOT/)**  |
+Aug 24, 2017 | **Release 5.0** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
  * Refer to [Issue 96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) - Support of Confluence REST API
