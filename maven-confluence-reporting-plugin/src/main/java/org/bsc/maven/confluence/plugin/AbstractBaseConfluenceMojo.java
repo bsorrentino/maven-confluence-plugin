@@ -34,7 +34,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * Confluence api endpoint url
      * 
      * <ul>
-     *  <li>To enable <b>xmlrpc api procotol</b> endpoint must end with <b>rpc/xmlrpc</b></li>
+     *  <li>To enable <b>xmlrpc api procotol</b> endpoint must end with <b>/rpc/xmlrpc</b></li>
      *  <li>To enable <b>rest api protocol</b> endpoint must end with <b>/rest/api</b></li>
   	 * </ul>
   	 * 
