@@ -1,6 +1,15 @@
 package org.bsc.markdown;
 
 
+import static java.lang.String.format;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.parboiled.common.StringUtils;
+import org.pegdown.Extensions;
 import org.pegdown.ast.AbbreviationNode;
 import org.pegdown.ast.AnchorLinkNode;
 import org.pegdown.ast.AutoLinkNode;
@@ -42,19 +51,7 @@ import org.pegdown.ast.VerbatimNode;
 import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
 
-import static java.lang.String.format;
-
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bsc.functional.F;
-import org.pegdown.Extensions;
-import static java.lang.String.format;
-import org.parboiled.common.StringUtils;
+import rx.functions.Func1;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -153,12 +150,12 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     protected abstract void notImplementedYet( Node node );
 
-    protected StringBuilder bufferVisit( F<Void,Void> closure  ) {
+    protected StringBuilder bufferVisit( Func1<Void,Void> closure  ) {
 
         return bufferVisit( new StringBuilder(), closure );
     }
 
-    protected StringBuilder bufferVisit( final StringBuilder _sb, F<Void,Void> closure  ) {
+    protected StringBuilder bufferVisit( final StringBuilder _sb, Func1<Void,Void> closure  ) {
 
         final StringBuilder _original = _buffer;
         _buffer = _sb;
@@ -240,7 +237,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
                     if( found ) { // GET ELEMENT TITLE
 
-                        final StringBuilder _sb = bufferVisit(new F<Void,Void>() {
+                        final StringBuilder _sb = bufferVisit(new Func1<Void,Void>() {
 
                             @Override
                             public Void call(Void p) {
@@ -319,7 +316,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(RootNode rn) {
 
         for (final ReferenceNode referenceNode : rn.getReferences()) {
-            String ref = bufferVisit( new F<Void, Void>() {
+            String ref = bufferVisit( new Func1<Void, Void>() {
                 @Override
                 public Void call(Void p) {
                     visitChildren(referenceNode);
@@ -355,7 +352,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(final BlockQuoteNode bqn) {
 
-      final String text = bufferVisit(new F<Void,Void>() {
+      final String text = bufferVisit(new Func1<Void,Void>() {
 
           @Override
           public Void call(Void p) {
@@ -537,7 +534,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         final String ref;
         if( referenceKey != null ) {
 
-            ref = bufferVisit(new F<Void, Void>() {
+            ref = bufferVisit(new Func1<Void, Void>() {
                 @Override
                 public Void call(Void p) {
                     visitChildren(referenceKey);
@@ -546,7 +543,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
             }).toString();
         } else {
             // in case the refkey is not with the link, we use the references found in the root node
-            ref = bufferVisit(new F<Void, Void>() {
+            ref = bufferVisit(new Func1<Void, Void>() {
                 @Override
                 public Void call(Void p) {
                     visitChildren(refnode);

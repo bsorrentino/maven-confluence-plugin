@@ -7,7 +7,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
-import org.bsc.functional.P1;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceServiceFactory;
@@ -32,7 +31,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Parameter()
     private java.util.Map properties;    
     /**
-     * Confluence end point url
+     * Confluence api endpoint url
+     * 
+     * <ul>
+     *  <li>To enable <b>xmlrpc api procotol</b> endpoint must end with <b>/rpc/xmlrpc</b></li>
+     *  <li>To enable <b>rest api protocol</b> endpoint must end with <b>/rest/api</b></li>
+  	 * </ul>
+  	 * 
+  	 * Example:
+     * <pre>  
+  	 * < endPoint>http://your_confluence-site/rest/api</endPoint>
+  	 * </pre>
+  	 *  
      */
     @Parameter(property = "confluence.endPoint", defaultValue = "http://localhost:8080/rpc/xmlrpc")
     private String endPoint;

@@ -5,8 +5,11 @@
  */
 package org.bsc.confluence;
 
+import java.util.regex.Pattern;
+
 import rx.functions.Action1;
 
+import static java.lang.String.format;
 /**
  *
  * @author bsorrentino
@@ -63,6 +66,10 @@ public interface ConfluenceService {
 
             return result;
 
+        }
+        
+        public boolean match( String endpoint )  {
+        		return Pattern.matches( format(".+(%s)[/]?", path), endpoint );
         }
         
     }
@@ -182,7 +189,7 @@ public interface ConfluenceService {
     
     Model.Attachment getAttachment( String pageId, String name, String version) throws Exception;
     
-    Model.Attachment addAttchment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) throws Exception ;
+    Model.Attachment addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) throws Exception ;
 
     
 }

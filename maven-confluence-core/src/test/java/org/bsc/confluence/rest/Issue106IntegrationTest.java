@@ -8,10 +8,20 @@ package org.bsc.confluence.rest;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.concurrent.TimeUnit;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+
+import org.hamcrest.core.Is;
+import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsNull;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -20,14 +30,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.bsc.functional.P1;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import rx.functions.Action1;
 
 
 /**
@@ -60,27 +63,6 @@ public class Issue106IntegrationTest {
     @Before
     public void open() {
          client = new OkHttpClient.Builder(); 
- 
-         /*
-         client.authenticator( new Authenticator() {
-             @Override
-             public Request authenticate(Route route, Response response) throws IOException {
-                System.out.println( "AUTHENTICATOR" );
-
-                if (responseCount(response) >= 3) {
-                    return null; // If we've failed 3 times, give up. - in real life, never give up!!
-                }
-                
-                final String credential = Credentials.basic("admin", "admin");
-                
-                return response.request()
-                                .newBuilder()
-                                .header("Authorization", credential)
-                                .build();
-                 
-             }
-         });
-         */
          
          client.connectTimeout(10, TimeUnit.SECONDS);
          client.writeTimeout(10, TimeUnit.SECONDS);
@@ -123,7 +105,7 @@ public class Issue106IntegrationTest {
      * @return
      * @throws IOException 
      */
-    void findPages( String title, P1<JsonArray> success ) throws IOException {
+    void findPages( String title, Action1<JsonArray> success ) throws IOException {
 
         final String credential = Credentials.basic("admin", "admin");
 
@@ -171,7 +153,7 @@ public class Issue106IntegrationTest {
     public void findPageTest() throws IOException {
 
         
-        findPages( "Home", new P1<JsonArray>() {
+        findPages( "Home", new Action1<JsonArray>() {
             @Override
             public void call(JsonArray results) {
                 
@@ -222,7 +204,7 @@ public class Issue106IntegrationTest {
     public void addStoragePage() throws IOException {
         final String title = "test-storage";
         
-        findPages( title, new P1<JsonArray>() {
+        findPages( title, new Action1<JsonArray>() {
             @Override
             public void call(JsonArray results) {
                 
@@ -296,7 +278,7 @@ public class Issue106IntegrationTest {
         
         final String title = "test-wiki";
         
-        findPages( title, new P1<JsonArray>() {
+        findPages( title, new Action1<JsonArray>() {
             @Override
             public void call(JsonArray results) {
                 

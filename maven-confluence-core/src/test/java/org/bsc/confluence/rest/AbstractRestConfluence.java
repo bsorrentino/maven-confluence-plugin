@@ -31,7 +31,7 @@ import org.junit.Ignore;
  */
 public class AbstractRestConfluence {
     //private static final String URL = "http://192.168.99.100:8090/rest/api";
-    protected static String URL = "http://localhost:8090/rest/api";;
+    protected static String URL = "http://localhost:8090/rest/api";
     
     RESTConfluenceServiceImpl service;
     
@@ -46,7 +46,7 @@ public class AbstractRestConfluence {
     
     @Test @Ignore
     public void dummy() {}
-    
+
     @Test @Ignore
     public void getOrCreatePage() throws Exception  {
         
@@ -55,7 +55,7 @@ public class AbstractRestConfluence {
         final String title = "test-storage";
         
         {
-            TestSubscriber<JsonObject> test = new TestSubscriber<>();
+            final TestSubscriber<JsonObject> test = new TestSubscriber<>();
 
             service.rxfindPage(spaceKey,title).subscribe(test);
 
@@ -71,7 +71,6 @@ public class AbstractRestConfluence {
             Observable.concat( service.rxfindPage(spaceKey, parentPageTitle), service.rxfindPage(spaceKey,title) )
             .buffer(2)
             .subscribe(test);
-            ;
 
             test.assertCompleted();
             test.assertValueCount(1);
@@ -82,7 +81,7 @@ public class AbstractRestConfluence {
             final String parentPageTitle0 = "NOTEXISTS";
             
             final Exception ex = new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle0));
-            final Observable error =  Observable.error(ex);
+            final Observable<JsonObject> error =  Observable.error(ex);
             
             TestSubscriber<JsonObject> test = new TestSubscriber<>();
             
@@ -98,30 +97,23 @@ public class AbstractRestConfluence {
         {
             final String title0 = "MyPage";
             
-            final Observable error =  Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
+            final Observable<JsonObject> error =  
+            		Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
             
-            TestSubscriber<JsonObject> test = new TestSubscriber<>();
+            final TestSubscriber<JsonObject> test = new TestSubscriber<>();
             
             service.rxfindPage(spaceKey, parentPageTitle)
                     .switchIfEmpty( error )
-                    .doOnNext( new Action1<JsonObject>() {
-                        @Override
-                        public void call(JsonObject t) {
-                            System.out.printf( "Parent Id: [%s]\n", t.getString("id"));
-                        }                        
-                    })
-                    .flatMap(new Func1<JsonObject, Observable<JsonObject>>() {
-                          @Override
-                          public Observable<JsonObject> call(JsonObject parent) {
-                            
+                    .doOnNext( (t) -> System.out.printf( "Parent Id: [%s]\n", t.getString("id")) )
+                    .flatMap( (parent) -> {
                             final String id = parent.getString("id");
-                            final JsonObjectBuilder input = service.jsonForCreatingPage(spaceKey, Integer.valueOf(id), title0);
+                            final JsonObjectBuilder input = 
+                            		service.jsonForCreatingPage(spaceKey, Integer.valueOf(id), title0);
                             
                             System.out.printf( "input\n%s\n", input.toString());
                             
                             return service.rxfindPage(spaceKey,title0)                                    
                                     .switchIfEmpty( service.rxCreatePage( input.build() ));
-                          }
                      })
                     .subscribe(test)
                     ;
@@ -166,6 +158,45 @@ public class AbstractRestConfluence {
         Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
         Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
         
+        
+        final Model.Page p11 = service.getPage( p1.getId() );
+        
+        Assert.assertThat( p11, IsNull.notNullValue());
+        Assert.assertThat( p11.getTitle(), IsEqual.equalTo(p1.getTitle()));
+        
+        final boolean addLabelResult = service.addLabelByName("label", Integer.parseInt(p1.getId()) );
+        
+        Assert.assertThat( addLabelResult, Is.is(true));
+        
+        Model.Attachment att = service.getAttachment(p1.getId(), "foto2.jpg", "");
+        
+        Model.Attachment result;
+        
+        if( att == null ) {
+        
+            att = service.createAttachment();
+        
+            att.setFileName( "foto2.jpg");
+            att.setContentType("image/jpg");
+            att.setComment("test image");
+        
+            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
+  
+            Assert.assertThat( result, IsNull.notNullValue());
+        }
+        else {
+            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
+        
+            Assert.assertThat( result, IsNull.notNullValue());
+            
+        }
+
+        final Model.Attachment att2 = 
+                service.getAttachment(p1.getId(), result.getFileName(), "");
+
+        Assert.assertThat( att2, IsNull.notNullValue());
+
+        
     }
     
     @Test
@@ -199,5 +230,23 @@ public class AbstractRestConfluence {
         
     }
 
+    @Test //@Ignore
+    public void getDescendentsTest() throws Exception  {
+    	
+        final String spaceKey	= "TEST";
+        final String title 		= "Home";
+        
+        final Model.Page page = service.getPage(spaceKey, title);
+
+		final java.util.List<Model.PageSummary> descendents = service.getDescendents( page.getId() );
+        
+		Assert.assertThat( descendents, IsNull.notNullValue() );
+		
+		for( Model.PageSummary p : descendents ) {
+			System.out.printf( "Descend Page: [%s]\n", p.getTitle());
+		}
+    
+    }
+    
 
 }

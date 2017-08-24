@@ -183,10 +183,10 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public Model.Attachment addAttchment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
-        final Page p = cast(page);
+    public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
+        //final Page p = cast(page);
         
-        if( p.getId() == null ) {
+        if( page.getId() == null ) {
             throw new IllegalStateException("PageId is null. Attachment cannot be added!");
         }
         
@@ -331,10 +331,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
                             File outputFile) throws Exception 
     {
             final ConfluenceExportDecorator exporter = 
-                new ConfluenceExportDecorator(  connection, 
-                                                url, 
-                                                credentials.username, 
-                                                credentials.password);
+                new ConfluenceExportDecorator( this, url );
 
             exporter.exportPage(spaceKey, 
                                 pageTitle, 

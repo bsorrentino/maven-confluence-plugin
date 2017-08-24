@@ -6,7 +6,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0-rc5</version>
+        <version>5.0</version>
         <relativePath>../..</relativePath>
     </parent>
 
@@ -46,7 +46,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.4</version>
                 <configuration>
                     <goalPrefix>hello</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>

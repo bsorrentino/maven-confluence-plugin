@@ -8,7 +8,7 @@ h3.Basic Declaration
   <groupId>org.bsc.maven</groupId>
   <artifactId>confluence-reporting-maven-plugin</artifactId>
   <configuration>
-        <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+        <endPoint>${confluence.home}/rest/api</endPoint>
         <spaceKey>TEST</spaceKey>
         <parentPageTitle>Home</parentPageTitle>
         <title>my-site-generation-test</title>
@@ -33,7 +33,7 @@ h3.Basic Declaration
 h3.Add labels
 {code:xml}
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -50,7 +50,7 @@ h3.Add labels
 h3.Inject custom properties within template
 {code:xml}
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
@@ -74,7 +74,7 @@ h3.Inject custom properties within template
 h3.Change wiki files extension
 {code:xml}
  <configuration>
-    <endPoint>${confluence.home}/rpc/xmlrpc</endPoint>
+    <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
