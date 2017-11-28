@@ -24,12 +24,11 @@ import rx.functions.Action1;
  * @author bsorrentino
  */
 public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
-
     /**
      * additional properties pass to template processor
      */
     @Parameter()
-    private java.util.Map properties;    
+    private java.util.Map<String, String> properties;    
     /**
      * Confluence api endpoint url
      * 
@@ -167,7 +166,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         return password;
     }
 
-    @SuppressWarnings("unchecked")
     public final java.util.Map<String, String> getProperties() {
         if (null == properties) {
             properties = new java.util.HashMap<String, String>(5);

@@ -2,13 +2,12 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.0</version>
+        <version>5.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-confluence-test</artifactId>
     <name>CONFLUENCE-REPORTING::Test - ${project.version}</name>
-    <packaging>pom</packaging>
     <description>description</description>
 
 
@@ -113,6 +112,8 @@
                             <!--endPoint>https://localhost:8443/rpc/xmlrpc</endPoint-->
                             <spaceKey>TEST</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
+                            <!-- TEST ISSUE 147 -->
+                            <skip>true</skip>
                             <!-- TEST ISSUE 107 
                             <parentPageId>18677788</parentPageId>
                             -->

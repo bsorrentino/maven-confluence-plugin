@@ -80,6 +80,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     public static final String PLUGIN_GOALS_VAR             = "plugin.goals";
 
     /**
+     * Skip plugin execution
+     * 
+     * @since 5.1
+     */
+	@Parameter(defaultValue = "false")
+	protected boolean skip = false;
+	    
+    /**
      * Local Repository.
      *
      */
@@ -219,6 +227,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+    	
+    		if( skip ) {
+    	        getLog().info("plugin execution skipped");
+    	        return;
+    		}
+    		
         final Locale locale = Locale.getDefault();
 
         getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
