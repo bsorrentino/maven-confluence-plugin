@@ -16,6 +16,12 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+Nov 29, 2017 | **Release 5.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+ * Refer to [Issue 147](https://github.com/bsorrentino/maven-confluence-plugin/issues/147) - add `skip` support
+
+
 Aug 24, 2017 | **Release 5.0** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
