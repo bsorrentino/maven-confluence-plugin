@@ -100,7 +100,9 @@ public class ConfluenceExportDecorator {
                 new RedirectTask() {
 
                     @Override
-                    public void exec(String location) throws Exception {                        
+                    public void exec(String location) throws Exception {     
+                    	
+                    		System.out.printf( "==> EXPORT URL [%s]\n", location);
                         exportpdf(client, location, outputFile);
                     }
                 }
