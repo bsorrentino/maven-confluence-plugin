@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>5.1</version>
+        <version>5.1.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -74,6 +74,22 @@
 
                 </configuration>
                 <executions>
+                    <!--
+                    mvn confluence-reporting:export@issue148
+                    -->
+                    <execution>
+                        <id>issue148</id>
+                        <goals>
+                            <goal>export</goal>
+                        </goals>
+                        <configuration>
+                            <endPoint>http://softwarefactory.softphone.it/confluence/${api}</endPoint>
+                            <spaceKey>~bsorrentino</spaceKey>
+                            <parentPageTitle>Home</parentPageTitle>
+                            <pageTitle>GIT EXPERIENCE</pageTitle>
+                            <serverId>softphone-server</serverId>
+                        </configuration>
+                    </execution>
                     <!--
                     mvn confluence-reporting:deploy@softphone
                     mvn confluence-reporting:delete@softphone

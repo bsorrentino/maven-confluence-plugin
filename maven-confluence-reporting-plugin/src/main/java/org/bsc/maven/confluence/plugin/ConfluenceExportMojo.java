@@ -76,9 +76,10 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
 
         final String url = ConfluenceService.Protocol.XMLRPC.removeFrom(ConfluenceExportMojo.super.getEndPoint()); 
 
+        
         confluence.exportPage(  url, 
                                 parentPage.getSpace(), 
-                                parentPage.getTitle(), 
+                                pageTitle, //parentPage.getTitle(), 
                                 exfmt, 
                                 outputFile);
         

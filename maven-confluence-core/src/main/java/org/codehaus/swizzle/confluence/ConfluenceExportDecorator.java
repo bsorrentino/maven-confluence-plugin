@@ -100,8 +100,13 @@ public class ConfluenceExportDecorator {
                 new RedirectTask() {
 
                     @Override
-                    public void exec(String location) throws Exception {                        
-                        exportpdf(client, location, outputFile);
+                    public void exec(String location) throws Exception {     
+                    	
+						final java.net.URI uri = java.net.URI.create( url ).resolve(location).normalize();
+
+						System.out.printf( "==> EXPORT URL [%s]\n", uri.toString());
+							
+						exportpdf(client, uri.toURL(), outputFile);
                     }
                 }
             );
@@ -173,7 +178,7 @@ public class ConfluenceExportDecorator {
      * @throws Exception 
      */
     private void exportpdf( HttpClient client, 
-                            String url, 
+                            java.net.URL url, 
                             java.io.File outputFile ) throws IOException  
     {
         java.io.InputStream is = null;
@@ -181,7 +186,7 @@ public class ConfluenceExportDecorator {
         GetMethod get = null;
         try {
 
-            get = new GetMethod(url);
+            get = new GetMethod(url.toString());
             get.setRequestHeader("X-Atlassian-Token", "no-check");
             
             
