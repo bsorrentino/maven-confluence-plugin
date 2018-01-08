@@ -209,7 +209,7 @@ Markdown support refinements
 
 Markdown support refinements, refer to documentation from:
 
-> * [Confluence](http://support.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
+> * [Confluence](http://softwarefactory.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
 > * [Wiki](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown)
 > * [Html](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 

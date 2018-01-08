@@ -323,7 +323,7 @@ TEST
                     <version>${project.version}</version>
 
                     <configuration>
-                        <endPoint>http://support.softphone.it/confluence/rpc/xmlrpc</endPoint>
+                        <endPoint>http://softwarefactory.softphone.it/confluence/rpc/xmlrpc</endPoint>
                         <spaceKey>~bsorrentino</spaceKey>
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
