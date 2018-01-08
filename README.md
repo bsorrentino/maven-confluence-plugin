@@ -5,10 +5,10 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
 ## Documentation
 > The standard maven documentation is [here](http://bsorrentino.github.io/maven-co…)
-* [Usage](./maven-confluence-reporting-plugin/src/site/markdown/usage.md)
-* [Use Site Definition](./maven-confluence-reporting-plugin/src/site/markdown/site_guide.md)
-* [Markdown Support](./maven-confluence-reporting-plugin/src/site/markdown/markdown_guide.md)
-* [Storage Format Support](./maven-confluence-reporting-plugin/src/site/markdown/storageformat_guide.md))
+* [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
+* [Use Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html)
+* [Markdown Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
+* [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
 * [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
 
 Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
