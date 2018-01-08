@@ -1,11 +1,15 @@
-Maven's  plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project &amp; documentation
 
-originally hosted to [google code](https://code.google.com/p/maven-confluence-plugin/) from release 4.0.0 has been moved to github
+## What is
+It is a **Maven plugin** that generates **project's documentation directly to confluence** allowing, in the same time, to **keep in-sync project evolution with its documentation**.
+> Originally hosted to [google code](https://code.google.com/p/maven-confluence-plugin/) from release 4.0.0 has been moved to github
 
-[Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
+## Documentation
+> The standard maven documentation is [here](http://bsorrentino.github.io/maven-co…)
+* [Usage](./maven-confluence-reporting-plugin/src/site/markdown/usage.md)
+## [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
 
-|Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6) |
-|:------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
+Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
+
 
 <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22confluence-reporting-maven-plugin%22"><img src="https://img.shields.io/maven-central/v/org.bsc.maven/confluence-reporting-maven-plugin.svg">
 </a>&nbsp;<img src="https://img.shields.io/github/forks/bsorrentino/maven-confluence-plugin.svg">&nbsp;
