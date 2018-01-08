@@ -101,7 +101,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <endPoint>http://support.softphone.it/confluence/${api}</endPoint>
+                            <endPoint>http://softwarefactory.softphone.it/confluence/${api}</endPoint>
                             <spaceKey>~bsorrentino</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
                             <!-- TEST ISSUE 40 -->
@@ -177,7 +177,7 @@
                             <!--
                             <endPoint>http://localhost:8090/rpc/xmlrpc</endPoint>
                             -->
-                            <endPoint>http://support.softphone.it/confluence/${api}</endPoint>
+                            <endPoint>http://softwarefactory.softphone.it/confluence/${api}</endPoint>
                             <spaceKey>~bsorrentino</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
                             <wikiFilesExt>.confluence</wikiFilesExt>

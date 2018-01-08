@@ -1,20 +1,29 @@
-Maven's  plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project &amp; documentation
-
-originally hosted to [google code](https://code.google.com/p/maven-confluence-plugin/) from release 4.0.0 has been moved to github
-
-[Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
-
-|Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6) |
-|:------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
-
 <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22confluence-reporting-maven-plugin%22"><img src="https://img.shields.io/maven-central/v/org.bsc.maven/confluence-reporting-maven-plugin.svg">
 </a>&nbsp;<img src="https://img.shields.io/github/forks/bsorrentino/maven-confluence-plugin.svg">&nbsp;
 <img src="https://img.shields.io/github/stars/bsorrentino/maven-confluence-plugin.svg">&nbsp;<a href="https://github.com/bsorrentino/maven-confluence-plugin/issues"><img src="https://img.shields.io/github/issues/bsorrentino/maven-confluence-plugin.svg">
-</a>&nbsp;
+</a>&nbsp;[![Join the chat at https://gitter.im/bsorrentino/maven-confluence-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bsorrentino/maven-confluence-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Join the chat at https://gitter.im/bsorrentino/maven-confluence-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bsorrentino/maven-confluence-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+## What is
+It is a **Maven plugin** that generates **project's documentation directly to confluence** allowing, in the same time, to **keep in-sync project evolution with its documentation**.
+> Originally hosted to [google code](https://code.google.com/p/maven-confluence-plugin/) from release 4.0.0 has been moved to github
+
+## Documentation
+> The standard maven documentation is [here](http://bsorrentino.github.io/maven-co…)
+> * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
+> * [Use Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html)
+> * [Markdown Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
+> * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
+> * [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
+
+
+Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
 
 ### News ###
+
+Jan 04, 2018 | **Release 5.1.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1.1%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+ * Refer to [Issue 148](https://github.com/bsorrentino/maven-confluence-plugin/issues/148) - confluence-reporting:export leads to `host parameter is null` exception
 
 Nov 29, 2017 | **Release 5.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
@@ -204,7 +213,7 @@ Markdown support refinements
 
 Markdown support refinements, refer to documentation from:
 
-> * [Confluence](http://support.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
+> * [Confluence](http://softwarefactory.softphone.it/confluence/display/~bsorrentino/confluence-reporting-maven-plugin-4.4.1+-+Use+Markdown)
 > * [Wiki](https://github.com/bsorrentino/maven-confluence-plugin/wiki/Use-Markdown)
 > * [Html](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 
