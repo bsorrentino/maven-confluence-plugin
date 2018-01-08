@@ -16,6 +16,11 @@ originally hosted to [google code](https://code.google.com/p/maven-confluence-pl
 
 ### News ###
 
+Jan 04, 2018 | **Release 5.1.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1.1%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+ * Refer to issue #148 - confluence-reporting:export leads to `host parameter is null` exception
+
 Nov 29, 2017 | **Release 5.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
