@@ -8,7 +8,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > Originally hosted to [google code](https://code.google.com/p/maven-confluence-plugin/) from release 4.0.0 has been moved to github
 
 ## Documentation
-> The standard maven documentation is [here](http://bsorrentino.github.io/maven-co…)
+> The standard maven documentation is [here](http://bsorrentino.github.io/maven-confluence-plugin/)
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
 > * [Use Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html)
 > * [Markdown Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
