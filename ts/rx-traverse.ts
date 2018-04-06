@@ -1,12 +1,12 @@
 import traverse = require('traverse');
 import Rx = require("rx");
 
-function removeSingleArrays(obj, filter?:(key:string) => boolean ) {
+function removeSingleArrays(obj:any, filter?:(key:string) => boolean ) {
   // Traverse all the elements of the object
   traverse(obj).forEach(function traversing(value) {
     // As the XML parser returns single fields as arrays.
     if (value instanceof Array && value.length === 1) {
-      if( filter && !filter(this.key) ) return;
+      if( filter && !filter(<string>this.key) ) return;
         this.update(value[0]);
     }
   });

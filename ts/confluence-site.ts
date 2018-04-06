@@ -24,8 +24,8 @@ interface PageContext {
 }
 
 let parser = new xml.Parser();
-let rxParseString = Rx.Observable.fromNodeCallback( parser.parseString );
-export let rxReadFile    = Rx.Observable.fromNodeCallback( filesystem.readFile );
+let rxParseString:( input:string )=>Rx.Observable<any> = Rx.Observable.fromNodeCallback( parser.parseString );
+export let rxReadFile = Rx.Observable.fromNodeCallback( filesystem.readFile );
 
 export class SiteProcessor {
     /**
@@ -46,7 +46,7 @@ export class SiteProcessor {
         return rxReadFile( path.join(this.sitePath, fileName) )
                 .flatMap( (value:Buffer) => rxParseString( value.toString() ) )
                 //.doOnNext( (value) => console.dir( value, { depth:4 }) )
-                .map( (value:Object) => {
+                .map( (value:any) => {
                     for( let first in value ) return value[first]['home'];
                 })
     }
@@ -95,14 +95,14 @@ export class SiteProcessor {
         let confluence = this.confluence;
 
         let attachment:Model.Attachment =  {
-                comment:ctx.meta.$['comment'],
-                contentType:ctx.meta.$['contentType'],
-                fileName:ctx.meta.$.name
+                comment:ctx.meta.$['comment'] as string,
+                contentType:ctx.meta.$['contentType'] as string,
+                fileName:ctx.meta.$.name as string
             };
-        return rxReadFile( path.join(this.sitePath, ctx.meta.$.uri) )
+        return rxReadFile( path.join(this.sitePath, ctx.meta.$.uri as string) )
                 .doOnCompleted( () => console.log( "created attachment:", attachment.fileName ))
                 .flatMap( (buffer:Buffer) => 
-                            Rx.Observable.fromPromise(confluence.addAttachment( ctx.parent, attachment, buffer )));
+                            Rx.Observable.fromPromise(confluence.addAttachment( ctx.parent as Model.Page, attachment, buffer )));
 
     } 
 
@@ -114,13 +114,13 @@ export class SiteProcessor {
 
         let getOrCreatePage = 
             ( !ctx.parent ) ? 
-                    Rx.Observable.fromPromise(confluence.getOrCreatePage( this.spaceId, this.parentTitle, ctx.meta.$.name )) :
-                    Rx.Observable.fromPromise(confluence.getOrCreatePage2( ctx.parent, ctx.meta.$.name ))
+                    Rx.Observable.fromPromise(confluence.getOrCreatePage( this.spaceId, this.parentTitle, ctx.meta.$.name as string )) :
+                    Rx.Observable.fromPromise(confluence.getOrCreatePage2( ctx.parent, ctx.meta.$.name as string ))
                     ;
         return getOrCreatePage
                 .doOnNext( (page) => console.log( "creating page:", page.title ))
                 .flatMap( (page) => {
-                    return this.rxReadContent( path.join(this.sitePath, ctx.meta.$.uri) )
+                    return this.rxReadContent( path.join(this.sitePath, ctx.meta.$.uri as string) )
                         .flatMap( (storage) => Rx.Observable.fromPromise(confluence.storePageContent( page, storage )));
                 })                   
     }   
@@ -128,7 +128,7 @@ export class SiteProcessor {
     private rxProcessLabels( ctx:PageContext ) {
         return Rx.Observable.fromArray( ctx.meta.label || [])
                     .flatMap( (data:string) => 
-                        Rx.Observable.fromPromise(this.confluence.addLabelByName( ctx.parent, data )) ) 
+                        Rx.Observable.fromPromise(this.confluence.addLabelByName( ctx.parent as Model.Page, data )) ) 
                     ;        
     } 
 

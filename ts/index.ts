@@ -1,28 +1,37 @@
+/// <reference path="preferences.d.ts" />
 
 import {XMLRPCConfluenceService} from "./confluence-xmlrpc";
 import {SiteProcessor, Element, ElementAttributes} from "./confluence-site";
 import {rxConfig, ConfigAndCredentials} from "./config";
 
+import * as URL from "url";
 import * as path from "path";
 import * as fs from "fs";
 import * as util from "util";
 import * as chalk from "chalk";
 
+import request = require("request");
+
 import minimist     = require("minimist");
 import Rx           = require("rx");
 import Preferences  = require("preferences");
 
-const figlet    = require('figlet');
+interface Figlet {
+  ( input:string, font:string|undefined, callback:(err:any, res:string) => void  ):void;
+
+  fonts( callback:(err:any, res:Array<string>) => void ):void;
+  metadata( type:string, callback:(err:any, options:any, headerComment:string) =>void ):void
+}
+const figlet:Figlet = require('figlet');
 
 const LOGO      = 'Confluence Site';
 const LOGO_FONT = 'Stick Letters';
 
-let rxFiglet =  Rx.Observable.fromNodeCallback( figlet );
+let rxFiglet = Rx.Observable.fromNodeCallback( figlet );
 
 let argv = process.argv.slice(2);
 
-let args = minimist( argv, {
-});
+let args = minimist( argv, {} );
 
 
 namespace commands {
@@ -34,7 +43,7 @@ export function deploy() {
 
   //console.dir( args );
 
-  rxFiglet( LOGO )
+  rxFiglet( LOGO, undefined )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
     //.map( (logo) => args['config'] || false )
     //.doOnNext( (v) => console.log( "force config", v, args))
@@ -50,7 +59,7 @@ export function deploy() {
 }
 
 export function init() {
-    rxFiglet( LOGO )
+    rxFiglet( LOGO, undefined )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
     .flatMap( () => rxConfig( true, args['serverid']) )
     .subscribe(
@@ -61,7 +70,7 @@ export function init() {
 }
 
 export function info() {
-    rxFiglet( LOGO )
+    rxFiglet( LOGO, undefined )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
     .flatMap( () => rxConfig( false ) )
     .subscribe(
@@ -72,10 +81,9 @@ export function info() {
 }
 
 export function remove() {
-    rxFiglet( LOGO )
+    rxFiglet( LOGO, undefined )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
-    .map( () => false )
-    .flatMap( rxConfig )
+    .flatMap( () => rxConfig(false) )
     .flatMap( (result) => rxConfluenceConnection( result[0], result[1]  ) )
     .flatMap( (result) => rxDelete( result[0], result[1] ) )
     .subscribe(
@@ -83,6 +91,43 @@ export function remove() {
       (err)=> console.error( chalk.red(err) )
     ); 
 }
+
+
+export function download( pageId:string, fileName:string, isStorageFormat = false ) {
+
+  function rxRequest( config:Config, credentials:Credentials ):Rx.Observable<string> {
+    return Rx.Observable.create( (observer) => {
+
+      let input = URL.format({ 
+        protocol:config.protocol,
+        host: config.host,
+        port: String(config.port),
+        auth: credentials.username + ":" + credentials.password,
+        pathname: config.path +"pages/viewpagesrc.action",
+        query:{ pageId:pageId}    
+      });
+
+      console.log(input);
+      request( { 
+        url:input,
+      } )
+      .pipe( fs.createWriteStream(fileName) )
+      .on("end", () => observer.onCompleted() )
+      .on("error", (err) => observer.onError(err) );
+    });
+  }
+
+  rxFiglet( LOGO, undefined )
+  .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
+  .flatMap( () => rxConfig( false ) )
+  .flatMap( ([config,credentials]) => rxRequest( config, credentials ) )
+    .subscribe( 
+      (res) => {
+        console.log(res)
+       } ,
+      err => console.error( chalk.red(err) )
+    );
+  }
 
 } // end namespace command
 
@@ -105,6 +150,9 @@ switch( command ) {
   break;
   case "info":
     commands.info();
+  break;
+  case "download":
+    commands.download("37324124", "download.txt");
   break;
   default:
     usage();
@@ -216,22 +264,22 @@ function rxDelete( confluence:XMLRPCConfluenceService, config:Config  ):Rx.Obser
                 let [parent,pages] = result;
                 let first = pages[0] as Element ;
                 
-                let getHome = Rx.Observable.fromPromise( confluence.getPageByTitle( parent.id, first.$.name) );
+                let getHome = Rx.Observable.fromPromise( confluence.getPageByTitle( parent.id as string, first.$.name as string) );
 
                 return getHome
                         .filter( (home) => home!=null )
-                        .flatMap( (home) => {
-                             return Rx.Observable.fromPromise(confluence.getDescendents( home.id ))
-                                        .flatMap( Rx.Observable.fromArray )
-                                        .flatMap( (page:Model.PageSummary) => Rx.Observable.fromPromise(confluence.removePageById( page.id ))
-                                                                  .doOnNext( (r) => console.log( "page:", page.title, "removed!", r )) )
+                        .flatMap( (home) => 
+                              Rx.Observable.fromPromise(confluence.getDescendents( home.id as string))
+                                        .flatMap( summaries => Rx.Observable.fromArray(summaries) )
+                                        .flatMap( (page:Model.PageSummary) => Rx.Observable.fromPromise(confluence.removePageById( page.id as string))
+                                        .doOnNext( r => console.log( "page:", page.title, "removed!", r )) )
                                         .reduce( ( acc, x ) => ++acc, 0 )
-                                        .flatMap( (n) => 
-                                              Rx.Observable.fromPromise(confluence.removePageById(home.id) )
+                                        .flatMap( n => 
+                                              Rx.Observable.fromPromise(confluence.removePageById(home.id as string) )
                                                               .doOnNext( (r) => console.log( "page:", home.title, "removed!", r ))
                                                               .map( (value) => ++n )
                                         )
-                        })
+                          )
                         ;
                         
               })                        

@@ -8,13 +8,19 @@ var md_1 = require("./md");
 var parser = new xml.Parser();
 var rxParseString = Rx.Observable.fromNodeCallback(parser.parseString);
 exports.rxReadFile = Rx.Observable.fromNodeCallback(filesystem.readFile);
-var SiteProcessor = (function () {
+var SiteProcessor = /** @class */ (function () {
+    /**
+     *
+     */
     function SiteProcessor(confluence, spaceId, parentTitle, sitePath) {
         this.confluence = confluence;
         this.spaceId = spaceId;
         this.parentTitle = parentTitle;
         this.sitePath = sitePath;
     }
+    /**
+     *
+     */
     SiteProcessor.prototype.rxParse = function (fileName) {
         return exports.rxReadFile(path.join(this.sitePath, fileName))
             .flatMap(function (value) { return rxParseString(value.toString()); })
@@ -23,11 +29,17 @@ var SiteProcessor = (function () {
                 return value[first]['home'];
         });
     };
+    /**
+     *
+     */
     SiteProcessor.prototype.rxStart = function (fileName) {
         var _this = this;
         return this.rxParse(fileName)
             .flatMap(function (value) { return _this.rxProcessChild(value); });
     };
+    /**
+     *
+     */
     SiteProcessor.prototype.rxReadContent = function (filePath) {
         return exports.rxReadFile(filePath)
             .map(function (value) {
@@ -37,16 +49,19 @@ var SiteProcessor = (function () {
                 case ".md":
                     storage = {
                         value: md_1.markdown2wiki(value),
-                        representation: 1
+                        representation: 1 /* WIKI */
                     };
                     break;
                 default:
-                    storage = { value: value.toString(), representation: 1 };
+                    storage = { value: value.toString(), representation: 1 /* WIKI */ };
                     break;
             }
             return storage;
         });
     };
+    /**
+     *
+     */
     SiteProcessor.prototype.rxCreateAttachment = function (ctx) {
         var confluence = this.confluence;
         var attachment = {
@@ -60,6 +75,9 @@ var SiteProcessor = (function () {
             return Rx.Observable.fromPromise(confluence.addAttachment(ctx.parent, attachment, buffer));
         });
     };
+    /**
+     *
+     */
     SiteProcessor.prototype.rxCreatePage = function (ctx) {
         var _this = this;
         var confluence = this.confluence;

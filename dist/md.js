@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var markdown = require("marked");
-var WikiRenderer = (function () {
+var WikiRenderer = /** @class */ (function () {
     function WikiRenderer() {
         this.langs = {
             'actionscript3': true,
@@ -51,10 +51,10 @@ var WikiRenderer = (function () {
         var type = ordered ? '#' : '*';
         return arr.map(function (line) { return type + ' ' + line; }).join('\n') + '\n\n';
     };
-    WikiRenderer.prototype.listitem = function (body) { return body + '\n'; };
+    WikiRenderer.prototype.listitem = function (body /*, ordered*/) { return body + '\n'; };
     WikiRenderer.prototype.image = function (href, title, text) { return '!' + href + '!'; };
     WikiRenderer.prototype.table = function (header, body) { return header + body + '\n'; };
-    WikiRenderer.prototype.tablerow = function (content) { return content + '\n'; };
+    WikiRenderer.prototype.tablerow = function (content /*, flags*/) { return content + '\n'; };
     WikiRenderer.prototype.tablecell = function (content, flags) {
         var type = flags.header ? '||' : '|';
         return type + content;
@@ -70,7 +70,7 @@ var renderer = new WikiRenderer();
 function markdown2wiki(md) {
     return markdown(md.toString(), {
         renderer: renderer,
-        sanitize: true
+        sanitize: true // Sanitize the output. Ignore any HTML that has been input.
     });
 }
 exports.markdown2wiki = markdown2wiki;

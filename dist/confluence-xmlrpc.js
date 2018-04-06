@@ -1,11 +1,13 @@
 "use strict";
+/// <reference path="confluence.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 var xmlrpc = require("xmlrpc");
-var Confluence = (function () {
+var Confluence = /** @class */ (function () {
     function Confluence(config, servicePrefix) {
         if (servicePrefix === void 0) { servicePrefix = "confluence1."; }
         this.servicePrefix = servicePrefix;
         config.path += '/rpc/xmlrpc';
+        //let data = Object.assign( info, {path: '/rpc/xmlrpc'});
         this.client = (config.protocol === "https:") ?
             xmlrpc.createSecureClient(config) :
             xmlrpc.createClient(config);
@@ -54,6 +56,9 @@ var Confluence = (function () {
     Confluence.prototype.addAttachment = function (parentId, attachment, data) {
         return this.call("addAttachment", [this.token, parentId, attachment, data]);
     };
+    /**
+     * Adds a label to the object with the given ContentEntityObject ID.
+     */
     Confluence.prototype.addLabelByName = function (page, labelName) {
         return this.call("addLabelByName", [this.token, labelName, page.id]);
     };
@@ -73,6 +78,7 @@ var Confluence = (function () {
                     reject(error);
                 }
                 else {
+                    //console.log('value:', value);
                     resolve(value);
                 }
             });
@@ -80,15 +86,23 @@ var Confluence = (function () {
     };
     return Confluence;
 }());
-var XMLRPCConfluenceService = (function () {
+var XMLRPCConfluenceService /*Impl*/ = /** @class */ (function () {
     function XMLRPCConfluenceService(connection, credentials) {
         this.connection = connection;
     }
-    XMLRPCConfluenceService.create = function (config, credentials) {
+    XMLRPCConfluenceService.create = function (config, credentials /*, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo*/) {
         if (config == null)
             throw "config argument is null!";
         if (credentials == null)
             throw "credentials argument is null!";
+        /*
+        if( sslInfo == null ) throw new IllegalArgumentException("sslInfo argument is null!");
+  
+        if (!sslInfo.isIgnore() && url.startsWith("https")) {
+            HttpsURLConnection.setDefaultSSLSocketFactory( sslInfo.getSSLSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier( sslInfo.getHostnameVerifier() );
+        }
+        */
         return new Promise(function (resolve, reject) {
             var confluence = new Confluence(config);
             confluence.login(credentials.username, credentials.password).then(function (token) {

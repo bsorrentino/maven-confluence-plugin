@@ -28,4 +28,6 @@ function xmlParse() {
         });
     });
 }
+//markdownTest()
+//xmlParse();
 readme2confluenceTest();

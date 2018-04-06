@@ -37,7 +37,7 @@ interface Attachment extends Model.Attachment {
 class Confluence {
 
   client:any;
-  token:string; // auth token
+  token?:string; // auth token
 
   constructor( config:BaseConfig, public servicePrefix:string = "confluence1." ) {
     config.path += '/rpc/xmlrpc';

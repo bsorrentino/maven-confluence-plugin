@@ -13,12 +13,18 @@ var CONFIG_FILE = "config.json";
 var SITE_PATH = "site.xml";
 var ConfigUtils;
 (function (ConfigUtils) {
+    /**
+     * masked password
+     */
     function maskPassword(value) {
         assert.ok(!util.isNullOrUndefined(value));
         return Array(value.length + 1).join("*");
     }
     ConfigUtils.maskPassword = maskPassword;
-    var MaskedValue = (function () {
+    /**
+     * MaskedValue
+     */
+    var MaskedValue = /** @class */ (function () {
         function MaskedValue(value) {
             this.value = value;
             this._value = (util.isNullOrUndefined(value)) ? "" :
@@ -83,12 +89,17 @@ function printConfig(value) {
     }, "\n\n");
     console.log(out);
 }
+/**
+ *
+ */
 function rxConfig(force, serverId) {
     var configPath = path.join(process.cwd(), CONFIG_FILE);
+    //console.log( "configPath", configPath );
+    //console.log( "relative",  modulePath() );
     var defaultConfig = {
         host: "",
         path: "",
-        port: null,
+        port: -1,
         protocol: "http",
         spaceId: "",
         parentPageTitle: "Home",
@@ -100,9 +111,10 @@ function rxConfig(force, serverId) {
         password: ""
     };
     if (fs.existsSync(configPath)) {
+        //console.log( configPath, "found!" );
         defaultConfig = require(path.join(process.cwd(), CONFIG_FILE));
         if (util.isNullOrUndefined(defaultConfig.serverId)) {
-            return Rx.Observable.throw("'serverId' is not defined!");
+            return Rx.Observable.throw(new Error("'serverId' is not defined!"));
         }
         defaultCredentials = new Preferences(defaultConfig.serverId, defaultCredentials);
         if (!force) {
@@ -113,7 +125,7 @@ function rxConfig(force, serverId) {
     }
     else {
         if (util.isNullOrUndefined(defaultConfig.serverId)) {
-            return Rx.Observable.throw("'serverId' is not defined!");
+            return Rx.Observable.throw(new Error("'serverId' is not defined!"));
         }
     }
     console.log(chalk.green(">"), chalk.bold("serverId:"), chalk.cyan(defaultConfig.serverId));
@@ -125,6 +137,7 @@ function rxConfig(force, serverId) {
             default: ConfigUtils.Url.format(defaultConfig),
             validate: function (value) {
                 var p = url.parse(value);
+                //console.log( "parsed url", p );
                 var valid = (p.protocol && p.host && ConfigUtils.Port.isValid(p.port));
                 return (valid) ? true : "url is not valid!";
             }
@@ -163,6 +176,7 @@ function rxConfig(force, serverId) {
     return Rx.Observable.fromPromise(answers)
         .map(function (answers) {
         var p = url.parse(answers['url']);
+        //console.log( p );
         var config = {
             path: p.path || "",
             protocol: p.protocol,
@@ -173,6 +187,12 @@ function rxConfig(force, serverId) {
             sitePath: SITE_PATH,
             serverId: defaultConfig.serverId
         };
+        /*
+        let credentials:Credentials = {
+            username:answers['username'],
+            password:answers['password']
+        };
+        */
         var c = new Preferences(config.serverId, defaultCredentials);
         c.username = answers['username'];
         c.password = answers['password'];

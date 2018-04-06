@@ -25,8 +25,8 @@ function rxShowFont(font) {
 }
 function rxShowAllFonts() {
     return rxFonts()
-        .flatMap(Rx.Observable.fromArray)
-        .flatMap(rxShowFont);
+        .flatMap(function (values) { return Rx.Observable.fromArray(values); })
+        .flatMap(function (value) { return rxShowFont(value); });
 }
 function showAllFont() {
     rxShowAllFonts()
@@ -36,7 +36,11 @@ function showAllFont() {
         console.log(data['data']);
     });
 }
+/**
+ * CLEAR SCREEN
+ */
 function clrscr() {
+    //process.stdout.write('\033c');
     process.stdout.write('\x1Bc');
 }
 clrscr();
