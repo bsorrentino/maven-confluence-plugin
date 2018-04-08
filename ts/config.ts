@@ -210,18 +210,26 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
 
         ] );
 
-    let rxCreateConfigFile =
-        Rx.Observable.fromNodeCallback( fs.writeFile )
-        ;
-
+    function  rxCreateConfigFile<T>( path:string, data:any, onSuccessReturn:T):Rx.Observable<T> {
+        return Rx.Observable.create( (observer) => 
+            fs.writeFile( path, data, (err) => {
+                if( err ) {
+                    observer.onError(err);
+                    return;
+                }
+                observer.onNext( onSuccessReturn );
+                observer.onCompleted();
+            })
+        );
+    } 
     return Rx.Observable.fromPromise( answers )
                     .map( (answers:any) => {
                         let p = url.parse(answers['url']);
                         //console.log( p );
                         let config:Config = {
                             path:p.path || "",
-                            protocol:p.protocol,
-                            host:p.hostname,
+                            protocol:p.protocol as string,
+                            host:p.hostname as string,
                             port:ConfigUtils.Port.value(p.port as string),
                             spaceId:answers['spaceId'],
                             parentPageTitle:answers['parentPageTitle'],
@@ -240,10 +248,9 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
 
                         return [ config, c ] as ConfigAndCredentials;
                     })
-                    .flatMap( ( result ) =>
-                        rxCreateConfigFile( configPath, JSON.stringify(result[0]) )
-                            .map( res => result ) )
-                    ;
+                    .flatMap( result =>
+                        rxCreateConfigFile( configPath, JSON.stringify(result[0]), result )
+                    );
 
 }
 

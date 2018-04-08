@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var xml = require("xml2js");
-var filesystem = require("fs");
-var path = require("path");
-var Rx = require("rx");
-var md_1 = require("./md");
-var parser = new xml.Parser();
-var rxParseString = Rx.Observable.fromNodeCallback(parser.parseString);
+const xml = require("xml2js");
+const filesystem = require("fs");
+const path = require("path");
+const Rx = require("rx");
+const md_1 = require("./md");
+let parser = new xml.Parser();
+let rxParseString = Rx.Observable.fromNodeCallback(parser.parseString);
 exports.rxReadFile = Rx.Observable.fromNodeCallback(filesystem.readFile);
-var SiteProcessor = /** @class */ (function () {
+class SiteProcessor {
     /**
      *
      */
-    function SiteProcessor(confluence, spaceId, parentTitle, sitePath) {
+    constructor(confluence, spaceId, parentTitle, sitePath) {
         this.confluence = confluence;
         this.spaceId = spaceId;
         this.parentTitle = parentTitle;
@@ -21,30 +21,29 @@ var SiteProcessor = /** @class */ (function () {
     /**
      *
      */
-    SiteProcessor.prototype.rxParse = function (fileName) {
+    rxParse(fileName) {
         return exports.rxReadFile(path.join(this.sitePath, fileName))
-            .flatMap(function (value) { return rxParseString(value.toString()); })
-            .map(function (value) {
-            for (var first in value)
+            .flatMap((value) => rxParseString(value.toString()))
+            .map((value) => {
+            for (let first in value)
                 return value[first]['home'];
         });
-    };
+    }
     /**
      *
      */
-    SiteProcessor.prototype.rxStart = function (fileName) {
-        var _this = this;
+    rxStart(fileName) {
         return this.rxParse(fileName)
-            .flatMap(function (value) { return _this.rxProcessChild(value); });
-    };
+            .flatMap((value) => this.rxProcessChild(value));
+    }
     /**
      *
      */
-    SiteProcessor.prototype.rxReadContent = function (filePath) {
+    rxReadContent(filePath) {
         return exports.rxReadFile(filePath)
-            .map(function (value) {
-            var storage;
-            var ext = path.extname(filePath);
+            .map((value) => {
+            let storage;
+            let ext = path.extname(filePath);
             switch (ext) {
                 case ".md":
                     storage = {
@@ -58,76 +57,67 @@ var SiteProcessor = /** @class */ (function () {
             }
             return storage;
         });
-    };
+    }
     /**
      *
      */
-    SiteProcessor.prototype.rxCreateAttachment = function (ctx) {
-        var confluence = this.confluence;
-        var attachment = {
+    rxCreateAttachment(ctx) {
+        let confluence = this.confluence;
+        let attachment = {
             comment: ctx.meta.$['comment'],
             contentType: ctx.meta.$['contentType'],
             fileName: ctx.meta.$.name
         };
         return exports.rxReadFile(path.join(this.sitePath, ctx.meta.$.uri))
-            .doOnCompleted(function () { return console.log("created attachment:", attachment.fileName); })
-            .flatMap(function (buffer) {
-            return Rx.Observable.fromPromise(confluence.addAttachment(ctx.parent, attachment, buffer));
-        });
-    };
+            .doOnCompleted(() => console.log("created attachment:", attachment.fileName))
+            .flatMap((buffer) => Rx.Observable.fromPromise(confluence.addAttachment(ctx.parent, attachment, buffer)));
+    }
     /**
      *
      */
-    SiteProcessor.prototype.rxCreatePage = function (ctx) {
-        var _this = this;
-        var confluence = this.confluence;
-        var getOrCreatePage = (!ctx.parent) ?
+    rxCreatePage(ctx) {
+        let confluence = this.confluence;
+        let getOrCreatePage = (!ctx.parent) ?
             Rx.Observable.fromPromise(confluence.getOrCreatePage(this.spaceId, this.parentTitle, ctx.meta.$.name)) :
             Rx.Observable.fromPromise(confluence.getOrCreatePage2(ctx.parent, ctx.meta.$.name));
         return getOrCreatePage
-            .doOnNext(function (page) { return console.log("creating page:", page.title); })
-            .flatMap(function (page) {
-            return _this.rxReadContent(path.join(_this.sitePath, ctx.meta.$.uri))
-                .flatMap(function (storage) { return Rx.Observable.fromPromise(confluence.storePageContent(page, storage)); });
+            .doOnNext((page) => console.log("creating page:", page.title))
+            .flatMap((page) => {
+            return this.rxReadContent(path.join(this.sitePath, ctx.meta.$.uri))
+                .flatMap((storage) => Rx.Observable.fromPromise(confluence.storePageContent(page, storage)));
         });
-    };
-    SiteProcessor.prototype.rxProcessLabels = function (ctx) {
-        var _this = this;
+    }
+    rxProcessLabels(ctx) {
         return Rx.Observable.fromArray(ctx.meta.label || [])
-            .flatMap(function (data) {
-            return Rx.Observable.fromPromise(_this.confluence.addLabelByName(ctx.parent, data));
-        });
-    };
-    SiteProcessor.prototype.rxProcessAttachments = function (ctx) {
-        var _this = this;
+            .flatMap((data) => Rx.Observable.fromPromise(this.confluence.addLabelByName(ctx.parent, data)));
+    }
+    rxProcessAttachments(ctx) {
         return Rx.Observable.fromArray(ctx.meta.attachment || [])
-            .map(function (data) { return { meta: data, parent: ctx.parent }; })
-            .flatMap(function (ctx) { return _this.rxCreateAttachment(ctx); });
-    };
-    SiteProcessor.prototype.rxProcessChild = function (child, parent) {
-        var _this = this;
+            .map((data) => { return { meta: data, parent: ctx.parent }; })
+            .flatMap((ctx) => this.rxCreateAttachment(ctx));
+    }
+    rxProcessChild(child, parent) {
         if (!child || child.length == 0)
             return Rx.Observable.empty();
-        var first = child[0];
-        var childObservable = this.rxCreatePage({ meta: first, parent: parent })
-            .flatMap(function (page) {
-            var o1 = _this.rxProcessAttachments({ meta: first, parent: page });
-            var o2 = _this.rxProcessLabels({ meta: first, parent: page });
-            var o3 = Rx.Observable.fromArray(first.child || [])
-                .map(function (data) { return { meta: data, parent: page }; })
-                .concatMap(function (ctx) {
-                return _this.rxCreatePage(ctx)
-                    .flatMap(function (child) {
-                    var o1 = _this.rxProcessAttachments({ meta: ctx.meta, parent: child });
-                    var o2 = _this.rxProcessLabels({ meta: ctx.meta, parent: child });
-                    var o3 = _this.rxProcessChild(ctx.meta.child || [], child);
+        let first = child[0];
+        let childObservable = this.rxCreatePage({ meta: first, parent: parent })
+            .flatMap((page) => {
+            let o1 = this.rxProcessAttachments({ meta: first, parent: page });
+            let o2 = this.rxProcessLabels({ meta: first, parent: page });
+            let o3 = Rx.Observable.fromArray(first.child || [])
+                .map((data) => { return { meta: data, parent: page }; })
+                .concatMap((ctx) => {
+                return this.rxCreatePage(ctx)
+                    .flatMap((child) => {
+                    let o1 = this.rxProcessAttachments({ meta: ctx.meta, parent: child });
+                    let o2 = this.rxProcessLabels({ meta: ctx.meta, parent: child });
+                    let o3 = this.rxProcessChild(ctx.meta.child || [], child);
                     return Rx.Observable.concat(o1, o2, o3);
                 });
             });
             return Rx.Observable.concat(o1, o2, o3);
         });
         return childObservable;
-    };
-    return SiteProcessor;
-}());
+    }
+}
 exports.SiteProcessor = SiteProcessor;

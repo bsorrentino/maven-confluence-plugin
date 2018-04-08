@@ -1,10 +1,9 @@
 "use strict";
 /// <reference path="confluence.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-var xmlrpc = require("xmlrpc");
-var Confluence = /** @class */ (function () {
-    function Confluence(config, servicePrefix) {
-        if (servicePrefix === void 0) { servicePrefix = "confluence1."; }
+const xmlrpc = require("xmlrpc");
+class Confluence {
+    constructor(config, servicePrefix = "confluence1.") {
         this.servicePrefix = servicePrefix;
         config.path += '/rpc/xmlrpc';
         //let data = Object.assign( info, {path: '/rpc/xmlrpc'});
@@ -12,64 +11,61 @@ var Confluence = /** @class */ (function () {
             xmlrpc.createSecureClient(config) :
             xmlrpc.createClient(config);
     }
-    Confluence.prototype.login = function (user, password) {
-        var _this = this;
+    login(user, password) {
         if (this.token != null)
             return Promise.resolve(this.token);
         return this.call("login", [user, password])
-            .then(function (token) {
-            _this.token = token;
+            .then(token => {
+            this.token = token;
             return Promise.resolve(token);
         });
-    };
-    Confluence.prototype.logout = function () {
-        var _this = this;
+    }
+    logout() {
         if (this.token == null)
             return Promise.resolve(true);
         return this.call("logout", [this.token])
-            .then(function (success) {
-            _this.token = null;
+            .then(success => {
+            this.token = undefined;
             return Promise.resolve(success);
         });
-    };
-    Confluence.prototype.getServerInfo = function () {
+    }
+    getServerInfo() {
         return this.call("getServerInfo", [this.token]);
-    };
-    Confluence.prototype.getPage = function (spaceKey, pageTitle) {
+    }
+    getPage(spaceKey, pageTitle) {
         return this.call("getPage", [this.token, spaceKey, pageTitle]);
-    };
-    Confluence.prototype.getPageById = function (id) {
+    }
+    getPageById(id) {
         return this.call("getPage", [this.token, id]);
-    };
-    Confluence.prototype.getChildren = function (pageId) {
+    }
+    getChildren(pageId) {
         return this.call("getChildren", [this.token, pageId]);
-    };
-    Confluence.prototype.getDescendents = function (pageId) {
+    }
+    getDescendents(pageId) {
         return this.call("getDescendents", [this.token, pageId]);
-    };
-    Confluence.prototype.storePage = function (page) {
+    }
+    storePage(page) {
         return this.call2("confluence1.", "storePage", [this.token, page]);
-    };
-    Confluence.prototype.removePage = function (pageId) {
+    }
+    removePage(pageId) {
         return this.call("removePage", [this.token, pageId]);
-    };
-    Confluence.prototype.addAttachment = function (parentId, attachment, data) {
+    }
+    addAttachment(parentId, attachment, data) {
         return this.call("addAttachment", [this.token, parentId, attachment, data]);
-    };
+    }
     /**
      * Adds a label to the object with the given ContentEntityObject ID.
      */
-    Confluence.prototype.addLabelByName = function (page, labelName) {
+    addLabelByName(page, labelName) {
         return this.call("addLabelByName", [this.token, labelName, page.id]);
-    };
-    Confluence.prototype.call = function (op, args) {
+    }
+    call(op, args) {
         return this.call2(this.servicePrefix, op, args);
-    };
-    Confluence.prototype.call2 = function (servicePrefix, op, args) {
-        var _this = this;
-        var operation = servicePrefix.concat(op);
-        return new Promise(function (resolve, reject) {
-            _this.client.methodCall(operation, args, function (error, value) {
+    }
+    call2(servicePrefix, op, args) {
+        let operation = servicePrefix.concat(op);
+        return new Promise((resolve, reject) => {
+            this.client.methodCall(operation, args, (error, value) => {
                 if (error) {
                     console.log('error:', error);
                     console.log('req headers:', error.req && error.req._header);
@@ -83,14 +79,13 @@ var Confluence = /** @class */ (function () {
                 }
             });
         });
-    };
-    return Confluence;
-}());
-var XMLRPCConfluenceService /*Impl*/ = /** @class */ (function () {
-    function XMLRPCConfluenceService(connection, credentials) {
+    }
+}
+class XMLRPCConfluenceService /*Impl*/ {
+    constructor(connection, credentials) {
         this.connection = connection;
     }
-    XMLRPCConfluenceService.create = function (config, credentials /*, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo*/) {
+    static create(config, credentials /*, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo*/) {
         if (config == null)
             throw "config argument is null!";
         if (credentials == null)
@@ -103,97 +98,93 @@ var XMLRPCConfluenceService /*Impl*/ = /** @class */ (function () {
             HttpsURLConnection.setDefaultHostnameVerifier( sslInfo.getHostnameVerifier() );
         }
         */
-        return new Promise(function (resolve, reject) {
-            var confluence = new Confluence(config);
-            confluence.login(credentials.username, credentials.password).then(function (token) {
+        return new Promise((resolve, reject) => {
+            let confluence = new Confluence(config);
+            confluence.login(credentials.username, credentials.password).then((token) => {
                 return confluence.getServerInfo();
-            }).then(function (value) {
+            }).then((value) => {
                 if (value.majorVersion >= 4) {
                     confluence.servicePrefix = "confluence2.";
                 }
                 resolve(new XMLRPCConfluenceService(confluence, credentials));
-            }).catch(function (error) {
+            }).catch((error) => {
                 reject(error);
             });
         });
-    };
-    Object.defineProperty(XMLRPCConfluenceService.prototype, "credentials", {
-        get: function () {
-            return this.credentials;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    XMLRPCConfluenceService.prototype.getPage = function (spaceKey, pageTitle) {
+    }
+    get credentials() {
+        return this.credentials;
+    }
+    getPage(spaceKey, pageTitle) {
         return this.connection.getPage(spaceKey, pageTitle);
-    };
-    XMLRPCConfluenceService.prototype.getPageByTitle = function (parentPageId, title) {
+    }
+    getPageByTitle(parentPageId, title) {
         if (parentPageId == null)
             throw "parentPageId argument is null!";
         if (title == null)
             throw "title argument is null!";
         return this.connection.getChildren(parentPageId)
-            .then(function (children) {
-            for (var i = 0; i < children.length; ++i) {
+            .then((children) => {
+            for (let i = 0; i < children.length; ++i) {
                 if (title === children[i].title) {
                     return Promise.resolve(children[i]);
                 }
             }
-            return Promise.resolve(null);
+            return Promise.reject("page not found!");
         });
-    };
-    XMLRPCConfluenceService.prototype.getPageById = function (pageId) {
-        return null;
-    };
-    XMLRPCConfluenceService.prototype.getDescendents = function (pageId) {
+    }
+    getPageById(pageId) {
+        if (pageId == null)
+            throw "pageId argument is null!";
+        return this.connection.getPageById(pageId);
+    }
+    getDescendents(pageId) {
         return this.connection.getDescendents(pageId);
-    };
-    XMLRPCConfluenceService.prototype.getAttachment = function (pageId, name, version) {
-        return null;
-    };
-    XMLRPCConfluenceService.prototype.getOrCreatePage = function (spaceKey, parentPageTitle, title) {
-        var _this = this;
+    }
+    getAttachment(pageId, name, version) {
+        return Promise.reject("getAttachment not implemented yet");
+    }
+    getOrCreatePage(spaceKey, parentPageTitle, title) {
         return this.connection.getPage(spaceKey, parentPageTitle)
-            .then(function (parentPage) { return _this.getOrCreatePage2(parentPage, title); });
-    };
-    XMLRPCConfluenceService.prototype.getOrCreatePage2 = function (parentPage, title) {
-        var _this = this;
+            .then((parentPage) => this.getOrCreatePage2(parentPage, title));
+    }
+    getOrCreatePage2(parentPage, title) {
         return this.getPageByTitle(parentPage.id, title)
-            .then(function (result) {
+            .then((result) => {
             if (result != null)
-                return _this.connection.getPageById(result.id);
-            var p = {
+                return this.connection.getPageById(result.id);
+            let p = {
                 space: parentPage.space,
                 parentId: parentPage.id,
                 title: title
             };
             return Promise.resolve(p);
         });
-    };
-    XMLRPCConfluenceService.prototype.removePage = function (parentPage, title) {
-        return null;
-    };
-    XMLRPCConfluenceService.prototype.removePageById = function (pageId) {
+    }
+    removePage(parentPage, title) {
+        return Promise.reject("removePage not implemented yet");
+        ;
+    }
+    removePageById(pageId) {
         return this.connection.removePage(pageId);
-    };
-    XMLRPCConfluenceService.prototype.addLabelByName = function (page, label) {
+    }
+    addLabelByName(page, label) {
         return this.connection.addLabelByName(page, label);
-    };
-    XMLRPCConfluenceService.prototype.addAttachment = function (page, attachment, content) {
+    }
+    addAttachment(page, attachment, content) {
         return this.connection.addAttachment(page.id, attachment, content);
-    };
-    XMLRPCConfluenceService.prototype.storePageContent = function (page, content) {
+    }
+    storePageContent(page, content) {
         if (content == null) {
             throw "content argument is null!";
         }
-        var p = page;
+        let p = page;
         p.content = content.value;
         return this.connection.storePage(p);
-    };
-    XMLRPCConfluenceService.prototype.storePage = function (page) {
-        var p = page;
+    }
+    storePage(page) {
+        let p = page;
         return this.connection.storePage(p);
-    };
-    return XMLRPCConfluenceService;
-}());
+    }
+}
 exports.XMLRPCConfluenceService = XMLRPCConfluenceService;

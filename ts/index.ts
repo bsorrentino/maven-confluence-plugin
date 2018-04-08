@@ -48,8 +48,8 @@ export function deploy() {
     //.map( (logo) => args['config'] || false )
     //.doOnNext( (v) => console.log( "force config", v, args))
     .flatMap( (logo) => rxConfig(args['config'] || false ) )
-    .flatMap( (result) => rxConfluenceConnection( result[0], result[1]  ) )
-    .flatMap( (result) => rxGenerateSite( result[1] as Config, result[0] as XMLRPCConfluenceService ) )
+    .flatMap( ([config,credentials]) => rxConfluenceConnection( config, credentials  ) )
+    .flatMap( ([confluence,config]) => rxGenerateSite( config, confluence ) )
     .subscribe(
       //(result) => console.dir( result, {depth:2} ),
       (result) => {},
@@ -120,10 +120,11 @@ export function download( pageId:string, fileName:string, isStorageFormat = fals
   rxFiglet( LOGO, undefined )
   .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
   .flatMap( () => rxConfig( false ) )
-  .flatMap( ([config,credentials]) => rxRequest( config, credentials ) )
+  .flatMap( ([config,credentials]) => rxConfluenceConnection( config, credentials ) )
+  .flatMap( ([confluence,config]) => Rx.Observable.fromPromise( confluence.getPageById( pageId )) )
     .subscribe( 
       (res) => {
-        console.log(res)
+        console.log(res.title)
        } ,
       err => console.error( chalk.red(err) )
     );

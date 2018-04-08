@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var markdown = require("marked");
-var WikiRenderer = /** @class */ (function () {
-    function WikiRenderer() {
+const markdown = require("marked");
+class WikiRenderer {
+    constructor() {
         this.langs = {
             'actionscript3': true,
             'bash': true,
@@ -30,43 +30,42 @@ var WikiRenderer = /** @class */ (function () {
             'xml': true
         };
     }
-    WikiRenderer.prototype.paragraph = function (text) { return text + '\n\n'; };
-    WikiRenderer.prototype.html = function (html) { return html; };
-    WikiRenderer.prototype.heading = function (text, level, raw) { return 'h' + level + '. ' + text + '\n\n'; };
-    WikiRenderer.prototype.strong = function (text) { return '*' + text + '*'; };
-    WikiRenderer.prototype.em = function (text) { return '_' + text + '_'; };
-    WikiRenderer.prototype.del = function (text) { return '-' + text + '-'; };
-    WikiRenderer.prototype.codespan = function (text) { return '{{' + text + '}}'; };
-    WikiRenderer.prototype.blockquote = function (quote) { return '{quote}' + quote + '{quote}'; };
-    WikiRenderer.prototype.br = function () { return '\n'; };
-    WikiRenderer.prototype.hr = function () { return '----'; };
-    WikiRenderer.prototype.link = function (href, title, text) {
-        var arr = [text, href];
+    paragraph(text) { return text + '\n\n'; }
+    html(html) { return html; }
+    heading(text, level, raw) { return 'h' + level + '. ' + text + '\n\n'; }
+    strong(text) { return '*' + text + '*'; }
+    em(text) { return '_' + text + '_'; }
+    del(text) { return '-' + text + '-'; }
+    codespan(text) { return '{{' + text + '}}'; }
+    blockquote(quote) { return '{quote}' + quote + '{quote}'; }
+    br() { return '\n'; }
+    hr() { return '----'; }
+    link(href, title, text) {
+        let arr = [text, href];
         if (title)
             arr.push(title);
         return '[' + arr.join('|') + ']';
-    };
-    WikiRenderer.prototype.list = function (body, ordered) {
-        var arr = body.trim().split('\n').filter(function (line) { return line; });
+    }
+    list(body, ordered) {
+        let arr = body.trim().split('\n').filter((line) => line);
         var type = ordered ? '#' : '*';
-        return arr.map(function (line) { return type + ' ' + line; }).join('\n') + '\n\n';
-    };
-    WikiRenderer.prototype.listitem = function (body /*, ordered*/) { return body + '\n'; };
-    WikiRenderer.prototype.image = function (href, title, text) { return '!' + href + '!'; };
-    WikiRenderer.prototype.table = function (header, body) { return header + body + '\n'; };
-    WikiRenderer.prototype.tablerow = function (content /*, flags*/) { return content + '\n'; };
-    WikiRenderer.prototype.tablecell = function (content, flags) {
+        return arr.map((line) => type + ' ' + line).join('\n') + '\n\n';
+    }
+    listitem(body /*, ordered*/) { return body + '\n'; }
+    image(href, title, text) { return '!' + href + '!'; }
+    table(header, body) { return header + body + '\n'; }
+    tablerow(content /*, flags*/) { return content + '\n'; }
+    tablecell(content, flags) {
         var type = flags.header ? '||' : '|';
         return type + content;
-    };
-    WikiRenderer.prototype.code = function (code, lang) {
+    }
+    code(code, lang) {
         lang = this.langs[lang] ? lang : "";
         return '{code:' + lang + '}\n' + code + '\n{code}\n\n';
-    };
-    WikiRenderer.prototype.text = function (text) { return text; };
-    return WikiRenderer;
-}());
-var renderer = new WikiRenderer();
+    }
+    text(text) { return text; }
+}
+const renderer = new WikiRenderer();
 function markdown2wiki(md) {
     return markdown(md.toString(), {
         renderer: renderer,
