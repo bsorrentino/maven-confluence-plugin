@@ -51,7 +51,6 @@ import org.pegdown.ast.VerbatimNode;
 import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
 
-import rx.functions.Func1;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -150,17 +149,17 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     protected abstract void notImplementedYet( Node node );
 
-    protected StringBuilder bufferVisit( Func1<Void,Void> closure  ) {
+    protected StringBuilder bufferVisit( java.util.function.Consumer<Void> closure  ) {
 
         return bufferVisit( new StringBuilder(), closure );
     }
 
-    protected StringBuilder bufferVisit( final StringBuilder _sb, Func1<Void,Void> closure  ) {
+    protected StringBuilder bufferVisit( final StringBuilder _sb, java.util.function.Consumer<Void> closure  ) {
 
         final StringBuilder _original = _buffer;
         _buffer = _sb;
         try {
-            closure.call(null);
+            closure.accept(null);
         }
         finally {
             _buffer = _original;
@@ -237,16 +236,12 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
                     if( found ) { // GET ELEMENT TITLE
 
-                        final StringBuilder _sb = bufferVisit(new Func1<Void,Void>() {
-
-                            @Override
-                            public Void call(Void p) {
+                        final StringBuilder _sb = bufferVisit(  (param) ->  {
                                parent.getChildren().remove(0);
                                visitChildren(parent);
-                               return null;
                             }
 
-                        });
+                        );
                         title = _sb.toString().trim();
 
                     }
@@ -316,13 +311,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(RootNode rn) {
 
         for (final ReferenceNode referenceNode : rn.getReferences()) {
-            String ref = bufferVisit( new Func1<Void, Void>() {
-                @Override
-                public Void call(Void p) {
-                    visitChildren(referenceNode);
-                    return null;
-                }
-            }).toString();
+            String ref = bufferVisit( (p) ->  visitChildren(referenceNode) ).toString();
 
             referenceNodes.put(ref, referenceNode);
         }
@@ -352,15 +341,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     @Override
     public void visit(final BlockQuoteNode bqn) {
 
-      final String text = bufferVisit(new Func1<Void,Void>() {
-
-          @Override
-          public Void call(Void p) {
-             visitChildren(bqn);
-             return null;
-          }
-
-      }).toString();
+      final String text = bufferVisit( (p) -> visitChildren(bqn)).toString();
 
       final String lines[] = text.split("\n");
 
@@ -534,22 +515,10 @@ public abstract class ToConfluenceSerializer implements Visitor {
         final String ref;
         if( referenceKey != null ) {
 
-            ref = bufferVisit(new Func1<Void, Void>() {
-                @Override
-                public Void call(Void p) {
-                    visitChildren(referenceKey);
-                    return null;
-                }
-            }).toString();
+            ref = bufferVisit((p) -> visitChildren(referenceKey)).toString();
         } else {
             // in case the refkey is not with the link, we use the references found in the root node
-            ref = bufferVisit(new Func1<Void, Void>() {
-                @Override
-                public Void call(Void p) {
-                    visitChildren(refnode);
-                    return null;
-                }
-            }).toString();
+            ref = bufferVisit((p) -> visitChildren(refnode)).toString();
         }
         return ref;
     }

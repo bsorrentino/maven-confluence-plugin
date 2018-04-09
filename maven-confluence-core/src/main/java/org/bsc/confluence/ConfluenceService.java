@@ -5,11 +5,9 @@
  */
 package org.bsc.confluence;
 
-import java.util.regex.Pattern;
-
-import rx.functions.Action1;
-
 import static java.lang.String.format;
+
+import java.util.regex.Pattern;
 /**
  *
  * @author bsorrentino
@@ -174,7 +172,7 @@ public interface ConfluenceService {
                         ExportFormat exfmt, 
                         java.io.File outputFile) throws Exception;
     
-    void call(Action1<ConfluenceService> task) throws Exception;
+    void call(java.util.function.Consumer<ConfluenceService> task) throws Exception;
     
     //
     // ATTACHMENT

@@ -10,8 +10,11 @@ import static java.lang.String.format;
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -25,8 +28,6 @@ import org.bsc.ssl.SSLCertificateInfo;
 import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
 
 import okhttp3.HttpUrl;
-import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * @see https://docs.atlassian.com/confluence/REST/latest/
@@ -146,33 +147,27 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
         
-        return rxChildrenPages(parentPageId)
+        return Arrays.stream(rxChildrenPages(parentPageId))
                 .map( page -> new Page(page) )
                 .filter( page -> page.getTitle().equals( title ))
-                .toBlocking()
-                .firstOrDefault(null);
+                .findFirst().orElse(null);
     }
 
     @Override
     public Model.Page getOrCreatePage(final String spaceKey, final String parentPageTitle, final String title) throws Exception {
-        final Observable<JsonObject> error =  
-                Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
-
-         
-        return  rxfindPage(spaceKey, parentPageTitle)
-                .switchIfEmpty( error )                        
-                .map( page -> new Page(page) )
-                .flatMap( (parent) -> {
+        final JsonObject page = rxfindPage(spaceKey, parentPageTitle).orElseThrow( () -> new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)) );
+ 
+        return  Stream.of(page)
+                .map( p -> new Page(p) )
+                .map( (parent) -> {
 
                     final String id = parent.getId();
                     final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
-                    return rxfindPage(spaceKey,title)                                    
-                            .switchIfEmpty( rxCreatePage( input.build() ));
+                    return rxfindPage(spaceKey,title).orElseGet( () -> rxCreatePage( input.build() ) );                                  
                  })
-                .map( page -> new Page(page) )
-                .toBlocking()
-                .first()
+                .map( p -> new Page(p) )
+                .findFirst().orElse(null)
                 ;
     }
 
@@ -183,11 +178,9 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         final String id = parentPage.getId();
         final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
-        return rxfindPage(spaceKey,title)                                    
-                .switchIfEmpty( rxCreatePage( input.build() ))
-                .map( page -> new Page(page))
-                .toBlocking()
-                .first();
+        final JsonObject result =  rxfindPage(spaceKey,title).orElseGet( () -> rxCreatePage( input.build() ) );
+        
+        return new Page(result);
     }
 
     /**
@@ -199,31 +192,26 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.Page getPage(String pageId) throws Exception {
         
-        return rxfindPageById(pageId)
-                            .map( page -> new Page(page))
-                            .toBlocking()
-                            .first();
+        final JsonObject result =  rxfindPageById(pageId).orElseThrow( () -> new Exception(format( "page [%s] not found!", pageId)));
+    
+        return new Page(result);
     }
 
     @Override
     public Model.Page getPage(String spaceKey, String pageTitle) throws Exception {
-                
-        return rxfindPage(spaceKey, pageTitle) 
-                     .map( page -> new Page(page))
-                     .toBlocking()
-                     .first();
+               
+        final JsonObject result = rxfindPage(spaceKey, pageTitle).orElseThrow( () -> new Exception(format( "page [%s] not found!", pageTitle)));
+        
+        return new Page(result);
     }
     
     
     @Override
     public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
         
-        return rxDescendantPages(pageId)
+        return rxDescendantPages(pageId).stream()
                 .map( (page) -> new Page(page))
-                .cast(Model.PageSummary.class)
-                .toList()
-                .toBlocking()
-                .first();
+                .collect( Collectors.toList() );
         
     }
 
@@ -246,10 +234,10 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                 .build()
                 ;        
         
-        return rxUpdatePage(page.getId(),input)
-                                    .map( (p) -> new Page(p))
-                                    .toBlocking()
-                                    .first();
+        
+        final JsonObject result = rxUpdatePage(page.getId(),input);
+        
+        return new Page(result);
     }
 
     @Override
@@ -260,7 +248,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public boolean addLabelByName(String label, long id) throws Exception {
  
-        rxAddLabels(String.valueOf(id), label).toBlocking().first();
+        rxAddLabels(String.valueOf(id), label);
         return true;
     }
 
@@ -282,11 +270,11 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public void call(Action1<ConfluenceService> task) throws Exception {
+    public void call(java.util.function.Consumer<ConfluenceService> task) throws Exception {
     		if (task == null)
 				throw new java.lang.IllegalArgumentException("task is null!");
 
-    		task.call(this);
+    		task.accept(this);
     }
 
     @Override
@@ -297,41 +285,36 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.Attachment getAttachment(String pageId, String name, String version) throws Exception {
        
-        return rxAttachment(pageId, name)
-                //.doOnNext( System.out::println)
-                .map( (att) -> new Attachment(att) )
-                .toBlocking()
-                .firstOrDefault(null);
+        return Arrays.stream(rxAttachment(pageId, name))
+            .map( result -> new Attachment(result) )
+            .findFirst().orElse(null);
     }
 
     @Override
     public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
 
-        return rxAddAttachment(page.getId(), cast(attachment), source)
-                .map( att -> new Attachment(att) )
-                .toBlocking()
-                .firstOrDefault(null);
+        return Arrays.stream(rxAddAttachment(page.getId(), cast(attachment), source))
+                .map( result -> new Attachment(result) )
+                .findFirst().orElse(null);
+
     }
     
     @Override
     public boolean removePage(Model.Page parentPage, String title) throws Exception {
         
-        return rxChildrenPages(parentPage.getId())
+        return Arrays.stream(rxChildrenPages(parentPage.getId()))
                 .map( page -> new Page(page))
-                .first( page -> page.getTitle().equals(title) )
-                .flatMap( (page) -> rxDeletePageById(page.getId()))
+                .filter( page -> page.getTitle().equals(title) )
+                .map( (page) -> rxDeletePageById(page.getId()))
                 .map( res -> true)
-                .toBlocking()
-                .firstOrDefault(false);
+                .findFirst().orElse(false);
         
     }
 
     @Override
     public void removePage(String pageId) throws Exception {
         
-        rxDeletePageById(pageId)
-                .toBlocking()
-                .first();
+        rxDeletePageById(pageId);
         
     }
 
