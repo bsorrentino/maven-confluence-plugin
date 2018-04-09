@@ -5,21 +5,23 @@
  */
 package org.codehaus.swizzle.confluence;
 
+import static java.lang.String.format;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
-import org.bsc.confluence.ConfluenceService;
-import static java.lang.String.format;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.List;
+
 import javax.net.ssl.HttpsURLConnection;
+
 import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.ssl.SSLCertificateInfo;
-import rx.functions.Action1;
 
 /**
  *
@@ -303,10 +305,10 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public void call(Action1<ConfluenceService> task) throws Exception {
+    public void call(java.util.function.Consumer<ConfluenceService> task) throws Exception {
         
         try {
-            task.call(this);
+            task.accept(this);
         }
         finally {
             logout();

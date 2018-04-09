@@ -9,21 +9,22 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.*;
+import java.util.function.BiFunction;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
-import rx.functions.Func2;
-//import org.slf4j.Logger;  
-//import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -88,7 +89,7 @@ public class Site {
     public static <T> T processUri(
                                 final java.net.URI uri,
                                 final String homePageTitle,
-                                final Func2<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception
+                                final BiFunction<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception
     {
             if( uri == null ) {
                 throw new IllegalArgumentException( "uri is null!" );
@@ -153,7 +154,7 @@ public class Site {
                 result = new ByteArrayInputStream(resultString.getBytes());
             }
             */
-            return onSuccess.call(result, representation);
+            return onSuccess.apply(result, representation);
     }
 
     /**

@@ -20,8 +20,6 @@ import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl;
-
-import rx.functions.Action1;
 /**
  *
  * @author bsorrentino
@@ -93,9 +91,7 @@ public class ConfluenceServiceFactory {
                     restService.jsonAddBody(inputData, content);
                     
                     final JsonObject result = 
-                    		restService.rxCreatePage(inputData.build())
-                    			.toBlocking()
-                    			.first();
+                    		restService.rxCreatePage(inputData.build());
                     
                     return new Page(result);
                     
@@ -137,9 +133,9 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public void call(Action1<ConfluenceService> task) throws Exception {       
+        public void call(java.util.function.Consumer<ConfluenceService> task) throws Exception {       
             try {
-                task.call(this);
+                task.accept(this);
             }
             finally {
             		xmlrpcService.logout();

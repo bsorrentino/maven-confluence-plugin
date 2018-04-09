@@ -30,7 +30,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import rx.functions.Action1;
 
 
 /**
@@ -105,7 +104,7 @@ public class Issue106IntegrationTest {
      * @return
      * @throws IOException 
      */
-    void findPages( String title, Action1<JsonArray> success ) throws IOException {
+    void findPages( String title, java.util.function.Consumer<JsonArray> success ) throws IOException {
 
         final String credential = Credentials.basic("admin", "admin");
 
@@ -143,7 +142,7 @@ public class Issue106IntegrationTest {
             final JsonArray results = root.getJsonArray("results");
             Assert.assertThat( results,  IsNull.notNullValue() );
             
-            success.call(results);
+            success.accept(results);
             
         }
         
@@ -153,9 +152,7 @@ public class Issue106IntegrationTest {
     public void findPageTest() throws IOException {
 
         
-        findPages( "Home", new Action1<JsonArray>() {
-            @Override
-            public void call(JsonArray results) {
+        findPages( "Home", ( results ) -> {
                 
                 Assert.assertThat( results.size(),  IsEqual.equalTo(1) );
 
@@ -164,7 +161,6 @@ public class Issue106IntegrationTest {
                 Assert.assertThat( item0.containsKey("id"), Is.is(true) );
 
                 Assert.assertThat( item0.getString("id"), IsEqual.equalTo("1867778") );
-            }
             
         });
         
@@ -204,9 +200,7 @@ public class Issue106IntegrationTest {
     public void addStoragePage() throws IOException {
         final String title = "test-storage";
         
-        findPages( title, new Action1<JsonArray>() {
-            @Override
-            public void call(JsonArray results) {
+        findPages( title, (results) -> {
                 
                 if( results.size() == 1 ) {
                     final JsonObject item0 = results.getJsonObject(0);
@@ -215,7 +209,6 @@ public class Issue106IntegrationTest {
                     
                     deletePage( item0.getString("id") );
                 }
-            }
             
         });
     
@@ -278,10 +271,7 @@ public class Issue106IntegrationTest {
         
         final String title = "test-wiki";
         
-        findPages( title, new Action1<JsonArray>() {
-            @Override
-            public void call(JsonArray results) {
-                
+        findPages( title, (results) -> {
                 if( results.size() == 1 ) {
                     final JsonObject item0 = results.getJsonObject(0);
                     Assert.assertThat( item0,  IsNull.notNullValue() );
@@ -289,7 +279,6 @@ public class Issue106IntegrationTest {
                     
                     deletePage( item0.getString("id") );
                 }
-            }
             
         });
     

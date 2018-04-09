@@ -9,6 +9,11 @@ import static java.lang.String.format;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -29,7 +34,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import rx.Observable;
 
 /**
  *
@@ -46,7 +50,7 @@ public abstract class AbstractRESTConfluenceService {
     protected abstract HttpUrl.Builder urlBuilder();
 
     @SuppressWarnings("serial")
-	public static class ServiceException extends Exception {
+	public static class ServiceException extends Error {
         public final Response res;
 
         public ServiceException(String message, Response res ) {
@@ -55,29 +59,25 @@ public abstract class AbstractRESTConfluenceService {
         }
         
     }
-    protected Observable<Response> fromRequest( final Request req, final String description ) {
-        
-         return rx.Observable.create((t) -> {
-                try {
-                    final Response res = client.build().newCall(req).execute();
+    protected Response fromRequest( final Request req, final String description ) {
+              
+        try {
+            final Response res = client.build().newCall(req).execute();
 
-                    if( !res.isSuccessful() ) {
-                        t.onError(new ServiceException( format("error: %s\n%s", description, res.toString()), res));
-                        return;
-                    }
+            if( !res.isSuccessful() ) {
+                throw new ServiceException( format("error: %s\n%s", description, res.toString()), res);
+            }
 
-                    t.onNext(res);
-                    t.onCompleted();                        
-                                        
-                } catch (IOException ex) {
-                    
-                    t.onError(ex);
-                }                
-        });
+            return res;
+                                
+        } catch (IOException ex) {
+            
+            throw new Error(ex);
+        }                
        
     }
     
-    protected Observable<Response> fromUrlGET( final HttpUrl url, final String description ) {
+    protected Response fromUrlGET( final HttpUrl url, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -87,12 +87,10 @@ public abstract class AbstractRESTConfluenceService {
                 .get()
                 .build();
         
-        return fromRequest(req, description)
-        				//.doOnNext( this::debugBody )
-;
+        return fromRequest(req, description);
     }
     
-    protected Observable<Response> fromUrlDELETE( final HttpUrl url, final String description ) {
+    protected Response fromUrlDELETE( final HttpUrl url, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -105,7 +103,7 @@ public abstract class AbstractRESTConfluenceService {
         return fromRequest(req, description);
     }
     
-    protected Observable<Response> fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description ) {
+    protected Response fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -119,7 +117,7 @@ public abstract class AbstractRESTConfluenceService {
         return fromRequest(req, description);
     }
     
-    protected Observable<Response> fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description ) {
+    protected Response fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -144,7 +142,7 @@ public abstract class AbstractRESTConfluenceService {
 		}
         
     }
-    protected Observable<JsonObject> mapToArray( Response res)  {
+    protected JsonObject[] mapToArray( Response res)  {
 
         final ResponseBody body = res.body();
         
@@ -155,7 +153,7 @@ public abstract class AbstractRESTConfluenceService {
             final JsonObject root = rdr.readObject();
 
             if( !root.containsKey("results") ) {
-            		return Observable.error( new Exception(root.toString()) );
+            		throw new Error(root.toString());
             }
             
             // {"statusCode":404,"data":{"authorized":false,"valid":true,"errors":[],"successful":false,"notSuccessful":true},"message":"No space with key : TEST"}
@@ -163,18 +161,18 @@ public abstract class AbstractRESTConfluenceService {
 
             //System.out.println( root.toString() );
             if (results == null || results.isEmpty()) {
-                return Observable.empty();
+                return new JsonObject[] {};
             }
 
             JsonObject array[] = new JsonObject[ results.size() ];
             for( int ii = 0 ; ii < results.size() ; ++ii )
                 array[ii] = results.getJsonObject(ii);
 
-            return Observable.from( array );
+            return array;
 
         } catch (IOException | JsonParsingException e ) {
-        		return Observable.error(e);
-        	} 
+            throw new Error(e);
+        } 
         
     }
    
@@ -196,7 +194,7 @@ public abstract class AbstractRESTConfluenceService {
     };
  
 
-    protected Observable<JsonObject> rxfindPageById( final String id ) {
+    protected Optional<JsonObject> rxfindPageById( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -204,11 +202,10 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
         
-        return fromUrlGET( url, "find page" )
-                .map( this::mapToObject );
+        return Arrays.stream(mapToArray(fromUrlGET( url, "find page" ))).findFirst();
     }
 
-    protected Observable<JsonObject> rxfindPages( final String spaceKey, final String title ) {
+    protected JsonObject[] rxfindPages( final String spaceKey, final String title ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -216,12 +213,11 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("title", title)
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "find pages" )
-                .flatMap( this::mapToArray );
+        return mapToArray(fromUrlGET( url, "find pages" ));
         
     }
     
-    protected Observable<JsonObject> rxDescendantPages( final String id ) {
+    protected List<JsonObject> rxDescendantPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -230,20 +226,19 @@ public abstract class AbstractRESTConfluenceService {
                                     .addPathSegments("child/page")
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "get descendant pages" )
-        			//.doOnNext( this::debugBody )
-                .flatMap( this::mapToArray )
-                .concatMap( (o) -> {
-                		final String childId = o.getString("id");
-                		return Observable.concat( Observable.just(o), rxDescendantPages(childId) );
+        
+        return Arrays.stream(mapToArray(fromUrlGET( url, "get descendant pages" )))
+                .flatMap( (JsonObject o) -> {
+                    final String childId = o.getString("id");
+                    return Stream.concat(Stream.of(o), rxDescendantPages(childId).stream()) ; 
                 })
-                
+                .collect( Collectors.toList() )                
                 ;
         
     }
     
 
-    protected Observable<JsonObject> rxChildrenPages( final String id ) {
+    protected JsonObject[] rxChildrenPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -251,8 +246,7 @@ public abstract class AbstractRESTConfluenceService {
                                     .addPathSegments("child/page")                
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "get children pages" )
-                .flatMap( this::mapToArray );
+        return mapToArray(fromUrlGET( url, "get children pages" ));
         
     }
 
@@ -262,12 +256,12 @@ public abstract class AbstractRESTConfluenceService {
      * @param title
      * @return 
      */
-    public Observable<JsonObject> rxfindPage( final String spaceKey, final String title ) {
+    public Optional<JsonObject> rxfindPage( final String spaceKey, final String title ) {
         
-        return rxfindPages(spaceKey, title).take(1);
+        return Arrays.stream(rxfindPages(spaceKey, title)).findFirst();
     }
     
-    protected Observable<Response> rxDeletePageById( final String id ) {
+    protected Response rxDeletePageById( final String id ) {
         
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -283,7 +277,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return 
      */
-    public final Observable<JsonObject> rxCreatePage( final JsonObject inputData ) {
+    public final JsonObject rxCreatePage( final JsonObject inputData ) {
         final MediaType storageFormat = MediaType.parse("application/json");
         
         final RequestBody inputBody = RequestBody.create(storageFormat, 
@@ -293,10 +287,10 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment("content")
                                 .build();
  
-        return fromUrlPOST(url, inputBody, "create page").map( this::mapToObject );
+        return mapToObject(fromUrlPOST(url, inputBody, "create page"));
     }
     
-    protected Observable<JsonObject> rxUpdatePage( final String pageId, final JsonObject inputData ) {
+    protected JsonObject rxUpdatePage( final String pageId, final JsonObject inputData ) {
 
         final MediaType storageFormat = MediaType.parse("application/json");
         
@@ -308,7 +302,7 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment(pageId)
                                 .build();
 
-        return fromUrlPUT(url, inputBody, "update page").map( this::mapToObject );
+        return mapToObject(fromUrlPUT(url, inputBody, "update page"));
     }
 
     /**
@@ -316,7 +310,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return 
      */
-    protected final Observable<Response> rxAddLabels( String id,  String ...labels ) {
+    protected final Response rxAddLabels( String id,  String ...labels ) {
         
         
         final JsonArrayBuilder inputBuilder = Json.createArrayBuilder();
@@ -347,7 +341,7 @@ public abstract class AbstractRESTConfluenceService {
         return fromUrlPOST(url, inputBody, "add label");
     }
 
-    protected Observable<JsonObject> rxAttachments( final String id ) {
+    protected JsonObject[] rxAttachments( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -356,12 +350,11 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
         
-        return fromUrlGET( url, "get attachments" )
-                .flatMap( this::mapToArray );
+        return mapToArray(fromUrlGET( url, "get attachments" ));
         
     }
     
-    protected Observable<JsonObject> rxAttachment( final String id, final String fileName ) {
+    protected JsonObject[] rxAttachment( final String id, final String fileName ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -371,20 +364,18 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
         
-        return fromUrlGET( url, "get attachment" )
-                .flatMap( this::mapToArray )
-                ;
+        return mapToArray(fromUrlGET( url, "get attachment" ));
         
     }
     
-    protected Observable<JsonObject> rxAddAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
+    protected JsonObject[] rxAddAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
 
         final RequestBody fileBody;
         
         try {
             fileBody = RequestBody.create( MediaType.parse(att.getContentType()), IOUtils.toByteArray(data));
         } catch (IOException ex) {
-            return Observable.error( ex );
+            throw new Error( ex );
         }
         
         final RequestBody inputBody = new MultipartBody.Builder()
@@ -404,20 +395,11 @@ public abstract class AbstractRESTConfluenceService {
                     
         }
  
-        final Observable<Response> post =  fromUrlPOST(builder.build(), inputBody, "create attachment")
-        		/*
-                .onErrorResumeNext((ex) -> {
-                    if( ex instanceof ServiceException ) {
-                        final ServiceException rex = (ServiceException)ex;
-                      
-                    }                    
-                    return Observable.error(ex);
-                });
-        		*/
-        		;
+        final Response post =  fromUrlPOST(builder.build(), inputBody, "create attachment");
+        
         return (att.getId() != null) ? 
-                post.map( this::mapToObject ) : 
-                post.flatMap( this::mapToArray )
+                new JsonObject[] { mapToObject(post) }: 
+                mapToArray(post)
                 ;
         
     }
