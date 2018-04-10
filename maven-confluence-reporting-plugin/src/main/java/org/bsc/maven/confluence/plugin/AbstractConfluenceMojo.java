@@ -1,28 +1,28 @@
 package org.bsc.maven.confluence.plugin;
 
+import static java.lang.String.format;
+
 import java.io.File;
-import java.util.Collections;
-
-import org.apache.maven.project.MavenProject;
-
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
-import rx.functions.Func2;
-import static java.lang.String.format;
+
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 /**
  *
  * @author bsorrentino
@@ -273,9 +273,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
                 final Model.Page pageToUpdate = result;
                 
-                result = Site.processUri(source, this.getTitle(), new Func2<InputStream,Storage.Representation,Model.Page>() {
-                    @Override
-                    public Model.Page call(InputStream is, Representation r) {
+                result = Site.processUri(source, this.getTitle(), (InputStream is, Representation r) -> {
 
                         try {
                             final MiniTemplator t = new MiniTemplator.Builder()
@@ -295,7 +293,6 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                             final String msg = format("error storing page [%s]", pageToUpdate.getTitle());
                             throw new RuntimeException(msg, ex);
                         }
-                    }
                     
                 }) ;
 
@@ -371,15 +368,12 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     private String processUri( java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            return  Site.processUri(uri, this.getTitle(), new Func2<InputStream, Representation, String>() {
-                @Override
-                public String call(InputStream is, Representation r) {
+            return  Site.processUri(uri, this.getTitle(), (InputStream is, Representation r) -> {
                     try {
                         return AbstractConfluenceMojo.this.toString( is, charset );
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                }
             }) ;
 
         } catch (Exception ex) {

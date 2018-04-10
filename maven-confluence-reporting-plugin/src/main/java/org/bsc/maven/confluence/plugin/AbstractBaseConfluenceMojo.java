@@ -1,6 +1,10 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.bsc.ssl.SSLCertificateInfo;
+import static java.lang.String.format;
+
+import java.util.function.Consumer;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -9,14 +13,12 @@ import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceServiceFactory;
+import org.bsc.ssl.SSLCertificateInfo;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
-import static java.lang.String.format;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.bsc.confluence.ConfluenceService.Model;
-import rx.functions.Action1;
 
 
 /**
@@ -178,7 +180,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @param task
      * @throws MojoExecutionException
      */
-    protected <T extends Action1<ConfluenceService>> void confluenceExecute(T task) throws MojoExecutionException {
+    protected <T extends Consumer<ConfluenceService>> void confluenceExecute(T task) throws MojoExecutionException {
 
         ConfluenceService confluence = null;
         
