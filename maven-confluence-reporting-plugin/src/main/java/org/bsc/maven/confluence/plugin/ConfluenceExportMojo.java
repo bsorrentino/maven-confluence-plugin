@@ -15,8 +15,6 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ExportFormat;
 
-import rx.functions.Action1;
-
 /**
  * Export a confluence page either in PDF or DOC 
  * 
@@ -94,17 +92,13 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
        super.loadUserInfoFromSettings();
         
-        super.confluenceExecute( new Action1<ConfluenceService>() {
-
-            @Override
-            public void call(ConfluenceService confluence)  {
+        super.confluenceExecute( (ConfluenceService confluence) -> {
                 
                 try {
                     exportPage(confluence);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
-            }
   
         });
         

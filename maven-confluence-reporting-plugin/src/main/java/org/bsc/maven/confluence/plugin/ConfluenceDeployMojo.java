@@ -59,8 +59,6 @@ import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import rx.functions.Action1;
-import rx.functions.Func2;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -516,9 +514,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         final Model.Page confluenceHomePage = Site.processUri(  site.getHome().getUri(), 
                                                                 this.getTitle(), 
-                                                                new Func2<InputStream, Representation, Model.Page>() {
-            @Override
-            public Model.Page call(InputStream is, Representation r) {
+                                                                (InputStream is, Representation r) -> {
                 try {
 
                     final Model.Page page = 
@@ -536,7 +532,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
-            }
 
         }) ;
 
@@ -552,10 +547,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private void generateProjectReport( final Site site, final Locale locale ) throws MojoExecutionException
     {
 
-        super.confluenceExecute(new Action1<ConfluenceService>() {
-
-            @Override
-            public void call(ConfluenceService confluence)  {
+        super.confluenceExecute( (ConfluenceService confluence)  -> {
                 try {
                     generateProjectReport(confluence, site, locale);
                 } catch( RuntimeException re ) {
@@ -563,7 +555,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
-            }
 
         });
 
@@ -575,7 +566,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * @return
      */
     private ReportingResolutionListener resolveProject() {
-        Map managedVersions = null;
+        Map<String,Artifact> managedVersions = null;
         try {
             managedVersions = createManagedVersionMap(project.getId(), project.getDependencyManagement());
         } catch (ProjectBuildingException e) {
@@ -602,10 +593,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
      * @return
      * @throws ProjectBuildingException
      */
-    private Map createManagedVersionMap(String projectId, DependencyManagement dependencyManagement) throws ProjectBuildingException {
-        Map map;
+    private Map<String,Artifact> createManagedVersionMap(String projectId, DependencyManagement dependencyManagement) throws ProjectBuildingException {
+        Map<String,Artifact> map;
         if (dependencyManagement != null && dependencyManagement.getDependencies() != null) {
-            map = new HashMap();
+            map = new HashMap<>();
             for (Dependency d : dependencyManagement.getDependencies()) {
                 try {
                     VersionRange versionRange = VersionRange.createFromVersionSpec(d.getVersion());
@@ -619,7 +610,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 }
             }
         } else {
-            map = Collections.EMPTY_MAP;
+            map = Collections.emptyMap();
         }
         return map;
     }
@@ -691,7 +682,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         pluginDescriptor.setVersion(project.getVersion());
         pluginDescriptor.setGoalPrefix(goalPrefix);
 
-        final java.util.List deps = new java.util.ArrayList();
+        final java.util.List<ComponentDependency> deps = new java.util.ArrayList<>();
 
         deps.addAll(toComponentDependencies(project.getRuntimeDependencies()));
         deps.addAll(toComponentDependencies(project.getCompileDependencies()));
@@ -699,16 +690,16 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         pluginDescriptor.setDependencies(deps);
         pluginDescriptor.setDescription(project.getDescription());
 
-        PluginToolsRequest request = new DefaultPluginToolsRequest(project, pluginDescriptor);
-        request.setEncoding(getEncoding());
-        request.setLocal(local);
-        request.setRemoteRepos(remoteRepos);
-        request.setSkipErrorNoDescriptorsFound(false);
-        request.setDependencies(dependencies);
+        PluginToolsRequest req = new DefaultPluginToolsRequest(project, pluginDescriptor);
+        req.setEncoding(getEncoding());
+        req.setLocal(local);
+        req.setRemoteRepos(remoteRepos);
+        req.setSkipErrorNoDescriptorsFound(false);
+        req.setDependencies(dependencies);
 
         try {
 
-            mojoScanner.populatePluginDescriptor(request);
+            mojoScanner.populatePluginDescriptor(req);
 
         } catch (InvalidPluginDescriptorException e) {
             // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
@@ -723,10 +714,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
 
         // Generate the plugin's documentation
-        super.confluenceExecute(new Action1<ConfluenceService>() {
-
-            @Override
-            public void call(ConfluenceService confluence)  {
+        super.confluenceExecute( (ConfluenceService confluence)  -> {
 
                 try {
 
@@ -770,7 +758,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     throw new RuntimeException(ex);
                 }
 
-            }
         });
 
         //
@@ -840,10 +827,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("artifactId",   getProject().getArtifactId());
         getProperties().put("version",      getProject().getVersion());
 
-        return Site.processUri(site.getHome().getUri(), getTitle(), new Func2<java.io.InputStream,Storage.Representation,Model.Page>() {
-
-            @Override
-            public Model.Page call( java.io.InputStream is ,Storage.Representation sr) {
+        return Site.processUri(site.getHome().getUri(), getTitle(), ( java.io.InputStream is ,Storage.Representation sr) -> {
 
                 try {
                     final MiniTemplator t = new MiniTemplator.Builder()
@@ -927,7 +911,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
-            }
 
         }) ;
 

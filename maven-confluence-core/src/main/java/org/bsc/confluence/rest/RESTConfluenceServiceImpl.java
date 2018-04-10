@@ -147,26 +147,27 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
         
-        return Arrays.stream(rxChildrenPages(parentPageId))
-                .map( page -> new Page(page) )
+        return rxChildrenPages(parentPageId).stream()
+                .map( Page::new )
                 .filter( page -> page.getTitle().equals( title ))
                 .findFirst().orElse(null);
     }
 
     @Override
     public Model.Page getOrCreatePage(final String spaceKey, final String parentPageTitle, final String title) throws Exception {
-        final JsonObject page = rxfindPage(spaceKey, parentPageTitle).orElseThrow( () -> new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)) );
+        final JsonObject page = rxfindPage(spaceKey, parentPageTitle)
+                                    .orElseThrow( () -> new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)) );
  
         return  Stream.of(page)
-                .map( p -> new Page(p) )
-                .map( (parent) -> {
+                .map( Page::new )
+                .map( parent -> {
 
                     final String id = parent.getId();
                     final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
-                    return rxfindPage(spaceKey,title).orElseGet( () -> rxCreatePage( input.build() ) );                                  
+                    return rxfindPage(spaceKey,title).map( Page::new )
+                            .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).orElse(null) );                                  
                  })
-                .map( p -> new Page(p) )
                 .findFirst().orElse(null)
                 ;
     }
@@ -178,9 +179,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         final String id = parentPage.getId();
         final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
-        final JsonObject result =  rxfindPage(spaceKey,title).orElseGet( () -> rxCreatePage( input.build() ) );
-        
-        return new Page(result);
+        return rxfindPage(spaceKey,title).map( Page::new )
+                .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).orElse(null) );
     }
 
     /**
@@ -235,9 +235,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                 ;        
         
         
-        final JsonObject result = rxUpdatePage(page.getId(),input);
-        
-        return new Page(result);
+        return rxUpdatePage(page.getId(),input).map( Page::new ).orElseGet(null);
     }
 
     @Override
@@ -285,7 +283,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.Attachment getAttachment(String pageId, String name, String version) throws Exception {
        
-        return Arrays.stream(rxAttachment(pageId, name))
+        return rxAttachment(pageId, name).stream()
             .map( result -> new Attachment(result) )
             .findFirst().orElse(null);
     }
@@ -293,7 +291,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
 
-        return Arrays.stream(rxAddAttachment(page.getId(), cast(attachment), source))
+        return rxAddAttachment(page.getId(), cast(attachment), source).stream()
                 .map( result -> new Attachment(result) )
                 .findFirst().orElse(null);
 
@@ -302,11 +300,10 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public boolean removePage(Model.Page parentPage, String title) throws Exception {
         
-        return Arrays.stream(rxChildrenPages(parentPage.getId()))
+        return rxChildrenPages(parentPage.getId()).stream()
                 .map( page -> new Page(page))
                 .filter( page -> page.getTitle().equals(title) )
-                .map( (page) -> rxDeletePageById(page.getId()))
-                .map( res -> true)
+                .map( page -> rxDeletePageById(page.getId()) )
                 .findFirst().orElse(false);
         
     }

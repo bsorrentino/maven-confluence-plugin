@@ -90,10 +90,7 @@ public class ConfluenceServiceFactory {
                                                             page.getTitle());
                     restService.jsonAddBody(inputData, content);
                     
-                    final JsonObject result = 
-                    		restService.rxCreatePage(inputData.build());
-                    
-                    return new Page(result);
+                    return restService.rxCreatePage(inputData.build()).map(Page::new).orElse(null);
                     
                 }
 

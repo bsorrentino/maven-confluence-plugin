@@ -9,7 +9,6 @@ import static java.lang.String.format;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,6 +58,7 @@ public abstract class AbstractRESTConfluenceService {
         }
         
     }
+    
     protected Response fromRequest( final Request req, final String description ) {
               
         try {
@@ -77,7 +77,7 @@ public abstract class AbstractRESTConfluenceService {
        
     }
     
-    protected Response fromUrlGET( final HttpUrl url, final String description ) {
+    protected Stream<Response> fromUrlGET( final HttpUrl url, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -87,10 +87,10 @@ public abstract class AbstractRESTConfluenceService {
                 .get()
                 .build();
         
-        return fromRequest(req, description);
+        return Stream.of(fromRequest(req, description));
     }
     
-    protected Response fromUrlDELETE( final HttpUrl url, final String description ) {
+    protected Stream<Response> fromUrlDELETE( final HttpUrl url, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -100,10 +100,10 @@ public abstract class AbstractRESTConfluenceService {
                 .delete()
                 .build();
         
-        return fromRequest(req, description);
+        return Stream.of(fromRequest(req, description));
     }
     
-    protected Response fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description ) {
+    protected Stream<Response> fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -114,10 +114,10 @@ public abstract class AbstractRESTConfluenceService {
                 .post( inputBody)
                 .build();
         
-        return fromRequest(req, description);
+        return Stream.of(fromRequest(req, description));
     }
     
-    protected Response fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description ) {
+    protected Stream<Response> fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description ) {
         final String credential = 
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -128,7 +128,7 @@ public abstract class AbstractRESTConfluenceService {
                 .put( inputBody)
                 .build();
         
-        return fromRequest(req, description);
+        return Stream.of(fromRequest(req, description));
     }
     
     protected void debugBody( Response res ) {
@@ -142,7 +142,7 @@ public abstract class AbstractRESTConfluenceService {
 		}
         
     }
-    protected JsonObject[] mapToArray( Response res)  {
+    protected Stream<JsonObject> mapToArray( Response res)  {
 
         final ResponseBody body = res.body();
         
@@ -159,17 +159,16 @@ public abstract class AbstractRESTConfluenceService {
             // {"statusCode":404,"data":{"authorized":false,"valid":true,"errors":[],"successful":false,"notSuccessful":true},"message":"No space with key : TEST"}
             final JsonArray results = root.getJsonArray("results");
 
-            //System.out.println( root.toString() );
-            if (results == null || results.isEmpty()) {
-                return new JsonObject[] {};
+            final Stream.Builder<JsonObject> stream = Stream.builder();
+
+            if (results != null ) {
+
+                for( int ii = 0 ; ii < results.size() ; ++ii )
+                    stream.add(results.getJsonObject(ii));
             }
 
-            JsonObject array[] = new JsonObject[ results.size() ];
-            for( int ii = 0 ; ii < results.size() ; ++ii )
-                array[ii] = results.getJsonObject(ii);
-
-            return array;
-
+            return stream.build();
+            
         } catch (IOException | JsonParsingException e ) {
             throw new Error(e);
         } 
@@ -202,10 +201,10 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
         
-        return Arrays.stream(mapToArray(fromUrlGET( url, "find page" ))).findFirst();
+        return fromUrlGET( url, "find page" ).flatMap(this::mapToArray).findFirst();
     }
 
-    protected JsonObject[] rxfindPages( final String spaceKey, final String title ) {
+    protected List<JsonObject> rxfindPages( final String spaceKey, final String title ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -213,7 +212,7 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("title", title)
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return mapToArray(fromUrlGET( url, "find pages" ));
+        return fromUrlGET( url, "find pages" ).flatMap(this::mapToArray).collect( Collectors.toList() );
         
     }
     
@@ -227,7 +226,8 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
         
-        return Arrays.stream(mapToArray(fromUrlGET( url, "get descendant pages" )))
+        return  fromUrlGET( url, "get descendant pages" )
+                .flatMap(this::mapToArray)
                 .flatMap( (JsonObject o) -> {
                     final String childId = o.getString("id");
                     return Stream.concat(Stream.of(o), rxDescendantPages(childId).stream()) ; 
@@ -238,7 +238,7 @@ public abstract class AbstractRESTConfluenceService {
     }
     
 
-    protected JsonObject[] rxChildrenPages( final String id ) {
+    protected List<JsonObject> rxChildrenPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -246,7 +246,7 @@ public abstract class AbstractRESTConfluenceService {
                                     .addPathSegments("child/page")                
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return mapToArray(fromUrlGET( url, "get children pages" ));
+        return fromUrlGET( url, "get children pages" ).flatMap(this::mapToArray).collect( Collectors.toList() );
         
     }
 
@@ -258,10 +258,10 @@ public abstract class AbstractRESTConfluenceService {
      */
     public Optional<JsonObject> rxfindPage( final String spaceKey, final String title ) {
         
-        return Arrays.stream(rxfindPages(spaceKey, title)).findFirst();
+        return rxfindPages(spaceKey, title).stream().findFirst();
     }
     
-    protected Response rxDeletePageById( final String id ) {
+    protected boolean rxDeletePageById( final String id ) {
         
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -269,7 +269,9 @@ public abstract class AbstractRESTConfluenceService {
                                     //.addQueryParameter("status", "")
                                     .build();
         
-        return fromUrlDELETE( url, "delete page" );
+        fromUrlDELETE( url, "delete page" );
+        
+        return true;
     }
     
     /**
@@ -277,7 +279,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return 
      */
-    public final JsonObject rxCreatePage( final JsonObject inputData ) {
+    public final Optional<JsonObject> rxCreatePage( final JsonObject inputData ) {
         final MediaType storageFormat = MediaType.parse("application/json");
         
         final RequestBody inputBody = RequestBody.create(storageFormat, 
@@ -287,10 +289,10 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment("content")
                                 .build();
  
-        return mapToObject(fromUrlPOST(url, inputBody, "create page"));
+        return fromUrlPOST(url, inputBody, "create page").map(this::mapToObject).findFirst();
     }
     
-    protected JsonObject rxUpdatePage( final String pageId, final JsonObject inputData ) {
+    protected Optional<JsonObject> rxUpdatePage( final String pageId, final JsonObject inputData ) {
 
         final MediaType storageFormat = MediaType.parse("application/json");
         
@@ -302,7 +304,7 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment(pageId)
                                 .build();
 
-        return mapToObject(fromUrlPUT(url, inputBody, "update page"));
+        return fromUrlPUT(url, inputBody, "update page").map(this::mapToObject).findFirst();
     }
 
     /**
@@ -310,7 +312,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return 
      */
-    protected final Response rxAddLabels( String id,  String ...labels ) {
+    protected final void rxAddLabels( String id,  String ...labels ) {
         
         
         final JsonArrayBuilder inputBuilder = Json.createArrayBuilder();
@@ -338,10 +340,10 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment("label")
                                 .build();
  
-        return fromUrlPOST(url, inputBody, "add label");
+        fromUrlPOST(url, inputBody, "add label");
     }
 
-    protected JsonObject[] rxAttachments( final String id ) {
+    protected List<JsonObject> rxAttachments( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -350,11 +352,11 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
         
-        return mapToArray(fromUrlGET( url, "get attachments" ));
+        return fromUrlGET( url, "get attachments" ).flatMap(this::mapToArray).collect(Collectors.toList());
         
     }
     
-    protected JsonObject[] rxAttachment( final String id, final String fileName ) {
+    protected List<JsonObject> rxAttachment( final String id, final String fileName ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -364,11 +366,11 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
         
-        return mapToArray(fromUrlGET( url, "get attachment" ));
+        return fromUrlGET( url, "get attachment" ).flatMap(this::mapToArray).collect(Collectors.toList());
         
     }
     
-    protected JsonObject[] rxAddAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
+    protected List<JsonObject> rxAddAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
 
         final RequestBody fileBody;
         
@@ -395,12 +397,12 @@ public abstract class AbstractRESTConfluenceService {
                     
         }
  
-        final Response post =  fromUrlPOST(builder.build(), inputBody, "create attachment");
-        
-        return (att.getId() != null) ? 
-                new JsonObject[] { mapToObject(post) }: 
-                mapToArray(post)
-                ;
-        
+        return fromUrlPOST(builder.build(), inputBody, "create attachment")
+                .flatMap( post ->
+                    (att.getId() != null) ? 
+                            Stream.of(mapToObject(post)) : 
+                            mapToArray(post) )
+                .collect( Collectors.toList() );
+                      
     }
 }
