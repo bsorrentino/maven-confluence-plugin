@@ -15,7 +15,9 @@
         <scmUrl>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</scmUrl>
         <siteUrl>https://github.com/bsorrentino/maven-confluence-plugin</siteUrl>
         
-        <api>rpc/xmlrpc</api>
+        <api.rpc>rpc/xmlrpc</api.rpc>
+        <api.rest>rest/api</api.rest>
+        <api>${api.rest}</api>
     </properties>
 
     <contributors>
@@ -129,7 +131,7 @@
                             <spaceKey>TEST</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
                             <!-- TEST ISSUE 147 -->
-                            <skip>true</skip>
+                            <skip>false</skip>
                             <!-- TEST ISSUE 107 
                             <parentPageId>18677788</parentPageId>
                             -->
