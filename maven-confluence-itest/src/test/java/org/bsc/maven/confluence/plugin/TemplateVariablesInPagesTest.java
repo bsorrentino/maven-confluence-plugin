@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("unchecked")
 public class TemplateVariablesInPagesTest {
 
-    @SuppressWarnings("WeakerAccess")
     public interface Handler {
         Map<String, String> getPage(String tokken, String space, String page);
         Map<String, Object> getServerInfo(String tokken);
