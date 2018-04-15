@@ -150,7 +150,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         return rxChildrenPages(parentPageId).stream()
                 .map( Page::new )
                 .filter( page -> page.getTitle().equals( title ))
-                .findFirst().orElse(null);
+                .findFirst().get();
     }
 
     @Override
@@ -166,10 +166,11 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                     final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
                     return rxfindPage(spaceKey,title).map( Page::new )
-                            .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).orElse(null) );                                  
+                            .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).get() );                                  
                  })
-                .findFirst().orElse(null)
-                ;
+                .findFirst().get();
+                
+                
     }
 
     @Override
@@ -180,7 +181,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
         return rxfindPage(spaceKey,title).map( Page::new )
-                .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).orElse(null) );
+                .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).get() ); 
     }
 
     /**
@@ -285,7 +286,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
        
         return rxAttachment(pageId, name).stream()
             .map( result -> new Attachment(result) )
-            .findFirst().orElse(null);
+            .findFirst().get();
     }
 
     @Override
@@ -293,7 +294,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
 
         return rxAddAttachment(page.getId(), cast(attachment), source).stream()
                 .map( result -> new Attachment(result) )
-                .findFirst().orElse(null);
+                .findFirst().get();
 
     }
     
