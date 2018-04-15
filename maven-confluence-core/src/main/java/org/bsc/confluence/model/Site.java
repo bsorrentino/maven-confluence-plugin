@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -91,6 +92,7 @@ public class Site {
                                 final String homePageTitle,
                                 final BiFunction<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception
     {
+            
             if( uri == null ) {
                 throw new IllegalArgumentException( "uri is null!" );
             }
@@ -171,9 +173,9 @@ public class Site {
         public final java.net.URI getUri() {
             if( uri!=null &&
                 !uri.isAbsolute() &&
-                site.getBasedir()!=null )
+                site.getBasedir().isPresent() )
             {
-                return site.getBasedir().toURI().resolve(uri);
+                return site.getBasedir().get().toURI().resolve(uri);
             }
             return uri;
         }
@@ -388,10 +390,9 @@ public class Site {
                     throw new IllegalStateException("name is null");
                 }
 
-                setUri( site.getBasedir().toURI().resolve( getName().concat(ext)) );
-
-                //final String path = String.format("src/site/confluence/%s%s", getName(), ext);
-                //setUri(new java.io.File(project.getBasedir(), path).toURI());
+                site.getBasedir().ifPresent( dir -> {
+                    setUri( dir.toURI().resolve( getName().concat(ext)) );
+                });
             }
 
             return getUri();
@@ -479,15 +480,15 @@ public class Site {
     public Site() {
         _SITE.push(this);
     }
+    
+    private transient Optional<java.io.File> basedir = Optional.empty();
 
-    private transient java.io.File basedir;
-
-    public File getBasedir() {
+    public Optional<java.io.File> getBasedir() {
         return basedir;
     }
 
-    public void setBasedir(File basedir) {
-        this.basedir = basedir;
+    public void setBasedir(java.io.File basedir) {
+        this.basedir = Optional.ofNullable(basedir);
     }
 
 
