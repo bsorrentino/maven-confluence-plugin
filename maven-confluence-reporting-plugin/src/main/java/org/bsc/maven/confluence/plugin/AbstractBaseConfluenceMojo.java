@@ -289,7 +289,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
         if ((getUsername() == null || getPassword() == null) && (mavenSettings != null)) {
             if (this.serverId == null)
-                throw new MojoExecutionException("SettingKey must be set! (username and/or password are not provided)");
+                throw new MojoExecutionException("'serverId' must be set! (username and/or password are not provided)");
 
             Server server = this.mavenSettings.getServer(this.serverId);
 
