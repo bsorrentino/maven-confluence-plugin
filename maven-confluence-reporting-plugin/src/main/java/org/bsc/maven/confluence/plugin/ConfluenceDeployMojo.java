@@ -5,12 +5,14 @@ import static java.lang.String.format;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -244,7 +246,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }
 
         if( site != null ) {
-            site.setBasedir(getSiteDescriptor());
+            site.setBasedir( Paths.get(getSiteDescriptor().toURI()) );
             if( site.getHome().getName()!=null ) {
                 setTitle( site.getHome().getName() );
             }
@@ -264,7 +266,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         site.print( System.out );
 
 
-        super.initTemplateProperties();
+        super.initTemplateProperties( site );
 
 
         try {
@@ -512,18 +514,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         final String titlePrefix = title;
 
-        final Model.Page confluenceHomePage = Site.processUri(  site.getHome().getUri(), 
+        final Model.Page confluenceHomePage = site.processUri(  site.getHome().getUri(), 
                                                                 this.getTitle(), 
-                                                                (InputStream is, Representation r) -> {
+                                                                (Optional<InputStream> is, Representation r) -> {
                 try {
 
                     final Model.Page page = 
                             confluence.getOrCreatePage( parentPage.getSpace(), 
                                                         parentPage.getTitle(), 
                                                         title);
+                    
+                    if( !is.isPresent()) {
+                        getLog().debug( String.format("%s SKIPPED!", page.getTitle())); 
+                        return page; // SKIPPED
+                    }
+                    
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
-                            .build( is, getCharset() );
+                            .build( is.get(), getCharset() );
 
                     generateProjectHomeTemplate( t, site, locale );
 
@@ -540,7 +548,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
         }
 
-        generateChildren( confluence, site.getHome(), confluenceHomePage, titlePrefix, new HashMap<String, Model.Page>());
+        generateChildren( confluence, site, site.getHome(), confluenceHomePage, titlePrefix, new HashMap<String, Model.Page>());
 
     }
 
@@ -748,6 +756,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
 
                     generateChildren(   confluence,
+                                        site,
                                         site.getHome(),
                                         confluenceHomePage,
                                         title, varsToParentPageMap);
@@ -827,14 +836,19 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("artifactId",   getProject().getArtifactId());
         getProperties().put("version",      getProject().getVersion());
 
-        return Site.processUri(site.getHome().getUri(), getTitle(), ( java.io.InputStream is ,Storage.Representation sr) -> {
+        return site.processUri(site.getHome().getUri(), getTitle(), ( Optional<InputStream> is ,Storage.Representation sr) -> {
 
                 try {
+                    Model.Page page = confluence.getOrCreatePage(parentPage, title);
+
+                    if( !is.isPresent()) { 
+                        getLog().debug( String.format("%s SKIPPED!", page.getTitle())); 
+                        return page; 
+                    } // SKIPPED
+                    
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
-                            .build( is, getCharset() );
-
-                    Model.Page page = confluence.getOrCreatePage(parentPage, title);
+                            .build( is.get(), getCharset() );
 
                     if (!isSnapshot() && isRemoveSnapshots()) {
                         final String snapshot = title.concat("-SNAPSHOT");

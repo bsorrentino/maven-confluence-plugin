@@ -7,8 +7,13 @@ package org.bsc.confluence.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -42,6 +47,119 @@ public class Site {
 
     //private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
 
+    private State state = new State();
+    
+
+    /**
+     * 
+     */
+    public Site() {
+        _SITE.push(this);
+    }
+    
+    class State {
+
+        private final java.util.Properties properties = new java.util.Properties();
+
+        private Path resolveDir( Path dir ) {
+            return Files.isDirectory(dir) ?
+                    Paths.get(dir.toString()) :
+                    Paths.get(dir.getParent().toString()) ;
+            
+        }
+        
+        private Path getFile( Path dir) {
+            
+            return Paths.get(resolveDir(dir).toString(), ".state.properties") ;
+            
+        }
+        
+        /**
+         * 
+         * @param stateDir
+         */
+        void load() {
+            
+            getBasedir().ifPresent( dir -> {
+                
+                final Path file = getFile(dir);
+                
+                if( !Files.exists(file)) {
+                    try {
+                        Files.createFile(file);
+                    } catch (IOException e) {
+                        // TODO
+                        e.printStackTrace();
+                        return;
+                    }
+                    
+                }
+                
+                try(java.io.Reader r = Files.newBufferedReader(file)) {
+                    properties.load(r);
+                }
+                catch( Exception ex ) {
+                    // TODD
+                    ex.printStackTrace();
+                }
+                
+            });
+            
+        }
+        
+        private final SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy hhmmss");
+        
+        /**
+         * 
+         * @param stateDir
+         */
+        private void save() {
+            
+            getBasedir().ifPresent( dir -> {
+                final Path file = getFile(dir);
+                
+                if( !Files.exists(file)) return;
+                
+                try(java.io.Writer w = Files.newBufferedWriter(file)) {
+                    properties.store(w, String.format("deployment snapshot at %s", sdf.format(new java.util.Date())));
+                }
+                catch( Exception ex ) {
+                    // TODD
+                    ex.printStackTrace();
+                }
+                
+            });
+            
+        }
+
+        public boolean isUpdated(Path file) {
+            
+            if( !getBasedir().isPresent()) return true;
+            
+            final Path b = file.toAbsolutePath();
+            final Path a = resolveDir(getBasedir().get());
+            
+            System.out.printf("file[%s] - basedir[%s]\n", b, a );
+            
+            final String key = a.relativize( b ).toString();
+            //final String key = file.getFileName().toString();
+            
+            String value = properties.getProperty( key );
+            
+            final long lastModified = file.toFile().lastModified();
+            
+            final long lastModifiedStored = ( value == null) ? 0 : Long.valueOf(value);
+            
+            if( lastModified > lastModifiedStored ) {
+                properties.setProperty(key, String.valueOf(lastModified));
+                save();
+                return true;
+            }
+            
+            return false;
+        }
+       
+    }
 
     /**
      * 
@@ -82,27 +200,85 @@ public class Site {
     }
 
     /**
+    *
+    * @param uri
+    * @return
+    * @throws Exception
+    */
+   public <T> T processUriContent(final java.net.URI uri,
+                           final String homePageTitle,
+                           final BiFunction<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception
+   {
+           Objects.requireNonNull(uri, "uri is null!");
+
+           String scheme = uri.getScheme();
+
+           Objects.requireNonNull(scheme, String.format("uri [%s] is invalid!", String.valueOf(uri) ));
+           
+           final String source = uri.getRawSchemeSpecificPart();
+
+           final String path =  uri.getRawPath();
+           
+           final boolean isMarkdown = (path !=null && path.endsWith(".md"));
+           final boolean isStorage = (path !=null && (path.endsWith(".xml") || path.endsWith(".xhtml")));
+
+           final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE : Storage.Representation.WIKI;
+
+           java.io.InputStream result = null;
+
+           if ("classpath".equalsIgnoreCase(scheme)) {
+               ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
+               result = cl.getResourceAsStream(source);
+
+               if (result == null) {
+                   //getLog().warn(String.format("resource [%s] doesn't exist in context classloader", source));
+
+                   cl = Site.class.getClassLoader();
+
+                   final java.io.InputStream is = cl.getResourceAsStream(source);
+                   
+                   result = (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
+
+                   if (result == null) {
+                       throw new Exception(String.format("resource [%s] doesn't exist in classloader", source));
+                   }
+
+               }
+
+           } else {
+
+               try {
+
+                   java.net.URL url = uri.toURL();
+
+                   final java.io.InputStream is = url.openStream();
+
+                   result =  (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
+
+               } catch (IOException e) {
+                   throw new Exception(String.format("error opening url [%s]!", source), e);
+               }
+           }
+
+           return onSuccess.apply(result, representation);
+   }
+    
+    /**
      *
      * @param uri
      * @return
      * @throws Exception
      */
-    public static <T> T processUri(
-                                final java.net.URI uri,
-                                final String homePageTitle,
-                                final BiFunction<java.io.InputStream,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception
-    {
-            
-            if( uri == null ) {
-                throw new IllegalArgumentException( "uri is null!" );
-            }
+    public <T> T processUri(final java.net.URI uri,
+                            final String homePageTitle,
+                            final BiFunction<Optional<java.io.InputStream>,Storage.Representation,T> onSuccess ) throws /*ProcessUri*/Exception
+{
+            Objects.requireNonNull(uri, "uri is null!");
 
             String scheme = uri.getScheme();
 
-            if (scheme == null) {
-                throw new Exception( String.format("uri [%s] is invalid!", String.valueOf(uri) ));
-            }
-
+            Objects.requireNonNull(scheme, String.format("uri [%s] is invalid!", String.valueOf(uri) ));
             
             final String source = uri.getRawSchemeSpecificPart();
 
@@ -138,6 +314,11 @@ public class Site {
             } else {
 
                 try {
+
+                    if ("file".equalsIgnoreCase(scheme) && !state.isUpdated( Paths.get(uri) )) {
+                        return onSuccess.apply(Optional.empty(), representation);
+                    }
+                   
                     java.net.URL url = uri.toURL();
 
                     final java.io.InputStream is = url.openStream();
@@ -149,14 +330,7 @@ public class Site {
                 }
             }
 
-            /*
-            if (LOGGER.isDebugEnabled()) {
-                String resultString = IOUtils.toString(result);
-                LOGGER.debug("Result: {}", resultString);
-                result = new ByteArrayInputStream(resultString.getBytes());
-            }
-            */
-            return onSuccess.apply(result, representation);
+            return onSuccess.apply(Optional.of(result), representation);
     }
 
     /**
@@ -175,7 +349,7 @@ public class Site {
                 !uri.isAbsolute() &&
                 site.getBasedir().isPresent() )
             {
-                return site.getBasedir().get().toURI().resolve(uri);
+                return site.getBasedir().get().toUri().resolve(uri);
             }
             return uri;
         }
@@ -391,7 +565,7 @@ public class Site {
                 }
 
                 site.getBasedir().ifPresent( dir -> {
-                    setUri( dir.toURI().resolve( getName().concat(ext)) );
+                    setUri( dir.toUri().resolve( getName().concat(ext)) );
                 });
             }
 
@@ -476,19 +650,17 @@ public class Site {
         }
 
     }
-
-    public Site() {
-        _SITE.push(this);
-    }
     
-    private transient Optional<java.io.File> basedir = Optional.empty();
+    private transient Optional<Path> basedir = Optional.empty();
 
-    public Optional<java.io.File> getBasedir() {
+    public Optional<Path> getBasedir() {
         return basedir;
     }
 
-    public void setBasedir(java.io.File basedir) {
+    public void setBasedir(Path basedir) {
         this.basedir = Optional.ofNullable(basedir);
+
+        state.load();
     }
 
 

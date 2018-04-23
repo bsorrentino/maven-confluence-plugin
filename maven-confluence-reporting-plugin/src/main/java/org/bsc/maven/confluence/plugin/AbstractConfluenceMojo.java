@@ -11,6 +11,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -204,9 +205,9 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     /**
      * initialize properties shared with template
      */
-    protected void initTemplateProperties() {
+    protected void initTemplateProperties( Site site ) {
 
-        processProperties();
+        processProperties( site );
 
         getProperties().put("pageTitle", getTitle());
         getProperties().put("artifactId", project.getArtifactId());
@@ -244,7 +245,13 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     }
 
-    protected <T extends Site.Page> Model.Page  generateChild(final ConfluenceService confluence,  final T child, String spaceKey, String parentPageTitle, String titlePrefix) {
+    protected <T extends Site.Page> Model.Page  generateChild(  final Site site,
+                                                                final ConfluenceService confluence,  
+                                                                final T child, 
+                                                                String spaceKey, 
+                                                                String parentPageTitle, 
+                                                                String titlePrefix) 
+    {
 
         java.net.URI source = child.getUri(getFileExt());
 
@@ -273,12 +280,17 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
                 final Model.Page pageToUpdate = result;
                 
-                result = Site.processUri(source, this.getTitle(), (InputStream is, Representation r) -> {
+                result = site.processUri(source, this.getTitle(), (Optional<InputStream> is, Representation r) -> {
 
+                        if( !is.isPresent()) {
+                            getLog().debug( String.format("%s SKIPPED!", pageToUpdate.getTitle())); 
+                            return pageToUpdate; // SKIPPED
+                        }
+                        
                         try {
                             final MiniTemplator t = new MiniTemplator.Builder()
                                     .setSkipUndefinedVars(true)
-                                    .build( is, getCharset() );
+                                    .build( is.get(), getCharset() );
                             
                             if( !child.isIgnoreVariables() ) {
                                 
@@ -326,7 +338,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * Issue 46
      *
      **/
-    private void processProperties() {
+    private void processProperties( Site site ) {
 
         for( Map.Entry<String,String> e : this.getProperties().entrySet() ) {
 
@@ -343,7 +355,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     continue;
                 }
 
-                getProperties().put( e.getKey(), processUri( uri, getCharset() ));
+                getProperties().put( e.getKey(), processUriContent( site, uri, getCharset() ));
 
             } catch (ProcessUriException ex) {
                 getLog().warn( String.format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
@@ -365,10 +377,11 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @return
      * @throws org.bsc.maven.reporting.AbstractConfluenceMojo.ProcessUriException
      */
-    private String processUri( java.net.URI uri, final Charset charset ) throws ProcessUriException {
+    private String processUriContent( Site site, java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            return  Site.processUri(uri, this.getTitle(), (InputStream is, Representation r) -> {
+            return  site.processUriContent(uri, this.getTitle(), (InputStream is, Representation r) -> {
+                
                     try {
                         return AbstractConfluenceMojo.this.toString( is, charset );
                     } catch (IOException ex) {

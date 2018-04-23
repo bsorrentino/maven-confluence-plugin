@@ -10,7 +10,6 @@ import static java.lang.String.format;
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -150,7 +149,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         return rxChildrenPages(parentPageId).stream()
                 .map( Page::new )
                 .filter( page -> page.getTitle().equals( title ))
-                .findFirst().get();
+                .findFirst().orElse(null);
     }
 
     @Override

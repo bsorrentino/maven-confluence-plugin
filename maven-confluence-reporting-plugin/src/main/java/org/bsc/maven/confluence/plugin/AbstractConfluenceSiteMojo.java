@@ -199,21 +199,21 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluenceParentPage
      * @param titlePrefix
      */
-    protected void generateChildren(    final ConfluenceService confluence,
-                                        final Site.Page parentPage,
-                                        final Model.Page confluenceParentPage,
-                                        final String titlePrefix,
-                                        final Map<String, Model.Page> varsToParentPageMap)
+    protected void generateChildren(final ConfluenceService confluence,
+                                    final Site site,
+                                    final Site.Page parentPage,
+                                    final Model.Page confluenceParentPage,
+                                    final String titlePrefix,
+                                    final Map<String, Model.Page> varsToParentPageMap)
     {
 
         getLog().info(format("generateChildren # [%d]", parentPage.getChildren().size()));
-
         
         generateAttachments(parentPage, confluence, confluenceParentPage);
         
         for( Site.Page child : parentPage.getChildren() ) {
 
-            final Model.Page confluencePage = generateChild(confluence, child, confluenceParentPage.getSpace(), parentPage.getName(), titlePrefix);
+            final Model.Page confluencePage = generateChild(site, confluence, child, confluenceParentPage.getSpace(), parentPage.getName(), titlePrefix);
 
             for (Site.Page.Generated generated : child.getGenerateds()) {
                 varsToParentPageMap.put(generated.getRef(), confluencePage);
@@ -221,7 +221,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
 
             if( confluencePage != null  ) {
 
-                generateChildren(confluence, child, confluencePage, titlePrefix, varsToParentPageMap );
+                generateChildren( confluence, site, child, confluencePage, titlePrefix, varsToParentPageMap );
             }
             
         }
@@ -328,7 +328,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         final Site result = new Site();
         
-        result.setBasedir( project.getBasedir() );
+        result.setBasedir( Paths.get(project.getBasedir().toURI()) );
         
         result.getLabels().addAll( super.getLabels());
         
