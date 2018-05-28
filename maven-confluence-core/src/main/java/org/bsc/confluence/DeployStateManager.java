@@ -26,8 +26,8 @@ public class DeployStateManager {
     private final String endpoint ;
     private final Path basedir ;
     
-    public static DeployStateManager load( Path baseDir,  String endpoint ) {
-        DeployStateManager  result = new DeployStateManager( endpoint, baseDir );
+    public static DeployStateManager load( Path basedir,  String endpoint ) {
+        DeployStateManager  result = new DeployStateManager( endpoint, basedir );
         
         result.load();
 
