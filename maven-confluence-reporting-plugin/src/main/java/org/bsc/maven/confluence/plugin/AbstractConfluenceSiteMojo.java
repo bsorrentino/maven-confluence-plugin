@@ -418,6 +418,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
 
                 site = (Site) unmarshaller.unmarshal( siteDescriptor );
+                site.setDeployStateManager( dsm );
 
             } catch (JAXBException ex) {
                 getLog().error("error creating site from model!", ex);
