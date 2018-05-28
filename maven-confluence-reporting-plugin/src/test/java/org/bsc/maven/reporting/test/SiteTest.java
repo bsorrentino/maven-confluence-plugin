@@ -52,7 +52,8 @@ public class SiteTest {
         
         Site site = (Site) result;
         
-        site.setBasedir( basepath );
+        //site.setBasedir( basepath );
+
         Assert.assertThat(site.getHome().getUri(), IsNull.notNullValue());        
         Assert.assertThat(site.getHome().getName(), IsEqual.equalTo("home"));        
         //Assert.assertThat(site.getHome().getSource().getName(), IsEqual.equalTo("home.confluence"));        

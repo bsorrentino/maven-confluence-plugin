@@ -47,6 +47,7 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.Site;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
@@ -228,10 +229,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
     	
-    		if( skip ) {
-    	        getLog().info("plugin execution skipped");
-    	        return;
-    		}
+		if( skip ) {
+	        getLog().info("plugin execution skipped");
+	        return;
+		}
     		
         final Locale locale = Locale.getDefault();
 
@@ -239,14 +240,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         loadUserInfoFromSettings();
 
+        final DeployStateManager dsm = DeployStateManager.load(Paths.get(getSiteDescriptor().toURI()), getEndPoint() );
+        
         Site site = null;
 
         if( isSiteDescriptorValid() ) {
-            site = super.createFromModel();
+            site = super.createFromModel( dsm );
         }
 
         if( site != null ) {
-            site.setBasedir( Paths.get(getSiteDescriptor().toURI()) );
             if( site.getHome().getName()!=null ) {
                 setTitle( site.getHome().getName() );
             }
@@ -260,7 +262,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
         }
         else {
-            site = super.createFromFolder();
+            site = super.createFromFolder( dsm );
 
         }
         site.print( System.out );

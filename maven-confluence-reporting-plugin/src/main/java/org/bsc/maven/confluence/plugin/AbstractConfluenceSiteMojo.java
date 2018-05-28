@@ -4,26 +4,30 @@
  */
 package org.bsc.maven.confluence.plugin;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Map;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.model.Site;
-import org.bsc.confluence.model.SiteFactory;
-
-import static java.lang.String.format;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.DeployStateManager;
+import org.bsc.confluence.model.Site;
+import org.bsc.confluence.model.SiteFactory;
 
 /**
  *
@@ -324,16 +328,16 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
     }
    
     @Override
-    public Site createFromFolder() {
-        
+    public Site createFromFolder( final DeployStateManager dsm ) {
+        Objects.requireNonNull(dsm, "dsm is null!");
+    
         final Site result = new Site();
         
-        result.setBasedir( Paths.get(project.getBasedir().toURI()) );
+        result.setDeployStateManager( dsm );
         
         result.getLabels().addAll( super.getLabels());
         
         final Site.Page home = new Site.Page();
-        
         
         home.setName(getTitle());
         
@@ -397,7 +401,8 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @return 
      */
     @Override
-    public Site createFromModel() {
+    public Site createFromModel( final DeployStateManager dsm ) {
+        Objects.requireNonNull(dsm, "dsm is null!");
         
         Site site = null;
         

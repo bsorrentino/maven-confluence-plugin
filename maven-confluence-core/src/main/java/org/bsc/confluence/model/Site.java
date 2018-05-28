@@ -7,10 +7,8 @@ package org.bsc.confluence.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.DeployStateManager;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
@@ -47,7 +46,7 @@ public class Site {
 
     //private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
 
-    private State state = new State();
+    private Optional<DeployStateManager> state = Optional.empty();
     
 
     /**
@@ -57,110 +56,11 @@ public class Site {
         _SITE.push(this);
     }
     
-    class State {
+    public void setDeployStateManager( DeployStateManager state ) {
+        Objects.requireNonNull(state);
 
-        private final java.util.Properties properties = new java.util.Properties();
-
-        private Path resolveDir( Path dir ) {
-            return Files.isDirectory(dir) ?
-                    Paths.get(dir.toString()) :
-                    Paths.get(dir.getParent().toString()) ;
-            
-        }
-        
-        private Path getFile( Path dir) {
-            
-            return Paths.get(resolveDir(dir).toString(), ".state.properties") ;
-            
-        }
-        
-        /**
-         * 
-         * @param stateDir
-         */
-        void load() {
-            
-            getBasedir().ifPresent( dir -> {
-                
-                final Path file = getFile(dir);
-                
-                if( !Files.exists(file)) {
-                    try {
-                        Files.createFile(file);
-                    } catch (IOException e) {
-                        // TODO
-                        e.printStackTrace();
-                        return;
-                    }
-                    
-                }
-                
-                try(java.io.Reader r = Files.newBufferedReader(file)) {
-                    properties.load(r);
-                }
-                catch( Exception ex ) {
-                    // TODD
-                    ex.printStackTrace();
-                }
-                
-            });
-            
-        }
-        
-        private final SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy hhmmss");
-        
-        /**
-         * 
-         * @param stateDir
-         */
-        private void save() {
-            
-            getBasedir().ifPresent( dir -> {
-                final Path file = getFile(dir);
-                
-                if( !Files.exists(file)) return;
-                
-                try(java.io.Writer w = Files.newBufferedWriter(file)) {
-                    properties.store(w, String.format("deployment snapshot at %s", sdf.format(new java.util.Date())));
-                }
-                catch( Exception ex ) {
-                    // TODD
-                    ex.printStackTrace();
-                }
-                
-            });
-            
-        }
-
-        public boolean isUpdated(Path file) {
-            
-            if( !getBasedir().isPresent()) return true;
-            
-            final Path b = file.toAbsolutePath();
-            final Path a = resolveDir(getBasedir().get());
-            
-            System.out.printf("file[%s] - basedir[%s]\n", b, a );
-            
-            final String key = a.relativize( b ).toString();
-            //final String key = file.getFileName().toString();
-            
-            String value = properties.getProperty( key );
-            
-            final long lastModified = file.toFile().lastModified();
-            
-            final long lastModifiedStored = ( value == null) ? 0 : Long.valueOf(value);
-            
-            if( lastModified > lastModifiedStored ) {
-                properties.setProperty(key, String.valueOf(lastModified));
-                save();
-                return true;
-            }
-            
-            return false;
-        }
-       
+        this.state = Optional.of(state);
     }
-
     /**
      * 
      * @param is
@@ -315,7 +215,7 @@ public class Site {
 
                 try {
 
-                    if ("file".equalsIgnoreCase(scheme) && !state.isUpdated( Paths.get(uri) )) {
+                    if ("file".equalsIgnoreCase(scheme) && state.isPresent() && !state.get().isUpdated( Paths.get(uri) )) {
                         return onSuccess.apply(Optional.empty(), representation);
                     }
                    
@@ -650,19 +550,12 @@ public class Site {
         }
 
     }
-    
-    private transient Optional<Path> basedir = Optional.empty();
 
     public Optional<Path> getBasedir() {
-        return basedir;
+        return ( state.isPresent() ) ? 
+            Optional.of(state.get().getBasedir()) : 
+            Optional.empty();
     }
-
-    public void setBasedir(Path basedir) {
-        this.basedir = Optional.ofNullable(basedir);
-
-        state.load();
-    }
-
 
     private java.util.List<String> labels;
 

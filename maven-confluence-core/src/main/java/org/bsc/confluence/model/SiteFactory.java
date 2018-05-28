@@ -4,13 +4,17 @@
  */
 package org.bsc.confluence.model;
 
+import java.util.Objects;
+
+import org.bsc.confluence.DeployStateManager;
+
 /**
  *
  * @author bsorrentino
  */
 public interface SiteFactory {
     
-    public Site createFromFolder();
+    public Site createFromFolder( final DeployStateManager dsm );
     
-    public Site createFromModel();
+    public Site createFromModel( final DeployStateManager dsm );
 }
