@@ -46,7 +46,7 @@ public class Site {
 
     //private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
 
-    private Optional<DeployStateManager> state = Optional.empty();
+    private DeployStateManager state;
     
 
     /**
@@ -59,7 +59,7 @@ public class Site {
     public void setDeployStateManager( DeployStateManager state ) {
         Objects.requireNonNull(state);
 
-        this.state = Optional.of(state);
+        this.state = state;
     }
     /**
      * 
@@ -215,7 +215,7 @@ public class Site {
 
                 try {
 
-                    if ("file".equalsIgnoreCase(scheme) && state.isPresent() && !state.get().isUpdated( Paths.get(uri) )) {
+                    if ("file".equalsIgnoreCase(scheme) && !state.isUpdated( Paths.get(uri) )) {
                         return onSuccess.apply(Optional.empty(), representation);
                     }
                    
@@ -246,10 +246,9 @@ public class Site {
         @XmlAttribute
         public final java.net.URI getUri() {
             if( uri!=null &&
-                !uri.isAbsolute() &&
-                site.getBasedir().isPresent() )
+                !uri.isAbsolute() )
             {
-                return site.getBasedir().get().toUri().resolve(uri);
+                return site.getBasedir().toUri().resolve(uri);
             }
             return uri;
         }
@@ -464,9 +463,8 @@ public class Site {
                     throw new IllegalStateException("name is null");
                 }
 
-                site.getBasedir().ifPresent( dir -> {
-                    setUri( dir.toUri().resolve( getName().concat(ext)) );
-                });
+                setUri( site.getBasedir().toUri().resolve( getName().concat(ext)) );
+               
             }
 
             return getUri();
@@ -551,10 +549,8 @@ public class Site {
 
     }
 
-    public Optional<Path> getBasedir() {
-        return ( state.isPresent() ) ? 
-            Optional.of(state.get().getBasedir()) : 
-            Optional.empty();
+    public Path getBasedir() {
+        return state.getBasedir();
     }
 
     private java.util.List<String> labels;
