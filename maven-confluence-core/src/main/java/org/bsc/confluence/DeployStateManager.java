@@ -40,23 +40,18 @@ public class DeployStateManager {
         Objects.requireNonNull(basedir);
 
         this.endpoint = endpoint;
-        this.basedir = basedir;
+        this.basedir = Files.isDirectory(basedir) ?
+                Paths.get(basedir.toString()) :
+                Paths.get(basedir.getParent().toString());
     }
 
     public Path getBasedir() {
         return basedir;
     }
 
-    private Path resolveDir( Path dir ) {
-        return Files.isDirectory(dir) ?
-                Paths.get(dir.toString()) :
-                Paths.get(dir.getParent().toString()) ;
-        
-    }
-    
     public Path getFile() {
         
-        return Paths.get(resolveDir(basedir).toString(), ".state.json") ;
+        return Paths.get(basedir.toString(), ".state.json") ;
         
     }
     
@@ -139,14 +134,10 @@ public class DeployStateManager {
     public boolean isUpdated(Path file) {
         
         final Path b = file.toAbsolutePath();
-        final Path a = resolveDir(basedir);
         
-        System.out.printf("file[%s] - basedir[%s]\n", b, a );
-        
-        Map<String,JsonValue> s =  storage.get(endpoint);
-        
-        
-        final String key = a.relativize( b ).toString();
+        final Map<String,JsonValue> s =  storage.get(endpoint);
+           
+        final String key = basedir.relativize( b ).toString();
 
         JsonNumber value = s.containsKey(key) ? 
                                 (JsonNumber)s.get(key) :

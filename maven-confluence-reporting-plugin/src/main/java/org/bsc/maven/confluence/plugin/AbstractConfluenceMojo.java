@@ -8,10 +8,11 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -201,6 +202,18 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         return labels;
     }
 
+    protected String getPrintableStringForResource( java.net.URI uri ) {
+        
+        try {
+            Path p = Paths.get( uri );
+            return getProject().getBasedir().toPath().relativize(p).toString();
+            
+        } catch (Exception e) {
+            return uri.toString();
+        }
+        
+        
+    }
 
     /**
      * initialize properties shared with template
@@ -255,7 +268,10 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
         java.net.URI source = child.getUri(getFileExt());
 
-        getLog().info( String.format("generateChild spacekey=[%s] parentPageTitle=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
+        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\tparentPageTitle=[%s]\n\t%s", 
+                spaceKey, 
+                parentPageTitle, 
+                getPrintableStringForResource(source)));
 
         try {
 
@@ -280,31 +296,32 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
                 final Model.Page pageToUpdate = result;
                 
-                result = site.processUri(source, this.getTitle(), (Optional<InputStream> is, Representation r) -> {
+                result = site.processPageUri(source, this.getTitle(), ( err, tuple2) -> {
+                      
+                    if( err.isPresent() ) {
+                        if( err.get().getCause() != null ) throw new RuntimeException(err.get());
+                        getLog().info( err.get().getMessage());
+                        return pageToUpdate;
+                    }
 
-                        if( !is.isPresent()) {
-                            getLog().debug( String.format("%s SKIPPED!", pageToUpdate.getTitle())); 
-                            return pageToUpdate; // SKIPPED
+                    try {
+                        final MiniTemplator t = new MiniTemplator.Builder()
+                                .setSkipUndefinedVars(true)
+                                .build( tuple2.value1.get(), getCharset() );
+                        
+                        if( !child.isIgnoreVariables() ) {
+                            
+                            addStdProperties(t);
+                            
+                            t.setVariableOpt("childTitle", pageName);
                         }
                         
-                        try {
-                            final MiniTemplator t = new MiniTemplator.Builder()
-                                    .setSkipUndefinedVars(true)
-                                    .build( is.get(), getCharset() );
-                            
-                            if( !child.isIgnoreVariables() ) {
-                                
-                                addStdProperties(t);
-                                
-                                t.setVariableOpt("childTitle", pageName);
-                            }
-                            
-                            return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), r) );
-                            
-                        } catch (Exception ex) {
-                            final String msg = format("error storing page [%s]", pageToUpdate.getTitle());
-                            throw new RuntimeException(msg, ex);
-                        }
+                        return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );
+                        
+                    } catch (Exception ex) {
+                        final String msg = format("error storing page [%s]", pageToUpdate.getTitle());
+                        throw new RuntimeException(msg, ex);
+                    }
                     
                 }) ;
 

@@ -3,7 +3,6 @@ package org.bsc.maven.confluence.plugin;
 import static java.lang.String.format;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -516,9 +514,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         final String titlePrefix = title;
 
-        final Model.Page confluenceHomePage = site.processUri(  site.getHome().getUri(), 
+        final Model.Page confluenceHomePage = site.processPageUri(  site.getHome().getUri(), 
                                                                 this.getTitle(), 
-                                                                (Optional<InputStream> is, Representation r) -> {
+                                                                (err, tuple2) -> {
                 try {
 
                     final Model.Page page = 
@@ -526,18 +524,23 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                                                         parentPage.getTitle(), 
                                                         title);
                     
-                    if( !is.isPresent()) {
-                        getLog().debug( String.format("%s SKIPPED!", page.getTitle())); 
+                    if( err.isPresent() ) {
+                        if( err.get().getCause() != null ) throw new RuntimeException(err.get());
+                        getLog().info( err.get().getMessage());
+                        return page;
+                    }
+
+                    if( !tuple2.value1.isPresent()) {
                         return page; // SKIPPED
                     }
                     
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
-                            .build( is.get(), getCharset() );
+                            .build( tuple2.value1.get(), getCharset() );
 
                     generateProjectHomeTemplate( t, site, locale );
 
-                    return confluence.storePage(page, new Storage(t.generateOutput(),r) ); 
+                    return confluence.storePage(page, new Storage(t.generateOutput(),tuple2.value2) ); 
 
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
@@ -838,19 +841,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getProperties().put("artifactId",   getProject().getArtifactId());
         getProperties().put("version",      getProject().getVersion());
 
-        return site.processUri(site.getHome().getUri(), getTitle(), ( Optional<InputStream> is ,Storage.Representation sr) -> {
+        return site.processPageUri(site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
 
                 try {
                     Model.Page page = confluence.getOrCreatePage(parentPage, title);
 
-                    if( !is.isPresent()) { 
-                        getLog().debug( String.format("%s SKIPPED!", page.getTitle())); 
+                    if( err.isPresent() ) {
+                        if( err.get().getCause() != null ) throw new RuntimeException(err.get());
+                        getLog().warn( err.get().getMessage());
+                        return page;
+                    }
+
+                    if( !tuple2.value1.isPresent()) { 
                         return page; 
                     } // SKIPPED
                     
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
-                            .build( is.get(), getCharset() );
+                            .build( tuple2.value1.get(), getCharset() );
 
                     if (!isSnapshot() && isRemoveSnapshots()) {
                         final String snapshot = title.concat("-SNAPSHOT");

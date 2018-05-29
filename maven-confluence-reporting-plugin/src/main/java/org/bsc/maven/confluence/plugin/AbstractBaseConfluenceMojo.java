@@ -213,8 +213,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                             sslCertificate
                     );
 
-            getLog().info( String.valueOf(confluence) );
-
             confluence.call(task);
             
         } catch( RuntimeException re ) {

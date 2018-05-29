@@ -19,6 +19,10 @@ public class Tuple2<V1,V2> {
         this.value2 = value2;
     }
     
+    public static <V1,V2>  Tuple2<V1,V2> of(V1 value1, V2 value2) {
+        return new Tuple2<>( value1, value2 );
+    }
+    
     
     
 }

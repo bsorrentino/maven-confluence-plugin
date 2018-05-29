@@ -3,6 +3,8 @@ package org.bsc.confluence;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.File;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,12 +23,28 @@ public class ConfluenceUtilsTest {
         assertThat(decoded, is("{{\\[I\\]\\[RE\\]'.\\*moon\\[^dab\\]\\+'}} : _all_ +implemented+ -specifications- -having- *the* _RE_ '.\\*moon\\[^dab\\]\\+'"));
     }
 
+    @Test 
+    public void pathTest() throws Exception {
+    
+        File f = new File(".");
+        
+        Path pp = Paths.get(  "http://test.xml");
+        
+        Assert.assertThat( Files.exists(pp), IsEqual.equalTo(false) );
+
+        Path p1 = Paths.get(  "classpath:test.xml");
+        
+        Assert.assertThat( Files.exists(p1), IsEqual.equalTo(false) );
+       
+    }
+    
+    
     @Test
     public void stateManager() throws Exception {
         final Path basedir = Paths.get( System.getProperty("java.io.tmpdir") );
         
         final Path file = Paths.get( basedir.toString(), ".state.json");
-        Files.delete(file);
+        Files.deleteIfExists(file);
         
         final DeployStateManager dsm = DeployStateManager.load( basedir, "http://localhost:8090/confluecen");
         

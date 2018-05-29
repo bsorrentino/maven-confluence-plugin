@@ -105,16 +105,16 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param confluencePage 
      */
-    private void generateAttachments( Site.Page page,  final ConfluenceService confluence, final Model.Page confluencePage) /*throws MavenReportException*/ {
+    private void generateAttachments( final ConfluenceService confluence, Site site, Site.Page page,  final Model.Page confluencePage) /*throws MavenReportException*/ {
 
-        getLog().info(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
+        getLog().debug(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
 
         for( final Site.Attachment attachment : page.getAttachments() ) {
 
             final Path attachmentPath = Paths.get(attachment.getUri());
             
             if( !Files.isDirectory(attachmentPath) ) {
-                generateAttachment(confluence, confluencePage, attachment);            
+                generateAttachment(confluence, site, confluencePage, attachment);            
             }
             else {    
                 try( final DirectoryStream<Path> dirStream = newDirectoryStream(attachmentPath, attachment) ) {
@@ -133,7 +133,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                             fileAttachment.setContentType(attachment.getContentType());
                         }
                         
-                        generateAttachment(confluence, confluencePage, fileAttachment);
+                        generateAttachment(confluence, site, confluencePage, fileAttachment);
                         
                     }
                     
@@ -150,9 +150,14 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluencePage
      * @param attachment
      */
-    private void generateAttachment(ConfluenceService confluence, Model.Page confluencePage, Site.Attachment attachment) {
-        getLog().info(format("generateAttachment pageId [%s] title [%s] file [%s]", confluencePage.getId(), confluencePage.getTitle(), attachment.getUri()));
+    private void generateAttachment(ConfluenceService confluence, Site site, Model.Page confluencePage, Site.Attachment attachment) {
+        
+        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]", 
+                confluencePage.getId(), 
+                confluencePage.getTitle(), 
+                getPrintableStringForResource(attachment.getUri()) ));
 
+       
         Model.Attachment confluenceAttachment = null;
 
         try {
@@ -160,8 +165,16 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         } catch (Exception e) {
             getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
         }
+            
+        if (confluenceAttachment == null) {
+            
+            getLog().debug(format("Creating new attachment for [%s]", attachment.getName()));
+            confluenceAttachment = confluence.createAttachment();
+            confluenceAttachment.setFileName(attachment.getName());
+            confluenceAttachment.setContentType(attachment.getContentType());
 
-        if (confluenceAttachment != null) {
+        } else {
+            /*
             java.util.Date date = confluenceAttachment.getCreated();
 
             if (date == null) {
@@ -174,16 +187,34 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                     return;
                 }
             }
-
-        } else {
-            getLog().info(format("Creating new attachment for [%s]", attachment.getName()));
-            confluenceAttachment = confluence.createAttachment();
-            confluenceAttachment.setFileName(attachment.getName());
-            confluenceAttachment.setContentType(attachment.getContentType());
+            */
         }
-
+        
+        confluenceAttachment.setFileName(attachment.getName());
+        confluenceAttachment.setContentType(attachment.getContentType());        
         confluenceAttachment.setComment( attachment.getComment());
 
+        final Model.Attachment finalAttachment = confluenceAttachment;
+        
+        site.processUri(attachment.getUri(), ( err, is ) -> {
+            
+            if( err.isPresent() ) {
+                if( err.get().getCause() != null ) throw new RuntimeException(err.get());
+                getLog().info( err.get().getMessage());
+                return finalAttachment;
+            }
+            try {
+                return ( is.isPresent() ) ?
+                        confluence.addAttachment(confluencePage, finalAttachment, is.get() ) :
+                            finalAttachment ;
+            } catch (Exception ex) {
+                final String msg = format("error adding attachment page [%s]", finalAttachment.getFileName());
+                throw new RuntimeException(msg, ex);
+                
+            }    
+        });
+        
+        /*
         try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
             confluence.addAttachment(confluencePage, confluenceAttachment, is );
 
@@ -193,6 +224,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
             throw new RuntimeException(msg,e);
 
         }
+        */
     }
     
     
@@ -211,9 +243,9 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                                     final Map<String, Model.Page> varsToParentPageMap)
     {
 
-        getLog().info(format("generateChildren # [%d]", parentPage.getChildren().size()));
+        getLog().debug(format("generateChildren # [%d]", parentPage.getChildren().size()));
         
-        generateAttachments(parentPage, confluence, confluenceParentPage);
+        generateAttachments( confluence, site, parentPage, confluenceParentPage);
         
         for( Site.Page child : parentPage.getChildren() ) {
 
