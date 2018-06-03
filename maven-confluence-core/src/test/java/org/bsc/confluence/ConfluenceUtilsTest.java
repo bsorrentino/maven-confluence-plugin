@@ -41,19 +41,21 @@ public class ConfluenceUtilsTest {
     
     @Test
     public void stateManager() throws Exception {
+        final DeployStateManager dsm = new DeployStateManager();
+
         final Path basedir = Paths.get( System.getProperty("java.io.tmpdir") );
         
-        final Path file = Paths.get( basedir.toString(), ".state.json");
+        final Path file = Paths.get( basedir.toString(), dsm.getFileName());
         Files.deleteIfExists(file);
         
-        final DeployStateManager dsm = DeployStateManager.load( basedir, "http://localhost:8090/confluecen");
         
-        System.out.printf( "dsm.path: %s\n", dsm.getBasedir());
+        dsm.setBasedir( basedir );
+        dsm.setEndpoint( "http://localhost:8090/confluence" );
         
-        Assert.assertThat( dsm.getFile(), IsNull.notNullValue());
-        Assert.assertThat( dsm.getFile().toFile(), IsNull.notNullValue());
-        Assert.assertThat( dsm.getFile().toFile().exists(), IsEqual.equalTo(true));
-        Assert.assertThat( dsm.getFile().toFile().isFile(), IsEqual.equalTo(true));
+        dsm.load();
+        
+        Assert.assertThat( file.toFile().exists(), IsEqual.equalTo(true));
+        Assert.assertThat( file.toFile().isFile(), IsEqual.equalTo(true));
         
         Assert.assertThat( dsm.isUpdated(Paths.get("pom.xml")), IsEqual.equalTo(true));;
         

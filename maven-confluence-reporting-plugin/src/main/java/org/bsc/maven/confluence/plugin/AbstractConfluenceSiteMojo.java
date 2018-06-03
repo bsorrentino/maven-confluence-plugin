@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -25,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 
@@ -360,12 +358,9 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
     }
    
     @Override
-    public Site createFromFolder( final DeployStateManager dsm ) {
-        Objects.requireNonNull(dsm, "dsm is null!");
+    public Site createFromFolder() {
     
         final Site result = new Site();
-        
-        result.setDeployStateManager( dsm );
         
         result.getLabels().addAll( super.getLabels());
         
@@ -433,8 +428,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @return 
      */
     @Override
-    public Site createFromModel( final DeployStateManager dsm ) {
-        Objects.requireNonNull(dsm, "dsm is null!");
+    public Site createFromModel() {
         
         Site site = null;
         
@@ -450,8 +444,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
 
                 site = (Site) unmarshaller.unmarshal( siteDescriptor );
-                site.setDeployStateManager( dsm );
-
+   
             } catch (JAXBException ex) {
                 getLog().error("error creating site from model!", ex);
 

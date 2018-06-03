@@ -7,6 +7,7 @@ package org.bsc.confluence.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.DeployStateManager;
 import org.bsc.functional.Tuple2;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
@@ -45,21 +45,11 @@ public class Site {
      */
     protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
 
-    // private static final Logger LOGGER = LoggerFactory.getLogger(Site.class);
-
-    private DeployStateManager state;
-
     /**
      * 
      */
     public Site() {
         _SITE.push(this);
-    }
-
-    public void setDeployStateManager(DeployStateManager state) {
-        Objects.requireNonNull(state);
-
-        this.state = state;
     }
 
     /**
@@ -202,13 +192,6 @@ public class Site {
 
             try {
                 
-                final Path path = Paths.get(uri);
-
-                if ("file".equalsIgnoreCase(scheme) && !state.isUpdated(path)) {
-                    final Exception ex = new Exception(String.format("resource [%s] has not been updated", getPrintableStringForResource(uri) ));
-                    return callback.apply( Optional.of(ex), Optional.empty());
-                }
-
                 java.net.URL url = uri.toURL();
 
                 result = url.openStream();
@@ -279,11 +262,6 @@ public class Site {
         } else {
 
             try {
-
-                if ("file".equalsIgnoreCase(scheme) && !state.isUpdated(Paths.get(uri))) {
-                    final Exception ex = new Exception(String.format("page [%s] has not been updated", getPrintableStringForResource(uri)));
-                    return callback.apply( Optional.of(ex), Tuple2.of(Optional.empty(), representation) );
-                }
 
                 java.net.URL url = uri.toURL();
 
@@ -603,9 +581,19 @@ public class Site {
         }
 
     }
-
+    
+    private Optional<Path> _basedir;
+    
+    public void setBasedir( Path basedir ) {
+        
+        this._basedir = Optional.ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?
+                Paths.get(p.toString()) :
+                Paths.get(p.getParent().toString()));
+           
+    }
+     
     public Path getBasedir() {
-        return state.getBasedir();
+        return _basedir.orElseThrow( () -> new IllegalStateException("basedir is not set!"));
     }
 
     private java.util.List<String> labels;
@@ -644,7 +632,7 @@ public class Site {
         
         try {
             Path p = Paths.get( uri );
-            return state.getBasedir().relativize(p).toString();
+            return getBasedir().relativize(p).toString();
             
         } catch (Exception e) {
             return uri.toString();

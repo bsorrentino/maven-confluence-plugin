@@ -4,6 +4,7 @@ import static java.lang.String.format;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -237,13 +238,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
         loadUserInfoFromSettings();
-
-        final DeployStateManager dsm = DeployStateManager.load(Paths.get(getSiteDescriptor().toURI()), getEndPoint() );
         
         Site site = null;
 
         if( isSiteDescriptorValid() ) {
-            site = super.createFromModel( dsm );
+            site = super.createFromModel();
+            site.setBasedir(getSiteDescriptor().toPath());
         }
 
         if( site != null ) {
@@ -260,7 +260,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
         }
         else {
-            site = super.createFromFolder( dsm );
+            site = super.createFromFolder();
+            
+            try {
+                final Path p = templateWiki.toPath();
+                site.setBasedir(p);
+            }
+            catch( Exception e ) {
+                site.setBasedir(getSiteDescriptor().toPath());                
+            }
 
         }
         site.print( System.out );

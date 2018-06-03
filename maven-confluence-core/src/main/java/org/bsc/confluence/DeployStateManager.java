@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.json.Json;
 import javax.json.JsonNumber;
@@ -19,49 +19,66 @@ import javax.json.JsonWriter;
 
 public class DeployStateManager {
 
-    private final SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy hhmmss");
+    //private final SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy hhmmss");
+
+    private static final String STORAGE_NAME = "state.json";
 
     private Map<String, Map<String,JsonValue>> storage ;
 
-    private final String endpoint ;
-    private final Path basedir ;
+    private Optional<String> _endpoint ;
+    private Optional<Path> _basedir ;
+    private boolean active = false;
     
-    public static DeployStateManager load( Path basedir,  String endpoint ) {
-        DeployStateManager  result = new DeployStateManager( endpoint, basedir );
-        
-        result.load();
-
-        return result;
+    public DeployStateManager() {
     }
 
-    protected DeployStateManager( String endpoint, Path basedir ) {
-
-        Objects.requireNonNull(endpoint);
-        Objects.requireNonNull(basedir);
-
-        this.endpoint = endpoint;
-        this.basedir = Files.isDirectory(basedir) ?
-                Paths.get(basedir.toString()) :
-                Paths.get(basedir.getParent().toString());
+      
+    /**
+     * @return the active
+     */
+    public boolean isActive() {
+        return active;
     }
 
-    public Path getBasedir() {
-        return basedir;
+
+    /**
+     * @param active the active to set
+     */
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
-    public Path getFile() {
-        
-        return Paths.get(basedir.toString(), ".state.json") ;
-        
+
+    /**
+     * @param endpoint the endpoint to set
+     */
+    public void setEndpoint(String endpoint) {
+        this._endpoint = Optional.ofNullable(endpoint);
+    }
+
+    /**
+     * @param basedir the basedir to set
+     */
+    public void setBasedir(Path basedir) {
+        this._basedir = Optional.ofNullable(basedir);
+    }
+
+    public final String getFileName() {
+        return STORAGE_NAME;
     }
     
+    private boolean isValid() {
+        return active && _endpoint.isPresent() && _basedir.isPresent();
+    }
     /**
         * 
         * @param stateDir
         */
-    private void load() {
+    public void load() {
         
-        final Path file = getFile();
+        if( !isValid() ) return;
+        
+        final Path file = Paths.get(_basedir.get().toString(), STORAGE_NAME);
         
         storage = new HashMap<>();
         
@@ -87,8 +104,8 @@ public class DeployStateManager {
                 ex.printStackTrace();
             }
         }
-        if( !storage.containsKey(endpoint) ) {              
-            storage.put( endpoint, new HashMap<String,JsonValue>() );   
+        if( !storage.containsKey(_endpoint.get()) ) {              
+            storage.put( _endpoint.get(), new HashMap<String,JsonValue>() );   
             save();
         }
         
@@ -100,8 +117,9 @@ public class DeployStateManager {
         * @param stateDir
         */
     private void save() {
+        if( !isValid() ) return;
         
-        final Path file = getFile();
+        final Path file = Paths.get(_basedir.get().toString(), STORAGE_NAME);
         
         if( !Files.exists(file)) return;
         
@@ -131,13 +149,31 @@ public class DeployStateManager {
         // return Json.createValue(0L) 
     }
     
-    public boolean isUpdated(Path file) {
+    public boolean isUpdated( java.net.URI uri ) {
+        Objects.requireNonNull(uri, "uri is null!");
         
+        final String scheme = uri.getScheme();
+        
+        if ( Objects.nonNull(scheme) && "file".equalsIgnoreCase(scheme) ) {
+
+            return isUpdated( Paths.get(uri) );
+        
+        }
+
+        return true;
+
+    }
+    
+    public boolean isUpdated(Path file) {
+        Objects.requireNonNull(file, "file is null!");
+
+        if( !isValid() ) return true;
+
         final Path b = file.toAbsolutePath();
         
-        final Map<String,JsonValue> s =  storage.get(endpoint);
+        final Map<String,JsonValue> s =  storage.get(_endpoint.get());
            
-        final String key = basedir.relativize( b ).toString();
+        final String key = _basedir.get().relativize( b ).toString();
 
         JsonNumber value = s.containsKey(key) ? 
                                 (JsonNumber)s.get(key) :
