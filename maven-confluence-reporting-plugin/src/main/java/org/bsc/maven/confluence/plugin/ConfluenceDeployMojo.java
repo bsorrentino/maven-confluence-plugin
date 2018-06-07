@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -46,7 +47,6 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
-import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.Site;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
@@ -227,11 +227,25 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-    	
+    	        
 		if( skip ) {
 	        getLog().info("plugin execution skipped");
 	        return;
 		}
+		
+		if( Objects.nonNull(deployState)) {
+		    
+		    deployState.init( getEndPoint() );
+		  
+		    if( !deployState.getOutdir().isPresent() ) {
+	            deployState.setOutdir( Paths.get(getProject().getBuild().getDirectory()) );		        
+		    }
+		}
+
+		System.out.println( "==> TEST"  );
+        System.out.println( deployState );
+        System.out.println( "<== TEST"  );
+
     		
         final Locale locale = Locale.getDefault();
 
