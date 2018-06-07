@@ -25,14 +25,21 @@ public class DeployStateManager {
 
     private Map<String, Map<String,JsonValue>> storage ;
 
-    private Optional<String> _endpoint ;
-    private Optional<Path> _basedir ;
+    private Optional<String> _endpoint = Optional.empty();
+    private Optional<Path> _outdir = Optional.empty() ;
     private boolean active = false;
     
     public DeployStateManager() {
     }
 
-      
+    /**
+     * 
+     * @param endpoint
+     */
+    public void init( String endpoint ) {
+        this._endpoint = Optional.ofNullable(endpoint);
+    }
+    
     /**
      * @return the active
      */
@@ -48,19 +55,18 @@ public class DeployStateManager {
         this.active = active;
     }
 
-
     /**
-     * @param endpoint the endpoint to set
+     * @param outdir the basedir to set
      */
-    public void setEndpoint(String endpoint) {
-        this._endpoint = Optional.ofNullable(endpoint);
+    public void setOutdir(Path outdir) {
+        this._outdir = Optional.ofNullable(outdir);
     }
 
     /**
-     * @param basedir the basedir to set
+     * @param outdir the basedir to set
      */
-    public void setBasedir(Path basedir) {
-        this._basedir = Optional.ofNullable(basedir);
+    public Optional<Path> getOutdir() {
+        return this._outdir;  
     }
 
     public final String getFileName() {
@@ -68,7 +74,7 @@ public class DeployStateManager {
     }
     
     private boolean isValid() {
-        return active && _endpoint.isPresent() && _basedir.isPresent();
+        return active && _endpoint.isPresent() && _outdir.isPresent();
     }
     /**
         * 
@@ -78,7 +84,7 @@ public class DeployStateManager {
         
         if( !isValid() ) return;
         
-        final Path file = Paths.get(_basedir.get().toString(), STORAGE_NAME);
+        final Path file = Paths.get(_outdir.get().toString(), STORAGE_NAME);
         
         storage = new HashMap<>();
         
@@ -119,7 +125,7 @@ public class DeployStateManager {
     private void save() {
         if( !isValid() ) return;
         
-        final Path file = Paths.get(_basedir.get().toString(), STORAGE_NAME);
+        final Path file = Paths.get(_outdir.get().toString(), STORAGE_NAME);
         
         if( !Files.exists(file)) return;
         
@@ -173,7 +179,7 @@ public class DeployStateManager {
         
         final Map<String,JsonValue> s =  storage.get(_endpoint.get());
            
-        final String key = _basedir.get().relativize( b ).toString();
+        final String key = _outdir.get().relativize( b ).toString();
 
         JsonNumber value = s.containsKey(key) ? 
                                 (JsonNumber)s.get(key) :
@@ -190,6 +196,20 @@ public class DeployStateManager {
         }
         
         return false;
+    }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return new StringBuilder()
+                    .append("DeployStateManager").append("\n\t")
+                    .append("active=").append(active).append("\n\t")
+                    .append("endpoint=").append(_endpoint).append("\n\t")
+                    .append("outdir=").append(_outdir).append("\n")
+                    .toString();
     }
     
 
