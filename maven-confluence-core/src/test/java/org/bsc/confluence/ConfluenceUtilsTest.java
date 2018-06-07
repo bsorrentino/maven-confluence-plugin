@@ -48,9 +48,9 @@ public class ConfluenceUtilsTest {
         final Path file = Paths.get( basedir.toString(), dsm.getFileName());
         Files.deleteIfExists(file);
         
-        
-        dsm.setBasedir( basedir );
-        dsm.setEndpoint( "http://localhost:8090/confluence" );
+        dsm.init( "http://localhost:8090/confluence" );
+        dsm.setActive(true);
+        dsm.setOutdir( basedir );
         
         dsm.load();
         
