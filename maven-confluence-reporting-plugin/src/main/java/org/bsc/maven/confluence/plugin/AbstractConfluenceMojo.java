@@ -1,7 +1,5 @@
 package org.bsc.maven.confluence.plugin;
 
-import static java.lang.String.format;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -20,6 +19,7 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
 
@@ -97,7 +97,15 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
     private String encoding;
 
-
+    
+    /**
+     * Deploy State Manager - Store the last deployed state
+     * 
+     * @since 6.0.0
+     */
+    @Parameter
+    protected DeployStateManager deployState /*= new DeployStateManager() */;
+    
     /**
      *
      */
@@ -319,7 +327,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                         return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );
                         
                     } catch (Exception ex) {
-                        final String msg = format("error storing page [%s]", pageToUpdate.getTitle());
+                        final String msg = String.format("error storing page [%s]", pageToUpdate.getTitle());
                         throw new RuntimeException(msg, ex);
                     }
                     
