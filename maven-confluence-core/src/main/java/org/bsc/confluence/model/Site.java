@@ -582,8 +582,9 @@ public class Site {
 
     }
     
-    private Optional<Path> _basedir;
+    private transient Optional<Path> _basedir;
     
+    @XmlTransient
     public void setBasedir( Path basedir ) {
         
         this._basedir = Optional.ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?

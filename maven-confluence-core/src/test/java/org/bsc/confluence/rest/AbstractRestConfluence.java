@@ -5,15 +5,12 @@
  */
 package org.bsc.confluence.rest;
 
-import static java.lang.String.format;
-
-import java.util.Optional;
-
-import javax.json.JsonObject;
+import java.util.concurrent.CompletableFuture;
 
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.functional.Tuple2;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
@@ -45,7 +42,6 @@ public class AbstractRestConfluence {
     @Test @Ignore
     public void dummy() {}
 
-    
     @Test
     public void getOrCreatePageAndStoreWiki() throws Exception  {
 
@@ -54,7 +50,7 @@ public class AbstractRestConfluence {
         final String title = "MyPage2";
 
 
-        final Model.Page p = service.getOrCreatePage(spaceKey, parentPageTitle, title);
+        final Model.Page p = service.getOrCreatePage(spaceKey, parentPageTitle, title).get();
 
         int version = p.getVersion();
         Assert.assertThat( p, IsNull.notNullValue());
@@ -69,7 +65,7 @@ public class AbstractRestConfluence {
                                         .append("*'wiki' \"wiki\"*")
                                         .toString();
         
-        final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI));
+        final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI)).get();
 
         Assert.assertThat( p1, IsNull.notNullValue());
         Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
@@ -123,23 +119,35 @@ public class AbstractRestConfluence {
         final String parentPageTitle = "Home";
         final String title = "MyPage3";
 
-
-        final Model.Page p = service.getOrCreatePage(spaceKey, parentPageTitle, title);
-
+        final Tuple2<Model.Page,Model.Page> result =
+            service.getPage(spaceKey, parentPageTitle)
+                .thenApply( p -> p.orElseThrow( () -> new RuntimeException("parent page not found!")) )
+                .thenCompose( p -> service.createPage( p, title ))
+                .thenCompose( p -> {
+    
+                    final String content = new StringBuilder()
+                            .append("<h1>")
+                            .append("TEST ")
+                            .append(System.currentTimeMillis())
+                            .append("</h1>")
+                            .append("<hr/>")
+                            .append("<b>'storage' \"storage\"</b>")
+                            .toString();
+                    return CompletableFuture.completedFuture(p)
+                            .thenCombine( 
+                                    service.storePage(p, new Storage(content, Storage.Representation.STORAGE)), 
+                                    Tuple2::of );
+                })
+                .get()
+                ;
+        
+        Model.Page p = result.value1;
+        Model.Page p1 = result.value2;
+        
         int version = p.getVersion();
         Assert.assertThat( p, IsNull.notNullValue());
         Assert.assertThat( p.getSpace(), IsEqual.equalTo("TEST"));
         Assert.assertThat( version > 0, Is.is(true));
-
-        final String content = new StringBuilder()
-                                        .append("<h1>")
-                                        .append("TEST ")
-                                        .append(System.currentTimeMillis())
-                                        .append("</h1>")
-                                        .append("<hr/>")
-                                        .append("<b>'storage' \"storage\"</b>")
-                                        .toString();
-        final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.STORAGE));
 
         Assert.assertThat( p1, IsNull.notNullValue());
         Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
@@ -148,20 +156,34 @@ public class AbstractRestConfluence {
     }
 
     @Test //@Ignore
-    public void getDescendentsTest() throws Exception  {
+    public void getDescendentsTest()   {
     	
         final String spaceKey	= "TEST";
         final String title 		= "Home";
         
-        final Model.Page page = service.getPage(spaceKey, title);
+        service.getPage(spaceKey, title).thenAccept( page -> {
+            
+            Assert.assertThat( page.isPresent(), IsEqual.equalTo(true) );
+           
+            try {
+                java.util.List<Model.PageSummary> descendents = service.getDescendents( page.get().getId() );
+                
+                Assert.assertThat( descendents, IsNull.notNullValue() );
+                
+                for( Model.PageSummary p : descendents ) {
+                    System.out.printf( "Descend Page: [%s]\n", p.getTitle());
+                }
+                
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            
+        })
+        .exceptionally( e -> {           
+            Assert.fail( e.getMessage() );
+            return null;
+        } );
 
-		final java.util.List<Model.PageSummary> descendents = service.getDescendents( page.getId() );
-        
-		Assert.assertThat( descendents, IsNull.notNullValue() );
-		
-		for( Model.PageSummary p : descendents ) {
-			System.out.printf( "Descend Page: [%s]\n", p.getTitle());
-		}
     
     }
     

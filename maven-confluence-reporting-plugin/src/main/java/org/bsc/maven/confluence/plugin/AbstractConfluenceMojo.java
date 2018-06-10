@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -22,6 +22,7 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
+import org.bsc.functional.Tuple2;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
@@ -266,6 +267,65 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     }
 
+    /**
+     * 
+     * @param pageToUpdate
+     * @param site
+     * @param source
+     * @return
+     */
+    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(   
+            final ConfluenceService confluence, 
+            final Model.Page pageToUpdate, 
+            final Site site, 
+            final java.net.URI source,
+            final T child,
+            final String pageName ) 
+    {
+        
+        return site.processPageUri(source, this.getTitle(), ( err, tuple2) -> {
+              
+            final CompletableFuture<Model.Page> result = 
+                        new CompletableFuture<Model.Page>();
+            
+            if( err.isPresent() ) {
+                result.completeExceptionally(RTE( "error processing uri [%s]", source, err.get() ));
+                return result;
+            }
+
+            try {
+                final MiniTemplator t = new MiniTemplator.Builder()
+                        .setSkipUndefinedVars(true)
+                        .build( tuple2.value1.get(), getCharset() );
+                
+                if( !child.isIgnoreVariables() ) {
+                    
+                    addStdProperties(t);
+                    
+                    t.setVariableOpt("childTitle", pageName);
+                }
+                
+                return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );
+                
+            } catch (Exception ex) {
+                result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(),ex));
+            }
+            
+            return result;
+        }) ;
+        
+    }
+    
+    /**
+     * 
+     * @param site
+     * @param confluence
+     * @param child
+     * @param spaceKey
+     * @param parentPageTitle
+     * @param titlePrefix
+     * @return
+     */
     protected <T extends Site.Page> Model.Page  generateChild(  final Site site,
                                                                 final ConfluenceService confluence,  
                                                                 final T child, 
@@ -281,81 +341,57 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 parentPageTitle, 
                 getPrintableStringForResource(source)));
 
-        try {
+        if (!isSnapshot() && isRemoveSnapshots()) {
+            final String snapshot = titlePrefix.concat("-SNAPSHOT");
 
-            if (!isSnapshot() && isRemoveSnapshots()) {
-                final String snapshot = titlePrefix.concat("-SNAPSHOT");
-
-                final Model.Page page = confluence.getPage(spaceKey, parentPageTitle);
-
-                boolean deleted = confluence.removePage(page, snapshot);
-
-                if (deleted) {
-                    getLog().info(String.format("Page [%s] has been removed!", snapshot));
-                }
-            }
-
-            final String pageName = !isChildrenTitlesPrefixed()
-                ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
-
-            Model.Page result = confluence.getOrCreatePage(spaceKey, parentPageTitle, pageName);
-
-            if ( source != null ) {
-
-                final Model.Page pageToUpdate = result;
-                
-                result = site.processPageUri(source, this.getTitle(), ( err, tuple2) -> {
-                      
-                    if( err.isPresent() ) {
-                        if( err.get().getCause() != null ) throw new RuntimeException(err.get());
-                        getLog().info( err.get().getMessage());
-                        return pageToUpdate;
-                    }
-
-                    try {
-                        final MiniTemplator t = new MiniTemplator.Builder()
-                                .setSkipUndefinedVars(true)
-                                .build( tuple2.value1.get(), getCharset() );
-                        
-                        if( !child.isIgnoreVariables() ) {
-                            
-                            addStdProperties(t);
-                            
-                            t.setVariableOpt("childTitle", pageName);
-                        }
-                        
-                        return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );
-                        
-                    } catch (Exception ex) {
-                        final String msg = String.format("error storing page [%s]", pageToUpdate.getTitle());
-                        throw new RuntimeException(msg, ex);
-                    }
-                    
-                }) ;
-
-            }
-            else {
-
-                result = confluence.storePage(result);
-
-            }
-
-            for( String label : child.getComputedLabels() ) {
-
-                confluence.addLabelByName(label, Long.parseLong(result.getId()) );
-            }
-
-            child.setName( pageName );
-
-            return result;
-
-        } catch (RuntimeException re ){
-            throw re;
-        } catch (Exception e) {
-            final String msg = "error loading template";
-            //getLog().error(msg, e);
-            throw new RuntimeException(msg, e);
+            confluence.getPage(spaceKey, parentPageTitle)
+            .thenApply( p -> p.orElseThrow(() -> RTE("parentPage [%s] not found!", parentPageTitle) ))
+            .thenCompose( page -> confluence.removePage(page, snapshot) )
+            .thenAccept( deleted -> {
+                getLog().info(String.format("Page [%s] has been removed!", snapshot));
+            })             
+            .exceptionally( ex -> throwRTE( "page [%s] not found!", snapshot, ex ))
+            ;
+                           
         }
+
+        final String pageName = !isChildrenTitlesPrefixed()
+            ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
+            
+        CompletableFuture<Model.Page> result =  
+            confluence.getPage(spaceKey, parentPageTitle)
+            .exceptionally( ex -> 
+                throwRTE( "cannot find parent page [%s] in space [%s]", parentPageTitle, ex ))
+            .thenApply( parent -> 
+                parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPageTitle)) )
+            .thenCombine( confluence.getPage(spaceKey, title), Tuple2::of)
+            .thenCompose( tuple -> {
+                return ( tuple.value2.isPresent() ) ?
+                    CompletableFuture.completedFuture(tuple.value2.get()) :
+                    confluence.createPage(tuple.value1, title);
+            })
+            .thenCompose( p -> 
+                ( source != null ) ?
+                        updatePageContent(confluence, p, site, source, child, pageName) :
+                        confluence.storePage(p))
+            ;
+        
+            try {
+                Model.Page p =  result.get();
+                
+                for( String label : child.getComputedLabels() ) {
+
+                    confluence.addLabelByName(label, Long.parseLong(p.getId()) );
+                }
+
+                child.setName( pageName );
+                
+                return p;
+ 
+            } catch ( Exception e) {
+                throw new RuntimeException(e);
+            }
+            
 
     }
 

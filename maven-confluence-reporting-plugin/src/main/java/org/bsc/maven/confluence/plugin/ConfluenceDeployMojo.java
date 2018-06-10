@@ -2,7 +2,6 @@ package org.bsc.maven.confluence.plugin;
 
 import static java.lang.String.format;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -48,6 +48,7 @@ import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.model.Site;
+import org.bsc.functional.Tuple2;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
 import org.bsc.maven.reporting.renderer.GitLogJiraIssuesRenderer;
 import org.bsc.maven.reporting.renderer.ProjectSummaryRenderer;
@@ -514,7 +515,79 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     }
 
-    private void generateProjectReport( final ConfluenceService confluence, final Site site, final Locale locale ) throws Exception {
+    private CompletableFuture<Boolean> removeSnaphot(
+            final ConfluenceService confluence,
+            final Model.Page parentPage, 
+            final String title ) 
+    {
+        
+        if (!isSnapshot() && isRemoveSnapshots()) {
+            final String snapshot = title.concat("-SNAPSHOT");
+            getLog().info(format("removing page [%s]!", snapshot));
+
+            return confluence.removePage( parentPage, snapshot)
+                .thenApply( deleted -> {
+                    if (deleted) {
+                        getLog().info(format("Page [%s] has been removed!", snapshot));
+                    } 
+                    return deleted;
+                })
+                .exceptionally( ex ->
+                    throwRTE(format("Page [%s] cannot be removed!", snapshot), ex))        
+                ;
+        }
+        else {
+            return CompletableFuture.completedFuture(false);
+        }
+
+    }
+    
+    private CompletableFuture<Model.Page> updateHomeContent( 
+                final ConfluenceService confluence,
+                final Site site,
+                final Model.Page homePage,
+                final Locale locale ) 
+    {
+        final java.net.URI uri = site.getHome().getUri();
+        
+        return site.processPageUri(  uri, homePage.getTitle(), (err, tuple2) -> {
+            final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
+            
+            try {
+                    
+                if( err.isPresent() ) {
+                    result.completeExceptionally(err.get());
+                    return result;
+                }
+            
+                if( !tuple2.value1.isPresent()) {
+                    result.complete( homePage );
+                    return result; // SKIPPED
+                }
+            
+                final MiniTemplator t = new MiniTemplator.Builder()
+                    .setSkipUndefinedVars(true)
+                    .build( tuple2.value1.get(), getCharset() );
+            
+                generateProjectHomeTemplate( t, site, locale );
+            
+                return confluence.storePage(homePage, new Storage(t.generateOutput(),tuple2.value2) ); 
+            
+            } catch (Exception ex) {
+                result.completeExceptionally(ex);
+                return result;
+            }
+            
+        
+        }) ;
+        
+    }
+    
+    private void generateProjectReport( 
+            final ConfluenceService confluence, 
+            final Site site, 
+            final Locale locale ) throws Exception 
+    {
 
         final Model.Page parentPage = loadParentPage(confluence);
 
@@ -523,59 +596,42 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         //
         final String title = getTitle();
 
-        if (!isSnapshot() && isRemoveSnapshots()) {
-           final String snapshot = title.concat("-SNAPSHOT");
-           getLog().info(format("removing page [%s]!", snapshot));
-
-           boolean deleted = confluence.removePage( parentPage, snapshot);
-
-           if (deleted) {
-               getLog().info(format("Page [%s] has been removed!", snapshot));
-           }
-       }
-
         final String titlePrefix = title;
 
-        final Model.Page confluenceHomePage = site.processPageUri(  site.getHome().getUri(), 
-                                                                this.getTitle(), 
-                                                                (err, tuple2) -> {
-                try {
-
-                    final Model.Page page = 
-                            confluence.getOrCreatePage( parentPage.getSpace(), 
-                                                        parentPage.getTitle(), 
-                                                        title);
-                    
-                    if( err.isPresent() ) {
-                        if( err.get().getCause() != null ) throw new RuntimeException(err.get());
-                        getLog().info( err.get().getMessage());
-                        return page;
-                    }
-
-                    if( !tuple2.value1.isPresent()) {
-                        return page; // SKIPPED
-                    }
-                    
-                    final MiniTemplator t = new MiniTemplator.Builder()
-                            .setSkipUndefinedVars(true)
-                            .build( tuple2.value1.get(), getCharset() );
-
-                    generateProjectHomeTemplate( t, site, locale );
-
-                    return confluence.storePage(page, new Storage(t.generateOutput(),tuple2.value2) ); 
-
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-
-        }) ;
-
+        CompletableFuture<Model.Page> result =  
+                removeSnaphot(confluence, parentPage, title)
+                .thenCompose( deleted -> 
+                    confluence.getPage(parentPage.getSpace(), parentPage.getTitle()))
+                .exceptionally( ex -> 
+                    throwRTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle(), ex ))
+                .thenApply( parent -> 
+                    parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
+                .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
+                .thenCompose( tuple -> {
+                    return ( tuple.value2.isPresent() ) ?
+                        CompletableFuture.completedFuture(tuple.value2.get()) :
+                        confluence.createPage(tuple.value1, title);
+                })
+                .thenCompose( p -> 
+                            updateHomeContent(confluence, site, p, locale))
+                            //confluence.storePage(p))
+                ;
+        
+        final Model.Page confluenceHomePage = result.get();
+        
         for( String label : site.getHome().getComputedLabels() ) {
 
             confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
         }
 
-        generateChildren( confluence, site, site.getHome(), confluenceHomePage, titlePrefix, new HashMap<String, Model.Page>());
+        
+        generateChildren( 
+                confluence, 
+                site, 
+                site.getHome(), 
+                confluenceHomePage, 
+                titlePrefix, 
+                new HashMap<String, Model.Page>());
 
     }
 
@@ -834,63 +890,47 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         }
 
-   /**
-     *
-     * @throws IOException
-     */
-    public Model.Page processMojoDescriptors(  final PluginDescriptor pluginDescriptor,
-                                            final ConfluenceService confluence,
-                                            final Model.Page parentPage,
-                                            final Site site,
-                                            final Locale locale) throws Exception
-    {
-        final List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
+        private CompletableFuture<Model.Page> updateHomeContent( 
+                    final ConfluenceService confluence,
+                    final Site site,
+                    final Model.Page homePage,
+                    final PluginDescriptor pluginDescriptor,
+                    final Locale locale
+                ) 
+        {
+            final List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
 
-        if (mojos == null) {
-            getLog().warn("no mojos found [pluginDescriptor.getMojos()]");
-        } else if (getLog().isDebugEnabled()) {
-            getLog().debug("Found the following Mojos:");
-            for (MojoDescriptor mojo : mojos) {
-                getLog().debug(format("  - %s : %s", mojo.getFullGoalName(), mojo.getDescription()));
+            if (mojos == null) {
+                getLog().warn("no mojos found [pluginDescriptor.getMojos()]");
+            } else if (getLog().isDebugEnabled()) {
+                getLog().debug("Found the following Mojos:");
+                for (MojoDescriptor mojo : mojos) {
+                    getLog().debug(format("  - %s : %s", mojo.getFullGoalName(), mojo.getDescription()));
+                }
             }
-        }
+            
+            final String title = getTitle();
 
-        // issue#102
-        //final String title = format( "%s-%s", pluginDescriptor.getArtifactId(), pluginDescriptor.getVersion() );
-        final String title = getTitle();
+            return site.processPageUri(site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
 
-        getProperties().put("pageTitle",    title);
-        getProperties().put("artifactId",   getProject().getArtifactId());
-        getProperties().put("version",      getProject().getVersion());
-
-        return site.processPageUri(site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
-
+                final CompletableFuture<Model.Page> result = 
+                        new CompletableFuture<Model.Page>();
+                
                 try {
-                    Model.Page page = confluence.getOrCreatePage(parentPage, title);
 
                     if( err.isPresent() ) {
-                        if( err.get().getCause() != null ) throw new RuntimeException(err.get());
-                        getLog().warn( err.get().getMessage());
-                        return page;
+                        result.completeExceptionally(err.get());
+                        return result;
                     }
 
                     if( !tuple2.value1.isPresent()) { 
-                        return page; 
+                        result.complete(homePage);
+                        return result;
                     } // SKIPPED
                     
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
                             .build( tuple2.value1.get(), getCharset() );
-
-                    if (!isSnapshot() && isRemoveSnapshots()) {
-                        final String snapshot = title.concat("-SNAPSHOT");
-                        getLog().info(format("removing page [%s]!", snapshot));
-                        boolean deleted = confluence.removePage( parentPage, snapshot);
-
-                        if (deleted) {
-                            getLog().info(format("Page [%s] has been removed!", snapshot));
-                        }
-                    }
 
                     /////////////////////////////////////////////////////////////////
                     // SUMMARY
@@ -923,7 +963,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     /////////////////////////////////////////////////////////////////
 
                     {
-                        StringWriter writer = new StringWriter(100 * 1024);
+                        final StringWriter writer = new StringWriter(100 * 1024);
 
                         //writeGoals(writer, mojos);
                         goals.addAll(writeGoalsAsChildren(writer, title, mojos));
@@ -951,15 +991,62 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     page.setContent(wiki.toString());
                     */
 
-                    page = confluence.storePage(page,new Storage(t.generateOutput(), Representation.WIKI));
+                    return confluence.storePage(homePage,new Storage(t.generateOutput(), Representation.WIKI));
 
-                    return page;
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    result.completeExceptionally(ex);
+                    return result;
                 }
+            }) ;
+                
+        }
 
-        }) ;
-
+        /**
+         * 
+         * @param pluginDescriptor
+         * @param confluence
+         * @param parentPage
+         * @param site
+         * @param locale
+         * @return
+         * @throws Exception
+         */
+        public Model.Page processMojoDescriptors(  
+                                final PluginDescriptor pluginDescriptor,
+                                final ConfluenceService confluence,
+                                final Model.Page parentPage,
+                                final Site site,
+                                final Locale locale) throws Exception
+        {
+    
+            // issue#102
+            //final String title = format( "%s-%s", pluginDescriptor.getArtifactId(), pluginDescriptor.getVersion() );
+            final String title = getTitle();
+    
+            getProperties().put("pageTitle",    title);
+            getProperties().put("artifactId",   getProject().getArtifactId());
+            getProperties().put("version",      getProject().getVersion());
+    
+            CompletableFuture<Model.Page> result =  
+                removeSnaphot(confluence, parentPage, title)
+                .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )
+                .exceptionally( ex -> 
+                    throwRTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle(), ex ))
+                .thenApply( parent -> 
+                    parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
+                .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
+                .thenCompose( tuple -> {
+                    return ( tuple.value2.isPresent() ) ?
+                        CompletableFuture.completedFuture(tuple.value2.get()) :
+                        confluence.createPage(tuple.value1, title);
+                })
+                .thenCompose( p -> 
+                        updateHomeContent(confluence, site, p, pluginDescriptor, locale))
+                        //confluence.storePage(p))
+                ;
+    
+            return result.get();
+    
         }
     }
 }

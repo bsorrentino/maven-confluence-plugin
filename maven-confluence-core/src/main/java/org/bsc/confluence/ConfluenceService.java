@@ -7,7 +7,11 @@ package org.bsc.confluence;
 
 import static java.lang.String.format;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
+
+import org.bsc.functional.Tuple2;
 /**
  *
  * @author bsorrentino
@@ -145,23 +149,21 @@ public interface ConfluenceService {
 
     Model.PageSummary findPageByTitle( String parentPageId, String title) throws Exception ;
 
-    boolean removePage( Model.Page parentPage, String title ) throws Exception;
+    CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 
     void removePage( String pageId ) throws Exception;
 
-    Model.Page getOrCreatePage( String spaceKey, String parentPageTitle, String title ) throws Exception ;
-
-    Model.Page getOrCreatePage( Model.Page parentPage, String title ) throws Exception ;
+    CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
 
     Model.Page getPage( String pageId ) throws Exception;
 
-    Model.Page getPage( String spaceKey, String pageTitle ) throws Exception;
+    CompletableFuture<Optional<Model.Page>> getPage( String spaceKey, String pageTitle ) ;
 
     boolean addLabelByName( String label, long id ) throws Exception;
     
-    Model.Page storePage( Model.Page page, Storage content ) throws Exception;
+    CompletableFuture<Model.Page> storePage( Model.Page page, Storage content ) ;
     
-    Model.Page storePage( Model.Page page ) throws Exception;
+    CompletableFuture<Model.Page> storePage( Model.Page page ) ;
     
     java.util.List<Model.PageSummary> getDescendents(String pageId) throws Exception;
 
@@ -189,5 +191,30 @@ public interface ConfluenceService {
     
     Model.Attachment addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) throws Exception ;
 
-    
+    /**
+     * 
+     * @param spaceKey
+     * @param parentPageTitle
+     * @param title
+     * @return
+     */
+    default CompletableFuture<Model.Page> getOrCreatePage( 
+            String spaceKey, 
+            String parentPageTitle, 
+            String title ) 
+    {
+        return getPage(spaceKey, parentPageTitle)
+                .thenApply( parent -> 
+                    parent.orElseThrow( () -> 
+                        new RuntimeException( 
+                                String.format("cannot find parent page [%s] in space [%s]", parentPageTitle))) )
+                .thenCombine( getPage(spaceKey, title), Tuple2::of)
+                .thenCompose( tuple -> {
+                    return ( tuple.value2.isPresent() ) ?
+                        CompletableFuture.completedFuture(tuple.value2.get()) :
+                        createPage(tuple.value1, title);
+                })
+                ;
+        }
+
 }

@@ -11,20 +11,22 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.CurrentThreadExecutor;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.confluence.rest.model.Attachment;
 import org.bsc.confluence.rest.model.Page;
+import org.bsc.confluence.xmlrpc.ConfluenceExportDecorator;
 import org.bsc.ssl.SSLCertificateInfo;
-import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
 
 import okhttp3.HttpUrl;
 
@@ -38,7 +40,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     final Credentials credentials;
     
     final java.net.URL endpoint ;
-        
+
+    
     /**
      * 
      * @param url
@@ -146,41 +149,22 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
         
-        return rxChildrenPages(parentPageId).stream()
+        return childrenPages(parentPageId).stream()
                 .map( Page::new )
                 .filter( page -> page.getTitle().equals( title ))
                 .findFirst().orElse(null);
     }
 
     @Override
-    public Model.Page getOrCreatePage(final String spaceKey, final String parentPageTitle, final String title) throws Exception {
-        final JsonObject page = rxfindPage(spaceKey, parentPageTitle)
-                                    .orElseThrow( () -> new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)) );
- 
-        return  Stream.of(page)
-                .map( Page::new )
-                .map( parent -> {
-
-                    final String id = parent.getId();
-                    final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
-
-                    return rxfindPage(spaceKey,title).map( Page::new )
-                            .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).get() );                                  
-                 })
-                .findFirst().get();
-                
-                
-    }
-
-    @Override
-    public Model.Page getOrCreatePage(Model.Page parentPage, String title) throws Exception {
+    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
 
         final String spaceKey = parentPage.getSpace();
         final String id = parentPage.getId();
         final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
-        return rxfindPage(spaceKey,title).map( Page::new )
-                .orElseGet( () -> rxCreatePage( input.build() ).map( Page::new ).get() ); 
+        return CompletableFuture.supplyAsync( () ->
+            createPage( input.build() ).map( Page::new ).get()          
+        , CurrentThreadExecutor.instance);
     }
 
     /**
@@ -198,11 +182,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public Model.Page getPage(String spaceKey, String pageTitle) throws Exception {
-               
-        final JsonObject result = rxfindPage(spaceKey, pageTitle).orElseThrow( () -> new Exception(format( "page [%s] not found!", pageTitle)));
-        
-        return new Page(result);
+    public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle)  {
+        return CompletableFuture.completedFuture(findPage(spaceKey, pageTitle).map( Page::new ));
     }
     
     
@@ -217,7 +198,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
 
 
     @Override
-    public Model.Page storePage(Model.Page page, Storage content ) throws Exception {
+    public CompletableFuture<Model.Page> storePage(Model.Page page, Storage content )  {
         
         int previousVersion = page.getVersion();
         
@@ -234,13 +215,14 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                 .build()
                 ;        
         
-        
-        return rxUpdatePage(page.getId(),input).map( Page::new ).orElseGet(null);
+        return CompletableFuture.supplyAsync(() ->
+            updatePage(page.getId(),input).map( Page::new ).get()
+        , CurrentThreadExecutor.instance);
     }
 
     @Override
-    public Model.Page storePage(Model.Page page) throws Exception {     
-        return page;
+    public CompletableFuture<Model.Page> storePage(Model.Page page)  {     
+        return CompletableFuture.completedFuture(page);
     }
 
     @Override
@@ -298,13 +280,14 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
     
     @Override
-    public boolean removePage(Model.Page parentPage, String title) throws Exception {
+    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
         
-        return rxChildrenPages(parentPage.getId()).stream()
+        return CompletableFuture.completedFuture(
+                childrenPages(parentPage.getId()).stream()
                 .map( page -> new Page(page))
                 .filter( page -> page.getTitle().equals(title) )
                 .map( page -> rxDeletePageById(page.getId()) )
-                .findFirst().orElse(false);
+                .findFirst().orElse(false) );
         
     }
 

@@ -6,20 +6,21 @@
 package org.bsc.confluence;
 
 import static java.lang.String.format;
-import static org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
+import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
+import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
 import org.bsc.ssl.SSLCertificateInfo;
-import org.codehaus.swizzle.confluence.XMLRPCConfluenceServiceImpl;
 /**
  *
  * @author bsorrentino
@@ -53,18 +54,13 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public boolean removePage(Model.Page parentPage, String title) throws Exception {
+        public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
             return xmlrpcService.removePage(parentPage, title);
         }
 
         @Override
-        public Model.Page getOrCreatePage(String spaceKey, String parentPageTitle, String title) throws Exception {
-            return xmlrpcService.getOrCreatePage(spaceKey, parentPageTitle, title);
-        }
-
-        @Override
-        public Model.Page getOrCreatePage(Model.Page parentPage, String title) throws Exception {
-            return xmlrpcService.getOrCreatePage(parentPage, title);
+        public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title)  {
+            return xmlrpcService.createPage(parentPage, title);
         }
 
         @Override
@@ -73,13 +69,12 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.Page storePage(Model.Page page) throws Exception {
-        		System.out.printf( "==>  STORE PAGE SIMPLE[%s]\n", page.getId());
+        public CompletableFuture<Model.Page> storePage(Model.Page page)  {
             return xmlrpcService.storePage(page);
         }
 
         @Override
-        public Model.Page storePage(Model.Page page, Storage content) throws Exception {
+        public CompletableFuture<Model.Page> storePage(Model.Page page, Storage content)  {
             
             if( Storage.Representation.STORAGE == content.rapresentation ) {
                 
@@ -90,7 +85,8 @@ public class ConfluenceServiceFactory {
                                                             page.getTitle());
                     restService.jsonAddBody(inputData, content);
                     
-                    return restService.rxCreatePage(inputData.build()).map(Page::new).get();
+                    return CompletableFuture.supplyAsync( () -> 
+                        restService.createPage(inputData.build()).map(Page::new).get() );
                     
                 }
 
@@ -115,7 +111,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.Page getPage(String spaceKey, String pageTitle) throws Exception {
+        public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {       
             return xmlrpcService.getPage(spaceKey, pageTitle);
         }
 

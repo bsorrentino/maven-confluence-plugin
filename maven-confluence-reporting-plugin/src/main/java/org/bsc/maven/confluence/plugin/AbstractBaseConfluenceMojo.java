@@ -235,7 +235,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected Model.Page loadParentPage( ConfluenceService confluence) throws MojoExecutionException {
+    protected Model.Page loadParentPage( ConfluenceService confluence) throws Exception {
         
         Model.Page result = null;
         if( parentPageId != null ) {
@@ -256,19 +256,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         
         if( result == null  ) {
             if( spaceKey == null ) {
-                throw new MojoExecutionException( "spaceKey is not set!");                
+                throw new IllegalStateException( "spaceKey is not set!");                
             }
-            try {
-                result = confluence.getPage(spaceKey, parentPageTitle);
-
-                if( result==null ) {
-                    throw new MojoExecutionException( format( "parentPageTitle [%s] not found in space [%s]!", 
-                                                      parentPageTitle, spaceKey));
-                }
-            } catch (Exception ex) {
-                throw new MojoExecutionException( format( "cannot get page with parentPageTitle [%s] in space [%s]!", 
-                                                      parentPageTitle, spaceKey), ex);
-            }
+            result = confluence.getPage(spaceKey, parentPageTitle)
+                .exceptionally( ex ->
+                    throwRTE( "parentPageTitle [%s] not found in space [%s]!", 
+                            parentPageTitle, spaceKey, ex)  
+                )
+                .thenApply( p -> p.orElseThrow( () -> 
+                        RTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey) ))
+                .get()
+                ;
+                            
         }
         getProperties().put("parentPageTitle", result.getTitle());
         
@@ -319,5 +318,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         }
     }
 
-
+    protected RuntimeException RTE( String message, Object...args  ) {
+        Object[] arguments = (Object[])args;
+        
+        final String m = String.format( message, arguments);
+        
+        if( arguments.length > 0 && arguments[arguments.length -1] instanceof Throwable) {
+           return new RuntimeException(m, (Throwable)arguments[arguments.length -1]);
+        }
+        return new RuntimeException(m) ;
+    }
+    
+    protected <T> T throwRTE( String message, Object...args   ) {
+        throw RTE(message, args);
+    }
 }
