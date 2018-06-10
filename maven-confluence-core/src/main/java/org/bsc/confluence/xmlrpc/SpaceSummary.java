@@ -14,25 +14,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class User extends MapObject {
+public class SpaceSummary extends MapObject {
 
-    public User() {
+    public SpaceSummary() {
         super();
     }
 
-    public User(Map data) {
+    public SpaceSummary(Map data) {
         super(data);
     }
 
     /**
-     * the username of this user
+     * the space key
+     */
+    public String getKey() {
+        return getString("key");
+    }
+
+    public void setKey(String key) {
+        setString("key", key);
+    }
+
+    /**
+     * the name of the space
      */
     public String getName() {
         return getString("name");
@@ -43,29 +54,7 @@ public class User extends MapObject {
     }
 
     /**
-     * the full name of this user
-     */
-    public String getFullname() {
-        return getString("fullname");
-    }
-
-    public void setFullname(String fullname) {
-        setString("fullname", fullname);
-    }
-
-    /**
-     * the email address of this user
-     */
-    public String getEmail() {
-        return getString("email");
-    }
-
-    public void setEmail(String email) {
-        setString("email", email);
-    }
-
-    /**
-     * the url to view this user online
+     * the url to view this space online
      */
     public String getUrl() {
         return getString("url");

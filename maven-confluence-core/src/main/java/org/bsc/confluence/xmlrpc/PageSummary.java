@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 import java.util.Map;
 import org.bsc.confluence.ConfluenceService.Model;

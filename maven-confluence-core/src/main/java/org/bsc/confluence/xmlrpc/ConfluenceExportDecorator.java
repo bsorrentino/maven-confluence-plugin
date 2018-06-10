@@ -4,9 +4,10 @@
  * and open the template in the editor.
  */
 
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 import static org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY;
+import static java.lang.String.format;
 
 import java.io.IOException;
 
@@ -68,7 +69,7 @@ public class ConfluenceExportDecorator {
      * @param outputFile
      * @throws Exception 
      */
-    public final void exportPage( String space, String pageTitle, ExportFormat format, final java.io.File outputFile ) throws Exception {
+    public final void exportPage( String space, String pageTitle, ExportFormat format, final java.io.File outputFile )  {
         assert space!=null;
         assert pageTitle!=null;
         assert format!=null;
@@ -90,27 +91,32 @@ public class ConfluenceExportDecorator {
             throw new IllegalArgumentException("outputFile is not a file!");
         }
         
-        final Model.Page page = confluence.getPage(space, pageTitle);
+        confluence.getPage(space, pageTitle)
+        .thenAccept( p -> {
+            
+            Model.Page page = p.orElseThrow( () -> new RuntimeException( format("page [%s] not found!", pageTitle) ));
 
-        final HttpClient client = new HttpClient();
-        client.getParams().setCookiePolicy( CookiePolicy.BROWSER_COMPATIBILITY);
+            final HttpClient client = new HttpClient();
+            client.getParams().setCookiePolicy( CookiePolicy.BROWSER_COMPATIBILITY);
 
-        login(  client, 
-                String.format( "%s?pageId=%s", format.url, page.getId()), 
-                new RedirectTask() {
+            login(  client, 
+                    String.format( "%s?pageId=%s", format.url, page.getId()), 
+                    (location) -> {
+                            final java.net.URI uri = java.net.URI.create( url ).resolve(location).normalize();
 
-                    @Override
-                    public void exec(String location) throws Exception {     
-                    	
-						final java.net.URI uri = java.net.URI.create( url ).resolve(location).normalize();
+                            System.out.printf( "==> EXPORT URL [%s]\n", uri.toString());
+                                
+                            exportpdf(client, uri.toURL(), outputFile);
+                    });
+            
 
-						System.out.printf( "==> EXPORT URL [%s]\n", uri.toString());
-							
-						exportpdf(client, uri.toURL(), outputFile);
-                    }
-                }
-            );
-        
+        })
+        .exceptionally( ex -> {
+            ex.printStackTrace();
+            return null;
+         })
+        ;
+         
         
     }
     
@@ -123,7 +129,7 @@ public class ConfluenceExportDecorator {
      */
     private void login( HttpClient client, 
                         String redirectUrl, 
-                        RedirectTask task ) throws Exception  
+                        RedirectTask task )  
     {
  
         PostMethod post = null;
@@ -162,6 +168,9 @@ public class ConfluenceExportDecorator {
                         String.format("no redirect to url found\n[%s]", 
                                 new String(post.getResponseBody())) );
             }
+        }
+        catch( Exception ex ) {
+            throw new RuntimeException(ex);
         } finally {
 
             if (post != null) {

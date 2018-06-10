@@ -4,7 +4,7 @@
  *
  * =====================================================================
  */
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 /**
  * @version $Revision$ $Date$

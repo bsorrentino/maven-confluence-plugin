@@ -3,22 +3,26 @@
  * and open the template in the editor.
  */
 
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
+
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.functional.Tuple2;
 import org.bsc.ssl.SSLCertificateInfo;
+import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.Ignore;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-
-
-import static org.junit.Assert.*;
-import static org.hamcrest.core.IsNull.*;
 /**
  *
  * @author bsorrentino
@@ -55,7 +59,7 @@ public class SwizzleIntegrationTest {
             confluence = null;
         }
     }
-
+    
     @Test @Ignore 
     public void dummy() {}
     
@@ -71,9 +75,9 @@ public class SwizzleIntegrationTest {
     @Test @Ignore
     public void addAttachment() throws Exception {
 
-        Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
+        Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test").get();
         
-        Attachment a = new Attachment(new java.util.HashMap());
+        Attachment a = new Attachment(new HashMap<>());
         a.setComment("test");
         a.setFileName( "foto2.jpg");
         a.setContentType( "image/jpg" );
@@ -81,7 +85,7 @@ public class SwizzleIntegrationTest {
 
         java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("foto2.jpg");
 
-        page = confluence.storePage(page);
+        page = confluence.storePage(page).get();
         
         Assert.assertThat( page, notNullValue() );
         Assert.assertThat( page.getId(), notNullValue() );
@@ -92,8 +96,8 @@ public class SwizzleIntegrationTest {
 
     @Test @Ignore
     public void findAttachment() throws Exception {
-        Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test");
-
+        
+        Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test").get();           
         Model.Attachment a = confluence.getAttachment( page.getId(), "foto2.jpg", "0");
 
         assertThat( a, notNullValue() );

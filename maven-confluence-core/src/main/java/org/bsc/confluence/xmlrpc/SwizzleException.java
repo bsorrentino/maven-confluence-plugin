@@ -1,7 +1,7 @@
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 /**
- * This is the exception thrown by the Swizzle to signal errors. Errors that occurred on the server are indicated by throwing a {@link org.codehaus.swizzle.confluence.ConfluenceException}, which is a
+ * This is the exception thrown by the Swizzle to signal errors. Errors that occurred on the server are indicated by throwing a {@link org.bsc.confluence.xmlrpc.ConfluenceException}, which is a
  * subclass of SwizzleException.
  */
 class SwizzleException extends Exception {

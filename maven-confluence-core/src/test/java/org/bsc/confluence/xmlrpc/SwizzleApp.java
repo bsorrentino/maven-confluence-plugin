@@ -3,18 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
-import org.bsc.confluence.ExportFormat;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import java.net.HttpURLConnection;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ExportFormat;
 import org.bsc.ssl.SSLCertificateInfo;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 
 /**
  *
@@ -73,7 +75,7 @@ public class SwizzleApp {
      * 
      * @throws Exception 
      */
-    private void usingHttp( ) throws Exception {
+    protected void usingHttp( ) throws Exception {
 
         ConfluenceProxy proxyInfo = null;
 
@@ -88,36 +90,45 @@ public class SwizzleApp {
                         credentials,
                         proxyInfo, sslInfo); 
 
-        Model.Page page = confluence.getPage("CIRC", "Best Movies");
+       confluence.getPage("CIRC", "Best Movies").thenAccept( p  -> {
 
-        java.io.InputStream is = null;
-        java.io.FileOutputStream fos = null;
-        try {
-            final String req = String.format("%s/%s?pageId=%s", url, ExportFormat.PDF.url, page.getId());
-            System.out.println(req);
-            java.net.URL _url = new java.net.URL(req);
+           Model.Page page = p.orElseThrow( () -> new RuntimeException("page not found!") );
+           
+           java.io.InputStream is = null;
+           java.io.FileOutputStream fos = null;
+           try {
+               
+               final String req = String.format("%s/%s?pageId=%s", url, ExportFormat.PDF.url, page.getId());
+               System.out.println(req);
+               java.net.URL _url = new java.net.URL(req);
 
-            HttpURLConnection urlConnection = (HttpURLConnection) _url.openConnection();
-            //HttpURLConnection.setFollowRedirects(true);
-            //urlConnection.setInstanceFollowRedirects(true);
-            String userpass = username + ":" + password;
+               HttpURLConnection urlConnection = (HttpURLConnection) _url.openConnection();
+               //HttpURLConnection.setFollowRedirects(true);
+               //urlConnection.setInstanceFollowRedirects(true);
+               String userpass = username + ":" + password;
 
-            String basicAuth = "Basic " + new String(new Base64().encode(userpass.getBytes()));
-            urlConnection.addRequestProperty("Authorization", basicAuth);
-            urlConnection.addRequestProperty("X-Atlassian-Token", "no-check");
-            urlConnection.addRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
+               String basicAuth = "Basic " + new String(new Base64().encode(userpass.getBytes()));
+               urlConnection.addRequestProperty("Authorization", basicAuth);
+               urlConnection.addRequestProperty("X-Atlassian-Token", "no-check");
+               urlConnection.addRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
 
-            urlConnection.setUseCaches(false);
+               urlConnection.setUseCaches(false);
 
-            is = urlConnection.getInputStream();
+               is = urlConnection.getInputStream();
 
-            fos = new java.io.FileOutputStream("target/out.pdf");
+               fos = new java.io.FileOutputStream("target/out.pdf");
 
-            IOUtils.copy(is, fos);
-        } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(fos);
-        }
+               IOUtils.copy(is, fos);
+           }
+           catch( Exception ex ) {
+               throw new RuntimeException(ex);
+           } finally {
+               IOUtils.closeQuietly(is);
+               IOUtils.closeQuietly(fos);
+           }
+
+       });
+        
     }
 
 }

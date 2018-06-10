@@ -1,4 +1,4 @@
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 /**
  * This exception is thrown to signal an error on the server. Sometimes the original cause of the error is also transmitted and can be obtained by calling the getCause method (otherwise getCause will

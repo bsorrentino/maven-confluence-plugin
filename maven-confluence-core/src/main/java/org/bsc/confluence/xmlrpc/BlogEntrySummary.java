@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 import java.util.Date;
 import java.util.Map;
@@ -22,18 +22,18 @@ import java.util.Map;
 /**
  * @version $Revision$ $Date$
  */
-public class Comment extends MapObject {
+public class BlogEntrySummary extends MapObject {
 
-    public Comment() {
+    public BlogEntrySummary() {
         super();
     }
 
-    public Comment(Map data) {
+    public BlogEntrySummary(Map data) {
         super(data);
     }
 
     /**
-     * numeric id of the comment
+     * the id of the blog entry
      */
     public String getId() {
         return getString("id");
@@ -44,18 +44,18 @@ public class Comment extends MapObject {
     }
 
     /**
-     * page ID of the comment
+     * the key of the space that this blog entry belongs to
      */
-    public String getPageId() {
-        return getString("pageId");
+    public String getSpace() {
+        return getString("space");
     }
 
-    public void setPageId(String pageId) {
-        setString("pageId", pageId);
+    public void setSpace(String space) {
+        setString("space", space);
     }
 
     /**
-     * title of the comment
+     * the title of the blog entry
      */
     public String getTitle() {
         return getString("title");
@@ -66,18 +66,7 @@ public class Comment extends MapObject {
     }
 
     /**
-     * notated content of the comment (use renderContent to render)
-     */
-    public String getContent() {
-        return getString("content");
-    }
-
-    public void setContent(String content) {
-        setString("content", content);
-    }
-
-    /**
-     * url to view the comment online
+     * the url to view this blog entry online
      */
     public String getUrl() {
         return getString("url");
@@ -88,30 +77,32 @@ public class Comment extends MapObject {
     }
 
     /**
-     * creation date of the attachment
+     * the number of locks current on this page
      */
-    public Date getCreated() {
-        return getDate("created");
+    public int getLocks() {
+        return getInt("locks");
     }
 
-    public void setCreated(Date created) {
-        setDate("created", created);
+    public void setLocks(int locks) {
+        setInt("locks", locks);
     }
 
     /**
-     * creator of the attachment
+     * the date the blog post was published
      */
-    public String getCreator() {
-        return getString("creator");
+    public Date getPublishDate() {
+        return getDate("publishDate");
     }
 
-    public void setCreator(String creator) {
-        setString("creator", creator);
+    public void setPublishDate(Date publishDate) {
+        setDate("publishDate", publishDate);
     }
 
     public Map toRawMap() {
         Map map = super.toRawMap();
-        map.put("created", getCreated());
+        map.put("publishDate", getPublishDate());
+        map.put("locks", new Integer(getLocks()));
         return map;
     }
+
 }

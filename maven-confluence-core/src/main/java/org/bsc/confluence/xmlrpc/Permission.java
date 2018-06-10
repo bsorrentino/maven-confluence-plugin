@@ -14,43 +14,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class RSSFeed extends MapObject {
+public class Permission extends MapObject {
 
-    public RSSFeed() {
+    public Permission() {
         super();
     }
 
-    public RSSFeed(Map data) {
+    public Permission(Map data) {
         super(data);
     }
 
     /**
-     * the URL of the RSS feed
+     * The type of permission. One of 'View' or 'Edit'
      */
-    public String getUrl() {
-        return getString("url");
+    public String getLockType() {
+        return getString("lockType");
     }
 
-    public void setUrl(String url) {
-        setString("url", url);
+    public void setLockType(String lockType) {
+        setString("lockType", lockType);
     }
 
     /**
-     * the feed's title
+     * The user or group name of the permission's owner
      */
-    public String getTitle() {
-        return getString("title");
+    public String getLockedBy() {
+        return getString("lockedBy");
     }
 
-    public void setTitle(String title) {
-        setString("title", title);
+    public void setLockedBy(String lockedBy) {
+        setString("lockedBy", lockedBy);
     }
 
 }

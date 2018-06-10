@@ -1,4 +1,4 @@
-package org.codehaus.swizzle.confluence;
+package org.bsc.confluence.xmlrpc;
 
 import java.awt.Label;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
