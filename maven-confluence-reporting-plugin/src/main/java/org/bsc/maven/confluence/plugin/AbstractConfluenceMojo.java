@@ -267,6 +267,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     }
 
+    
     /**
      * 
      * @param pageToUpdate
@@ -358,7 +359,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         final String pageName = !isChildrenTitlesPrefixed()
             ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
             
-        CompletableFuture<Model.Page> result =  
+        final Model.Page result =   
             confluence.getPage(spaceKey, parentPageTitle)
             .exceptionally( ex -> 
                 throwRTE( "cannot find parent page [%s] in space [%s]", parentPageTitle, ex ))
@@ -370,23 +371,23 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     CompletableFuture.completedFuture(tuple.value2.get()) :
                     confluence.createPage(tuple.value1, title);
             })
-            .thenCompose( p -> 
-                ( source != null ) ?
+            .thenCompose( p ->              
+                canProceedToUpdateResource(source)
+                    .thenCompose( update -> (update) ?
                         updatePageContent(confluence, p, site, source, child, pageName) :
-                        confluence.storePage(p))
-            ;
+                        confluence.storePage(p)) )
+            .join();
         
             try {
-                Model.Page p =  result.get();
                 
                 for( String label : child.getComputedLabels() ) {
 
-                    confluence.addLabelByName(label, Long.parseLong(p.getId()) );
+                    confluence.addLabelByName(label, Long.parseLong(result.getId()) );
                 }
 
                 child.setName( pageName );
                 
-                return p;
+                return result;
  
             } catch ( Exception e) {
                 throw new RuntimeException(e);
@@ -480,4 +481,17 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         }
     }
 
+    /**
+     * 
+     * @param uri
+     * @return
+     */
+    protected CompletableFuture<Boolean> canProceedToUpdateResource( java.net.URI uri) {
+        if( uri == null )
+            return CompletableFuture.completedFuture(false);
+        if( deployState == null ) 
+            return CompletableFuture.completedFuture(true);
+        
+        return CompletableFuture.completedFuture(deployState.isUpdated(uri));
+    }
 }

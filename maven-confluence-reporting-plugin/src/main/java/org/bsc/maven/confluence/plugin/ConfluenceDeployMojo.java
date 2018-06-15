@@ -62,6 +62,8 @@ import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+
+import static java.util.concurrent.CompletableFuture.completedFuture;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -537,7 +539,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 ;
         }
         else {
-            return CompletableFuture.completedFuture(false);
+            return completedFuture(false);
         }
 
     }
@@ -609,12 +611,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
                 .thenCompose( tuple -> {
                     return ( tuple.value2.isPresent() ) ?
-                        CompletableFuture.completedFuture(tuple.value2.get()) :
+                        completedFuture(tuple.value2.get()) :
                         confluence.createPage(tuple.value1, title);
                 })
                 .thenCompose( p -> 
-                            updateHomeContent(confluence, site, p, locale))
-                            //confluence.storePage(p))
+                            canProceedToUpdateResource(site.getHome().getUri())
+                            .thenCompose( update ->  (update) ? 
+                                    updateHomeContent(confluence, site, p, locale) : 
+                                        confluence.storePage(p))
+                            )
                 ;
         
         final Model.Page confluenceHomePage = result.get();
@@ -763,6 +768,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
          return GeneratorUtils.toComponentDependencies(dependencies);
      }
 
+    @SuppressWarnings("unchecked")
     private void generatePluginReport( final Site site, final Locale locale )  throws MojoExecutionException
     {
 
@@ -1027,7 +1033,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             getProperties().put("artifactId",   getProject().getArtifactId());
             getProperties().put("version",      getProject().getVersion());
     
-            CompletableFuture<Model.Page> result =  
+            return  
                 removeSnaphot(confluence, parentPage, title)
                 .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )
                 .exceptionally( ex -> 
@@ -1037,15 +1043,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
                 .thenCompose( tuple -> {
                     return ( tuple.value2.isPresent() ) ?
-                        CompletableFuture.completedFuture(tuple.value2.get()) :
+                        completedFuture(tuple.value2.get()) :
                         confluence.createPage(tuple.value1, title);
                 })
                 .thenCompose( p -> 
-                        updateHomeContent(confluence, site, p, pluginDescriptor, locale))
-                        //confluence.storePage(p))
-                ;
-    
-            return result.get();
+                        canProceedToUpdateResource( site.getHome().getUri())
+                        .thenCompose( update -> update ? 
+                                updateHomeContent(confluence, site, p, pluginDescriptor, locale) :
+                                confluence.storePage(p)) )
+                .join();
     
         }
     }
