@@ -5,6 +5,7 @@
  */
 package org.bsc.confluence.rest;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.bsc.confluence.ConfluenceService.Credentials;
@@ -81,33 +82,30 @@ public class AbstractRestConfluence {
         
         Assert.assertThat( addLabelResult, Is.is(true));
         
-        Model.Attachment att = service.getAttachment(p1.getId(), "foto2.jpg", "");
-        
-        Model.Attachment result;
-        
-        if( att == null ) {
-        
-            att = service.createAttachment();
-        
-            att.setFileName( "foto2.jpg");
-            att.setContentType("image/jpg");
-            att.setComment("test image");
-        
-            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
-  
-            Assert.assertThat( result, IsNull.notNullValue());
-        }
-        else {
-            result = service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg"));
-        
-            Assert.assertThat( result, IsNull.notNullValue());
-            
-        }
+        Model.Attachment result = 
+            service.getAttachment(p1.getId(), "foto2.jpg", "")
+            .thenApply( att -> {
+                if( att.isPresent() ) return att.get();
+                
+                 Model.Attachment a = service.createAttachment();
+                
+                 a.setFileName( "foto2.jpg");
+                 a.setContentType("image/jpg");
+                 a.setComment("test image");
+                 
+                 return a;
+            })
+            .thenCompose( att -> 
+                service.addAttachment( p1, att, getClass().getClassLoader().getResourceAsStream("foto2.jpg")))
+            .join()
+            ;
+      
+        Assert.assertThat( result, IsNull.notNullValue());
 
-        final Model.Attachment att2 = 
-                service.getAttachment(p1.getId(), result.getFileName(), "");
+        final Optional<Model.Attachment> att2 = 
+                service.getAttachment(p1.getId(), result.getFileName(), "").join();
 
-        Assert.assertThat( att2, IsNull.notNullValue());
+        Assert.assertThat( att2.isPresent(), IsEqual.equalTo(true));
 
         
     }

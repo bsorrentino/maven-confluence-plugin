@@ -47,6 +47,7 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.Site;
 import org.bsc.functional.Tuple2;
 import org.bsc.maven.reporting.renderer.DependenciesRenderer;
@@ -238,17 +239,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 		
 		if( Objects.nonNull(deployState)) {
 		    
-		    deployState.init( getEndPoint() );
+            if( !deployState.getOutdir().isPresent() ) {
+                deployState.setOutdir( Paths.get(getProject().getBuild().getDirectory()) );             
+            }
+
+            deployStateManager = DeployStateManager.load( getEndPoint(), deployState );
 		  
-		    if( !deployState.getOutdir().isPresent() ) {
-	            deployState.setOutdir( Paths.get(getProject().getBuild().getDirectory()) );		        
-		    }
 		}
-
-		System.out.println( "==> TEST"  );
-        System.out.println( deployState );
-        System.out.println( "<== TEST"  );
-
     		
         final Locale locale = Locale.getDefault();
 
@@ -612,7 +609,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 .thenCompose( tuple -> {
                     return ( tuple.value2.isPresent() ) ?
                         completedFuture(tuple.value2.get()) :
-                        confluence.createPage(tuple.value1, title);
+                        resetUpdateStatusForResource(site.getHome().getUri())
+                        .thenCompose( reset -> confluence.createPage(tuple.value1, title) ); 
                 })
                 .thenCompose( p -> 
                             canProceedToUpdateResource(site.getHome().getUri())
@@ -1044,7 +1042,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 .thenCompose( tuple -> {
                     return ( tuple.value2.isPresent() ) ?
                         completedFuture(tuple.value2.get()) :
-                        confluence.createPage(tuple.value1, title);
+                        resetUpdateStatusForResource(site.getHome().getUri())
+                        .thenCompose( reset ->confluence.createPage(tuple.value1, title));
                 })
                 .thenCompose( p -> 
                         canProceedToUpdateResource( site.getHome().getUri())

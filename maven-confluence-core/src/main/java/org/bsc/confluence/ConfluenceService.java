@@ -187,9 +187,9 @@ public interface ConfluenceService {
      */
     Model.Attachment createAttachment(); 
     
-    Model.Attachment getAttachment( String pageId, String name, String version) throws Exception;
+    CompletableFuture<Optional<Model.Attachment>> getAttachment( String pageId, String name, String version) ;
     
-    Model.Attachment addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) throws Exception ;
+    CompletableFuture<Model.Attachment> addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) ;
 
     /**
      * 

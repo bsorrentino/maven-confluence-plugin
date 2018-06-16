@@ -3,14 +3,11 @@ package org.bsc.confluence;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +23,7 @@ public class ConfluenceUtilsTest {
     @Test 
     public void pathTest() throws Exception {
     
-        File f = new File(".");
+        //File f = new File(".");
         
         Path pp = Paths.get(  "http://test.xml");
         
@@ -41,19 +38,17 @@ public class ConfluenceUtilsTest {
     
     @Test
     public void stateManager() throws Exception {
-        final DeployStateManager dsm = new DeployStateManager();
+        final DeployStateManager.Parameters parameters = new DeployStateManager.Parameters();
 
         final Path basedir = Paths.get( System.getProperty("java.io.tmpdir") );
-        
-        final Path file = Paths.get( basedir.toString(), dsm.getFileName());
+
+        final Path file = Paths.get( basedir.toString(), DeployStateManager.STORAGE_NAME);
         Files.deleteIfExists(file);
-        
-        dsm.init( "http://localhost:8090/confluence" );
-        dsm.setActive(true);
-        dsm.setOutdir( basedir );
-        
-        dsm.load();
-        
+
+        parameters.setOutdir( basedir );
+
+        final DeployStateManager dsm = DeployStateManager.load( "http://localhost:8090/confluence", parameters );
+                     
         Assert.assertThat( file.toFile().exists(), IsEqual.equalTo(true));
         Assert.assertThat( file.toFile().isFile(), IsEqual.equalTo(true));
         

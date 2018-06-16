@@ -9,12 +9,11 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
+import java.util.Optional;
 
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.functional.Tuple2;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsInstanceOf;
@@ -28,7 +27,7 @@ import org.junit.Test;
  * @author bsorrentino
  */
 //@Ignore
-public class SwizzleIntegrationTest {
+public class XMLRPCIntegrationTest {
 
     public static final String PASSWORD = "admin";
     public static final String USER = "admin";
@@ -98,11 +97,14 @@ public class SwizzleIntegrationTest {
     public void findAttachment() throws Exception {
         
         Model.Page page = confluence.getOrCreatePage("ds", "Tutorial", "test").get();           
-        Model.Attachment a = confluence.getAttachment( page.getId(), "foto2.jpg", "0");
+        Optional<Model.Attachment> a = confluence.getAttachment( page.getId(), "foto2.jpg", "0").join();
 
-        assertThat( a, notNullValue() );
-        assertThat( a, IsInstanceOf.instanceOf(Attachment.class) );
+        assertThat( a.isPresent(), IsEqual.equalTo(true) );
+        assertThat( a.get(), IsInstanceOf.instanceOf(Attachment.class) );
 
-        System.out.printf( " created=[%tc] creator=[%s] size=[%s]\n", a.getCreated(), ((Attachment)a).getCreator(), ((Attachment)a).getFileSize());
+        System.out.printf( " created=[%tc] creator=[%s] size=[%s]\n", 
+                a.get().getCreated(), 
+                ((Attachment)a.get()).getCreator(), 
+                ((Attachment)a.get()).getFileSize());
     }
 }

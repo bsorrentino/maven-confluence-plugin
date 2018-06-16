@@ -24,7 +24,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.ssl.SSLCertificateInfo;
 
 /**
@@ -110,6 +109,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
             throw new IllegalArgumentException("title argument is null!");
         }
         
+        @SuppressWarnings("unchecked")
         final List<PageSummary> children = connection.getChildren(parentPageId);
 
         for (PageSummary pageSummary : children ) {
@@ -178,8 +178,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
-        //final Page p = cast(page);
+    public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
         
         if( page.getId() == null ) {
             throw new IllegalStateException("PageId is null. Attachment cannot be added!");
@@ -187,22 +186,30 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         
         final Attachment a = cast(attachment);
         
-        BufferedInputStream fis = new BufferedInputStream(source, 4096 );
-        ByteArrayOutputStream baos = new ByteArrayOutputStream( );
-
-        byte [] readbuf = new byte[4096];
-
-        int len;
-
-        while( (len=fis.read(readbuf))==readbuf.length ) {
-                baos.write(readbuf, 0, len);
-        }
-        if( len> 0 ) baos.write(readbuf, 0, len);
-
-        a.setPageId( page.getId() );
-
-        return connection.addAttachment( new Long(page.getId()), a, baos.toByteArray() );     
+        final CompletableFuture<Model.Attachment> result = new CompletableFuture<>();
         
+        try(final BufferedInputStream fis = new BufferedInputStream(source, 4096 )) {
+
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream( );
+
+            byte [] readbuf = new byte[4096];
+
+            int len;
+
+            while( (len=fis.read(readbuf))==readbuf.length ) {
+                    baos.write(readbuf, 0, len);
+            }
+            if( len> 0 ) baos.write(readbuf, 0, len);
+
+            a.setPageId( page.getId() );
+
+            result.complete(connection.addAttachment( new Long(page.getId()), a, baos.toByteArray() ));     
+            
+        } catch (Exception e) {
+            result.completeExceptionally(e);
+        }
+     
+        return result;
     }
 
 
@@ -213,7 +220,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         final CompletableFuture<Model.Page> result = new CompletableFuture<>();
         try {
             result.complete(connection.storePage(p));
-        } catch (SwizzleException e) {
+        } catch (Exception e) {
             result.completeExceptionally(e);
         }
         
@@ -233,7 +240,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         final CompletableFuture<Model.Page> result = new CompletableFuture<>();
         try {
             result.complete(connection.storePage(p));
-        } catch (SwizzleException e) {
+        } catch (Exception e) {
             result.completeExceptionally(e);
         }
         
@@ -280,8 +287,19 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public Model.Attachment getAttachment(String pageId, String name, String version) throws Exception {     
-        return connection.getAttachment(pageId, name, version);
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version)  {     
+
+        CompletableFuture<Optional<Model.Attachment>> result = new CompletableFuture<>();
+        try {
+            result.complete(
+                    Optional.ofNullable(connection.getAttachment(pageId, name, version)));
+        } catch (Exception e) {
+            //result.completeExceptionally(e);
+            result.complete(Optional.empty());
+
+        }
+        
+        return result;
     }
 
     @Override
@@ -291,8 +309,9 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         try {
             result.complete(
                     Optional.ofNullable(connection.getPage(spaceKey, pageTitle) ));
-        } catch (SwizzleException e) {
-            result.completeExceptionally(e);
+        } catch (Exception e) {
+            //result.completeExceptionally(e);
+            result.complete(Optional.empty());
         }
         
         return result;
@@ -333,6 +352,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Model.PageSummary> getDescendents(String pageId) throws Exception {        
         return connection.getDescendents(pageId);
     }

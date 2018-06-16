@@ -105,7 +105,12 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @since 6.0.0
      */
     @Parameter
-    protected DeployStateManager deployState /*= new DeployStateManager() */;
+    protected DeployStateManager.Parameters deployState;
+      
+    /**
+     * 
+     */
+    protected DeployStateManager deployStateManager;
     
     /**
      *
@@ -369,7 +374,8 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             .thenCompose( tuple -> {
                 return ( tuple.value2.isPresent() ) ?
                     CompletableFuture.completedFuture(tuple.value2.get()) :
-                    confluence.createPage(tuple.value1, title);
+                    resetUpdateStatusForResource(site.getHome().getUri())
+                        .thenCompose( reset ->confluence.createPage(tuple.value1, title));
             })
             .thenCompose( p ->              
                 canProceedToUpdateResource(source)
@@ -481,6 +487,12 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         }
     }
 
+    protected CompletableFuture<Void> resetUpdateStatusForResource( java.net.URI uri) {
+        if( uri != null && deployStateManager != null ) 
+            deployStateManager.resetState(uri);
+        return CompletableFuture.completedFuture(null);
+    }
+
     /**
      * 
      * @param uri
@@ -489,9 +501,9 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     protected CompletableFuture<Boolean> canProceedToUpdateResource( java.net.URI uri) {
         if( uri == null )
             return CompletableFuture.completedFuture(false);
-        if( deployState == null ) 
+        if( deployStateManager == null ) 
             return CompletableFuture.completedFuture(true);
         
-        return CompletableFuture.completedFuture(deployState.isUpdated(uri));
+        return CompletableFuture.completedFuture(deployStateManager.isUpdated(uri));
     }
 }

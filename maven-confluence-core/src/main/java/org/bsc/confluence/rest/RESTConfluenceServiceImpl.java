@@ -6,6 +6,7 @@
 package org.bsc.confluence.rest;
 
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import java.io.File;
 import java.io.InputStream;
@@ -263,26 +264,31 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public Model.Attachment getAttachment(String pageId, String name, String version) throws Exception {
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
        
-        return rxAttachment(pageId, name).stream()
-            .map( result -> new Attachment(result) )
-            .findFirst().get();
+        final Optional<Model.Attachment> att = 
+                getAttachment(pageId, name).stream()
+                .map( result -> (Model.Attachment)new Attachment(result) )
+                .findFirst();
+        return completedFuture(att);
     }
 
     @Override
-    public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
+    public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
 
-        return rxAddAttachment(page.getId(), cast(attachment), source).stream()
-                .map( result -> new Attachment(result) )
-                .findFirst().get();
+        final Optional<Model.Attachment> att = 
+                addAttachment(page.getId(), cast(attachment), source).stream()
+                .map( result -> (Model.Attachment)new Attachment(result) )
+                .findFirst();
+        
+        return completedFuture( att.get() );
 
     }
     
     @Override
     public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
         
-        return CompletableFuture.completedFuture(
+        return completedFuture(
                 childrenPages(parentPage.getId()).stream()
                 .map( page -> new Page(page))
                 .filter( page -> page.getTitle().equals(title) )

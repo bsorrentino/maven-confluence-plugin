@@ -64,7 +64,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
+        public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
             return xmlrpcService.addAttachment(page, attachment, source);
         }
 
@@ -106,7 +106,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.Attachment getAttachment(String pageId, String name, String version) throws Exception {
+        public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
             return xmlrpcService.getAttachment(pageId, name, version);
         }
 

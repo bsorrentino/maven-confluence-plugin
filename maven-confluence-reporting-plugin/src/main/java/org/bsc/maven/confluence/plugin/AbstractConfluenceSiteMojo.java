@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -27,6 +29,7 @@ import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
 /**
  *
  * @author bsorrentino
@@ -142,87 +145,79 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         }
     }
 
+    private CompletableFuture<Model.Attachment> updateAttachmentData(
+            final ConfluenceService confluence, 
+            final Site site, 
+            final java.net.URI uri,
+            final Model.Page confluencePage, 
+            final Model.Attachment attachment ) 
+    {
+        
+        return site.processUri(uri, ( err, is ) -> {
+            
+            if( err.isPresent() ) {
+                CompletableFuture<Model.Attachment> result = new CompletableFuture<>();
+                result.completeExceptionally(err.get());
+                return result;
+            }
+            return ( is.isPresent() ) ?
+                    confluence.addAttachment(confluencePage, attachment, is.get() ) :
+                    completedFuture(attachment) ;
+        });     
+        
+    }
     /**
      *
      * @param confluence
      * @param confluencePage
      * @param attachment
      */
-    private void generateAttachment(ConfluenceService confluence, Site site, Model.Page confluencePage, Site.Attachment attachment) {
+    private void generateAttachment( 
+            final ConfluenceService confluence, 
+            final Site site, 
+            final Model.Page confluencePage, 
+            final Site.Attachment attachment) 
+    {
         
         getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]", 
                 confluencePage.getId(), 
                 confluencePage.getTitle(), 
                 getPrintableStringForResource(attachment.getUri()) ));
-
-       
-        Model.Attachment confluenceAttachment = null;
-
-        try {
-            confluenceAttachment = confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion());
-        } catch (Exception e) {
+      
+        final java.net.URI uri = attachment.getUri();
+        
+        confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
+        .exceptionally( e -> {
             getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
-        }
+            return Optional.empty();
+        })
+        .thenCompose( att -> {
             
-        if (confluenceAttachment == null) {
-            
-            getLog().debug(format("Creating new attachment for [%s]", attachment.getName()));
-            confluenceAttachment = confluence.createAttachment();
-            confluenceAttachment.setFileName(attachment.getName());
-            confluenceAttachment.setContentType(attachment.getContentType());
-
-        } else {
-            /*
-            java.util.Date date = confluenceAttachment.getCreated();
-
-            if (date == null) {
-                getLog().warn(format("creation date of attachments [%s] is undefined. It will be replaced! ", confluenceAttachment.getFileName()));
-            } else {
-                if (attachment.hasBeenUpdatedFrom(date)) {
-                    getLog().info(format("attachment [%s] is more recent than the remote one. It will be replaced! ", confluenceAttachment.getFileName()));
-                } else {
-                    getLog().info(format("attachment [%s] skipped! no updated detected", confluenceAttachment.getFileName()));
-                    return;
-                }
+            if (!att.isPresent()) {             
+                getLog().debug(format("Creating new attachment for [%s]", attachment.getName()));
+                Model.Attachment result = confluence.createAttachment();
+                result.setFileName(attachment.getName());
+                result.setContentType(attachment.getContentType());        
+                result.setComment( attachment.getComment());
+                return resetUpdateStatusForResource(uri)
+                        .thenCompose( reset -> completedFuture(result));          
             }
-            */
-        }
-        
-        confluenceAttachment.setFileName(attachment.getName());
-        confluenceAttachment.setContentType(attachment.getContentType());        
-        confluenceAttachment.setComment( attachment.getComment());
-
-        final Model.Attachment finalAttachment = confluenceAttachment;
-        
-        site.processUri(attachment.getUri(), ( err, is ) -> {
             
-            if( err.isPresent() ) {
-                if( err.get().getCause() != null ) throw new RuntimeException(err.get());
-                getLog().info( err.get().getMessage());
-                return finalAttachment;
-            }
-            try {
-                return ( is.isPresent() ) ?
-                        confluence.addAttachment(confluencePage, finalAttachment, is.get() ) :
-                            finalAttachment ;
-            } catch (Exception ex) {
-                final String msg = format("error adding attachment page [%s]", finalAttachment.getFileName());
-                throw new RuntimeException(msg, ex);
-                
-            }    
-        });
+            Model.Attachment result = att.get();       
+            result.setContentType(attachment.getContentType());        
+            result.setComment( attachment.getComment());
+            return completedFuture(result);
+            
+        })
+        .thenCompose( finalAttachment -> 
+            canProceedToUpdateResource(uri)
+            .thenCompose( updated -> updated ? 
+                    updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment) :
+                    completedFuture(finalAttachment)) 
+        )
+        ;
+ 
         
-        /*
-        try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
-            confluence.addAttachment(confluencePage, confluenceAttachment, is );
-
-        } catch (Exception e) {
-            final String msg = format("Error uploading attachment [%s] ", attachment.getName());
-            //getLog().error(msg);
-            throw new RuntimeException(msg,e);
-
-        }
-        */
     }
     
     

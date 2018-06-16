@@ -22,7 +22,7 @@ import com.beust.jcommander.Parameter;
  *
  * @author bsorrentino
  */
-public class SwizzleApp {
+public class XMLRPCApp {
 
     @Parameter(names="-h", description="confluence url", required = true)
     private String url;
@@ -42,7 +42,7 @@ public class SwizzleApp {
      */
     public static void main(String args[]) throws Exception {
 
-        final SwizzleApp app = new SwizzleApp();
+        final XMLRPCApp app = new XMLRPCApp();
         
         for( String arg : args ) {
             System.out.println( arg );

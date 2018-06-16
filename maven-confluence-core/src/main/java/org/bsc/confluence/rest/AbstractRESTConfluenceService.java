@@ -343,7 +343,7 @@ public abstract class AbstractRESTConfluenceService {
         fromUrlPOST(url, inputBody, "add label");
     }
 
-    protected List<JsonObject> rxAttachments( final String id ) {
+    protected List<JsonObject> getAttachments( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -356,7 +356,7 @@ public abstract class AbstractRESTConfluenceService {
         
     }
     
-    protected List<JsonObject> rxAttachment( final String id, final String fileName ) {
+    protected List<JsonObject> getAttachment( final String id, final String fileName ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -370,7 +370,7 @@ public abstract class AbstractRESTConfluenceService {
         
     }
     
-    protected List<JsonObject> rxAddAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
+    protected List<JsonObject> addAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
 
         final RequestBody fileBody;
         
