@@ -370,9 +370,13 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             })
             .thenCompose( p ->              
                 canProceedToUpdateResource(source)
-                    .thenCompose( update -> (update) ?
-                        updatePageContent(confluence, p, site, source, child, pageName) :
-                        confluence.storePage(p)) )
+                    .thenCompose( update -> {
+                        if(update) return updatePageContent(confluence, p, site, source, child, pageName);
+                        else {
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)", 
+                                    getPrintableStringForResource(source) ));
+                            return confluence.storePage(p);
+                        }}))                          
             .join();
         
             try {

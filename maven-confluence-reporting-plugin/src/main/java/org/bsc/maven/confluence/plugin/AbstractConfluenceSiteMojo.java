@@ -211,9 +211,13 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         })
         .thenCompose( finalAttachment -> 
             canProceedToUpdateResource(uri)
-            .thenCompose( updated -> updated ? 
-                    updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment) :
-                    completedFuture(finalAttachment)) 
+            .thenCompose( updated -> {
+                if(updated) return updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment);
+                else {
+                    getLog().info( String.format("attachment [%s] has not been updated (deploy skipped)", 
+                            getPrintableStringForResource(uri) ));
+                    return completedFuture(finalAttachment);
+                }})                           
         )
         ;
  

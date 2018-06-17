@@ -606,10 +606,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 })
                 .thenCompose( page -> 
                     canProceedToUpdateResource(site.getHome().getUri())
-                    .thenCompose( update ->  (update) ? 
-                            updateHomeContent(confluence, site, page, locale) : 
-                                confluence.storePage(page))
-                    )
+                    .thenCompose( update ->  { 
+                        if(update) return updateHomeContent(confluence, site, page, locale);
+                        else {
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)", 
+                                    getPrintableStringForResource(site.getHome().getUri()) ));
+                            return confluence.storePage(page);
+                        }})                           
+                    ) 
                 .join()
                 ;
         
@@ -1032,10 +1036,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         .thenCompose( reset ->confluence.createPage(tuple.value1, title));
                 })
                 .thenCompose( p -> 
-                        canProceedToUpdateResource( site.getHome().getUri())
-                        .thenCompose( update -> update ? 
-                                updateHomeContent(confluence, site, p, pluginDescriptor, locale) :
-                                confluence.storePage(p)) )
+                    canProceedToUpdateResource( site.getHome().getUri())
+                    .thenCompose( update -> { 
+                        if(update) return updateHomeContent(confluence, site, p, pluginDescriptor, locale) ;
+                        else {
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)", 
+                                    getPrintableStringForResource(site.getHome().getUri()) ));
+                            return confluence.storePage(p);
+                        }}))                         
                 .join();
     
         }
