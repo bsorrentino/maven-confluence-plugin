@@ -193,7 +193,7 @@ public abstract class AbstractRESTConfluenceService {
     };
  
 
-    protected Optional<JsonObject> rxfindPageById( final String id ) {
+    protected Optional<JsonObject> findPageById( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                

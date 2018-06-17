@@ -24,6 +24,7 @@ import javax.net.ssl.HttpsURLConnection;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.ssl.SSLCertificateInfo;
 
 /**
@@ -318,8 +319,19 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public Model.Page getPage(String pageId) throws Exception {
-        return connection.getPage(pageId);
+    public CompletableFuture<Optional<Model.Page>> getPage(String pageId)  {
+        
+        CompletableFuture<Optional<Model.Page>> result = new CompletableFuture<>();
+        try {
+            result.complete(
+                    Optional.ofNullable(connection.getPage(pageId)));
+        } catch (Exception e) {
+            //result.completeExceptionally(e);
+            result.complete(Optional.empty());
+        }
+        
+        return result;
+
     }
 
     @Override

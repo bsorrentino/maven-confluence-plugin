@@ -175,11 +175,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
      * @throws Exception 
      */
     @Override
-    public Model.Page getPage(String pageId) throws Exception {
-        
-        final JsonObject result =  rxfindPageById(pageId).orElseThrow( () -> new Exception(format( "page [%s] not found!", pageId)));
-    
-        return new Page(result);
+    public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {        
+        return CompletableFuture.completedFuture(findPageById(pageId).map( Page::new ));
     }
 
     @Override

@@ -155,7 +155,7 @@ public interface ConfluenceService {
 
     CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
 
-    Model.Page getPage( String pageId ) throws Exception;
+    CompletableFuture<Optional<Model.Page>> getPage( String pageId ) ;
 
     CompletableFuture<Optional<Model.Page>> getPage( String spaceKey, String pageTitle ) ;
 

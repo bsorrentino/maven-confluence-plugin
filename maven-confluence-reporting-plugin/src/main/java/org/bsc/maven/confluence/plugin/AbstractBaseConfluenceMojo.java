@@ -2,9 +2,9 @@ package org.bsc.maven.confluence.plugin;
 
 import static java.lang.String.format;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -235,43 +235,34 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected Model.Page loadParentPage( ConfluenceService confluence) {
+    protected Model.Page loadParentPage( ConfluenceService confluence ) {
         
-        Model.Page result = null;
+        Optional<Model.Page> result = Optional.empty();
+        
         if( parentPageId != null ) {
             
-            try {
-                result = confluence.getPage( parentPageId );
-                
-                if( result==null ) {
-                    getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]", 
-                                                parentPageId, parentPageTitle, spaceKey));
-                }
-            } catch (Exception ex) {
-                getLog().warn( format( "cannot get page with parentPageId [%s]! Try with parentPageTitle [%s] in space [%s]\n%s", 
-                                                parentPageId, parentPageTitle, spaceKey, ExceptionUtils.getRootCauseMessage(ex)) );
-                
+            result = confluence.getPage( parentPageId ).join();
+            
+            if( !result.isPresent() ) {
+                getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]", 
+                                            parentPageId, parentPageTitle, spaceKey));
             }
         }
         
-        if( result == null  ) {
+        if( !result.isPresent()  ) {
             if( spaceKey == null ) {
                 throw new IllegalStateException( "spaceKey is not set!");                
             }
-            result = confluence.getPage(spaceKey, parentPageTitle)
-                .exceptionally( ex ->
-                    throwRTE( "parentPageTitle [%s] not found in space [%s]!", 
-                            parentPageTitle, spaceKey, ex)  
-                )
-                .thenApply( p -> p.orElseThrow( () -> 
-                        RTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey) ))
-                .join()
-                ;
-                            
+            result = confluence.getPage(spaceKey, parentPageTitle).join();
+            
         }
-        getProperties().put("parentPageTitle", result.getTitle());
         
-        return result;
+        if( !result.isPresent() ) {
+            throwRTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey);                
+        }
+        getProperties().put("parentPageTitle", result.get().getTitle());
+        
+        return result.get();
 
     }
     

@@ -73,10 +73,10 @@ public class AbstractRestConfluence {
         Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
         
         
-        final Model.Page p11 = service.getPage( p1.getId() );
+        final Optional<Model.Page> p11 = service.getPage( p1.getId() ).get();
         
-        Assert.assertThat( p11, IsNull.notNullValue());
-        Assert.assertThat( p11.getTitle(), IsEqual.equalTo(p1.getTitle()));
+        Assert.assertThat( p11.isPresent(), IsEqual.equalTo(true));
+        Assert.assertThat( p11.get().getTitle(), IsEqual.equalTo(p1.getTitle()));
         
         final boolean addLabelResult = service.addLabelByName("label", Integer.parseInt(p1.getId()) );
         
