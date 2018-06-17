@@ -151,7 +151,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     protected final Charset getCharset() {
 
         if( encoding == null ) {
-            getLog().warn("encoding is null! default charset will be used");
+            getLog().debug("encoding is null! default charset will be used");
             return Charset.defaultCharset();
         }
 
