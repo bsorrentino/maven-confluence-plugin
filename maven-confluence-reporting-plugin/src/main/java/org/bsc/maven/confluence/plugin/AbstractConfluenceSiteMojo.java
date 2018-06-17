@@ -226,13 +226,12 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param parentPage
      * @param confluenceParentPage
-     * @param titlePrefix
+     * @param confluenceParentPage
      */
     protected void generateChildren(final ConfluenceService confluence,
                                     final Site site,
                                     final Site.Page parentPage,
                                     final Model.Page confluenceParentPage,
-                                    final String titlePrefix,
                                     final Map<String, Model.Page> varsToParentPageMap)
     {
 
@@ -242,7 +241,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         for( Site.Page child : parentPage.getChildren() ) {
 
-            final Model.Page confluencePage = generateChild(site, confluence, child, confluenceParentPage.getSpace(), parentPage.getName(), titlePrefix);
+            final Model.Page confluencePage = generateChild(site, confluence, child, confluenceParentPage);
 
             for (Site.Page.Generated generated : child.getGenerateds()) {
                 varsToParentPageMap.put(generated.getRef(), confluencePage);
@@ -250,7 +249,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
 
             if( confluencePage != null  ) {
 
-                generateChildren( confluence, site, child, confluencePage, titlePrefix, varsToParentPageMap );
+                generateChildren( confluence, site, child, confluencePage, varsToParentPageMap );
             }
             
         }

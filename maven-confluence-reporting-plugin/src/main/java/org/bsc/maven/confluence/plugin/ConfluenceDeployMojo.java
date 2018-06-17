@@ -593,47 +593,36 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         //
         // Issue 32
         //
-        final String title = getTitle();
+        final String homePageTitle = getTitle();
 
-        final String titlePrefix = title;
-
-        CompletableFuture<Model.Page> result =  
-                removeSnaphot(confluence, parentPage, title)
-                .thenCompose( deleted -> 
-                    confluence.getPage(parentPage.getSpace(), parentPage.getTitle()))
-                .exceptionally( ex -> 
-                    throwRTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle(), ex ))
-                .thenApply( parent -> 
-                    parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
-                .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
-                .thenCompose( tuple -> {
-                    return ( tuple.value2.isPresent() ) ?
-                        completedFuture(tuple.value2.get()) :
+        final Model.Page confluenceHomePage =  
+                removeSnaphot(confluence, parentPage, homePageTitle)
+                .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), homePageTitle))
+                .thenCompose( page -> {
+                    return ( page.isPresent() ) ?
+                        completedFuture(page.get()) :
                         resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset -> confluence.createPage(tuple.value1, title) ); 
+                        .thenCompose( reset -> confluence.createPage(parentPage, homePageTitle) ); 
                 })
-                .thenCompose( p -> 
-                            canProceedToUpdateResource(site.getHome().getUri())
-                            .thenCompose( update ->  (update) ? 
-                                    updateHomeContent(confluence, site, p, locale) : 
-                                        confluence.storePage(p))
-                            )
+                .thenCompose( page -> 
+                    canProceedToUpdateResource(site.getHome().getUri())
+                    .thenCompose( update ->  (update) ? 
+                            updateHomeContent(confluence, site, page, locale) : 
+                                confluence.storePage(page))
+                    )
+                .join()
                 ;
-        
-        final Model.Page confluenceHomePage = result.get();
         
         for( String label : site.getHome().getComputedLabels() ) {
 
             confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
         }
-
         
         generateChildren( 
                 confluence, 
                 site, 
                 site.getHome(), 
                 confluenceHomePage, 
-                titlePrefix, 
                 new HashMap<String, Model.Page>());
 
     }
@@ -837,16 +826,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
                     }
 
-                    // Issue 32
-                    final String title = getTitle();
-
                     Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
 
                     generateChildren(   confluence,
                                         site,
                                         site.getHome(),
                                         confluenceHomePage,
-                                        title, varsToParentPageMap);
+                                        varsToParentPageMap);
 
                     generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
 

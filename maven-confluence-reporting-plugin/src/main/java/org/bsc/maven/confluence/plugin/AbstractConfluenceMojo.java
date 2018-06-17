@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -321,38 +322,36 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         }) ;
         
     }
-    
+
     /**
      * 
      * @param site
      * @param confluence
      * @param child
-     * @param spaceKey
-     * @param parentPageTitle
-     * @param titlePrefix
+     * @param parentPage
      * @return
      */
     protected <T extends Site.Page> Model.Page  generateChild(  final Site site,
                                                                 final ConfluenceService confluence,  
                                                                 final T child, 
-                                                                String spaceKey, 
-                                                                String parentPageTitle, 
-                                                                String titlePrefix) 
+                                                                final Model.Page parentPage) 
     {
 
         java.net.URI source = child.getUri(getFileExt());
 
-        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\tparentPageTitle=[%s]\n\t%s", 
-                spaceKey, 
-                parentPageTitle, 
+        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\tparentPage=[%s]\n\tparentPage=[%s]\n\t%s", 
+                parentPage.getSpace(), 
+                parentPage.getTitle(),
+                child.getName(),
                 getPrintableStringForResource(source)));
 
+        final String pageName = !isChildrenTitlesPrefixed()
+                ? child.getName() : String.format("%s - %s", parentPage.getTitle(), child.getName());
+                
         if (!isSnapshot() && isRemoveSnapshots()) {
-            final String snapshot = titlePrefix.concat("-SNAPSHOT");
+            final String snapshot = pageName.concat("-SNAPSHOT");
 
-            confluence.getPage(spaceKey, parentPageTitle)
-            .thenApply( p -> p.orElseThrow(() -> RTE("parentPage [%s] not found!", parentPageTitle) ))
-            .thenCompose( page -> confluence.removePage(page, snapshot) )
+            confluence.removePage(parentPage, snapshot)
             .thenAccept( deleted -> {
                 getLog().info(String.format("Page [%s] has been removed!", snapshot));
             })             
@@ -361,21 +360,13 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                            
         }
 
-        final String pageName = !isChildrenTitlesPrefixed()
-            ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
-            
         final Model.Page result =   
-            confluence.getPage(spaceKey, parentPageTitle)
-            .exceptionally( ex -> 
-                throwRTE( "cannot find parent page [%s] in space [%s]", parentPageTitle, ex ))
-            .thenApply( parent -> 
-                parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPageTitle)) )
-            .thenCombine( confluence.getPage(spaceKey, title), Tuple2::of)
-            .thenCompose( tuple -> {
-                return ( tuple.value2.isPresent() ) ?
-                    CompletableFuture.completedFuture(tuple.value2.get()) :
-                    resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset ->confluence.createPage(tuple.value1, title));
+            confluence.getPage(parentPage.getSpace(), pageName)
+            .thenCompose( page -> {
+                return ( page.isPresent() ) ?
+                    completedFuture(page.get()) :
+                    resetUpdateStatusForResource(source)
+                        .thenCompose( reset -> confluence.createPage(parentPage, pageName));
             })
             .thenCompose( p ->              
                 canProceedToUpdateResource(source)

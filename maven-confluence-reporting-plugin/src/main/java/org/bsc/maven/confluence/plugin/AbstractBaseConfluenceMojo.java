@@ -235,7 +235,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected Model.Page loadParentPage( ConfluenceService confluence) throws Exception {
+    protected Model.Page loadParentPage( ConfluenceService confluence) {
         
         Model.Page result = null;
         if( parentPageId != null ) {
@@ -265,7 +265,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                 )
                 .thenApply( p -> p.orElseThrow( () -> 
                         RTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey) ))
-                .get()
+                .join()
                 ;
                             
         }
