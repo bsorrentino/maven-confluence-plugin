@@ -1,5 +1,7 @@
 package org.bsc.maven.confluence.plugin;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -23,7 +24,6 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
-import org.bsc.functional.Tuple2;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;

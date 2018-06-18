@@ -360,7 +360,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
     
         final Site result = new Site();
         
-        result.setBasedir( project.getBasedir() );
+        //result.setBasedir( project.getBasedir() );
         
         result.getLabels().addAll( super.getLabels());
         
