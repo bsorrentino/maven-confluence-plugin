@@ -193,7 +193,7 @@ public abstract class AbstractRESTConfluenceService {
     };
  
 
-    protected Optional<JsonObject> rxfindPageById( final String id ) {
+    protected Optional<JsonObject> findPageById( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -238,7 +238,7 @@ public abstract class AbstractRESTConfluenceService {
     }
     
 
-    protected List<JsonObject> rxChildrenPages( final String id ) {
+    protected List<JsonObject> childrenPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -256,7 +256,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param title
      * @return 
      */
-    public Optional<JsonObject> rxfindPage( final String spaceKey, final String title ) {
+    public Optional<JsonObject> findPage( final String spaceKey, final String title ) {
         
         return rxfindPages(spaceKey, title).stream().findFirst();
     }
@@ -279,7 +279,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return 
      */
-    public final Optional<JsonObject> rxCreatePage( final JsonObject inputData ) {
+    public final Optional<JsonObject> createPage( final JsonObject inputData ) {
         final MediaType storageFormat = MediaType.parse("application/json");
         
         final RequestBody inputBody = RequestBody.create(storageFormat, 
@@ -292,7 +292,7 @@ public abstract class AbstractRESTConfluenceService {
         return fromUrlPOST(url, inputBody, "create page").map(this::mapToObject).findFirst();
     }
     
-    protected Optional<JsonObject> rxUpdatePage( final String pageId, final JsonObject inputData ) {
+    protected Optional<JsonObject> updatePage( final String pageId, final JsonObject inputData ) {
 
         final MediaType storageFormat = MediaType.parse("application/json");
         
@@ -343,7 +343,7 @@ public abstract class AbstractRESTConfluenceService {
         fromUrlPOST(url, inputBody, "add label");
     }
 
-    protected List<JsonObject> rxAttachments( final String id ) {
+    protected List<JsonObject> getAttachments( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -356,7 +356,7 @@ public abstract class AbstractRESTConfluenceService {
         
     }
     
-    protected List<JsonObject> rxAttachment( final String id, final String fileName ) {
+    protected List<JsonObject> getAttachment( final String id, final String fileName ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")                
@@ -370,7 +370,7 @@ public abstract class AbstractRESTConfluenceService {
         
     }
     
-    protected List<JsonObject> rxAddAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
+    protected List<JsonObject> addAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
 
         final RequestBody fileBody;
         

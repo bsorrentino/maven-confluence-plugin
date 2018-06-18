@@ -1,16 +1,18 @@
 package org.bsc.maven.confluence.plugin;
 
-import static java.lang.String.format;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -18,8 +20,10 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
+import org.bsc.functional.Tuple2;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
@@ -95,7 +99,20 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
     private String encoding;
 
-
+    
+    /**
+     * Deploy State Manager - Store the last deployed state
+     * 
+     * @since 6.0.0
+     */
+    @Parameter
+    protected DeployStateManager.Parameters deployState;
+      
+    /**
+     * 
+     */
+    protected DeployStateManager deployStateManager;
+    
     /**
      *
      */
@@ -134,7 +151,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     protected final Charset getCharset() {
 
         if( encoding == null ) {
-            getLog().warn("encoding is null! default charset will be used");
+            getLog().debug("encoding is null! default charset will be used");
             return Charset.defaultCharset();
         }
 
@@ -200,13 +217,25 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         return labels;
     }
 
+    protected String getPrintableStringForResource( java.net.URI uri ) {
+        
+        try {
+            Path p = Paths.get( uri );
+            return getProject().getBasedir().toPath().relativize(p).toString();
+            
+        } catch (Exception e) {
+            return uri.toString();
+        }
+        
+        
+    }
 
     /**
      * initialize properties shared with template
      */
-    protected void initTemplateProperties() {
+    protected void initTemplateProperties( Site site ) {
 
-        processProperties();
+        processProperties( site );
 
         getProperties().put("pageTitle", getTitle());
         getProperties().put("artifactId", project.getArtifactId());
@@ -244,81 +273,127 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     }
 
-    protected <T extends Site.Page> Model.Page  generateChild(final ConfluenceService confluence,  final T child, String spaceKey, String parentPageTitle, String titlePrefix) {
+    
+    /**
+     * 
+     * @param pageToUpdate
+     * @param site
+     * @param source
+     * @return
+     */
+    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(   
+            final ConfluenceService confluence, 
+            final Model.Page pageToUpdate, 
+            final Site site, 
+            final java.net.URI source,
+            final T child,
+            final String pageName ) 
+    {
+        
+        return site.processPageUri(source, this.getTitle(), ( err, tuple2) -> {
+              
+            final CompletableFuture<Model.Page> result = 
+                        new CompletableFuture<Model.Page>();
+            
+            if( err.isPresent() ) {
+                result.completeExceptionally(RTE( "error processing uri [%s]", source, err.get() ));
+                return result;
+            }
+
+            try {
+                final MiniTemplator t = new MiniTemplator.Builder()
+                        .setSkipUndefinedVars(true)
+                        .build( tuple2.value1.get(), getCharset() );
+                
+                if( !child.isIgnoreVariables() ) {
+                    
+                    addStdProperties(t);
+                    
+                    t.setVariableOpt("childTitle", pageName);
+                }
+                
+                return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );
+                
+            } catch (Exception ex) {
+                result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(),ex));
+            }
+            
+            return result;
+        }) ;
+        
+    }
+
+    /**
+     * 
+     * @param site
+     * @param confluence
+     * @param child
+     * @param parentPage
+     * @return
+     */
+    protected <T extends Site.Page> Model.Page  generateChild(  final Site site,
+                                                                final ConfluenceService confluence,  
+                                                                final T child, 
+                                                                final Model.Page parentPage) 
+    {
 
         java.net.URI source = child.getUri(getFileExt());
 
-        getLog().info( String.format("generateChild spacekey=[%s] parentPageTitle=[%s]\n%s", spaceKey, parentPageTitle, child.toString()));
+        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\tparentPage=[%s]\n\tparentPage=[%s]\n\t%s", 
+                parentPage.getSpace(), 
+                parentPage.getTitle(),
+                child.getName(),
+                getPrintableStringForResource(source)));
 
-        try {
-
-            if (!isSnapshot() && isRemoveSnapshots()) {
-                final String snapshot = titlePrefix.concat("-SNAPSHOT");
-
-                final Model.Page page = confluence.getPage(spaceKey, parentPageTitle);
-
-                boolean deleted = confluence.removePage(page, snapshot);
-
-                if (deleted) {
-                    getLog().info(String.format("Page [%s] has been removed!", snapshot));
-                }
-            }
-
-            final String pageName = !isChildrenTitlesPrefixed()
-                ? child.getName() : String.format("%s - %s", titlePrefix, child.getName());
-
-            Model.Page result = confluence.getOrCreatePage(spaceKey, parentPageTitle, pageName);
-
-            if ( source != null ) {
-
-                final Model.Page pageToUpdate = result;
+        final String pageName = !isChildrenTitlesPrefixed()
+                ? child.getName() : String.format("%s - %s", parentPage.getTitle(), child.getName());
                 
-                result = Site.processUri(source, this.getTitle(), (InputStream is, Representation r) -> {
+        if (!isSnapshot() && isRemoveSnapshots()) {
+            final String snapshot = pageName.concat("-SNAPSHOT");
 
-                        try {
-                            final MiniTemplator t = new MiniTemplator.Builder()
-                                    .setSkipUndefinedVars(true)
-                                    .build( is, getCharset() );
-                            
-                            if( !child.isIgnoreVariables() ) {
-                                
-                                addStdProperties(t);
-                                
-                                t.setVariableOpt("childTitle", pageName);
-                            }
-                            
-                            return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), r) );
-                            
-                        } catch (Exception ex) {
-                            final String msg = format("error storing page [%s]", pageToUpdate.getTitle());
-                            throw new RuntimeException(msg, ex);
-                        }
-                    
-                }) ;
-
-            }
-            else {
-
-                result = confluence.storePage(result);
-
-            }
-
-            for( String label : child.getComputedLabels() ) {
-
-                confluence.addLabelByName(label, Long.parseLong(result.getId()) );
-            }
-
-            child.setName( pageName );
-
-            return result;
-
-        } catch (RuntimeException re ){
-            throw re;
-        } catch (Exception e) {
-            final String msg = "error loading template";
-            //getLog().error(msg, e);
-            throw new RuntimeException(msg, e);
+            confluence.removePage(parentPage, snapshot)
+            .thenAccept( deleted -> {
+                getLog().info(String.format("Page [%s] has been removed!", snapshot));
+            })             
+            .exceptionally( ex -> throwRTE( "page [%s] not found!", snapshot, ex ))
+            ;
+                           
         }
+
+        final Model.Page result =   
+            confluence.getPage(parentPage.getSpace(), pageName)
+            .thenCompose( page -> {
+                return ( page.isPresent() ) ?
+                    completedFuture(page.get()) :
+                    resetUpdateStatusForResource(source)
+                        .thenCompose( reset -> confluence.createPage(parentPage, pageName));
+            })
+            .thenCompose( p ->              
+                canProceedToUpdateResource(source)
+                    .thenCompose( update -> {
+                        if(update) return updatePageContent(confluence, p, site, source, child, pageName);
+                        else {
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)", 
+                                    getPrintableStringForResource(source) ));
+                            return confluence.storePage(p);
+                        }}))                          
+            .join();
+        
+            try {
+                
+                for( String label : child.getComputedLabels() ) {
+
+                    confluence.addLabelByName(label, Long.parseLong(result.getId()) );
+                }
+
+                child.setName( pageName );
+                
+                return result;
+ 
+            } catch ( Exception e) {
+                throw new RuntimeException(e);
+            }
+            
 
     }
 
@@ -326,7 +401,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * Issue 46
      *
      **/
-    private void processProperties() {
+    private void processProperties( Site site ) {
 
         for( Map.Entry<String,String> e : this.getProperties().entrySet() ) {
 
@@ -343,7 +418,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     continue;
                 }
 
-                getProperties().put( e.getKey(), processUri( uri, getCharset() ));
+                getProperties().put( e.getKey(), processUriContent( site, uri, getCharset() ));
 
             } catch (ProcessUriException ex) {
                 getLog().warn( String.format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
@@ -365,10 +440,11 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @return
      * @throws org.bsc.maven.reporting.AbstractConfluenceMojo.ProcessUriException
      */
-    private String processUri( java.net.URI uri, final Charset charset ) throws ProcessUriException {
+    private String processUriContent( Site site, java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            return  Site.processUri(uri, this.getTitle(), (InputStream is, Representation r) -> {
+            return  site.processUriContent(uri, this.getTitle(), (InputStream is, Representation r) -> {
+                
                     try {
                         return AbstractConfluenceMojo.this.toString( is, charset );
                     } catch (IOException ex) {
@@ -406,4 +482,23 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         }
     }
 
+    protected CompletableFuture<Void> resetUpdateStatusForResource( java.net.URI uri) {
+        if( uri != null && deployStateManager != null ) 
+            deployStateManager.resetState(uri);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    /**
+     * 
+     * @param uri
+     * @return
+     */
+    protected CompletableFuture<Boolean> canProceedToUpdateResource( java.net.URI uri) {
+        if( uri == null )
+            return CompletableFuture.completedFuture(false);
+        if( deployStateManager == null ) 
+            return CompletableFuture.completedFuture(true);
+        
+        return CompletableFuture.completedFuture(deployStateManager.isUpdated(uri));
+    }
 }
