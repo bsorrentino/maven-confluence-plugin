@@ -99,20 +99,32 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     @Parameter( property="encoding", defaultValue="${project.build.sourceEncoding}" )
     private String encoding;
 
-    
+
     /**
+     * Exprimental feature
      * Deploy State Manager - Store the last deployed state
-     * 
+     *
+     * If declared a local file will be generated that stores the last update of all documents involved in publication.
+     * If such file is present during every publication the plugin will check if the last update of each document has changed and skip the document if no update is detected
+     *
+     * <pre>
+     *   &lt;deployState&gt;
+     *     &lt;active&gt; true|false &lt;/active&gt; ==> default: true
+     *     &lt;outdir&gt; target dir &lt;/outdir&gt;  ==> default: ${project.build.directory}
+     *   &lt;/deployState&gt;
+     * </pre>
+     *
+     *
      * @since 6.0.0
      */
     @Parameter
     protected DeployStateManager.Parameters deployState;
-      
+
     /**
-     * 
+     *
      */
     protected DeployStateManager deployStateManager;
-    
+
     /**
      *
      */
@@ -218,16 +230,16 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     }
 
     protected String getPrintableStringForResource( java.net.URI uri ) {
-        
+
         try {
             Path p = Paths.get( uri );
             return getProject().getBasedir().toPath().relativize(p).toString();
-            
+
         } catch (Exception e) {
             return uri.toString();
         }
-        
-        
+
+
     }
 
     /**
@@ -273,28 +285,28 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
     }
 
-    
+
     /**
-     * 
+     *
      * @param pageToUpdate
      * @param site
      * @param source
      * @return
      */
-    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(   
-            final ConfluenceService confluence, 
-            final Model.Page pageToUpdate, 
-            final Site site, 
+    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(
+            final ConfluenceService confluence,
+            final Model.Page pageToUpdate,
+            final Site site,
             final java.net.URI source,
             final T child,
-            final String pageName ) 
+            final String pageName )
     {
-        
+
         return site.processPageUri(source, this.getTitle(), ( err, tuple2) -> {
-              
-            final CompletableFuture<Model.Page> result = 
+
+            final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
-            
+
             if( err.isPresent() ) {
                 result.completeExceptionally(RTE( "error processing uri [%s]", source, err.get() ));
                 return result;
@@ -304,27 +316,27 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 final MiniTemplator t = new MiniTemplator.Builder()
                         .setSkipUndefinedVars(true)
                         .build( tuple2.value1.get(), getCharset() );
-                
+
                 if( !child.isIgnoreVariables() ) {
-                    
+
                     addStdProperties(t);
-                    
+
                     t.setVariableOpt("childTitle", pageName);
                 }
-                
+
                 return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );
-                
+
             } catch (Exception ex) {
                 result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(),ex));
             }
-            
+
             return result;
         }) ;
-        
+
     }
 
     /**
-     * 
+     *
      * @param site
      * @param confluence
      * @param child
@@ -332,35 +344,35 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @return
      */
     protected <T extends Site.Page> Model.Page  generateChild(  final Site site,
-                                                                final ConfluenceService confluence,  
-                                                                final T child, 
-                                                                final Model.Page parentPage) 
+                                                                final ConfluenceService confluence,
+                                                                final T child,
+                                                                final Model.Page parentPage)
     {
 
         java.net.URI source = child.getUri(getFileExt());
 
-        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\tparentPage=[%s]\n\tparentPage=[%s]\n\t%s", 
-                parentPage.getSpace(), 
+        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\tparentPage=[%s]\n\tparentPage=[%s]\n\t%s",
+                parentPage.getSpace(),
                 parentPage.getTitle(),
                 child.getName(),
                 getPrintableStringForResource(source)));
 
         final String pageName = !isChildrenTitlesPrefixed()
                 ? child.getName() : String.format("%s - %s", parentPage.getTitle(), child.getName());
-                
+
         if (!isSnapshot() && isRemoveSnapshots()) {
             final String snapshot = pageName.concat("-SNAPSHOT");
 
             confluence.removePage(parentPage, snapshot)
             .thenAccept( deleted -> {
                 getLog().info(String.format("Page [%s] has been removed!", snapshot));
-            })             
+            })
             .exceptionally( ex -> throwRTE( "page [%s] not found!", snapshot, ex ))
             ;
-                           
+
         }
 
-        final Model.Page result =   
+        final Model.Page result =
             confluence.getPage(parentPage.getSpace(), pageName)
             .thenCompose( page -> {
                 return ( page.isPresent() ) ?
@@ -368,32 +380,32 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     resetUpdateStatusForResource(source)
                         .thenCompose( reset -> confluence.createPage(parentPage, pageName));
             })
-            .thenCompose( p ->              
+            .thenCompose( p ->
                 canProceedToUpdateResource(source)
                     .thenCompose( update -> {
                         if(update) return updatePageContent(confluence, p, site, source, child, pageName);
                         else {
-                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)", 
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
                                     getPrintableStringForResource(source) ));
                             return confluence.storePage(p);
-                        }}))                          
+                        }}))
             .join();
-        
+
             try {
-                
+
                 for( String label : child.getComputedLabels() ) {
 
                     confluence.addLabelByName(label, Long.parseLong(result.getId()) );
                 }
 
                 child.setName( pageName );
-                
+
                 return result;
- 
+
             } catch ( Exception e) {
                 throw new RuntimeException(e);
             }
-            
+
 
     }
 
@@ -444,7 +456,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
         try {
             return  site.processUriContent(uri, this.getTitle(), (InputStream is, Representation r) -> {
-                
+
                     try {
                         return AbstractConfluenceMojo.this.toString( is, charset );
                     } catch (IOException ex) {
@@ -483,22 +495,22 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     }
 
     protected CompletableFuture<Void> resetUpdateStatusForResource( java.net.URI uri) {
-        if( uri != null && deployStateManager != null ) 
+        if( uri != null && deployStateManager != null )
             deployStateManager.resetState(uri);
         return CompletableFuture.completedFuture(null);
     }
 
     /**
-     * 
+     *
      * @param uri
      * @return
      */
     protected CompletableFuture<Boolean> canProceedToUpdateResource( java.net.URI uri) {
         if( uri == null )
             return CompletableFuture.completedFuture(false);
-        if( deployStateManager == null ) 
+        if( deployStateManager == null )
             return CompletableFuture.completedFuture(true);
-        
+
         return CompletableFuture.completedFuture(deployStateManager.isUpdated(uri));
     }
 }

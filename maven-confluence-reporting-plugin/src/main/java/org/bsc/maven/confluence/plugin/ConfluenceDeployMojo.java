@@ -85,12 +85,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     /**
      * Skip plugin execution
-     * 
+     *
      * @since 5.1
      */
 	@Parameter(defaultValue = "false")
 	protected boolean skip = false;
-	    
+
     /**
      * Local Repository.
      *
@@ -231,28 +231,28 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-    	        
+
 		if( skip ) {
 	        getLog().info("plugin execution skipped");
 	        return;
 		}
-		
+
 		if( Objects.nonNull(deployState)) {
-		    
+
             if( !deployState.getOutdir().isPresent() ) {
-                deployState.setOutdir( Paths.get(getProject().getBuild().getDirectory()) );             
+                deployState.setOutdir( new java.io.File(getProject().getBuild().getDirectory()) );             
             }
 
             deployStateManager = DeployStateManager.load( getEndPoint(), deployState );
-		  
+
 		}
-    		
+
         final Locale locale = Locale.getDefault();
 
         getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
         loadUserInfoFromSettings();
-        
+
         Site site = null;
 
         if( isSiteDescriptorValid() ) {
@@ -275,13 +275,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }
         else {
             site = super.createFromFolder();
-            
+
             try {
                 final Path p = templateWiki.toPath();
                 site.setBasedir(p);
             }
             catch( Exception e ) {
-                site.setBasedir(getSiteDescriptor().toPath());                
+                site.setBasedir(getSiteDescriptor().toPath());
             }
 
         }
@@ -516,10 +516,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     private CompletableFuture<Boolean> removeSnaphot(
             final ConfluenceService confluence,
-            final Model.Page parentPage, 
-            final String title ) 
+            final Model.Page parentPage,
+            final String title )
     {
-        
+
         if (!isSnapshot() && isRemoveSnapshots()) {
             final String snapshot = title.concat("-SNAPSHOT");
             getLog().info(format("removing page [%s]!", snapshot));
@@ -528,11 +528,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 .thenApply( deleted -> {
                     if (deleted) {
                         getLog().info(format("Page [%s] has been removed!", snapshot));
-                    } 
+                    }
                     return deleted;
                 })
                 .exceptionally( ex ->
-                    throwRTE(format("Page [%s] cannot be removed!", snapshot), ex))        
+                    throwRTE(format("Page [%s] cannot be removed!", snapshot), ex))
                 ;
         }
         else {
@@ -540,52 +540,52 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }
 
     }
-    
-    private CompletableFuture<Model.Page> updateHomeContent( 
+
+    private CompletableFuture<Model.Page> updateHomeContent(
                 final ConfluenceService confluence,
                 final Site site,
                 final Model.Page homePage,
-                final Locale locale ) 
+                final Locale locale )
     {
         final java.net.URI uri = site.getHome().getUri();
-        
+
         return site.processPageUri(  uri, homePage.getTitle(), (err, tuple2) -> {
             final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
-            
+
             try {
-                    
+
                 if( err.isPresent() ) {
                     result.completeExceptionally(err.get());
                     return result;
                 }
-            
+
                 if( !tuple2.value1.isPresent()) {
                     result.complete( homePage );
                     return result; // SKIPPED
                 }
-            
+
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
                     .build( tuple2.value1.get(), getCharset() );
-            
+
                 generateProjectHomeTemplate( t, site, locale );
-            
-                return confluence.storePage(homePage, new Storage(t.generateOutput(),tuple2.value2) ); 
-            
+
+                return confluence.storePage(homePage, new Storage(t.generateOutput(),tuple2.value2) );
+
             } catch (Exception ex) {
                 result.completeExceptionally(ex);
                 return result;
             }
-            
-        
+
+
         }) ;
-        
+
     }
-    
-    private void generateProjectReport( 
-            final ConfluenceService confluence, 
-            final Site site, 
-            final Locale locale ) throws Exception 
+
+    private void generateProjectReport(
+            final ConfluenceService confluence,
+            final Site site,
+            final Locale locale ) throws Exception
     {
 
         final Model.Page parentPage = loadParentPage(confluence);
@@ -595,38 +595,38 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         //
         final String homePageTitle = getTitle();
 
-        final Model.Page confluenceHomePage =  
+        final Model.Page confluenceHomePage =
                 removeSnaphot(confluence, parentPage, homePageTitle)
                 .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), homePageTitle))
                 .thenCompose( page -> {
                     return ( page.isPresent() ) ?
                         completedFuture(page.get()) :
                         resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset -> confluence.createPage(parentPage, homePageTitle) ); 
+                        .thenCompose( reset -> confluence.createPage(parentPage, homePageTitle) );
                 })
-                .thenCompose( page -> 
+                .thenCompose( page ->
                     canProceedToUpdateResource(site.getHome().getUri())
-                    .thenCompose( update ->  { 
+                    .thenCompose( update ->  {
                         if(update) return updateHomeContent(confluence, site, page, locale);
                         else {
-                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)", 
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
                                     getPrintableStringForResource(site.getHome().getUri()) ));
                             return confluence.storePage(page);
-                        }})                           
-                    ) 
+                        }})
+                    )
                 .join()
                 ;
-        
+
         for( String label : site.getHome().getComputedLabels() ) {
 
             confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
         }
-        
-        generateChildren( 
-                confluence, 
-                site, 
-                site.getHome(), 
-                confluenceHomePage, 
+
+        generateChildren(
+                confluence,
+                site,
+                site.getHome(),
+                confluenceHomePage,
                 new HashMap<String, Model.Page>());
 
     }
@@ -884,13 +884,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         }
 
-        private CompletableFuture<Model.Page> updateHomeContent( 
+        private CompletableFuture<Model.Page> updateHomeContent(
                     final ConfluenceService confluence,
                     final Site site,
                     final Model.Page homePage,
                     final PluginDescriptor pluginDescriptor,
                     final Locale locale
-                ) 
+                )
         {
             final List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
 
@@ -902,14 +902,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     getLog().debug(format("  - %s : %s", mojo.getFullGoalName(), mojo.getDescription()));
                 }
             }
-            
+
             final String title = getTitle();
 
             return site.processPageUri(site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
 
-                final CompletableFuture<Model.Page> result = 
+                final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
-                
+
                 try {
 
                     if( err.isPresent() ) {
@@ -917,11 +917,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         return result;
                     }
 
-                    if( !tuple2.value1.isPresent()) { 
+                    if( !tuple2.value1.isPresent()) {
                         result.complete(homePage);
                         return result;
                     } // SKIPPED
-                    
+
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
                             .build( tuple2.value1.get(), getCharset() );
@@ -992,11 +992,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     return result;
                 }
             }) ;
-                
+
         }
 
         /**
-         * 
+         *
          * @param pluginDescriptor
          * @param confluence
          * @param parentPage
@@ -1005,28 +1005,28 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
          * @return
          * @throws Exception
          */
-        public Model.Page processMojoDescriptors(  
+        public Model.Page processMojoDescriptors(
                                 final PluginDescriptor pluginDescriptor,
                                 final ConfluenceService confluence,
                                 final Model.Page parentPage,
                                 final Site site,
                                 final Locale locale) throws Exception
         {
-    
+
             // issue#102
             //final String title = format( "%s-%s", pluginDescriptor.getArtifactId(), pluginDescriptor.getVersion() );
             final String title = getTitle();
-    
+
             getProperties().put("pageTitle",    title);
             getProperties().put("artifactId",   getProject().getArtifactId());
             getProperties().put("version",      getProject().getVersion());
-    
-            return  
+
+            return
                 removeSnaphot(confluence, parentPage, title)
                 .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )
-                .exceptionally( ex -> 
+                .exceptionally( ex ->
                     throwRTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle(), ex ))
-                .thenApply( parent -> 
+                .thenApply( parent ->
                     parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
                 .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
                 .thenCompose( tuple -> {
@@ -1035,17 +1035,17 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         resetUpdateStatusForResource(site.getHome().getUri())
                         .thenCompose( reset ->confluence.createPage(tuple.value1, title));
                 })
-                .thenCompose( p -> 
+                .thenCompose( p ->
                     canProceedToUpdateResource( site.getHome().getUri())
-                    .thenCompose( update -> { 
+                    .thenCompose( update -> {
                         if(update) return updateHomeContent(confluence, site, p, pluginDescriptor, locale) ;
                         else {
-                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)", 
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
                                     getPrintableStringForResource(site.getHome().getUri()) ));
                             return confluence.storePage(p);
-                        }}))                         
+                        }}))
                 .join();
-    
+
         }
     }
 }
