@@ -1,0 +1,5 @@
+com.github.qwazer.mavenplugins.gitlog
+org.bsc.maven.confluence.plugin
+org.bsc.maven.reporting.model
+org.bsc.maven.reporting.renderer
+org.bsc.maven.reporting.sink
