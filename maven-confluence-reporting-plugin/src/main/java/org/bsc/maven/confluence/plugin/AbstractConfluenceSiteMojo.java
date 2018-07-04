@@ -4,27 +4,32 @@
  */
 package org.bsc.maven.confluence.plugin;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 
-import static java.lang.String.format;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.apache.commons.lang.StringUtils;
-
+import static java.util.concurrent.CompletableFuture.completedFuture;
 /**
  *
  * @author bsorrentino
@@ -101,16 +106,16 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param confluencePage 
      */
-    private void generateAttachments( Site.Page page,  final ConfluenceService confluence, final Model.Page confluencePage) /*throws MavenReportException*/ {
+    private void generateAttachments( final ConfluenceService confluence, Site site, Site.Page page,  final Model.Page confluencePage) /*throws MavenReportException*/ {
 
-        getLog().info(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
+        getLog().debug(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(), confluencePage.getTitle()));
 
         for( final Site.Attachment attachment : page.getAttachments() ) {
 
             final Path attachmentPath = Paths.get(attachment.getUri());
             
             if( !Files.isDirectory(attachmentPath) ) {
-                generateAttachment(confluence, confluencePage, attachment);            
+                generateAttachment(confluence, site, confluencePage, attachment);            
             }
             else {    
                 try( final DirectoryStream<Path> dirStream = newDirectoryStream(attachmentPath, attachment) ) {
@@ -129,7 +134,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                             fileAttachment.setContentType(attachment.getContentType());
                         }
                         
-                        generateAttachment(confluence, confluencePage, fileAttachment);
+                        generateAttachment(confluence, site, confluencePage, fileAttachment);
                         
                     }
                     
@@ -140,55 +145,83 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         }
     }
 
+    private CompletableFuture<Model.Attachment> updateAttachmentData(
+            final ConfluenceService confluence, 
+            final Site site, 
+            final java.net.URI uri,
+            final Model.Page confluencePage, 
+            final Model.Attachment attachment ) 
+    {
+        
+        return site.processUri(uri, ( err, is ) -> {
+            
+            if( err.isPresent() ) {
+                CompletableFuture<Model.Attachment> result = new CompletableFuture<>();
+                result.completeExceptionally(err.get());
+                return result;
+            }
+            return ( is.isPresent() ) ?
+                    confluence.addAttachment(confluencePage, attachment, is.get() ) :
+                    completedFuture(attachment) ;
+        });     
+        
+    }
     /**
      *
      * @param confluence
      * @param confluencePage
      * @param attachment
      */
-    private void generateAttachment(ConfluenceService confluence, Model.Page confluencePage, Site.Attachment attachment) {
-        getLog().info(format("generateAttachment pageId [%s] title [%s] file [%s]", confluencePage.getId(), confluencePage.getTitle(), attachment.getUri()));
-
-        Model.Attachment confluenceAttachment = null;
-
-        try {
-            confluenceAttachment = confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion());
-        } catch (Exception e) {
+    private void generateAttachment( 
+            final ConfluenceService confluence, 
+            final Site site, 
+            final Model.Page confluencePage, 
+            final Site.Attachment attachment) 
+    {
+        
+        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]", 
+                confluencePage.getId(), 
+                confluencePage.getTitle(), 
+                getPrintableStringForResource(attachment.getUri()) ));
+      
+        final java.net.URI uri = attachment.getUri();
+        
+        confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
+        .exceptionally( e -> {
             getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
-        }
-
-        if (confluenceAttachment != null) {
-            java.util.Date date = confluenceAttachment.getCreated();
-
-            if (date == null) {
-                getLog().warn(format("creation date of attachments [%s] is undefined. It will be replaced! ", confluenceAttachment.getFileName()));
-            } else {
-                if (attachment.hasBeenUpdatedFrom(date)) {
-                    getLog().info(format("attachment [%s] is more recent than the remote one. It will be replaced! ", confluenceAttachment.getFileName()));
-                } else {
-                    getLog().info(format("attachment [%s] skipped! no updated detected", confluenceAttachment.getFileName()));
-                    return;
-                }
+            return Optional.empty();
+        })
+        .thenCompose( att -> {
+            
+            if (!att.isPresent()) {             
+                getLog().debug(format("Creating new attachment for [%s]", attachment.getName()));
+                Model.Attachment result = confluence.createAttachment();
+                result.setFileName(attachment.getName());
+                result.setContentType(attachment.getContentType());        
+                result.setComment( attachment.getComment());
+                return resetUpdateStatusForResource(uri)
+                        .thenCompose( reset -> completedFuture(result));          
             }
-
-        } else {
-            getLog().info(format("Creating new attachment for [%s]", attachment.getName()));
-            confluenceAttachment = confluence.createAttachment();
-            confluenceAttachment.setFileName(attachment.getName());
-            confluenceAttachment.setContentType(attachment.getContentType());
-        }
-
-        confluenceAttachment.setComment( attachment.getComment());
-
-        try( java.io.InputStream is = attachment.getUri().toURL().openStream()) {
-            confluence.addAttachment(confluencePage, confluenceAttachment, is );
-
-        } catch (Exception e) {
-            final String msg = format("Error uploading attachment [%s] ", attachment.getName());
-            //getLog().error(msg);
-            throw new RuntimeException(msg,e);
-
-        }
+            
+            Model.Attachment result = att.get();       
+            result.setContentType(attachment.getContentType());        
+            result.setComment( attachment.getComment());
+            return completedFuture(result);
+            
+        })
+        .thenCompose( finalAttachment -> 
+            canProceedToUpdateResource(uri)
+            .thenCompose( updated -> {
+                if(updated) return updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment);
+                else {
+                    getLog().info( String.format("attachment [%s] has not been updated (deploy skipped)", 
+                            getPrintableStringForResource(uri) ));
+                    return completedFuture(finalAttachment);
+                }})                           
+        )
+        ;
+ 
+        
     }
     
     
@@ -197,23 +230,22 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluence
      * @param parentPage
      * @param confluenceParentPage
-     * @param titlePrefix
+     * @param confluenceParentPage
      */
-    protected void generateChildren(    final ConfluenceService confluence,
-                                        final Site.Page parentPage,
-                                        final Model.Page confluenceParentPage,
-                                        final String titlePrefix,
-                                        final Map<String, Model.Page> varsToParentPageMap)
+    protected void generateChildren(final ConfluenceService confluence,
+                                    final Site site,
+                                    final Site.Page parentPage,
+                                    final Model.Page confluenceParentPage,
+                                    final Map<String, Model.Page> varsToParentPageMap)
     {
 
-        getLog().info(format("generateChildren # [%d]", parentPage.getChildren().size()));
-
+        getLog().debug(format("generateChildren # [%d]", parentPage.getChildren().size()));
         
-        generateAttachments(parentPage, confluence, confluenceParentPage);
+        generateAttachments( confluence, site, parentPage, confluenceParentPage);
         
         for( Site.Page child : parentPage.getChildren() ) {
 
-            final Model.Page confluencePage = generateChild(confluence, child, confluenceParentPage.getSpace(), parentPage.getName(), titlePrefix);
+            final Model.Page confluencePage = generateChild(site, confluence, child, confluenceParentPage);
 
             for (Site.Page.Generated generated : child.getGenerateds()) {
                 varsToParentPageMap.put(generated.getRef(), confluencePage);
@@ -221,7 +253,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
 
             if( confluencePage != null  ) {
 
-                generateChildren(confluence, child, confluencePage, titlePrefix, varsToParentPageMap );
+                generateChildren( confluence, site, child, confluencePage, varsToParentPageMap );
             }
             
         }
@@ -325,13 +357,14 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
    
     @Override
     public Site createFromFolder() {
-        
+    
         final Site result = new Site();
+        
+        //result.setBasedir( project.getBasedir() );
         
         result.getLabels().addAll( super.getLabels());
         
         final Site.Page home = new Site.Page();
-        
         
         home.setName(getTitle());
         
@@ -411,7 +444,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
 
                 site = (Site) unmarshaller.unmarshal( siteDescriptor );
-
+   
             } catch (JAXBException ex) {
                 getLog().error("error creating site from model!", ex);
 

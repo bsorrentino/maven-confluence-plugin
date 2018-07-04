@@ -12,8 +12,6 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 
-import rx.functions.Action1;
-
 /**
  *
  * Delete a confluence pageTitle 
@@ -45,7 +43,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
         final Model.Page parentPage = loadParentPage(confluence);
 
         if( parentPage==null ) {
-            getLog().warn(String.format("Parent page [%s] in [%s] not found!", parentPage.getTitle(), parentPage.getSpace()));                    
+            getLog().warn("Parent page not found!");                    
             return;
         }
 
@@ -84,10 +82,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
         
         super.loadUserInfoFromSettings();
         
-        super.confluenceExecute( new Action1<ConfluenceService>() {
-
-            @Override
-            public void call(ConfluenceService confluence)   {
+        super.confluenceExecute( (ConfluenceService confluence)  -> {
                 
                 try {
                     deletePage(confluence);
@@ -95,7 +90,6 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
                     throw new RuntimeException(ex);
                 }
         
-            }
         });
         
     }

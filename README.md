@@ -20,6 +20,14 @@ Please donate whether you wish support us to give more time to plugin's growth |
 
 ### News ###
 
+Jul 04, 2018 | **Release 6.0-beta1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-beta1%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+* Refer to [Issue 153](https://github.com/bsorrentino/maven-confluence-plugin/issues/153) - move to jdk8. Introduced use of `Optional`, `Stream` and `CompletableFuture`
+
+* Refer to [Issue 150](https://github.com/bsorrentino/maven-confluence-plugin/issues/150) - Avoid republishing for confluence pages not changed. Introduced new configuration [`deployState`](http://bsorrentino.github.io/maven-confluence-plugin/deploy-mojo.html#deployState)
+
+
 Jan 04, 2018 | **Release 5.1.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1.1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 

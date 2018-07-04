@@ -6,27 +6,31 @@
 package org.bsc.confluence.rest;
 
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.CurrentThreadExecutor;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.confluence.rest.model.Attachment;
 import org.bsc.confluence.rest.model.Page;
+import org.bsc.confluence.xmlrpc.ConfluenceExportDecorator;
 import org.bsc.ssl.SSLCertificateInfo;
-import org.codehaus.swizzle.confluence.ConfluenceExportDecorator;
 
 import okhttp3.HttpUrl;
-import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * @see https://docs.atlassian.com/confluence/REST/latest/
@@ -38,7 +42,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     final Credentials credentials;
     
     final java.net.URL endpoint ;
-        
+
+    
     /**
      * 
      * @param url
@@ -146,48 +151,22 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
         
-        return rxChildrenPages(parentPageId)
-                .map( page -> new Page(page) )
+        return childrenPages(parentPageId).stream()
+                .map( Page::new )
                 .filter( page -> page.getTitle().equals( title ))
-                .toBlocking()
-                .firstOrDefault(null);
+                .findFirst().orElse(null);
     }
 
     @Override
-    public Model.Page getOrCreatePage(final String spaceKey, final String parentPageTitle, final String title) throws Exception {
-        final Observable<JsonObject> error =  
-                Observable.error(new Exception(format("parentPage [%s] doesn't exist!",parentPageTitle)));
-
-         
-        return  rxfindPage(spaceKey, parentPageTitle)
-                .switchIfEmpty( error )                        
-                .map( page -> new Page(page) )
-                .flatMap( (parent) -> {
-
-                    final String id = parent.getId();
-                    final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
-
-                    return rxfindPage(spaceKey,title)                                    
-                            .switchIfEmpty( rxCreatePage( input.build() ));
-                 })
-                .map( page -> new Page(page) )
-                .toBlocking()
-                .first()
-                ;
-    }
-
-    @Override
-    public Model.Page getOrCreatePage(Model.Page parentPage, String title) throws Exception {
+    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
 
         final String spaceKey = parentPage.getSpace();
         final String id = parentPage.getId();
         final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
-        return rxfindPage(spaceKey,title)                                    
-                .switchIfEmpty( rxCreatePage( input.build() ))
-                .map( page -> new Page(page))
-                .toBlocking()
-                .first();
+        return CompletableFuture.supplyAsync( () ->
+            createPage( input.build() ).map( Page::new ).get()          
+        , CurrentThreadExecutor.instance);
     }
 
     /**
@@ -197,39 +176,28 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
      * @throws Exception 
      */
     @Override
-    public Model.Page getPage(String pageId) throws Exception {
-        
-        return rxfindPageById(pageId)
-                            .map( page -> new Page(page))
-                            .toBlocking()
-                            .first();
+    public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {        
+        return CompletableFuture.completedFuture(findPageById(pageId).map( Page::new ));
     }
 
     @Override
-    public Model.Page getPage(String spaceKey, String pageTitle) throws Exception {
-                
-        return rxfindPage(spaceKey, pageTitle) 
-                     .map( page -> new Page(page))
-                     .toBlocking()
-                     .first();
+    public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle)  {
+        return CompletableFuture.completedFuture(findPage(spaceKey, pageTitle).map( Page::new ));
     }
     
     
     @Override
     public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
         
-        return rxDescendantPages(pageId)
+        return rxDescendantPages(pageId).stream()
                 .map( (page) -> new Page(page))
-                .cast(Model.PageSummary.class)
-                .toList()
-                .toBlocking()
-                .first();
+                .collect( Collectors.toList() );
         
     }
 
 
     @Override
-    public Model.Page storePage(Model.Page page, Storage content ) throws Exception {
+    public CompletableFuture<Model.Page> storePage(Model.Page page, Storage content )  {
         
         int previousVersion = page.getVersion();
         
@@ -246,21 +214,20 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                 .build()
                 ;        
         
-        return rxUpdatePage(page.getId(),input)
-                                    .map( (p) -> new Page(p))
-                                    .toBlocking()
-                                    .first();
+        return CompletableFuture.supplyAsync(() ->
+            updatePage(page.getId(),input).map( Page::new ).get()
+        , CurrentThreadExecutor.instance);
     }
 
     @Override
-    public Model.Page storePage(Model.Page page) throws Exception {     
-        return page;
+    public CompletableFuture<Model.Page> storePage(Model.Page page)  {     
+        return CompletableFuture.completedFuture(page);
     }
 
     @Override
     public boolean addLabelByName(String label, long id) throws Exception {
  
-        rxAddLabels(String.valueOf(id), label).toBlocking().first();
+        rxAddLabels(String.valueOf(id), label);
         return true;
     }
 
@@ -282,11 +249,11 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public void call(Action1<ConfluenceService> task) throws Exception {
+    public void call(java.util.function.Consumer<ConfluenceService> task) throws Exception {
     		if (task == null)
 				throw new java.lang.IllegalArgumentException("task is null!");
 
-    		task.call(this);
+    		task.accept(this);
     }
 
     @Override
@@ -295,43 +262,43 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public Model.Attachment getAttachment(String pageId, String name, String version) throws Exception {
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
        
-        return rxAttachment(pageId, name)
-                //.doOnNext( System.out::println)
-                .map( (att) -> new Attachment(att) )
-                .toBlocking()
-                .firstOrDefault(null);
+        final Optional<Model.Attachment> att = 
+                getAttachment(pageId, name).stream()
+                .map( result -> (Model.Attachment)new Attachment(result) )
+                .findFirst();
+        return completedFuture(att);
     }
 
     @Override
-    public Model.Attachment addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) throws Exception {
+    public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
 
-        return rxAddAttachment(page.getId(), cast(attachment), source)
-                .map( att -> new Attachment(att) )
-                .toBlocking()
-                .firstOrDefault(null);
+        final Optional<Model.Attachment> att = 
+                addAttachment(page.getId(), cast(attachment), source).stream()
+                .map( result -> (Model.Attachment)new Attachment(result) )
+                .findFirst();
+        
+        return completedFuture( att.get() );
+
     }
     
     @Override
-    public boolean removePage(Model.Page parentPage, String title) throws Exception {
+    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
         
-        return rxChildrenPages(parentPage.getId())
+        return completedFuture(
+                childrenPages(parentPage.getId()).stream()
                 .map( page -> new Page(page))
-                .first( page -> page.getTitle().equals(title) )
-                .flatMap( (page) -> rxDeletePageById(page.getId()))
-                .map( res -> true)
-                .toBlocking()
-                .firstOrDefault(false);
+                .filter( page -> page.getTitle().equals(title) )
+                .map( page -> rxDeletePageById(page.getId()) )
+                .findFirst().orElse(false) );
         
     }
 
     @Override
     public void removePage(String pageId) throws Exception {
         
-        rxDeletePageById(pageId)
-                .toBlocking()
-                .first();
+        rxDeletePageById(pageId);
         
     }
 

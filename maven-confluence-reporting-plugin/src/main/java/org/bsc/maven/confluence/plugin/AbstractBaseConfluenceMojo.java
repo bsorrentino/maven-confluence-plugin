@@ -1,6 +1,10 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.bsc.ssl.SSLCertificateInfo;
+import static java.lang.String.format;
+
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -9,14 +13,12 @@ import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceServiceFactory;
+import org.bsc.ssl.SSLCertificateInfo;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
-import static java.lang.String.format;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.bsc.confluence.ConfluenceService.Model;
-import rx.functions.Action1;
 
 
 /**
@@ -178,7 +180,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @param task
      * @throws MojoExecutionException
      */
-    protected <T extends Action1<ConfluenceService>> void confluenceExecute(T task) throws MojoExecutionException {
+    protected <T extends Consumer<ConfluenceService>> void confluenceExecute(T task) throws MojoExecutionException {
 
         ConfluenceService confluence = null;
         
@@ -211,8 +213,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                             sslCertificate
                     );
 
-            getLog().info( String.valueOf(confluence) );
-
             confluence.call(task);
             
         } catch( RuntimeException re ) {
@@ -235,44 +235,34 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected Model.Page loadParentPage( ConfluenceService confluence) throws MojoExecutionException {
+    protected Model.Page loadParentPage( ConfluenceService confluence ) {
         
-        Model.Page result = null;
+        Optional<Model.Page> result = Optional.empty();
+        
         if( parentPageId != null ) {
             
-            try {
-                result = confluence.getPage( parentPageId );
-                
-                if( result==null ) {
-                    getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]", 
-                                                parentPageId, parentPageTitle, spaceKey));
-                }
-            } catch (Exception ex) {
-                getLog().warn( format( "cannot get page with parentPageId [%s]! Try with parentPageTitle [%s] in space [%s]\n%s", 
-                                                parentPageId, parentPageTitle, spaceKey, ExceptionUtils.getRootCauseMessage(ex)) );
-                
+            result = confluence.getPage( parentPageId ).join();
+            
+            if( !result.isPresent() ) {
+                getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]", 
+                                            parentPageId, parentPageTitle, spaceKey));
             }
         }
         
-        if( result == null  ) {
+        if( !result.isPresent()  ) {
             if( spaceKey == null ) {
-                throw new MojoExecutionException( "spaceKey is not set!");                
+                throw new IllegalStateException( "spaceKey is not set!");                
             }
-            try {
-                result = confluence.getPage(spaceKey, parentPageTitle);
-
-                if( result==null ) {
-                    throw new MojoExecutionException( format( "parentPageTitle [%s] not found in space [%s]!", 
-                                                      parentPageTitle, spaceKey));
-                }
-            } catch (Exception ex) {
-                throw new MojoExecutionException( format( "cannot get page with parentPageTitle [%s] in space [%s]!", 
-                                                      parentPageTitle, spaceKey), ex);
-            }
+            result = confluence.getPage(spaceKey, parentPageTitle).join();
+            
         }
-        getProperties().put("parentPageTitle", result.getTitle());
         
-        return result;
+        if( !result.isPresent() ) {
+            throwRTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey);                
+        }
+        getProperties().put("parentPageTitle", result.get().getTitle());
+        
+        return result.get();
 
     }
     
@@ -287,7 +277,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
         if ((getUsername() == null || getPassword() == null) && (mavenSettings != null)) {
             if (this.serverId == null)
-                throw new MojoExecutionException("SettingKey must be set! (username and/or password are not provided)");
+                throw new MojoExecutionException("'serverId' must be set! (username and/or password are not provided)");
 
             Server server = this.mavenSettings.getServer(this.serverId);
 
@@ -319,5 +309,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         }
     }
 
-
+    protected RuntimeException RTE( String message, Object...args  ) {
+        Object[] arguments = (Object[])args;
+        
+        final String m = String.format( message, arguments);
+        
+        if( arguments.length > 0 && arguments[arguments.length -1] instanceof Throwable) {
+           return new RuntimeException(m, (Throwable)arguments[arguments.length -1]);
+        }
+        return new RuntimeException(m) ;
+    }
+    
+    protected <T> T throwRTE( String message, Object...args   ) {
+        throw RTE(message, args);
+    }
 }

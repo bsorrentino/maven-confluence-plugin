@@ -1,40 +1,39 @@
 package org.bsc.maven.confluence.plugin;
 
-import org.bsc.confluence.ConfluenceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.bsc.confluence.ConfluenceUtils.decode;
+import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createAnchor;
+import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createLinkToAnchor;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.Parameter;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.tools.plugin.generator.Generator;
-import org.codehaus.plexus.util.StringUtils;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import java.util.Collections;
+import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
+import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
-import static org.bsc.confluence.ConfluenceUtils.decode;
-import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createAnchor;
-import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createLinkToAnchor;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  *
  * @author Sorrentino
  *
  */
-@SuppressWarnings("unchecked")
 public abstract class PluginConfluenceDocGenerator implements Generator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PluginConfluenceDocGenerator.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(PluginConfluenceDocGenerator.class);
 
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
 
@@ -78,19 +77,23 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             
             final String goalName = getPageName( parentName );
 
-            Model.Page result = confluence.getOrCreatePage(parent, goalName);
+            final CompletableFuture<Model.Page> result = 
+                confluence.getOrCreatePage(parent.getSpace(), parent.getTitle(), goalName)
+                .thenCompose( page -> {
+                    final StringWriter writer = new StringWriter(100 * 1024);
+    
+                    ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
+    
+                    write( w );
+    
+                    writer.flush();
+    
+                    return confluence.storePage(page, new Storage(writer.toString(), Representation.WIKI));
+                    
+                })
+            ;
 
-            final StringWriter writer = new StringWriter(100 * 1024);
-
-            ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
-
-            write( w );
-
-            writer.flush();
-
-            result  = confluence.storePage(result,new Storage(writer.toString(), Representation.WIKI));
-
-            return result;
+            return result.get();
                 
         }
         
@@ -212,17 +215,15 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
      */
     protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor) {
 
-        ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
+        try( final ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer) ) {
 
-        w.printBiggerHeading("Description");
-
-        String description = pluginDescriptor.getDescription();
-
-        if (null != description) {
-            w.println(description);
+            w.printBiggerHeading("Description");
+    
+            Optional.ofNullable(pluginDescriptor.getDescription())
+                .ifPresent( description -> w.println(description) ); 
+    
+            w.printNewParagraph();
         }
-
-        w.printNewParagraph();
 
     }
     
@@ -230,29 +231,29 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
         final java.util.List<Goal> result = new java.util.ArrayList<Goal>(mojos.size());
         
-        final ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
+        try(final ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer)) {
 
-        w.printBiggestHeading("Plugin Goals");
-
-        w.println("|| Name || Description ||");
-        
-        for (MojoDescriptor descriptor : mojos) {
-            final Goal goal = new Goal(descriptor);
+            w.printBiggestHeading("Plugin Goals");
+    
+            w.println("|| Name || Description ||");
             
-            w.print( '|' );
-            w.printf( "[%s|%s]",goal.descriptor.getFullGoalName(),
-                                  goal.getPageName(parentName) );		
-            w.print('|');
-            w.print(decode(goal.descriptor.getDescription()));
-            w.println('|');
-            
-            result.add(goal);
-            
-            
+            for (MojoDescriptor descriptor : mojos) {
+                final Goal goal = new Goal(descriptor);
+                
+                w.print( '|' );
+                w.printf( "[%s|%s]",goal.descriptor.getFullGoalName(),
+                                      goal.getPageName(parentName) );		
+                w.print('|');
+                w.print(decode(goal.descriptor.getDescription()));
+                w.println('|');
+                
+                result.add(goal);
+                
+                
+            }
+    
+            w.printNewParagraph();
         }
-
-        w.printNewParagraph();
-
         return result;
     }
     
@@ -353,13 +354,13 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
      * @param w
      */
     private void writeParameterSummary(List<Parameter> parameterList, ConfluenceWikiWriter w) {
-        List requiredParams = getParametersByRequired(true, parameterList);
-        if (requiredParams.size() > 0) {
+        List<Parameter>  requiredParams = getParametersByRequired(true, parameterList);
+        if (!requiredParams.isEmpty()) {
             writeParameterList("Required Parameters", requiredParams, w);
         }
 
-        List optionalParams = getParametersByRequired(false, parameterList);
-        if (optionalParams.size() > 0) {
+        List<Parameter> optionalParams = getParametersByRequired(false, parameterList);
+        if (!optionalParams.isEmpty()) {
             writeParameterList("Optional Parameters", optionalParams, w);
         }
     }
