@@ -343,25 +343,28 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * @param parentPage
      * @return
      */
-    protected <T extends Site.Page> Model.Page  generateChild(  final Site site,
-                                                                final ConfluenceService confluence,
+    protected <T extends Site.Page> Model.Page  generateChild(  final ConfluenceService confluence,
+                                                                final Site site,                                                           
                                                                 final T child,
                                                                 final Model.Page parentPage)
     {
 
-        java.net.URI source = child.getUri(getFileExt());
+        final String homeTitle = site.getHome().getName();
+        
+        final java.net.URI source = child.getUri(getFileExt());
 
-        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\tparentPage=[%s]\n\tparentPage=[%s]\n\t%s",
+        getLog().debug( String.format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
                 parentPage.getSpace(),
+                homeTitle,
                 parentPage.getTitle(),
                 child.getName(),
                 getPrintableStringForResource(source)));
 
-        final String pageName = !isChildrenTitlesPrefixed()
-                ? child.getName() : String.format("%s - %s", parentPage.getTitle(), child.getName());
+        final String pageTitle = !isChildrenTitlesPrefixed()
+                ? child.getName() : String.format("%s - %s", homeTitle, child.getName());
 
         if (!isSnapshot() && isRemoveSnapshots()) {
-            final String snapshot = pageName.concat("-SNAPSHOT");
+            final String snapshot = pageTitle.concat("-SNAPSHOT");
 
             confluence.removePage(parentPage, snapshot)
             .thenAccept( deleted -> {
@@ -373,17 +376,17 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
         }
 
         final Model.Page result =
-            confluence.getPage(parentPage.getSpace(), pageName)
+            confluence.getPage(parentPage.getSpace(), pageTitle)
             .thenCompose( page -> {
                 return ( page.isPresent() ) ?
                     completedFuture(page.get()) :
                     resetUpdateStatusForResource(source)
-                        .thenCompose( reset -> confluence.createPage(parentPage, pageName));
+                        .thenCompose( reset -> confluence.createPage(parentPage, pageTitle));
             })
             .thenCompose( p ->
                 canProceedToUpdateResource(source)
                     .thenCompose( update -> {
-                        if(update) return updatePageContent(confluence, p, site, source, child, pageName);
+                        if(update) return updatePageContent(confluence, p, site, source, child, pageTitle);
                         else {
                             getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
                                     getPrintableStringForResource(source) ));
@@ -398,7 +401,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     confluence.addLabelByName(label, Long.parseLong(result.getId()) );
                 }
 
-                child.setName( pageName );
+                child.setName( pageTitle );
 
                 return result;
 
