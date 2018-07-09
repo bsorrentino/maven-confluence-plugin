@@ -1,10 +1,10 @@
 package org.bsc.maven.confluence.plugin;
 
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,8 +63,6 @@ import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-
-import static java.util.concurrent.CompletableFuture.completedFuture;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it

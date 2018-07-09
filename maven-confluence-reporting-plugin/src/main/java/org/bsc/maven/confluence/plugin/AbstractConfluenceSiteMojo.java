@@ -245,7 +245,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         for( Site.Page child : parentPage.getChildren() ) {
 
-            final Model.Page confluencePage = generateChild(site, confluence, child, confluenceParentPage);
+            final Model.Page confluencePage = generateChild(confluence, site, child, confluenceParentPage);
 
             for (Site.Page.Generated generated : child.getGenerateds()) {
                 varsToParentPageMap.put(generated.getRef(), confluencePage);
