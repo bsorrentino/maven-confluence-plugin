@@ -101,19 +101,18 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
 
     /**
-     * Exprimental feature
-     * Deploy State Manager - Store the last deployed state
+     * <b>Experimental feature</b> - Store the last deployed state<br><br>
      *
-     * If declared a local file will be generated that stores the last update of all documents involved in publication.
-     * If such file is present during every publication the plugin will check if the last update of each document has changed and skip the document if no update is detected
+     * If declared, a local file will be generated that keeps the last update date of all documents involved in publication.<br>
+     * If such file is present the plugin will check the last update date of each document, skipping it, if no update is detected.<br><br>
      *
+     * Example:
      * <pre>
      *   &lt;deployState&gt;
      *     &lt;active&gt; true|false &lt;/active&gt; ==> default: true
      *     &lt;outdir&gt; target dir &lt;/outdir&gt;  ==> default: ${project.build.directory}
      *   &lt;/deployState&gt;
      * </pre>
-     *
      *
      * @since 6.0.0
      */
