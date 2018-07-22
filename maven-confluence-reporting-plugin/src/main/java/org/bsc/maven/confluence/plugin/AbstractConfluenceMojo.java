@@ -389,7 +389,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                         else {
                             getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
                                     getPrintableStringForResource(source) ));
-                            return confluence.storePage(p);
+                            return /*confluence.storePage(p)*/ completedFuture(p);
                         }}))
             .join();
 
