@@ -14,15 +14,13 @@ and open the template in the editor.
 
 
 <bsc:site
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-    xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
-    xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
-
-    <!--
-    <home  uri="template.confluence">
-    -->
-    <home  uri="home-issue158.md" name="TEST ISSUE 158">
+xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
+xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-5.0.xsd'>
+     
+    <home  uri="home-issue158.md" name="TEST ISSUE 158" ignore-variables="false">
         
+        <child name="Child" uri="page_with_prop.md" ignore-variables="false"/>
         
     </home>
     
