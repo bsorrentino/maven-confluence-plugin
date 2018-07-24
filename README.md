@@ -20,6 +20,18 @@ Please donate whether you wish support us to give more time to plugin's growth |
 
 ### News ###
 
+Jul 24, 2018 | **Release 6.0-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc1%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+* Refer to [Issue 158](https://github.com/bsorrentino/maven-confluence-plugin/issues/158) - When publish markdown pages with `6.0-beta2` and active deployState parameter then pages are not published correctly
+
+Jul 09, 2018 | **Release 6.0-beta2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-beta2%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+* Refer to [Issue 157](https://github.com/bsorrentino/maven-confluence-plugin/issues/157) - unclear doc about deployState parameter
+
+* Refer to [Issue 156](https://github.com/bsorrentino/maven-confluence-plugin/issues/156) - `6.0-beta1` changes naming rules for nested children pages
+
 Jul 04, 2018 | **Release 6.0-beta1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-beta1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
