@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <attachment name="" uri="" comment="" contentType="" version=""></attachment>
+        <child name="" uri="">
+        </child>
+        <child name="" uri="">
+        </child>
+
+-->
+
+
+<bsc:site
+xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
+xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-5.0.xsd'>
+     
+    <home  uri="home-issue158.md" name="TEST ISSUE 158" ignore-variables="false">
+        
+        <child name="Child" uri="page_with_prop.md" ignore-variables="false"/>
+        
+    </home>
+    
+    <label>issue158</label>
+    <label>test</label>
+    <label>markdown</label>
+        
+</bsc:site>
