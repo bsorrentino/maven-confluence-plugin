@@ -609,7 +609,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         else {
                             getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
                                     getPrintableStringForResource(site.getHome().getUri()) ));
-                            return confluence.storePage(page);
+                            return /*confluence.storePage(page)*/ completedFuture(page);
                         }})
                     )
                 .join()
