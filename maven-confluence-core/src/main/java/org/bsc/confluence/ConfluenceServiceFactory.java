@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
 import javax.json.JsonObjectBuilder;
 
 import org.bsc.confluence.ConfluenceService.Credentials;
-import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
