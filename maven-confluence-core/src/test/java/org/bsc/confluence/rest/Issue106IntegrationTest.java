@@ -48,6 +48,7 @@ public class Issue106IntegrationTest {
     OkHttpClient.Builder client;
     
     
+    @SuppressWarnings("unused")
     private int responseCount(Response response) {
         int result = 1;
         while ((response = response.priorResponse()) != null) {
