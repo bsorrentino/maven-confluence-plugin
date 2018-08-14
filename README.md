@@ -20,6 +20,11 @@ Please donate whether you wish support us to give more time to plugin's growth |
 
 ### News ###
 
+Aug 14, 2018 | **Release 6.0-rc2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc2%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+* Refer to [Issue 160](https://github.com/bsorrentino/maven-confluence-plugin/issues/160) - Error reading unique result from REST API
+
 Jul 24, 2018 | **Release 6.0-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
