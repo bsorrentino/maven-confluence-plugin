@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.0-rc1</version>
+        <version>6.0-rc2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,12 +14,12 @@
     <properties>
         <scmUrl>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</scmUrl>
         <siteUrl>https://github.com/bsorrentino/maven-confluence-plugin</siteUrl>
-        
+
         <api.rpc>rpc/xmlrpc</api.rpc>
         <api.rest>rest/api</api.rest>
         <api>${api.rest}</api>
-  
-        
+
+
     </properties>
 
     <contributors>
@@ -39,7 +39,7 @@
     </contributor>
   </contributors>
 
-    
+
     <build>
         <finalName>site-generation-test</finalName>
 
@@ -128,13 +128,13 @@
                         </goals>
                         <configuration>
 
-                            <endPoint>http://localhost:8090/${api}</endPoint>
+                            <endPoint>http://localhost:8090/${api.rest}</endPoint>
                             <!--endPoint>https://localhost:8443/rpc/xmlrpc</endPoint-->
                             <spaceKey>TEST</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
                             <!-- TEST ISSUE 147 -->
                             <skip>false</skip>
-                            <!-- TEST ISSUE 107 
+                            <!-- TEST ISSUE 107
                             <parentPageId>18677788</parentPageId>
                             -->
                             <!-- TEST ISSUE 40 -->
@@ -144,6 +144,9 @@
                             <siteDescriptor>${basedir}/src/site/confluence/site5-issue108.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
                             <serverId>confluence-local</serverId>
+
+                            <deployState/>
+
                         </configuration>
                     </execution>
                     <!--
@@ -165,16 +168,16 @@
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
                             <serverId>confluence-local</serverId>
-                            
-                            
+
+
                             <deployState>
                                 <active>true</active>
                             </deployState>
-                            
+
                             <properties>
-                              <my_prop>my_prop_value</my_prop>  
+                              <my_prop>my_prop_value</my_prop>
                             </properties>
-                            
+
                         </configuration>
                     </execution>
                     <!--
@@ -196,7 +199,7 @@
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
                             <serverId>confluence-local</serverId>
-                            
+
                             <deployState>
                                 <active>true</active>
                             </deployState>

@@ -265,6 +265,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected <T extends Node> void forEachChild( T node, FindPredicate<T> cb ) {
         final java.util.List<Node> children = node.getChildren();
 

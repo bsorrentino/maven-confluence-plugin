@@ -5,13 +5,11 @@
  */
 package org.bsc.confluence.rest;
 
-import static java.lang.String.format;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;

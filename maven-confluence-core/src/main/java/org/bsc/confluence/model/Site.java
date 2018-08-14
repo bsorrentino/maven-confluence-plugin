@@ -448,7 +448,11 @@ public class Site {
         public final void setParent(Page p) {
             parent = p;
         }
-
+        
+        public final Page getParent() {
+            return parent;
+        }
+        
         @XmlTransient
         public final java.util.List<String> getComputedLabels() {
 

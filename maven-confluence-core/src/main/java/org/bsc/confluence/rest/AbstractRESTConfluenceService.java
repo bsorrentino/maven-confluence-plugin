@@ -39,13 +39,13 @@ import okhttp3.ResponseBody;
  * @author softphone
  */
 public abstract class AbstractRESTConfluenceService {
-    
+
     private static final String EXPAND = "space,version,container";
-     
+
     final OkHttpClient.Builder client = new OkHttpClient.Builder();
-    
+
     public abstract ConfluenceService.Credentials getCredentials();
-    
+
     protected abstract HttpUrl.Builder urlBuilder();
 
     @SuppressWarnings("serial")
@@ -56,11 +56,11 @@ public abstract class AbstractRESTConfluenceService {
             super(message);
             this.res = res;
         }
-        
+
     }
-    
+
     protected Response fromRequest( final Request req, final String description ) {
-              
+
         try {
             final Response res = client.build().newCall(req).execute();
 
@@ -69,112 +69,114 @@ public abstract class AbstractRESTConfluenceService {
             }
 
             return res;
-                                
+
         } catch (IOException ex) {
-            
+
             throw new Error(ex);
-        }                
-       
+        }
+
     }
-    
+
     protected Stream<Response> fromUrlGET( final HttpUrl url, final String description ) {
-        final String credential = 
+        final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
         final Request req = new Request.Builder()
                 .header("Authorization", credential)
-                .url( url )  
+                .url( url )
                 .get()
                 .build();
-        
+
         return Stream.of(fromRequest(req, description));
     }
-    
+
     protected Stream<Response> fromUrlDELETE( final HttpUrl url, final String description ) {
-        final String credential = 
+        final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
         final Request req = new Request.Builder()
                 .header("Authorization", credential)
-                .url( url )  
+                .url( url )
                 .delete()
                 .build();
-        
+
         return Stream.of(fromRequest(req, description));
     }
-    
+
     protected Stream<Response> fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description ) {
-        final String credential = 
+        final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
         final Request req = new Request.Builder()
                 .header("Authorization", credential)
                 .header("X-Atlassian-Token","nocheck")
-                .url( url )  
+                .url( url )
                 .post( inputBody)
                 .build();
-        
+
         return Stream.of(fromRequest(req, description));
     }
-    
+
     protected Stream<Response> fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description ) {
-        final String credential = 
+        final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
         final Request req = new Request.Builder()
                 .header("Authorization", credential)
                 .header("X-Atlassian-Token","nocheck")
-                .url( url )  
+                .url( url )
                 .put( inputBody)
                 .build();
-        
+
         return Stream.of(fromRequest(req, description));
     }
-    
+
     protected void debugBody( Response res ) {
 
     		final ResponseBody body = res.body();
-      
+
         try {
 			System.out.printf( "BODY\n%s\n", new String(body.bytes()) );
 		} catch (IOException e) {
-			System.out.printf( "READ BODY EXCEPTION\n%s\n", e.getMessage() );		
+			System.out.printf( "READ BODY EXCEPTION\n%s\n", e.getMessage() );
 		}
-        
+
     }
-    protected Stream<JsonObject> mapToArray( Response res)  {
+    
+    protected Stream<JsonObject> mapToStream( Response res)  {
 
         final ResponseBody body = res.body();
-        
+
         try (Reader r = body.charStream()) {
 
             final JsonReader rdr = Json.createReader(r);
-            
+
             final JsonObject root = rdr.readObject();
 
-            if( !root.containsKey("results") ) {
-            		throw new Error(root.toString());
-            }
-            
-            // {"statusCode":404,"data":{"authorized":false,"valid":true,"errors":[],"successful":false,"notSuccessful":true},"message":"No space with key : TEST"}
-            final JsonArray results = root.getJsonArray("results");
-
             final Stream.Builder<JsonObject> stream = Stream.builder();
-
-            if (results != null ) {
-
-                for( int ii = 0 ; ii < results.size() ; ++ii )
-                    stream.add(results.getJsonObject(ii));
+            
+            // Check for Array
+            if( root.containsKey("results") ) {
+                final JsonArray results = root.getJsonArray("results");
+                
+                if (results != null ) {
+                    for( int ii = 0 ; ii < results.size() ; ++ii )
+                        stream.add(results.getJsonObject(ii));
+                }
             }
+            else {
+                stream.add( root );
+            }
+
 
             return stream.build();
-            
+
         } catch (IOException | JsonParsingException e ) {
             throw new Error(e);
-        } 
-        
+        }
+
     }
-   
+
     protected JsonObject mapToObject(Response res ) {
         final ResponseBody body = res.body();
 
@@ -191,114 +193,114 @@ public abstract class AbstractRESTConfluenceService {
             throw new Error(ex);
         }
     };
- 
+
 
     protected Optional<JsonObject> findPageById( final String id ) {
 
         final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addPathSegment(id)
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        
-        return fromUrlGET( url, "find page" ).flatMap(this::mapToArray).findFirst();
+
+        return fromUrlGET( url, "find page" ).flatMap(this::mapToStream).findFirst();
     }
 
     protected List<JsonObject> rxfindPages( final String spaceKey, final String title ) {
 
         final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addQueryParameter("spaceKey", spaceKey)
                                     .addQueryParameter("title", title)
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "find pages" ).flatMap(this::mapToArray).collect( Collectors.toList() );
-        
+        return fromUrlGET( url, "find pages" ).flatMap(this::mapToStream).collect( Collectors.toList() );
+
     }
-    
+
     protected List<JsonObject> rxDescendantPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addPathSegment(id)
                                     //.addPathSegments("descendant/page")
                                     .addPathSegments("child/page")
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        
+
         return  fromUrlGET( url, "get descendant pages" )
-                .flatMap(this::mapToArray)
+                .flatMap(this::mapToStream)
                 .flatMap( (JsonObject o) -> {
                     final String childId = o.getString("id");
-                    return Stream.concat(Stream.of(o), rxDescendantPages(childId).stream()) ; 
+                    return Stream.concat(Stream.of(o), rxDescendantPages(childId).stream()) ;
                 })
-                .collect( Collectors.toList() )                
+                .collect( Collectors.toList() )
                 ;
-        
+
     }
-    
+
 
     protected List<JsonObject> childrenPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addPathSegment(id)
-                                    .addPathSegments("child/page")                
+                                    .addPathSegments("child/page")
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "get children pages" ).flatMap(this::mapToArray).collect( Collectors.toList() );
-        
+        return fromUrlGET( url, "get children pages" ).flatMap(this::mapToStream).collect( Collectors.toList() );
+
     }
 
     /**
-     * 
+     *
      * @param spaceKey
      * @param title
-     * @return 
+     * @return
      */
     public Optional<JsonObject> findPage( final String spaceKey, final String title ) {
-        
+
         return rxfindPages(spaceKey, title).stream().findFirst();
     }
-    
+
     protected boolean rxDeletePageById( final String id ) {
-        
+
         final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addPathSegment(id)
                                     //.addQueryParameter("status", "")
                                     .build();
-        
+
         fromUrlDELETE( url, "delete page" );
-        
+
         return true;
     }
-    
+
     /**
-     * 
+     *
      * @param inputData
-     * @return 
+     * @return
      */
     public final Optional<JsonObject> createPage( final JsonObject inputData ) {
         final MediaType storageFormat = MediaType.parse("application/json");
-        
-        final RequestBody inputBody = RequestBody.create(storageFormat, 
+
+        final RequestBody inputBody = RequestBody.create(storageFormat,
                 inputData.toString());
-        
+
         final HttpUrl url =  urlBuilder()
                                 .addPathSegment("content")
                                 .build();
- 
+
         return fromUrlPOST(url, inputBody, "create page").map(this::mapToObject).findFirst();
     }
-    
+
     protected Optional<JsonObject> updatePage( final String pageId, final JsonObject inputData ) {
 
         final MediaType storageFormat = MediaType.parse("application/json");
-        
-        final RequestBody inputBody = RequestBody.create(storageFormat, 
+
+        final RequestBody inputBody = RequestBody.create(storageFormat,
                 inputData.toString());
-        
+
         final HttpUrl url =  urlBuilder()
                                 .addPathSegment("content")
                                 .addPathSegment(pageId)
@@ -308,101 +310,101 @@ public abstract class AbstractRESTConfluenceService {
     }
 
     /**
-     * 
+     *
      * @param inputData
-     * @return 
+     * @return
      */
     protected final void rxAddLabels( String id,  String ...labels ) {
-        
-        
+
+
         final JsonArrayBuilder inputBuilder = Json.createArrayBuilder();
-        
+
         for( String name : labels ) {
-            
-            inputBuilder.add( 
+
+            inputBuilder.add(
                     Json.createObjectBuilder()
                         .add("prefix", "global")
                         .add("name", name)
             );
-            
+
         }
 
         final JsonArray inputData = inputBuilder.build();
-        
+
         final MediaType storageFormat = MediaType.parse("application/json");
-        
-        final RequestBody inputBody = 
+
+        final RequestBody inputBody =
                 RequestBody.create(storageFormat, inputData.toString());
-        
+
         final HttpUrl url =  urlBuilder()
                                 .addPathSegment("content")
                                 .addPathSegment(id)
                                 .addPathSegment("label")
                                 .build();
- 
+
         fromUrlPOST(url, inputBody, "add label");
     }
 
     protected List<JsonObject> getAttachments( final String id ) {
 
         final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addPathSegment(id)
                                     .addPathSegments("child/attachment")
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        
-        return fromUrlGET( url, "get attachments" ).flatMap(this::mapToArray).collect(Collectors.toList());
-        
+
+        return fromUrlGET( url, "get attachments" ).flatMap(this::mapToStream).collect(Collectors.toList());
+
     }
-    
+
     protected List<JsonObject> getAttachment( final String id, final String fileName ) {
 
         final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addPathSegment(id)
                                     .addPathSegments("child/attachment")
                                     .addQueryParameter("filename", fileName)
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        
-        return fromUrlGET( url, "get attachment" ).flatMap(this::mapToArray).collect(Collectors.toList());
-        
+
+        return fromUrlGET( url, "get attachment" ).flatMap(this::mapToStream).collect(Collectors.toList());
+
     }
-    
+
     protected List<JsonObject> addAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
 
         final RequestBody fileBody;
-        
+
         try {
             fileBody = RequestBody.create( MediaType.parse(att.getContentType()), IOUtils.toByteArray(data));
         } catch (IOException ex) {
             throw new Error( ex );
         }
-        
+
         final RequestBody inputBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("comment", att.getComment())
                 .addFormDataPart("minorEdit", "true")
                 .addFormDataPart("file", att.getFileName(), fileBody)
                 .build();
-        
+
         final HttpUrl.Builder builder = urlBuilder()
-                                    .addPathSegment("content")                
+                                    .addPathSegment("content")
                                     .addPathSegment(id)
                                     .addPathSegments("child/attachment");
         if( att.getId() != null ) {
             builder.addPathSegment( att.getId() )
                     .addPathSegment("data");
-                    
+
         }
- 
+
         return fromUrlPOST(builder.build(), inputBody, "create attachment")
                 .flatMap( post ->
-                    (att.getId() != null) ? 
-                            Stream.of(mapToObject(post)) : 
-                            mapToArray(post) )
+                    (att.getId() != null) ?
+                            Stream.of(mapToObject(post)) :
+                            mapToStream(post) )
                 .collect( Collectors.toList() );
-                      
+
     }
 }

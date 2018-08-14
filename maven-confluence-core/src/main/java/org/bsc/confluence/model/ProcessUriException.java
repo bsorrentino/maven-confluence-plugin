@@ -8,6 +8,7 @@ package org.bsc.confluence.model;
  *
  * @author bsorrentino
  */
+@SuppressWarnings("serial")
 public class ProcessUriException extends Exception {
 
     public ProcessUriException(String string, Throwable thrwbl) {
