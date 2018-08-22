@@ -156,8 +156,8 @@ function usage() {
             " confluence-site " +
             usageCommand("init", "\t// create/update configuration", "--serverid <serverid>") +
             usageCommand("deploy", "\t\t// deploy site to confluence", "[--config]") +
-            usageCommand("download", "\t\t\t\t// download page by id", "--pageid <pageid>", "[--file]", "[--wiki]") +
             usageCommand("delete", "\t\t\t\t// delete site") +
+            usageCommand("download", " // download page content", "--pageid <pageid>", "[--file]", "[--wiki]") +
             usageCommand("info", "\t\t\t\t// show configuration") +
             "\n\n" +
             chalk.cyan("Options:") +
