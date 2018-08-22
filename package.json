@@ -10,6 +10,7 @@
     "email": "bartolomeo.sorrentino@gmail.com"
   },
   "scripts": {
+    "start": "node main.js",
     "test": "node dist/tests.js"
   },
   "author": "bsorrentino <bartolomeo.sorrentino@gmail.com> (http://soulsoftware-bsc.blogspot.it/)",

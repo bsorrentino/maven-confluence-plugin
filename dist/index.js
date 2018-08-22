@@ -27,6 +27,8 @@ var commands;
         //console.dir( args );
         rxFiglet(LOGO, undefined)
             .doOnNext((logo) => console.log(chalk.magenta(logo)))
+            //.map( (logo) => args['config'] || false )
+            //.doOnNext( (v) => console.log( "force config", v, args))
             .flatMap((logo) => config_1.rxConfig(args['config'] || false))
             .flatMap(([config, credentials]) => rxConfluenceConnection(config, credentials))
             .flatMap(([confluence, config]) => rxGenerateSite(config, confluence))
@@ -58,20 +60,23 @@ var commands;
             .subscribe((value) => { console.log("# page(s) removed ", value); }, (err) => console.error(chalk.red(err)));
     }
     commands.remove = remove;
-    function download(pageId, fileName, isStorageFormat = false) {
+    function download(pageId, fileName, isStorageFormat = true) {
         function rxRequest(config, credentials) {
             return Rx.Observable.create((observer) => {
+                let pathname = isStorageFormat ?
+                    "/plugins/viewstorage/viewpagestorage.action" :
+                    "pages/viewpagesrc.action";
                 let input = URL.format({
                     protocol: config.protocol,
                     host: config.host,
                     port: String(config.port),
                     auth: credentials.username + ":" + credentials.password,
-                    pathname: config.path + "pages/viewpagesrc.action",
+                    pathname: config.path + pathname,
                     query: { pageId: pageId }
                 });
                 console.log(input);
                 request({
-                    url: input,
+                    url: input
                 })
                     .pipe(fs.createWriteStream(fileName))
                     .on("end", () => observer.onCompleted())
@@ -81,11 +86,20 @@ var commands;
         rxFiglet(LOGO, undefined)
             .doOnNext((logo) => console.log(chalk.magenta(logo)))
             .flatMap(() => config_1.rxConfig(false))
-            .flatMap(([config, credentials]) => rxConfluenceConnection(config, credentials))
-            .flatMap(([confluence, config]) => Rx.Observable.fromPromise(confluence.getPageById(pageId)))
+            .flatMap(([config, credentials]) => rxRequest(config, credentials))
             .subscribe((res) => {
-            console.log(res.title);
+            console.log(res);
         }, err => console.error(chalk.red(err)));
+        /*
+          .flatMap( ([config,credentials]) => rxConfluenceConnection( config, credentials ) )
+          .flatMap( ([confluence,config]) => Rx.Observable.fromPromise( confluence.getPageById( pageId )) )
+            .subscribe(
+              (res) => {
+                console.log(res.title)
+               } ,
+              err => console.error( chalk.red(err) )
+            );
+         */
     }
     commands.download = download;
 })(commands || (commands = {})); // end namespace command
@@ -106,7 +120,10 @@ switch (command) {
         commands.info();
         break;
     case "download":
-        commands.download("37324124", "download.txt");
+        {
+            let pageid = args['pageid'];
+            commands.download(pageid, args["file"] || pageid, args["wiki"] || true);
+        }
         break;
     default:
         usage();
@@ -139,6 +156,7 @@ function usage() {
             " confluence-site " +
             usageCommand("init", "\t// create/update configuration", "--serverid <serverid>") +
             usageCommand("deploy", "\t\t// deploy site to confluence", "[--config]") +
+            usageCommand("download", "\t\t\t\t// download page by id", "--pageid <pageid>", "[--file]", "[--wiki]") +
             usageCommand("delete", "\t\t\t\t// delete site") +
             usageCommand("info", "\t\t\t\t// show configuration") +
             "\n\n" +
@@ -146,7 +164,13 @@ function usage() {
             "\n\n" +
             " --serverid \t" + chalk.italic.gray("// it is the credentials' profile.") +
             "\n" +
-            " --config\t" + chalk.italic.gray("// force reconfiguration") +
+            " --config\t" + chalk.italic.gray("// force reconfiguration.") +
+            "\n" +
+            " --pageid \t" + chalk.italic.gray("// the page identifier.") +
+            "\n" +
+            " --file \t" + chalk.italic.gray("// the output file name.") +
+            "\n" +
+            " --wiki \t" + chalk.italic.gray("// indicate deprecated wiki content format ") +
             "\n");
     });
 }
@@ -179,6 +203,7 @@ function rxDelete(confluence, config) {
     let rxParentPage = Rx.Observable.fromPromise(confluence.getPage(config.spaceId, config.parentPageTitle));
     let rxParseSite = site.rxParse(siteFile);
     return Rx.Observable.combineLatest(rxParentPage, rxParseSite, (parent, home) => [parent, home])
+        //.doOnNext( (result) => console.dir( result ) )
         .flatMap((result) => {
         let [parent, pages] = result;
         let first = pages[0];

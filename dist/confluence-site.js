@@ -24,6 +24,7 @@ class SiteProcessor {
     rxParse(fileName) {
         return exports.rxReadFile(path.join(this.sitePath, fileName))
             .flatMap((value) => rxParseString(value.toString()))
+            //.doOnNext( (value) => console.dir( value, { depth:4 }) )
             .map((value) => {
             for (let first in value)
                 return value[first]['home'];
