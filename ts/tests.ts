@@ -36,7 +36,7 @@ function xmlParse() {
     console.log( "start test ", file );
     fs.readFile( file, (err, buff)=> {
 
-        parser.parseString(buff.toString(), (err, result) => {
+        parser.parseString(buff.toString(), (err:any, result:any) => {
             console.dir( result, { depth: 4 } );
         } );
 

@@ -1,7 +1,14 @@
 
 import Rx = require("rx");
 
-const figlet = require('figlet');
+interface Figlet {
+    ( input:string, font:string, callback:(err:any, res:string) => void  ):void;
+
+    fonts( callback:(err:any, res:Array<string>) => void ):void;
+    metadata( type:string, callback:(err:any, options:any, headerComment:string) =>void ):void
+}
+
+const figlet:Figlet = require('figlet');
 
 interface FigletMetadata {
     font:string
@@ -9,7 +16,8 @@ interface FigletMetadata {
     headerComment:string;
 }
 
-let rxFonts = Rx.Observable.fromNodeCallback<Array<string>>( figlet.fonts );
+let rxFonts = Rx.Observable.fromNodeCallback( figlet.fonts );
+
 let rxFiglet =  Rx.Observable.fromNodeCallback( figlet );
 
 function rxMetadata( font:string ):Rx.Observable<FigletMetadata> {
@@ -28,9 +36,9 @@ function rxMetadata( font:string ):Rx.Observable<FigletMetadata> {
 
 const VALUE = 'Confluence\n     CLI';
 
-function rxShowFont(font:string ):Rx.Observable<Object> {
+function rxShowFont(font:string ):Rx.Observable<any> {
 
-        return rxMetadata( font )
+    return rxMetadata( font )
         .flatMap( (metadata) => Rx.Observable.combineLatest( 
                                     Rx.Observable.just(metadata), 
                                     rxFiglet( VALUE, metadata.font ), 
@@ -40,10 +48,10 @@ function rxShowFont(font:string ):Rx.Observable<Object> {
         ;       
 }
 
-function rxShowAllFonts():Rx.Observable<Object> {
+function rxShowAllFonts():Rx.Observable<any> {
     return rxFonts()
-    .flatMap( Rx.Observable.fromArray )
-    .flatMap( rxShowFont );
+    .flatMap( values => Rx.Observable.fromArray(values) )
+    .flatMap( value => rxShowFont(value) );
 }
 
 

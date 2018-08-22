@@ -35,18 +35,23 @@ npm install confluence-site -g
 ```
 Usage: confluence-site 
 
-init --serverid <serverid>	// create/update configuration
+init --serverid <serverid>      // create/update configuration
 
-deploy [--config]		// deploy site to confluence
+deploy [--config]               // deploy site to confluence
 
-delete				// delete site
+delete                          // delete site
 
-info				// show configuration
+download --pageid <pageid> [--file] [--wiki] // download page content
+
+info                            // show configuration
 
 Options:
 
- --serverid 	// it is the credentials' profile.
- --config	// force reconfiguration
+ --serverid     // it is the credentials' profile.
+ --config       // force reconfiguration.
+ --pageid       // the page identifier.
+ --file         // the output file name.
+ --wiki         // indicate deprecated wiki content format
 ```
 
 ## Commands
@@ -75,6 +80,16 @@ Deploy pages defined into **site descriptor** directly in confluence
 ### delete
 
 Delete pages tree startig from *home* defined into **site descriptor**
+
+### download
+
+download page content 
+
+ param | description | mandatory
+---- | ---- | ---- |
+pageid | page identifier | yes
+file | output file name (default `pageid`) | no
+wiki | require the content in old wiki format. Default is **storage format** | no
 
 ### info
 

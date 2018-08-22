@@ -103,7 +103,7 @@ function printConfig( value:ConfigAndCredentials) {
 
     ].reduce( (prev, curr, index, array ) => {
         let [label,value] = curr;
-        return util.format("%s%s\t%s\n", prev, chalk.cyan(label), chalk.yellow(value) );
+        return util.format("%s%s\t%s\n", prev, chalk.cyan(label as string), chalk.yellow(value as string) );
     }, "\n\n")
 
     console.log( out );
@@ -122,7 +122,7 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
     let defaultConfig:Config = {
         host:"",
         path:"",
-        port:null,
+        port:-1,
         protocol:"http",
         spaceId:"",
         parentPageTitle:"Home",
@@ -142,7 +142,7 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
         defaultConfig = require( path.join( process.cwd(), CONFIG_FILE) );
 
         if( util.isNullOrUndefined(defaultConfig.serverId) ) {
-            return Rx.Observable.throw<ConfigAndCredentials>( "'serverId' is not defined!");
+            return Rx.Observable.throw<ConfigAndCredentials>( new Error("'serverId' is not defined!"));
         }
 
         defaultCredentials = new Preferences( defaultConfig.serverId, defaultCredentials) ;
@@ -158,7 +158,7 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
     else {
 
         if( util.isNullOrUndefined(defaultConfig.serverId)  ) {
-            return Rx.Observable.throw<ConfigAndCredentials>( "'serverId' is not defined!");
+            return Rx.Observable.throw<ConfigAndCredentials>( new Error("'serverId' is not defined!"));
         }
         
     }
@@ -174,7 +174,7 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
                 validate: ( value ) => {
                         let p = url.parse(value);
                         //console.log( "parsed url", p );
-                        let valid = (p.protocol && p.host  && ConfigUtils.Port.isValid(p.port) );
+                        let valid = (p.protocol && p.host  && ConfigUtils.Port.isValid(p.port as string) );
                         return (valid) ? true : "url is not valid!";
                     }
             },
@@ -210,19 +210,27 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
 
         ] );
 
-    let rxCreateConfigFile =
-        Rx.Observable.fromNodeCallback( fs.writeFile )
-        ;
-
+    function  rxCreateConfigFile<T>( path:string, data:any, onSuccessReturn:T):Rx.Observable<T> {
+        return Rx.Observable.create( (observer) => 
+            fs.writeFile( path, data, (err) => {
+                if( err ) {
+                    observer.onError(err);
+                    return;
+                }
+                observer.onNext( onSuccessReturn );
+                observer.onCompleted();
+            })
+        );
+    } 
     return Rx.Observable.fromPromise( answers )
-                    .map( (answers) => {
+                    .map( (answers:any) => {
                         let p = url.parse(answers['url']);
                         //console.log( p );
                         let config:Config = {
                             path:p.path || "",
-                            protocol:p.protocol,
-                            host:p.hostname,
-                            port:ConfigUtils.Port.value(p.port),
+                            protocol:p.protocol as string,
+                            host:p.hostname as string,
+                            port:ConfigUtils.Port.value(p.port as string),
                             spaceId:answers['spaceId'],
                             parentPageTitle:answers['parentPageTitle'],
                             sitePath:SITE_PATH,
@@ -234,16 +242,15 @@ export function rxConfig( force:boolean, serverId?:string ):Rx.Observable<Config
                             password:answers['password']
                         };
                         */
-                        let c = new Preferences(config.serverId, defaultCredentials );
+                        let c = new Preferences(config.serverId as string, defaultCredentials );
                         c.username = answers['username']
                         c.password = answers['password'];
 
                         return [ config, c ] as ConfigAndCredentials;
                     })
-                    .flatMap( ( result ) =>
-                        rxCreateConfigFile( configPath, JSON.stringify(result[0]) )
-                            .map( (res) => result ) )
-                    ;
+                    .flatMap( result =>
+                        rxCreateConfigFile( configPath, JSON.stringify(result[0]), result )
+                    );
 
 }
 

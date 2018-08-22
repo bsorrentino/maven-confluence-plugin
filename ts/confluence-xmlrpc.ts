@@ -37,7 +37,7 @@ interface Attachment extends Model.Attachment {
 class Confluence {
 
   client:any;
-  token:string; // auth token
+  token?:string; // auth token
 
   constructor( config:BaseConfig, public servicePrefix:string = "confluence1." ) {
     config.path += '/rpc/xmlrpc';
@@ -49,8 +49,8 @@ class Confluence {
 
   login( user:string, password:string ):Promise<string> {
     if( this.token != null ) return Promise.resolve(this.token);
-    return this.call("login", [user,password] )
-      .then( (token:string) => {
+    return this.call<string>("login", [user,password] )
+      .then( token => {
         this.token = token;
         return Promise.resolve(token);
       })
@@ -59,9 +59,9 @@ class Confluence {
 
   logout():Promise<boolean> {
     if( this.token == null ) return Promise.resolve(true);
-    return this.call("logout", [this.token] )
-      .then( (success:boolean) => {
-        this.token = null;
+    return this.call<boolean>("logout", [this.token] )
+      .then( success => {
+        this.token = undefined;
         return Promise.resolve(success);
       })
       ;
@@ -114,9 +114,9 @@ class Confluence {
   private call2<T>( servicePrefix:string, op:string, args:Array<any> ):Promise<T> {
     let operation = servicePrefix.concat( op );
 
-    return new Promise<T>( (resolve: (value?: T | Thenable<T>) => void, reject: (error?: any) => void) => {
+    return new Promise<T>( (resolve, reject) => {
 
-      this.client.methodCall(operation, args, (error, value) => {
+      this.client.methodCall(operation, args, (error:any, value:any) => {
         if (error) {
             console.log('error:', error);
             console.log('req headers:', error.req && error.req._header);
@@ -149,7 +149,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
       }
       */
 
-      return new Promise<XMLRPCConfluenceService>( (resolve: (value?: XMLRPCConfluenceService | Thenable<XMLRPCConfluenceService>) => void, reject: (error?: any) => void) => {
+      return new Promise<XMLRPCConfluenceService>( (resolve, reject) => {
 
         let confluence = new Confluence(config);
         confluence.login( credentials.username, credentials.password ).then( (token:string) => {
@@ -197,13 +197,14 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
           }
         }
 
-        return Promise.resolve(null);
+        return Promise.reject( "page not found!");
     });
   }
 
   getPageById( pageId:string ):Promise<Model.Page>
   {
-    return null;
+    if( pageId == null ) throw "pageId argument is null!";
+    return this.connection.getPageById( pageId );
   }
 
   getDescendents(pageId:string):Promise<Array<Model.PageSummary>>
@@ -213,7 +214,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   getAttachment?( pageId:string, name:string, version:string ):Promise<Model.Attachment>
   {
-    return null;
+    return Promise.reject("getAttachment not implemented yet");
   }
 
   getOrCreatePage( spaceKey:string , parentPageTitle:string , title:string  ):Promise<Model.Page>
@@ -225,10 +226,10 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   getOrCreatePage2( parentPage:Model.Page , title:string  ):Promise<Model.Page>
   {
-    return this.getPageByTitle(parentPage.id, title)
+    return this.getPageByTitle(parentPage.id as string, title)
     .then( (result:PageSummary) => {
       if( result != null )
-        return this.connection.getPageById(result.id);
+        return this.connection.getPageById(result.id as string);
 
       let p:Page = {
         space:parentPage.space,
@@ -244,7 +245,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   removePage( parentPage:Model.Page , title:string  ):Promise<boolean>
   {
-    return null;
+    return Promise.reject("removePage not implemented yet");;
   }
 
   removePageById( pageId:string  ):Promise<boolean>
@@ -259,7 +260,7 @@ export class XMLRPCConfluenceService/*Impl*/ implements ConfluenceService {
 
   addAttachment( page:Model.Page, attachment:Model.Attachment, content:Buffer ):Promise<Model.Attachment>
   {
-    return this.connection.addAttachment( page.id, attachment, content) ;
+    return this.connection.addAttachment( page.id as string, attachment, content) ;
   }
 
   storePageContent( page:Model.Page, content:ContentStorage  ):Promise<Model.Page>

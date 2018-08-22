@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Rx = require("rx");
-var figlet = require('figlet');
-var rxFonts = Rx.Observable.fromNodeCallback(figlet.fonts);
-var rxFiglet = Rx.Observable.fromNodeCallback(figlet);
+const Rx = require("rx");
+const figlet = require('figlet');
+let rxFonts = Rx.Observable.fromNodeCallback(figlet.fonts);
+let rxFiglet = Rx.Observable.fromNodeCallback(figlet);
 function rxMetadata(font) {
-    return Rx.Observable.create(function (subscriber) {
+    return Rx.Observable.create((subscriber) => {
         figlet.metadata('Standard', function (err, options, headerComment) {
             if (err) {
                 subscriber.onError(err);
@@ -16,30 +16,34 @@ function rxMetadata(font) {
         });
     });
 }
-var VALUE = 'Confluence\n     CLI';
+const VALUE = 'Confluence\n     CLI';
 function rxShowFont(font) {
     return rxMetadata(font)
-        .flatMap(function (metadata) { return Rx.Observable.combineLatest(Rx.Observable.just(metadata), rxFiglet(VALUE, metadata.font), function (m, d) {
+        .flatMap((metadata) => Rx.Observable.combineLatest(Rx.Observable.just(metadata), rxFiglet(VALUE, metadata.font), (m, d) => {
         return { meta: m, data: d };
-    }); });
+    }));
 }
 function rxShowAllFonts() {
     return rxFonts()
-        .flatMap(Rx.Observable.fromArray)
-        .flatMap(rxShowFont);
+        .flatMap(values => Rx.Observable.fromArray(values))
+        .flatMap(value => rxShowFont(value));
 }
 function showAllFont() {
     rxShowAllFonts()
-        .filter(function (data) { return data['meta']['options']['height'] < 8; })
-        .subscribe(function (data) {
+        .filter((data) => data['meta']['options']['height'] < 8)
+        .subscribe((data) => {
         console.log("\n===============================\n", "font:", data['meta']['font'], data['meta']['options'], "\n===============================\n");
         console.log(data['data']);
     });
 }
+/**
+ * CLEAR SCREEN
+ */
 function clrscr() {
+    //process.stdout.write('\033c');
     process.stdout.write('\x1Bc');
 }
 clrscr();
 Rx.Observable.of("Larry 3D 2", "Stick Letters")
     .flatMap(rxShowFont)
-    .subscribe(function (data) { return console.log(data['data']); });
+    .subscribe((data) => console.log(data['data']));

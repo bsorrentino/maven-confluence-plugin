@@ -1,6 +1,6 @@
 import markdown = require("marked");
 
-class WikiRenderer implements MarkedRenderer {
+class WikiRenderer implements markdown.Renderer {
 
     langs = {
         'actionscript3' :true,
@@ -29,34 +29,34 @@ class WikiRenderer implements MarkedRenderer {
         'xml'           :true
     };
 
-	paragraph(text) { return text + '\n\n'; }
+	paragraph(text:string) { return text + '\n\n'; }
 	
     html(html:string) { return html; }
 
-	heading(text, level, raw) { return 'h' + level + '. ' + text + '\n\n' }
+	heading(text:string, level:number, raw:string) { return 'h' + level + '. ' + text + '\n\n' }
 
-	strong(text) { return '*' + text + '*' }
+	strong(text:string) { return '*' + text + '*' }
 
-	em(text) { return '_' + text + '_' }
+	em(text:string) { return '_' + text + '_' }
 
-	del(text) { return '-' + text + '-' }
+	del(text:string) { return '-' + text + '-' }
 
-	codespan(text) { return '{{' + text + '}}' }
+	codespan(text:string) { return '{{' + text + '}}' }
 
-	blockquote(quote) { return '{quote}' + quote + '{quote}' }
+	blockquote(quote:string) { return '{quote}' + quote + '{quote}' }
 
 	br() { return '\n' }
 
 	hr() { return '----' }
 
-	link(href, title, text) {
+	link(href:string, title:string, text:string) {
 		let arr = [text,href];
 		if (title) arr.push(title);
 		
 		return '[' + arr.join('|') + ']'
 	}
 
-	list(body:string, ordered) {
+	list(body:string, ordered:boolean) {
         let arr = body.trim().split('\n').filter( (line) => line );
 
 		var type = ordered ? '#' : '*'
@@ -66,19 +66,19 @@ class WikiRenderer implements MarkedRenderer {
 
 	listitem(body:string /*, ordered*/) { return body + '\n' }
 
-	image(href, title, text) { return '!' + href + '!'}
+	image(href:string, title:string, text:string) { return '!' + href + '!'}
 
-	table(header, body) { return header + body + '\n' }
+	table(header:string, body:string) { return header + body + '\n' }
 
-	tablerow(content /*, flags*/) { return content + '\n' }
+	tablerow(content:string /*, flags*/) { return content + '\n' }
 
-	tablecell(content:string, flags) {
+	tablecell(content:string, flags:any) {
 		var type = flags.header ? '||' : '|'
 		return type + content;
 	}
 
 	code(code:string, lang:string) {
-		lang = this.langs[lang] ? lang :  "";
+		lang = (<any>this.langs)[lang] ? lang :  "";
 
 		return '{code:' + lang + '}\n' + code + '\n{code}\n\n';
 	}
