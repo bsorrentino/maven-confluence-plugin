@@ -1,75 +1,79 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("fs");
-var path = require("path");
-var url = require("url");
-var util = require("util");
-var assert = require("assert");
-var chalk = require("chalk");
-var inquirer = require("inquirer");
-var Rx = require("rx");
-var Preferences = require("preferences");
-var CONFIG_FILE = "config.json";
-var SITE_PATH = "site.xml";
+const fs = require("fs");
+const path = require("path");
+const url = require("url");
+const util = require("util");
+const assert = require("assert");
+const chalk = require("chalk");
+const inquirer = require("inquirer");
+const Rx = require("rx");
+const Preferences = require("preferences");
+const CONFIG_FILE = "config.json";
+const SITE_PATH = "site.xml";
 var ConfigUtils;
 (function (ConfigUtils) {
+    /**
+     * masked password
+     */
     function maskPassword(value) {
         assert.ok(!util.isNullOrUndefined(value));
         return Array(value.length + 1).join("*");
     }
     ConfigUtils.maskPassword = maskPassword;
-    var MaskedValue = (function () {
-        function MaskedValue(value) {
+    /**
+     * MaskedValue
+     */
+    class MaskedValue {
+        constructor(value) {
             this.value = value;
             this._value = (util.isNullOrUndefined(value)) ? "" :
                 (util.isObject(value) ? value['_value'] : value);
         }
-        MaskedValue.prototype.mask = function () {
+        mask() {
             return maskPassword(this._value);
-        };
-        MaskedValue.prototype.toString = function () {
+        }
+        toString() {
             return this.mask();
-        };
-        MaskedValue.validate = function (value) {
+        }
+        static validate(value) {
             if (util.isNullOrUndefined(value))
                 return false;
             if (util.isObject(value))
                 return MaskedValue.validate(value["_value"]);
             return true;
-        };
-        MaskedValue.getValue = function (value) {
+        }
+        static getValue(value) {
             assert(MaskedValue.validate(value));
             return (util.isObject(value)) ? value["_value"] : value;
-        };
-        return MaskedValue;
-    }());
+        }
+    }
     ConfigUtils.MaskedValue = MaskedValue;
-    var Port;
+    let Port;
     (function (Port) {
         function isValid(port) {
             return (util.isNullOrUndefined(port) || util.isNumber(port) || Number(port) !== NaN);
         }
         Port.isValid = isValid;
-        function value(port, def) {
-            if (def === void 0) { def = 80; }
+        function value(port, def = 80) {
             assert(isValid(port));
             return (util.isNullOrUndefined(port)) ? def : Number(port);
         }
         Port.value = value;
     })(Port = ConfigUtils.Port || (ConfigUtils.Port = {}));
-    var Url;
+    let Url;
     (function (Url) {
         function format(config) {
             assert(!util.isNullOrUndefined(config));
-            var port = util.isNull(config.port) ? "" : (config.port === 80) ? "" : ":" + config.port;
+            let port = util.isNull(config.port) ? "" : (config.port === 80) ? "" : ":" + config.port;
             return util.format("%s//%s%s%s", config.protocol, config.host, port, config.path);
         }
         Url.format = format;
     })(Url = ConfigUtils.Url || (ConfigUtils.Url = {}));
 })(ConfigUtils || (ConfigUtils = {}));
 function printConfig(value) {
-    var cfg = value[0], crd = value[1];
-    var out = [
+    let [cfg, crd] = value;
+    let out = [
         ["site path:\t", cfg.sitePath],
         ["confluence url:\t", ConfigUtils.Url.format(cfg)],
         ["confluence space id:", cfg.spaceId],
@@ -77,55 +81,62 @@ function printConfig(value) {
         ["serverid:\t", cfg.serverId],
         ["confluence username:", crd.username],
         ["confluence password:", ConfigUtils.maskPassword(crd.password)]
-    ].reduce(function (prev, curr, index, array) {
-        var label = curr[0], value = curr[1];
+    ].reduce((prev, curr, index, array) => {
+        let [label, value] = curr;
         return util.format("%s%s\t%s\n", prev, chalk.cyan(label), chalk.yellow(value));
     }, "\n\n");
     console.log(out);
 }
+/**
+ *
+ */
 function rxConfig(force, serverId) {
-    var configPath = path.join(process.cwd(), CONFIG_FILE);
-    var defaultConfig = {
+    let configPath = path.join(process.cwd(), CONFIG_FILE);
+    //console.log( "configPath", configPath );
+    //console.log( "relative",  modulePath() );
+    let defaultConfig = {
         host: "",
         path: "",
-        port: null,
+        port: -1,
         protocol: "http",
         spaceId: "",
         parentPageTitle: "Home",
         sitePath: SITE_PATH,
         serverId: serverId
     };
-    var defaultCredentials = {
+    let defaultCredentials = {
         username: "",
         password: ""
     };
     if (fs.existsSync(configPath)) {
+        //console.log( configPath, "found!" );
         defaultConfig = require(path.join(process.cwd(), CONFIG_FILE));
         if (util.isNullOrUndefined(defaultConfig.serverId)) {
-            return Rx.Observable.throw("'serverId' is not defined!");
+            return Rx.Observable.throw(new Error("'serverId' is not defined!"));
         }
         defaultCredentials = new Preferences(defaultConfig.serverId, defaultCredentials);
         if (!force) {
-            var data = [defaultConfig, defaultCredentials];
+            let data = [defaultConfig, defaultCredentials];
             return Rx.Observable.just(data)
                 .do(printConfig);
         }
     }
     else {
         if (util.isNullOrUndefined(defaultConfig.serverId)) {
-            return Rx.Observable.throw("'serverId' is not defined!");
+            return Rx.Observable.throw(new Error("'serverId' is not defined!"));
         }
     }
     console.log(chalk.green(">"), chalk.bold("serverId:"), chalk.cyan(defaultConfig.serverId));
-    var answers = inquirer.prompt([
+    let answers = inquirer.prompt([
         {
             type: "input",
             name: "url",
             message: "confluence url:",
             default: ConfigUtils.Url.format(defaultConfig),
-            validate: function (value) {
-                var p = url.parse(value);
-                var valid = (p.protocol && p.host && ConfigUtils.Port.isValid(p.port));
+            validate: (value) => {
+                let p = url.parse(value);
+                //console.log( "parsed url", p );
+                let valid = (p.protocol && p.host && ConfigUtils.Port.isValid(p.port));
                 return (valid) ? true : "url is not valid!";
             }
         },
@@ -146,7 +157,7 @@ function rxConfig(force, serverId) {
             name: "username",
             message: "confluence username:",
             default: defaultCredentials.username,
-            validate: function (value) {
+            validate: (value) => {
                 return value.length == 0 ? "username must be specified!" : true;
             }
         },
@@ -155,15 +166,25 @@ function rxConfig(force, serverId) {
             name: "password",
             message: "confluence password:",
             default: new ConfigUtils.MaskedValue(defaultCredentials.password),
-            validate: function (value) { return ConfigUtils.MaskedValue.validate(value); },
-            filter: function (value) { return ConfigUtils.MaskedValue.getValue(value); }
+            validate: (value) => { return ConfigUtils.MaskedValue.validate(value); },
+            filter: (value) => { return ConfigUtils.MaskedValue.getValue(value); }
         }
     ]);
-    var rxCreateConfigFile = Rx.Observable.fromNodeCallback(fs.writeFile);
+    function rxCreateConfigFile(path, data, onSuccessReturn) {
+        return Rx.Observable.create((observer) => fs.writeFile(path, data, (err) => {
+            if (err) {
+                observer.onError(err);
+                return;
+            }
+            observer.onNext(onSuccessReturn);
+            observer.onCompleted();
+        }));
+    }
     return Rx.Observable.fromPromise(answers)
-        .map(function (answers) {
-        var p = url.parse(answers['url']);
-        var config = {
+        .map((answers) => {
+        let p = url.parse(answers['url']);
+        //console.log( p );
+        let config = {
             path: p.path || "",
             protocol: p.protocol,
             host: p.hostname,
@@ -173,20 +194,23 @@ function rxConfig(force, serverId) {
             sitePath: SITE_PATH,
             serverId: defaultConfig.serverId
         };
-        var c = new Preferences(config.serverId, defaultCredentials);
+        /*
+        let credentials:Credentials = {
+            username:answers['username'],
+            password:answers['password']
+        };
+        */
+        let c = new Preferences(config.serverId, defaultCredentials);
         c.username = answers['username'];
         c.password = answers['password'];
         return [config, c];
     })
-        .flatMap(function (result) {
-        return rxCreateConfigFile(configPath, JSON.stringify(result[0]))
-            .map(function (res) { return result; });
-    });
+        .flatMap(result => rxCreateConfigFile(configPath, JSON.stringify(result[0]), result));
 }
 exports.rxConfig = rxConfig;
 function main() {
     rxConfig(true)
-        .subscribe(function (result) {
+        .subscribe((result) => {
         console.dir(result, { depth: 2 });
     });
 }

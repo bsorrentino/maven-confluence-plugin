@@ -56,6 +56,7 @@ declare module Model {
 
   export interface Page extends PageSummary {
     version?:number;
+    content?:string;
   }
 
 }
