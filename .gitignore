@@ -4,6 +4,8 @@ target/
 .project
 .settings/
 .classpath
+.vscode/
+
 
 
 maven-confluence-parent.iml
