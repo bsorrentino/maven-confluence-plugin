@@ -514,12 +514,12 @@ public class Site {
         boolean ignoreVariables = false;
 
         @XmlAttribute(name = "ignore-variables")
-        public boolean isIgnoreVariables() {
+        public Boolean isIgnoreVariables() {
             return ignoreVariables;
         }
 
-        public void setIgnoreVariables(boolean value) {
-            this.ignoreVariables = value;
+        public void setIgnoreVariables(Boolean value) {
+            this.ignoreVariables = Optional.ofNullable(value).orElse( false );
         }
 
         @XmlElement(name = "generated")
