@@ -2,7 +2,7 @@
 <bsc:site
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
-    xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin site-schema-5.0.xsd'>
+    xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin site-schema-6.0.xsd'>
 
     <home uri="index.confluence">
         <!--child name="Usage" uri="../markdown/usage.md"-->
