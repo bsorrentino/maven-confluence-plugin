@@ -15,6 +15,7 @@ import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceServiceFactory;
+import org.bsc.confluence.model.Site;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
@@ -235,25 +236,30 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected Model.Page loadParentPage( ConfluenceService confluence ) {
+    protected Model.Page loadParentPage( ConfluenceService confluence, Optional<Site> site ) {
+        
+        
+        final String _spaceKey =  site.flatMap( s -> s.optSpaceKey() ).orElse(spaceKey);
+        final String _parentPageId = site.flatMap( s -> s.getHome().optParentPageId()).orElse(parentPageId);
+        final String _parentPageTitle = site.flatMap( s -> s.getHome().optParentPageTitle()).orElse(parentPageTitle);
         
         Optional<Model.Page> result = Optional.empty();
         
-        if( parentPageId != null ) {
+        if( _parentPageId != null ) {
             
-            result = confluence.getPage( parentPageId ).join();
+            result = confluence.getPage( _parentPageId ).join();
             
             if( !result.isPresent() ) {
                 getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]", 
-                                            parentPageId, parentPageTitle, spaceKey));
+                                            _parentPageId, _parentPageTitle, spaceKey));
             }
         }
         
         if( !result.isPresent()  ) {
-            if( spaceKey == null ) {
+            if( _spaceKey == null ) {
                 throw new IllegalStateException( "spaceKey is not set!");                
             }
-            result = confluence.getPage(spaceKey, parentPageTitle).join();
+            result = confluence.getPage(_spaceKey, _parentPageTitle).join();
             
         }
         

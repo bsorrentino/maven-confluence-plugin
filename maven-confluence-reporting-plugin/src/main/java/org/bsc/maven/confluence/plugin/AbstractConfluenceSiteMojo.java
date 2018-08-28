@@ -364,7 +364,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         result.getLabels().addAll( super.getLabels());
         
-        final Site.Page home = new Site.Page();
+        final Site.Home home = new Site.Home();
         
         home.setName(getTitle());
         

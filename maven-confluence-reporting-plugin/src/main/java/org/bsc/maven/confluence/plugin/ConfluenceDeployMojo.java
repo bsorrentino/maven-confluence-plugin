@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -259,6 +260,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         }
 
         if( site != null ) {
+            
             if( site.getHome().getName()!=null ) {
                 setTitle( site.getHome().getName() );
             }
@@ -586,21 +588,21 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             final Locale locale ) throws Exception
     {
 
-        final Model.Page parentPage = loadParentPage(confluence);
+        final Model.Page _parentPage = loadParentPage(confluence, Optional.of(site));
 
         //
         // Issue 32
         //
-        final String homePageTitle = getTitle();
+        final String _homePageTitle = getTitle();
 
         final Model.Page confluenceHomePage =
-                removeSnaphot(confluence, parentPage, homePageTitle)
-                .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), homePageTitle))
+                removeSnaphot(confluence, _parentPage, _homePageTitle)
+                .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
                 .thenCompose( page -> {
                     return ( page.isPresent() ) ?
                         completedFuture(page.get()) :
                         resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset -> confluence.createPage(parentPage, homePageTitle) );
+                        .thenCompose( reset -> confluence.createPage(_parentPage, _homePageTitle) );
                 })
                 .thenCompose( page ->
                     canProceedToUpdateResource(site.getHome().getUri())
@@ -804,7 +806,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
                 try {
 
-                    final Model.Page parentPage = loadParentPage(confluence);
+                    final Model.Page parentPage = loadParentPage(confluence, Optional.of(site));
 
                     outputDirectory.mkdirs();
 

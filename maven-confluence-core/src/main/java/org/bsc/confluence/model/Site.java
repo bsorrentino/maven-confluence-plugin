@@ -52,6 +52,28 @@ public class Site {
         _SITE.push(this);
     }
 
+    private String spaceKey;
+    
+    @XmlAttribute(name="space-key")
+    public final String getSpaceKey() {
+       return spaceKey; 
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public final Optional<String> optSpaceKey() {
+        return Optional.ofNullable(spaceKey);
+    }
+    
+    /**
+     * @param spaceKey the spaceKey to set
+     */
+    public void setSpaceKey(String spaceKey) {
+        this.spaceKey = spaceKey;
+    }
+
     /**
      * 
      * @param is
@@ -313,6 +335,10 @@ public class Site {
             return name;
         }
 
+        public final Optional<String> optName() {
+            return Optional.ofNullable(name);
+        }
+        
         public void setName(String name) {
             this.name = name;
         }
@@ -585,7 +611,62 @@ public class Site {
         }
 
     }
-    
+  
+    @XmlType(name = "home", namespace = Site.NAMESPACE)
+    public static class Home extends Page {
+        private String parentPageTitle;
+
+        /**
+         * @return the parentPageTitle
+         */
+        @XmlAttribute( name="parent-page")
+        public String getParentPageTitle() {
+            return parentPageTitle;
+        }
+
+        /**
+         * 
+         * @return
+         */
+        public final Optional<String> optParentPageTitle() {
+            return Optional.ofNullable(parentPageTitle);
+        }
+        
+        /**
+         * @param parentPageTitle the parentPageTitle to set
+         */
+        public void setParentPageTitle(String parentPageTitle) {
+            this.parentPageTitle = parentPageTitle;
+        }
+        
+        private String parentPageId;
+
+        /**
+         * @return the parentPageTitle
+         */
+        @XmlAttribute( name="parent-page-id")
+        public String getParentPageId() {
+            return parentPageId;
+        }
+
+        /**
+         * 
+         * @return
+         */
+        public final Optional<String> optParentPageId() {
+            return Optional.ofNullable(parentPageId);
+        }
+        
+        /**
+         * @param parentPageTitle the parentPageTitle to set
+         */
+        public void setParentPageId(String parentPageId) {
+            this.parentPageId = parentPageId;
+        }
+        
+        
+        
+    }
     private transient Optional<Path> _basedir;
     
     @XmlTransient
@@ -617,14 +698,14 @@ public class Site {
         this.labels = labels;
     }
 
-    Page home;
+    Home home;
 
     @XmlElement(name = "home", required = true)
-    public Page getHome() {
+    public Home getHome() {
         return home;
     }
 
-    public void setHome(Page home) {
+    public void setHome(Home home) {
         this.home = home;
     }
 
