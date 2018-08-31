@@ -35,26 +35,4 @@ public class ConfluenceUtilsTest {
 
     }
 
-
-    @Test
-    public void stateManager() throws Exception {
-        final DeployStateManager.Parameters parameters = new DeployStateManager.Parameters();
-
-        final java.io.File basedir = new java.io.File( System.getProperty("java.io.tmpdir") );
-
-        final Path file = Paths.get( basedir.toString(), DeployStateManager.STORAGE_NAME);
-        Files.deleteIfExists(file);
-
-        parameters.setOutdir( basedir );
-
-        final DeployStateManager dsm = DeployStateManager.load( "http://localhost:8090/confluence", parameters );
-
-        Assert.assertThat( file.toFile().exists(), IsEqual.equalTo(true));
-        Assert.assertThat( file.toFile().isFile(), IsEqual.equalTo(true));
-
-        Assert.assertThat( dsm.isUpdated(Paths.get("pom.xml")), IsEqual.equalTo(true));;
-
-
-    }
-
 }
