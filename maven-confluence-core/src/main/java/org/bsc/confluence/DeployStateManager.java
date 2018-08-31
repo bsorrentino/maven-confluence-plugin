@@ -72,7 +72,6 @@ public class DeployStateManager {
         }
 
     }
-    //private final SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy hhmmss");
 
     public static final String STORAGE_NAME = "confluence-reporting-maven-plugin-storage.json";
 
@@ -156,10 +155,6 @@ public class DeployStateManager {
 
     }
 
-    /**
-        *
-        * @param stateDir
-        */
     private void save() {
         if( !isValid() ) return;
 
@@ -260,7 +255,6 @@ public class DeployStateManager {
     /**
      *
      * @param uri
-     * @param value
      */
     public void resetState( java.net.URI uri ) {
         Objects.requireNonNull(uri, "uri is null!");
@@ -277,7 +271,6 @@ public class DeployStateManager {
     /**
      *
      * @param file
-     * @param value
      */
     public void resetState( Path file ) {
         Objects.requireNonNull(file, "file is null!");
