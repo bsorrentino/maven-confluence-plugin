@@ -79,4 +79,6 @@ public class SiteTest {
         assertThat(converted, containsString("a *strong* and _pure_ feeling"));
 
     }
+    
+    
 }
