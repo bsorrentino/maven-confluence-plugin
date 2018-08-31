@@ -74,7 +74,7 @@ public class DeployStateManager {
     }
     //private final SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy hhmmss");
 
-    public static final String STORAGE_NAME = "state.json";
+    public static final String STORAGE_NAME = "confluence-reporting-maven-plugin-storage.json";
 
     private Map<String, Map<String,JsonValue>> storage = new HashMap<>();
 
