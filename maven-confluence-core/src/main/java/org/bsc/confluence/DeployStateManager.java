@@ -1,5 +1,15 @@
 package org.bsc.confluence;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+import javax.json.JsonWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,14 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
-import javax.json.Json;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-import javax.json.JsonWriter;
 
 public class DeployStateManager {
 
@@ -185,8 +187,8 @@ public class DeployStateManager {
 
     }
 
-    private JsonNumber createValue( long value ) {
-        return Json.createArrayBuilder().add(value).build().getJsonNumber(0);
+    private JsonString createValue( String value ) {
+        return Json.createArrayBuilder().add(value).build().getJsonString(0);
         // From 1.1
         // return Json.createValue(0L)
     }
@@ -229,21 +231,30 @@ public class DeployStateManager {
 
         final String key = _info._outdir.get().relativize( b ).toString();
 
-        JsonNumber value = s.containsKey(key) ?
-                                (JsonNumber)s.get(key) :
-                                createValue(0L);
+        JsonString value = s.containsKey(key) ?
+                                (JsonString) s.get(key) :
+                                createValue("0");
 
-        final long lastModified = file.toFile().lastModified();
+        final String fileMd5Hash = md5Hash(file);
+        final String lastStoredFileMd5Hash = value.getString();
 
-        final long lastModifiedStored = value.longValue();
-
-        if( lastModified > lastModifiedStored ) {
-            s.put(key, createValue(lastModified));
+        if(!Objects.equals(fileMd5Hash, lastStoredFileMd5Hash)) {
+            s.put(key, createValue(fileMd5Hash));
             save();
             return true;
         }
 
         return false;
+    }
+
+    private static String md5Hash(Path file) {
+        try(FileInputStream fis = new FileInputStream(file.toFile())) {
+            return DigestUtils.md5Hex(fis);
+        } catch (IOException e) {
+            //todo
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -279,7 +290,7 @@ public class DeployStateManager {
 
         final String key = _info._outdir.get().relativize( b ).toString();
 
-        s.put(key, createValue(0L));
+        s.put(key, createValue("0"));
         save();
 
     }
