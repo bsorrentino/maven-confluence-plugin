@@ -9,6 +9,8 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.stream.JsonGenerator;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -80,6 +82,8 @@ public class DeployStateManager {
     private final Parameters _info;
     private final String _endpoint;
 
+    private final JsonWriterFactory writerFactory;
+
     private DeployStateManager( String endpoint, Parameters info) {
         Objects.requireNonNull(endpoint, "endpoint is null!");
         Objects.requireNonNull(info, "info is null!");
@@ -99,7 +103,10 @@ public class DeployStateManager {
                 throw new IllegalArgumentException( String.format("Path [%s] is not a directory", p));
         });
 
-
+        // Create JsonWriterFactory with PRETTY_PRINTING = true
+        Map<String, Boolean> config = new HashMap<>();
+        config.put(JsonGenerator.PRETTY_PRINTING, true);
+        this.writerFactory = Json.createWriterFactory(config);
     }
 
     /**
@@ -170,7 +177,7 @@ public class DeployStateManager {
 
         });
 
-        try(JsonWriter w = Json.createWriter(Files.newBufferedWriter(file)) ) {
+        try(JsonWriter w = writerFactory.createWriter(Files.newBufferedWriter(file)) ) {
 
             //storage.put("updated", Json.createValue(sdf.format(new java.util.Date())));
             w.writeObject(b.build());
