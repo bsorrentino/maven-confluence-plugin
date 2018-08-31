@@ -252,14 +252,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         loadUserInfoFromSettings();
 
-        Site site = null;
-
-        if( isSiteDescriptorValid() ) {
-            site = super.createFromModel();
-            site.setBasedir(getSiteDescriptor().toPath());
-        }
+        Site site = super.createFromModel();
 
         if( site != null ) {
+            
+            site.setBasedir(getSiteDescriptor().toPath());
             
             if( site.getHome().getName()!=null ) {
                 setTitle( site.getHome().getName() );
