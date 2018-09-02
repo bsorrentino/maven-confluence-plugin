@@ -5,6 +5,7 @@
 package org.bsc.maven.confluence.plugin;
 
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -18,18 +19,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
-
-import static java.util.concurrent.CompletableFuture.completedFuture;
 /**
  *
  * @author bsorrentino
@@ -364,7 +359,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         result.getLabels().addAll( super.getLabels());
         
-        final Site.Page home = new Site.Page();
+        final Site.Home home = new Site.Home();
         
         home.setName(getTitle());
         
@@ -430,27 +425,17 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
     @Override
     public Site createFromModel() {
         
-        Site site = null;
-        
-        if( !isSiteDescriptorValid() ) {
-        
-            getLog().warn( "siteDescriptor is not valid!" );
-            
+        if( !isSiteDescriptorValid() ) {      
+            getLog().warn( "siteDescriptor is not valid!" ); 
+            return null;
         }
-        else {
-            try {
 
-                JAXBContext jc = JAXBContext.newInstance(Site.class);
-                Unmarshaller unmarshaller = jc.createUnmarshaller();
-
-                site = (Site) unmarshaller.unmarshal( siteDescriptor );
-   
-            } catch (JAXBException ex) {
-                getLog().error("error creating site from model!", ex);
-
-            }
+        try {
+            return createFrom(siteDescriptor);
+        } catch (Exception ex) {
+            getLog().error("error creating site from model!", ex);
+            return null;
         }
-        return site;
     }
     
 }

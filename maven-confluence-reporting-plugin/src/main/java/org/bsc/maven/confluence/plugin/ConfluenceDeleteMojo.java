@@ -4,6 +4,8 @@
  */
 package org.bsc.maven.confluence.plugin;
 
+import java.util.Optional;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -40,7 +42,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
 
     
     private void deletePage(ConfluenceService confluence) throws Exception {
-        final Model.Page parentPage = loadParentPage(confluence);
+        final Model.Page parentPage = loadParentPage(confluence, Optional.empty());
 
         if( parentPage==null ) {
             getLog().warn("Parent page not found!");                    
