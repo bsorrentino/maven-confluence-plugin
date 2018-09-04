@@ -333,6 +333,7 @@ TEST
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
                         <wikiFilesExt>.confluence</wikiFilesExt>
+                        <deployState></deployState>
                         <!--
                         <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
                         -->
