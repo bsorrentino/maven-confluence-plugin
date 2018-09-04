@@ -6,6 +6,7 @@ package org.bsc.maven.confluence.plugin;
 
 import static java.lang.String.format;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SiteProcessor.processUri;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -148,7 +149,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
             final Model.Attachment attachment ) 
     {
         
-        return site.processUri(uri, ( err, is ) -> {
+        return processUri(uri, ( err, is ) -> {
             
             if( err.isPresent() ) {
                 CompletableFuture<Model.Attachment> result = new CompletableFuture<>();

@@ -1,6 +1,7 @@
 package org.bsc.maven.confluence.plugin;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SiteProcessor.processPageUri;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
+import org.bsc.confluence.model.SiteProcessor;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
@@ -301,7 +303,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             final String pageName )
     {
 
-        return site.processPageUri(source, this.getTitle(), ( err, tuple2) -> {
+        return processPageUri(source, this.getTitle(), ( err, tuple2) -> {
 
             final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
@@ -457,7 +459,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     private String processUriContent( Site site, java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            return  site.processUriContent(uri, this.getTitle(), (InputStream is, Representation r) -> {
+            return  SiteProcessor.processUriContent(uri, this.getTitle(), (InputStream is, Representation r) -> {
 
                     try {
                         return AbstractConfluenceMojo.this.toString( is, charset );

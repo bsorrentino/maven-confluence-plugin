@@ -2,6 +2,8 @@ package org.bsc.maven.confluence.plugin;
 
 import static java.lang.String.format;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SitePrinter.print;
+import static org.bsc.confluence.model.SiteProcessor.processPageUri;
 
 import java.io.StringWriter;
 import java.nio.file.Path;
@@ -282,7 +284,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
 
         }
-        site.print( System.out );
+        
+        print( site, System.out );
 
 
         super.initTemplateProperties( site );
@@ -546,7 +549,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     {
         final java.net.URI uri = site.getHome().getUri();
 
-        return site.processPageUri(  uri, homePage.getTitle(), (err, tuple2) -> {
+        return processPageUri(  uri, homePage.getTitle(), (err, tuple2) -> {
             final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
 
             try {
@@ -902,7 +905,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             final String title = getTitle();
 
-            return site.processPageUri(site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
+            return processPageUri(site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
 
                 final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
