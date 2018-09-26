@@ -1,4 +1,4 @@
-.okhttpcache
+.okhttpcache/
 .vscode/
 target/
 .DS_Store
