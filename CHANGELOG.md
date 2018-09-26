@@ -5,6 +5,11 @@
 ## Unreleased
 ### Generic changes
 
+**changelog refinements**
+
+
+[213058ebca090e2](https://github.com/bsorrentino/maven-confluence-plugin/commit/213058ebca090e2) bsorrentino *2018-09-26 15:08:22*
+
 **changelog plugin refinements**
 
 
