@@ -1,0 +1,17 @@
+# Git Changelog Maven plugin changelog
+Changelog of Git Changelog Maven plugin.
+{{#tags}}
+## {{name}}
+{{#issues}}
+{{#hasLink}}
+### {{name}} [{{issue}}]({{link}}) {{title}}
+{{/hasLink}}
+{{^hasLink}}
+### {{name}}
+{{/hasLink}}
+{{#commits}}
+[{{hash}}](https://github.com/bsorrentino/maven-confluence-plugin/commit/{{hash}}) {{authorName}} *{{commitTime}}*
+{{{message}}}
+{{/commits}}
+{{/issues}}
+{{/tags}}

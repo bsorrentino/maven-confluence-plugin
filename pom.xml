@@ -241,15 +241,20 @@
                     <version>${pluginToolsVersion}</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>se.bjurr.gitchangelog</groupId>
+                    <artifactId>git-changelog-maven-plugin</artifactId>
+                    <version>1.54</version>
+                </plugin>
+                
             </plugins>
         </pluginManagement>
         <plugins>
 
-          <plugin>
+                <plugin>
     				<groupId>se.bjurr.gitchangelog</groupId>
     				<artifactId>git-changelog-maven-plugin</artifactId>
-    				<version>1.54</version>
-            <inherited>false</inherited>
+                    <inherited>false</inherited>
     				<executions>
     					<!-- Minimal config // -->
     					<execution>
@@ -259,28 +264,8 @@
     							<goal>git-changelog</goal>
     						</goals>
     						<configuration>
-    							<file>CHANGELOG_minimal.md</file>
-                  <templateContent>
-<![CDATA[
-# Git Changelog Maven plugin changelog
-Changelog of Git Changelog Maven plugin.
-{{#tags}}
-## {{name}}
-{{#issues}}
-{{#hasLink}}
-### {{name}} [{{issue}}]({{link}}) {{title}}
-{{/hasLink}}
-{{^hasLink}}
-### {{name}}
-{{/hasLink}}
-{{#commits}}
-[{{hash}}](https://github.com/tomasbjerre/git-changelog-maven-plugin/commit/{{hash}}) {{authorName}} *{{commitTime}}*
-{{{message}}}
-{{/commits}}
-{{/issues}}
-{{/tags}}
-]]>
-</templateContent>
+    						      
+    							<file>CHANGELOG.md</file>
     						</configuration>
     					</execution>
             </executions>
