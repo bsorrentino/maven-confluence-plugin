@@ -246,7 +246,7 @@
                     <artifactId>git-changelog-maven-plugin</artifactId>
                     <version>1.54</version>
                 </plugin>
-                
+
             </plugins>
         </pluginManagement>
         <plugins>
@@ -264,7 +264,7 @@
     							<goal>git-changelog</goal>
     						</goals>
     						<configuration>
-    						      
+    						  <settingsFile>changelog.json</settingsFile>    
     							<file>CHANGELOG.md</file>
     						</configuration>
     					</execution>
