@@ -180,7 +180,7 @@
         </dependencies>
     </dependencyManagement>
     <build>
-        <!-- 
+        <!--
         <extensions>
             <extension>
                 <groupId>org.jvnet.wagon-svn</groupId>
@@ -241,9 +241,35 @@
                     <version>${pluginToolsVersion}</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>se.bjurr.gitchangelog</groupId>
+                    <artifactId>git-changelog-maven-plugin</artifactId>
+                    <version>1.54</version>
+                </plugin>
+                
             </plugins>
         </pluginManagement>
         <plugins>
+
+                <plugin>
+    				<groupId>se.bjurr.gitchangelog</groupId>
+    				<artifactId>git-changelog-maven-plugin</artifactId>
+                    <inherited>false</inherited>
+    				<executions>
+    					<!-- Minimal config // -->
+    					<execution>
+    						<id>GenerateGitChangelogMinimal</id>
+    						<phase>generate-sources</phase>
+    						<goals>
+    							<goal>git-changelog</goal>
+    						</goals>
+    						<configuration>
+    						      
+    							<file>CHANGELOG.md</file>
+    						</configuration>
+    					</execution>
+            </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
