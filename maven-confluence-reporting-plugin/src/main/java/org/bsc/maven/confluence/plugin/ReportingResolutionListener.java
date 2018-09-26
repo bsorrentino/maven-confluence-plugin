@@ -18,9 +18,9 @@ import org.apache.maven.artifact.versioning.VersionRange;
  */
 public class ReportingResolutionListener implements ResolutionListener {
 
-    private Stack parents = new Stack();
+    private Stack<Node> parents = new Stack<>();
 
-    private Map artifacts = new HashMap();
+    private Map<String,Object> artifacts = new HashMap<>();
 
     private Node rootNode;
 
@@ -141,7 +141,7 @@ public class ReportingResolutionListener implements ResolutionListener {
         // intentionally blank
     }
 
-    public Collection getArtifacts()
+    public Collection<Object> getArtifacts()
     {
         return artifacts.values();
     }
@@ -150,11 +150,11 @@ public class ReportingResolutionListener implements ResolutionListener {
     {
         private Node parent;
 
-        private List children = new ArrayList();
+        private List<Object> children = new ArrayList<>();
 
         private Artifact artifact;
 
-        public List getChildren()
+        public List<Object> getChildren()
         {
             return children;
         }

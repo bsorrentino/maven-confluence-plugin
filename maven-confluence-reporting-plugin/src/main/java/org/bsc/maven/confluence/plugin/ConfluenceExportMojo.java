@@ -6,6 +6,8 @@
 
 package org.bsc.maven.confluence.plugin;
 
+import java.util.Optional;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -59,7 +61,7 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
     private void exportPage( ConfluenceService confluence ) throws Exception  {
         final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
 
-        final Model.Page parentPage = loadParentPage(confluence);
+        final Model.Page parentPage = loadParentPage(confluence, Optional.empty());
 
         if( outputFile == null ) {
 

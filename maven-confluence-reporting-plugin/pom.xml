@@ -4,7 +4,7 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.0-rc2</version>
+      <version>6.0-rc3</version>
   </parent>
 
 
@@ -333,6 +333,7 @@ TEST
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
                         <wikiFilesExt>.confluence</wikiFilesExt>
+                        <deployState></deployState>
                         <!--
                         <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
                         -->
