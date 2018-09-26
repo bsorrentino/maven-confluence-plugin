@@ -1,7 +1,7 @@
 {
   "fromRepo": ".",
 // "fromCommit": "2e1e8554f80990f21cdc566f8a38dd7992b56049", 
-// "toRef": "refs/heads/develop"
+"toRef": "refs/heads/develop",
 // "ignoreCommitsIfMessageMatches": "^\\[maven-release-plugin\\].*|^\\[Gradle Release Plugin\\].*|^Merge.*",
 // "readableTagName": "-([^-]+?)$",
 // "dateFormat": "YYYY-MM-dd HH:mm:ss",
