@@ -5,6 +5,11 @@
 ## Unreleased
 ### Generic changes
 
+**move to release 6.0-rc3**
+
+
+[68e41ca166a945e](https://github.com/bsorrentino/maven-confluence-plugin/commit/68e41ca166a945e) bsorrentino *2018-09-26 15:16:58*
+
 **changelog refinements**
 
 
