@@ -15,13 +15,14 @@
         "noLib": false,
         "preserveConstEnums": false,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "dist"
+        "rootDir": "ts",
+        "outDir": "dist",
+        "skipLibCheck": true
     },
     "exclude": [
         "node_modules",
         "typings/browser",
         "typings/browser.d.ts"
-        
     ],
     "compileOnSave": true,
     "buildOnSave": false,

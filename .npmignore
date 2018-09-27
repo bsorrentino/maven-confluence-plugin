@@ -1,0 +1,7 @@
+typings/
+config.json
+.vscode
+ts/
+.travis.yml
+tsconfig.json
+typings.json

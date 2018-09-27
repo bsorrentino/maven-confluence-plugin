@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "8.9.4"
+before_install:
+- npm i -g makeshift && makeshift -s @bcoe -r https://registry.npmjs.org
+services:
+- docker
+deploy:
+  provider: npm
+  email: angelo.mang@libero.it
+  api_key: $NPM_TOKEN
+  on:
+    tags: true

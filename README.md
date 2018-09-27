@@ -1,4 +1,9 @@
 
+[![npm](https://img.shields.io/badge/npm-v8.9.4-green.svg)](https://www.npmjs.com/package/confluence-site)&nbsp;<img src="https://img.shields.io/github/forks/amanganiello90/maven-confluence-plugin.svg">&nbsp;
+<img src="https://img.shields.io/github/stars/amanganiello90/maven-confluence-plugin.svg">&nbsp;<a href="https://github.com/amanganiello90/maven-confluence-plugin/issues"><img src="https://img.shields.io/github/issues/amanganiello90/maven-confluence-plugin.svg">
+</a>&nbsp;[![Build Status](https://travis-ci.org/amanganiello90/maven-confluence-plugin.svg)](https://travis-ci.org/amanganiello90/maven-confluence-plugin)
+
+
 ```
  __   __        ___            ___       __   ___     __    ___  ___ 
 /  ` /  \ |\ | |__  |    |  | |__  |\ | /  ` |__     /__` |  |  |__  
@@ -90,3 +95,40 @@ Show current configuration
 > confluence username:	admin
 > confluence password:	*****
 > ```
+
+## Developer usage
+
+For any contributions, you can fork the [source cli dev branch](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli-dev) and create a Pull Request in order to include your improvements.
+After cloning in your machine, as a common npm package, you have to run:
+
+```
+npm install
+```
+
+The development is in the **ts** folder. So to transpile files in watching type:
+
+```
+npm start
+```
+
+To only build:
+
+```
+npm run build
+```
+
+The output will be in **dist** folder.
+
+to execute test:
+```
+npm test
+```
+
+
+To publish on npm registry you have to [create an npm account](https://docs.npmjs.com/getting-started/publishing-npm-packages)
+
+After this, you can execute:
+
+```
+npm publish
+```
