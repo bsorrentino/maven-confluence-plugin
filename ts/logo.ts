@@ -42,7 +42,7 @@ function rxShowFont(font:string ):Rx.Observable<Object> {
 
 function rxShowAllFonts():Rx.Observable<Object> {
     return rxFonts()
-    .flatMap( Rx.Observable.fromArray )
+    .flatMap( values => Rx.Observable.fromArray(values) )
     .flatMap( rxShowFont );
 }
 

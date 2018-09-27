@@ -1,6 +1,6 @@
 import markdown = require("marked");
 
-class WikiRenderer implements MarkedRenderer {
+class WikiRenderer implements markdown.Renderer {
 
     langs = {
         'actionscript3' :true,

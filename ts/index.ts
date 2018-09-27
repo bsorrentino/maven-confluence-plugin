@@ -75,7 +75,7 @@ export function remove() {
     rxFiglet( LOGO )
     .doOnNext( (logo) => console.log( chalk.magenta(logo as string) ) )
     .map( () => false )
-    .flatMap( rxConfig )
+    .flatMap( rxConfig(false) )
     .flatMap( (result) => rxConfluenceConnection( result[0], result[1]  ) )
     .flatMap( (result) => rxDelete( result[0], result[1] ) )
     .subscribe(
@@ -222,7 +222,7 @@ function rxDelete( confluence:XMLRPCConfluenceService, config:Config  ):Rx.Obser
                         .filter( (home) => home!=null )
                         .flatMap( (home) => {
                              return Rx.Observable.fromPromise(confluence.getDescendents( home.id ))
-                                        .flatMap( Rx.Observable.fromArray )
+                                        .flatMap( summaries => Rx.Observable.fromArray(summaries))
                                         .flatMap( (page:Model.PageSummary) => Rx.Observable.fromPromise(confluence.removePageById( page.id ))
                                                                   .doOnNext( (r) => console.log( "page:", page.title, "removed!", r )) )
                                         .reduce( ( acc, x ) => ++acc, 0 )
