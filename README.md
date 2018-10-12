@@ -10,7 +10,8 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 ## Documentation
 > The standard maven documentation is [here](http://bsorrentino.github.io/maven-confluence-plugin/)
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
-> * [Use Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html)
+> * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
+> * [Use YAML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_yaml_guide.html)
 > * [Markdown Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 > * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
 > * [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
@@ -19,6 +20,9 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
 
 ### News ###
+
+Sep 26, 2018 | [Release 6.0-rc3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc3) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc3%7Cmaven-plugin)**  |
+---- | ---- | ---- |
 
 Aug 14, 2018 | **Release 6.0-rc2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc2%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
