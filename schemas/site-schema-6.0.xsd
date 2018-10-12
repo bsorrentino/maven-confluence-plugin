@@ -8,9 +8,20 @@
       <xs:documentation><![CDATA[(author): bsorrentino]]></xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="home" type="bsc:page"/>
+      <xs:element name="home" type="bsc:home"/>
       <xs:element maxOccurs="unbounded" minOccurs="0" name="label" type="xs:string"/>
     </xs:sequence>
+    <xs:attribute name="space-key" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="home">
+    <xs:complexContent>
+      <xs:extension base="bsc:page">
+        <xs:sequence/>
+        <xs:attribute name="parent-page-id" type="xs:string"/>
+        <xs:attribute name="parent-page" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="page">

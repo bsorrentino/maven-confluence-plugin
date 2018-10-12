@@ -50,12 +50,21 @@ To simplify understanding, below there is a simple site descriptor template
 
 ## Tags description
 
+### site
+
+| Attribute| Description | mandatory |
+|-------------|----------------|--------------|
+| space-key | space key (if set overrides the equivalent pom configuration)  | no |
+
+
 ### home
 
 | Attribute| Description | mandatory |
 |-------------|----------------|--------------|
 | uri | Content's source | no |
 | name | Title of page | no (if uri is defined)|
+| parent-page-id | parent page id (if set overrides the equivalent pom configuration) | no |
+| parent-page | parent page name (if set overrides the equivalent pom configuration) | no |
 
 ### child
 
@@ -163,5 +172,5 @@ The **uri** attribute could refer to
 * **Classpath** resource
 > We can refer to resource using **classpath** schema. (e.g. ` classpath:page.confluence `)
 
-* Network resource
+* **Network** resource
 > We can refer to resource using **http** scheme. (e.g. ` http://www.thesite.com/page.confluence `)
