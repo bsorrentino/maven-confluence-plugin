@@ -10,7 +10,8 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 ## Documentation
 > The standard maven documentation is [here](http://bsorrentino.github.io/maven-confluence-plugin/)
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
-> * [Use Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_guide.html)
+> * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
+> * [Use YAML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_yaml_guide.html)
 > * [Markdown Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 > * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
 > * [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
