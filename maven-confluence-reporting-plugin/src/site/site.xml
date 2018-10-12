@@ -20,7 +20,8 @@
     	<item name="Summary" href="project-summary.html"/>
     	<item name="Goals" href="plugin-info.html"/>
       <item name="Usage" href="usage.html"/>
-      <item name="Use Site Definition" href="site_guide.html"/>
+      <item name="Use XML Site Definition" href="site_xml_guide.html"/>
+      <item name="Use YAML Site Definition" href="site_yaml_guide.html"/>
       <item name="Markdown Support" href="markdown_guide.html"/>
       <item name="Storage Format Support" href="storageformat_guide.html"/>
       <item name="Confluence - Notation Guide" href="Notation Guide - Confluence.html"/>
