@@ -28,7 +28,7 @@ public class UserInformation extends MapObject {
         super();
     }
 
-    public UserInformation(Map data) {
+    public UserInformation(Map<String,Object> data) {
         super(data);
     }
 
@@ -120,8 +120,8 @@ public class UserInformation extends MapObject {
         setDate("lastModificationDate", lastModificationDate);
     }
 
-    public Map toRawMap() {
-        Map map = super.toRawMap();
+    public Map<String,Object> toRawMap() {
+        Map<String,Object> map = super.toRawMap();
         map.put("version", new Integer(getVersion()));
         map.put("creationDate", getCreationDate());
         map.put("lastModificationDate", getLastModificationDate());

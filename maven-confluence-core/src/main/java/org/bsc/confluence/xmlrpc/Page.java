@@ -29,7 +29,7 @@ class Page extends PageSummary implements Model.Page {
         super();
     }
 
-    public Page(Map data) {
+    public Page(Map<String,Object> data) {
         super(data);
     }
 
@@ -133,8 +133,8 @@ class Page extends PageSummary implements Model.Page {
     }
 
     @Override
-    public Map toRawMap() {
-        Map map = super.toRawMap();
+    public Map<String,Object> toRawMap() {
+        Map<String,Object> map = super.toRawMap();
         map.put("created", getCreated());
         map.put("modified", getModified());
         map.put("homePage", isHomePage());

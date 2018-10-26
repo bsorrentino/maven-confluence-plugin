@@ -45,14 +45,14 @@ public class MapObject {
                 new SimpleDateFormat("yyyy-MM-dd", Locale.US), new SimpleDateFormat("yyyyMMdd", Locale.US) };
     }
 
-    protected final Map fields;
+    protected final Map<String,Object> fields;
 
     protected MapObject() {
-        this(new HashMap());
+        this(new HashMap<String,Object>());
     }
 
-    protected MapObject(Map data) {
-        fields = new HashMap(data);
+    protected MapObject(Map<String,Object> data) {
+        fields = new HashMap<String,Object>(data);
     }
 
     protected String getString(String key) {
@@ -185,15 +185,15 @@ public class MapObject {
 
             checkPassed = true;
         } else if (object instanceof List) {
-            List list = (List) object;
+            List<?> list = (List<?>) object;
             for (int i = 0; i < list.size(); i++) {
                 checkXmlRpcTypes(list.get(i));
             }
 
             checkPassed = true;
         } else if (object instanceof Map) {
-            Map map = (Map) object;
-            Iterator i = map.keySet().iterator();
+            Map<?,?> map = (Map<?,?>) object;
+            Iterator<?> i = map.keySet().iterator();
             while (i.hasNext()) {
                 Object key = i.next();
                 Object value = map.get(key);
@@ -216,20 +216,20 @@ public class MapObject {
         }
     }
 
-    protected void setList(String key, List value) {
+    protected void setList(String key, List<?> value) {
         checkXmlRpcTypes(value);
         fields.put(key, value);
     }
 
-    protected List getList(String key) {
+    protected List<?> getList(String key) {
         Object objects = fields.get(key);
 
         if (objects == null) return null;
 
-        if (objects instanceof List) return (List) objects;
+        if (objects instanceof List) return (List<?>) objects;
 
         if (objects.getClass().isArray()) {
-            ArrayList result = new ArrayList();
+            ArrayList<Object> result = new ArrayList<>();
             Object[] array = (Object[]) objects;
             for (int i = 0; i < array.length; i++) {
                 result.add(array[i]);
@@ -240,32 +240,33 @@ public class MapObject {
         throw new IllegalStateException("Field '" + key + "' is of unknown type: " + objects.getClass().getName());
     }
 
-    protected void setMap(String key, Map value) {
+    protected void setMap(String key, Map<String,Object> value) {
         checkXmlRpcTypes(value);
         fields.put(key, value);
     }
 
-    protected Map getMap(String key) {
+    @SuppressWarnings("unchecked")
+    protected Map<String,Object> getMap(String key) {
         Object object = fields.get(key);
 
         if (object == null) return null;
 
-        if (object instanceof Map) return (Map) object;
+        if (object instanceof Map) return (Map<String,Object>) object;
 
         throw new IllegalStateException("Field '" + key + "' is of unknown type: " + object.getClass().getName());
     }
 
-    public Map toMap() {
-        HashMap map = new HashMap(fields.size());
-        for (Iterator i = fields.keySet().iterator(); i.hasNext();) {
+    public Map<String,Object> toMap() {
+        HashMap<String,Object> map = new HashMap<>(fields.size());
+        for (Iterator<String> i = fields.keySet().iterator(); i.hasNext();) {
             String key = (String) i.next();
             map.put(key, getString(key));
         }
         return map;
     }
 
-    public Map toRawMap() {
-        return new HashMap(fields);
+    public Map<String,Object> toRawMap() {
+        return new HashMap<>(fields);
     }
 
     public String toString() {

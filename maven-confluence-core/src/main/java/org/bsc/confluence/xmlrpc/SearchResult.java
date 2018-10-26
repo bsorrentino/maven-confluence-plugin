@@ -27,7 +27,7 @@ public class SearchResult extends MapObject {
         super();
     }
 
-    public SearchResult(Map data) {
+    public SearchResult(Map<String,Object> data) {
         super(data);
     }
 

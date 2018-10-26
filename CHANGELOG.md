@@ -5,6 +5,40 @@
 ## Unreleased
 ### Generic changes
 
+**update submodule**
+
+
+[ff2475099b79702](https://github.com/bsorrentino/maven-confluence-plugin/commit/ff2475099b79702) bsorrentino *2018-10-23 10:46:01*
+
+**update documentation**
+
+
+[74e1eb09223c3ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/74e1eb09223c3ec) bsorrentino *2018-10-12 20:35:59*
+
+**update documentation**
+
+
+[1b211eccbd3a73a](https://github.com/bsorrentino/maven-confluence-plugin/commit/1b211eccbd3a73a) bsorrentino *2018-10-12 20:35:35*
+
+**update changelog template**
+
+
+[0eb13d12db88490](https://github.com/bsorrentino/maven-confluence-plugin/commit/0eb13d12db88490) bsorrentino *2018-09-26 15:26:31*
+
+**move to next developer version**
+
+
+[4b12184ad37a078](https://github.com/bsorrentino/maven-confluence-plugin/commit/4b12184ad37a078) bsorrentino *2018-09-26 15:20:10*
+
+**update changelog**
+
+
+[3aeb3f10496afdc](https://github.com/bsorrentino/maven-confluence-plugin/commit/3aeb3f10496afdc) bsorrentino *2018-09-26 15:19:11*
+
+
+## v6.0-rc3
+### Generic changes
+
 **move to release 6.0-rc3**
 
 
@@ -91,7 +125,7 @@
 [e07e96b28f2fca3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e07e96b28f2fca3) bsorrentino *2018-08-23 09:05:09*
 
 
-### GitHub [#162](https://github.com/bsorrentino/maven-confluence-plugin/issues/162) Make parameter &#39;ignore-variables&#39; in xsd optional    *enhancement*  
+###  [#162](https://github.com/bsorrentino/maven-confluence-plugin/issues/162) Make parameter &#39;ignore-variables&#39; in xsd optional    *enhancement*  
 
 **issue #162 - update schema to 6.0**
 
@@ -109,7 +143,7 @@
 [67a031038e44da2](https://github.com/bsorrentino/maven-confluence-plugin/commit/67a031038e44da2) bsorrentino *2018-08-25 18:08:40*
 
 
-### GitHub [#164](https://github.com/bsorrentino/maven-confluence-plugin/issues/164) Add parent-page attribute on home tag    *enhancement*  
+###  [#164](https://github.com/bsorrentino/maven-confluence-plugin/issues/164) Add parent-page attribute on home tag    *enhancement*  
 
 **issue #164**
 
@@ -120,7 +154,7 @@
 [93f8dab4fe97062](https://github.com/bsorrentino/maven-confluence-plugin/commit/93f8dab4fe97062) bsorrentino *2018-08-28 14:41:26*
 
 
-### GitHub [#169](https://github.com/bsorrentino/maven-confluence-plugin/issues/169) support YAML to define site     *enhancement*  
+###  [#169](https://github.com/bsorrentino/maven-confluence-plugin/issues/169) support YAML to define site     *enhancement*  
 
 **issue #169 - implementation using jackson**
 
@@ -133,7 +167,7 @@
 [5c1e4775bd26cb0](https://github.com/bsorrentino/maven-confluence-plugin/commit/5c1e4775bd26cb0) bsorrentino *2018-08-31 17:27:07*
 
 
-### GitHub [#170](https://github.com/bsorrentino/maven-confluence-plugin/issues/170) Separate model from operations on it    *enhancement*  
+###  [#170](https://github.com/bsorrentino/maven-confluence-plugin/issues/170) Separate model from operations on it    *enhancement*  
 
 **issue #170 -**
 
@@ -183,7 +217,7 @@
 [46e4e1c1bfd4eed](https://github.com/bsorrentino/maven-confluence-plugin/commit/46e4e1c1bfd4eed) bsorrentino *2018-08-12 17:29:35*
 
 
-### GitHub [#160](https://github.com/bsorrentino/maven-confluence-plugin/issues/160) Attachments are not updated (wrong date format)    *bug*  *under verification*  
+###  [#160](https://github.com/bsorrentino/maven-confluence-plugin/issues/160) Attachments are not updated (wrong date format)    *bug*  *under verification*  
 
 **issue #160 - mapToArray 2 mapToStream checking if it is an array o single object**
 
@@ -210,7 +244,7 @@
 [8452558cf229bbe](https://github.com/bsorrentino/maven-confluence-plugin/commit/8452558cf229bbe) bsorrentino *2018-07-16 09:08:32*
 
 
-### GitHub [#157](https://github.com/bsorrentino/maven-confluence-plugin/issues/157) unclear doc about deployState parameter  
+###  [#157](https://github.com/bsorrentino/maven-confluence-plugin/issues/157) unclear doc about deployState parameter  
 
 **issue #157 - update doc**
 
@@ -218,7 +252,7 @@
 [02e5b695b500dcf](https://github.com/bsorrentino/maven-confluence-plugin/commit/02e5b695b500dcf) bsorrentino *2018-07-10 23:32:20*
 
 
-### GitHub [#158](https://github.com/bsorrentino/maven-confluence-plugin/issues/158) When publish markdown pages with 6.0-beta2 and active deployState parameter then pages are not published correctly    *bug*  *under verification*  
+###  [#158](https://github.com/bsorrentino/maven-confluence-plugin/issues/158) When publish markdown pages with 6.0-beta2 and active deployState parameter then pages are not published correctly    *bug*  *under verification*  
 
 **issue #158 - update test**
 
@@ -245,7 +279,7 @@
 [dbed3061afa6abd](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbed3061afa6abd) bsorrentino *2018-07-04 11:04:57*
 
 
-### GitHub [#156](https://github.com/bsorrentino/maven-confluence-plugin/issues/156) 6.0-beta1 changes naming rules for nested childs pages     *bug*  
+###  [#156](https://github.com/bsorrentino/maven-confluence-plugin/issues/156) 6.0-beta1 changes naming rules for nested childs pages     *bug*  
 
 **issue #156 - use home page title as child prefix**
 
@@ -373,7 +407,7 @@
 [6cfba6f8a4bc95b](https://github.com/bsorrentino/maven-confluence-plugin/commit/6cfba6f8a4bc95b) bsorrentino *2018-01-08 14:49:46*
 
 
-### GitHub [#150](https://github.com/bsorrentino/maven-confluence-plugin/issues/150) Avoid republishing for confluence pages not changed    *enhancement*  
+###  [#150](https://github.com/bsorrentino/maven-confluence-plugin/issues/150) Avoid republishing for confluence pages not changed    *enhancement*  
 
 **- #150 print skipped file**
 
@@ -456,7 +490,7 @@
 [c6d7b8c08a35a54](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6d7b8c08a35a54) bsorrentino *2018-04-23 21:08:20*
 
 
-### GitHub [#153](https://github.com/bsorrentino/maven-confluence-plugin/issues/153) move to jdk8    *enhancement*  
+###  [#153](https://github.com/bsorrentino/maven-confluence-plugin/issues/153) move to jdk8    *enhancement*  
 
 **- #153 getPage(id) return completablefuture**
 
@@ -539,7 +573,7 @@
 [12eaa1f7f232d01](https://github.com/bsorrentino/maven-confluence-plugin/commit/12eaa1f7f232d01) bsorrentino *2017-11-30 16:41:21*
 
 
-### GitHub [#148](https://github.com/bsorrentino/maven-confluence-plugin/issues/148) Goal confluence-reporting:export leads to &#39;host parameter is null&#39; exception    *bug*  
+###  [#148](https://github.com/bsorrentino/maven-confluence-plugin/issues/148) Goal confluence-reporting:export leads to &#39;host parameter is null&#39; exception    *bug*  
 
 **fix #148**
 
@@ -596,7 +630,7 @@
 [08026d6f148c88e](https://github.com/bsorrentino/maven-confluence-plugin/commit/08026d6f148c88e) bsorrentino *2017-04-26 20:58:04*
 
 
-### GitHub [#138](https://github.com/bsorrentino/maven-confluence-plugin/issues/138) Incorrect line print in log for confluence-reporting:deploy goal     *enhancement*  
+###  [#138](https://github.com/bsorrentino/maven-confluence-plugin/issues/138) Incorrect line print in log for confluence-reporting:deploy goal     *enhancement*  
 
 **fix #138**
 
@@ -604,7 +638,7 @@
 [870d0c7cd4b1bda](https://github.com/bsorrentino/maven-confluence-plugin/commit/870d0c7cd4b1bda) bsorrentino *2017-05-01 14:04:16*
 
 
-### GitHub [#141](https://github.com/bsorrentino/maven-confluence-plugin/issues/141) No single first level heading for scm section    *bug*  *question*  
+###  [#141](https://github.com/bsorrentino/maven-confluence-plugin/issues/141) No single first level heading for scm section    *bug*  *question*  
 
 **fix #141**
 
@@ -612,7 +646,7 @@
 [17acea20ebb27bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/17acea20ebb27bb) bsorrentino *2017-08-12 21:19:39*
 
 
-### GitHub [#147](https://github.com/bsorrentino/maven-confluence-plugin/issues/147) add skip support    *enhancement*  
+###  [#147](https://github.com/bsorrentino/maven-confluence-plugin/issues/147) add skip support    *enhancement*  
 
 **add skip execution #147**
 
@@ -620,7 +654,7 @@
 [b8f39aa1bfff9bf](https://github.com/bsorrentino/maven-confluence-plugin/commit/b8f39aa1bfff9bf) bsorrentino *2017-11-28 16:28:45*
 
 
-### GitHub [#96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) Support of Confluence REST API    *enhancement*  
+###  [#96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) Support of Confluence REST API    *enhancement*  
 
 **fix #96 - complete REST API implementation**
 
@@ -697,7 +731,7 @@
 [420a65cbd761f8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/420a65cbd761f8b) bsorrentino *2017-08-18 16:53:45*
 
 
-### GitHub [#142](https://github.com/bsorrentino/maven-confluence-plugin/issues/142) Attachment creation fails if storage format is used for page definition    *under verification*  
+###  [#142](https://github.com/bsorrentino/maven-confluence-plugin/issues/142) Attachment creation fails if storage format is used for page definition    *under verification*  
 
 **verified fix #142**
 
@@ -710,7 +744,7 @@
 [d7ade3799bf2165](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7ade3799bf2165) bsorrentino *2017-08-17 23:36:20*
 
 
-### GitHub [#96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) Support of Confluence REST API    *enhancement*  
+###  [#96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) Support of Confluence REST API    *enhancement*  
 
 **#96 add full support of rest api**
 
@@ -747,7 +781,7 @@
 [5a6fd4a4eea4e65](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a6fd4a4eea4e65) bsorrentino *2017-04-20 20:39:19*
 
 
-### GitHub [#108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) StorageFormat    *enhancement*  *under verification*  
+###  [#108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) StorageFormat    *enhancement*  *under verification*  
 
 **fix issue #108**
 
@@ -794,7 +828,7 @@
 [eb44db543a06762](https://github.com/bsorrentino/maven-confluence-plugin/commit/eb44db543a06762) bsorrentino *2017-02-20 17:12:00*
 
 
-### GitHub [#137](https://github.com/bsorrentino/maven-confluence-plugin/pull/137) Allow for attachments to include all files in a directory    *enhancement*  
+###  [#137](https://github.com/bsorrentino/maven-confluence-plugin/pull/137) Allow for attachments to include all files in a directory    *enhancement*  
 
 **merge pull #137**
 
@@ -1051,7 +1085,7 @@
 [4ad228d8c0c567b](https://github.com/bsorrentino/maven-confluence-plugin/commit/4ad228d8c0c567b) bsorrentino *2016-08-11 09:20:16*
 
 
-### GitHub [#122](https://github.com/bsorrentino/maven-confluence-plugin/issues/122) Table not generated correctly    *bug*  
+###  [#122](https://github.com/bsorrentino/maven-confluence-plugin/issues/122) Table not generated correctly    *bug*  
 
 **Add some line breaks (fixes #122)**
 
@@ -1059,7 +1093,7 @@
 [371e55020e8f1c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/371e55020e8f1c5) wattazoum *2016-08-15 12:27:28*
 
 
-### GitHub [#124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) [REQUEST] Render templates variables in any page    *enhancement*  
+###  [#124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) [REQUEST] Render templates variables in any page    *enhancement*  
 
 **Add some integration testing to test #124**
 
@@ -1067,7 +1101,7 @@
 [5fb9c6e9ebdcf8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/5fb9c6e9ebdcf8b) wattazoum *2016-09-04 07:25:27*
 
 
-### GitHub [#129](https://github.com/bsorrentino/maven-confluence-plugin/issues/129) The macro &#39;plugin.dependencies&#39; is unknown    *question*  
+###  [#129](https://github.com/bsorrentino/maven-confluence-plugin/issues/129) The macro &#39;plugin.dependencies&#39; is unknown    *question*  
 
 **issue#129**
 
@@ -1075,7 +1109,7 @@
 [2b3b59bc161bfba](https://github.com/bsorrentino/maven-confluence-plugin/commit/2b3b59bc161bfba) bsorrentino *2016-09-28 10:09:35*
 
 
-### GitHub [#131](https://github.com/bsorrentino/maven-confluence-plugin/issues/131) Storage Format XHTML for home    *under verification*  
+###  [#131](https://github.com/bsorrentino/maven-confluence-plugin/issues/131) Storage Format XHTML for home    *under verification*  
 
 **test for issue #131**
 
@@ -1088,7 +1122,7 @@
 [5821d56edbf7c14](https://github.com/bsorrentino/maven-confluence-plugin/commit/5821d56edbf7c14) bsorrentino *2017-01-18 17:56:48*
 
 
-### GitHub [#133](https://github.com/bsorrentino/maven-confluence-plugin/issues/133) Storage Format -  &quot;error generating report: unexpected port: -1&quot;    *bug*  
+###  [#133](https://github.com/bsorrentino/maven-confluence-plugin/issues/133) Storage Format -  &quot;error generating report: unexpected port: -1&quot;    *bug*  
 
 **test and fix for issue #133**
 
@@ -1383,7 +1417,7 @@
 [78d7e5d5f2f297c](https://github.com/bsorrentino/maven-confluence-plugin/commit/78d7e5d5f2f297c) bsorrentino *2016-06-22 14:14:37*
 
 
-### GitHub [#111](https://github.com/bsorrentino/maven-confluence-plugin/issues/111) Confluence macro syntax is getting interpreted in MD files  
+###  [#111](https://github.com/bsorrentino/maven-confluence-plugin/issues/111) Confluence macro syntax is getting interpreted in MD files  
 
 **fix issue#111**
 
@@ -1391,7 +1425,7 @@
 [dad53978f03726f](https://github.com/bsorrentino/maven-confluence-plugin/commit/dad53978f03726f) bsorrentino *2016-08-05 12:17:46*
 
 
-### GitHub [#114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) Generation plugin doc ignores home page from site    *bug*  
+###  [#114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) Generation plugin doc ignores home page from site    *bug*  
 
 **resolve conflict after merge issue#114**
 
@@ -1399,7 +1433,7 @@
 [cd7150d5933d1e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd7150d5933d1e3) bsorrentino *2016-08-07 16:51:39*
 
 
-### GitHub [#115](https://github.com/bsorrentino/maven-confluence-plugin/pull/115) support more tags in the plugin doc generation  
+###  [#115](https://github.com/bsorrentino/maven-confluence-plugin/pull/115) support more tags in the plugin doc generation  
 
 **merge PR#115**
 
@@ -1407,7 +1441,7 @@
 [604345e6bfd9b26](https://github.com/bsorrentino/maven-confluence-plugin/commit/604345e6bfd9b26) bsorrentino *2016-08-09 09:14:31*
 
 
-### GitHub [#117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) Fix attachements on homepage  
+###  [#117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) Fix attachements on homepage  
 
 **merged PR#117**
 
@@ -1415,7 +1449,7 @@
 [e8fc0d9dfa7b606](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8fc0d9dfa7b606) bsorrentino *2016-08-07 17:56:01*
 
 
-### GitHub [#121](https://github.com/bsorrentino/maven-confluence-plugin/pull/121) Some small improvement to the plugin goal page  
+###  [#121](https://github.com/bsorrentino/maven-confluence-plugin/pull/121) Some small improvement to the plugin goal page  
 
 **merged PR#121**
 
@@ -1423,7 +1457,7 @@
 [a71f83770fbda99](https://github.com/bsorrentino/maven-confluence-plugin/commit/a71f83770fbda99) bsorrentino *2016-08-11 09:38:03*
 
 
-### GitHub [#124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) [REQUEST] Render templates variables in any page    *enhancement*  
+###  [#124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) [REQUEST] Render templates variables in any page    *enhancement*  
 
 **fix merge with issue#124**
 
@@ -1544,7 +1578,7 @@
 [034b0029a68e906](https://github.com/bsorrentino/maven-confluence-plugin/commit/034b0029a68e906) bsorrentino *2016-06-14 10:00:47*
 
 
-### GitHub [#109](https://github.com/bsorrentino/maven-confluence-plugin/issues/109) Sublist support    *enhancement*  
+###  [#109](https://github.com/bsorrentino/maven-confluence-plugin/issues/109) Sublist support    *enhancement*  
 
 **issue#109 - apply patch, test and update doc**
 
@@ -1552,7 +1586,7 @@
 [4c700b943610fe9](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c700b943610fe9) bsorrentino *2016-06-23 09:39:58*
 
 
-### GitHub [#111](https://github.com/bsorrentino/maven-confluence-plugin/issues/111) Confluence macro syntax is getting interpreted in MD files  
+###  [#111](https://github.com/bsorrentino/maven-confluence-plugin/issues/111) Confluence macro syntax is getting interpreted in MD files  
 
 **fix issue#111**
 
@@ -1593,7 +1627,7 @@
 [5ab6ec04776872f](https://github.com/bsorrentino/maven-confluence-plugin/commit/5ab6ec04776872f) bsorrentino *2016-06-15 13:17:46*
 
 
-### GitHub [#99](https://github.com/bsorrentino/maven-confluence-plugin/issues/99) Allow additional tags in comments `&lt;b&gt;&lt;p&gt;&lt;li&gt;&lt;ul&gt;`    *enhancement*  
+###  [#99](https://github.com/bsorrentino/maven-confluence-plugin/issues/99) Allow additional tags in comments `&lt;b&gt;&lt;p&gt;&lt;li&gt;&lt;ul&gt;`    *enhancement*  
 
 **hotfix issue#99**
 
@@ -1834,7 +1868,7 @@
 [18200679cd172fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/18200679cd172fd) bsorrentino *2016-12-29 13:43:33*
 
 
-### GitHub [#91](https://github.com/bsorrentino/maven-confluence-plugin/issues/91) scm web access not shown as actual link    *bug*  
+###  [#91](https://github.com/bsorrentino/maven-confluence-plugin/issues/91) scm web access not shown as actual link    *bug*  
 
 **fix issue#91**
 
@@ -2390,7 +2424,7 @@
 [2f14178ea40d508](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f14178ea40d508) bsorrentino *2014-03-07 21:16:26*
 
 
-### GitHub [#82](https://github.com/bsorrentino/maven-confluence-plugin/issues/82) Proxy Settings not respected  
+###  [#82](https://github.com/bsorrentino/maven-confluence-plugin/issues/82) Proxy Settings not respected  
 
 **issue#82**
 
@@ -2404,7 +2438,7 @@
 [14f293014e3ee3f](https://github.com/bsorrentino/maven-confluence-plugin/commit/14f293014e3ee3f) bsorrentino *2015-07-12 21:46:34*
 
 
-### GitHub [#88](https://github.com/bsorrentino/maven-confluence-plugin/issues/88) NPE in gitlog for partialy checkouted repos, that doesn&#39;t contain ref to &quot;refs/remotes/origin/master&quot;    *bug*  
+###  [#88](https://github.com/bsorrentino/maven-confluence-plugin/issues/88) NPE in gitlog for partialy checkouted repos, that doesn&#39;t contain ref to &quot;refs/remotes/origin/master&quot;    *bug*  
 
 **issue#88**
 
@@ -2945,7 +2979,7 @@
 [5110ec41ad7bb1e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5110ec41ad7bb1e) bsorrentino *2014-01-26 18:46:10*
 
 
-### GitHub [#76](https://github.com/bsorrentino/maven-confluence-plugin/pull/76) gitlog.jiraIssues &amp; gitlog.sinceTagName  
+###  [#76](https://github.com/bsorrentino/maven-confluence-plugin/pull/76) gitlog.jiraIssues &amp; gitlog.sinceTagName  
 
 **merge pull request #76**
 

@@ -27,7 +27,7 @@ public class Permission extends MapObject {
         super();
     }
 
-    public Permission(Map data) {
+    public Permission(Map<String,Object> data) {
         super(data);
     }
 

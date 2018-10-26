@@ -20,6 +20,7 @@ public class DeployStateManagerTest {
 
     @Test(expected = NullPointerException.class)
     public void testLoadNullParams() {
+        @SuppressWarnings("unused")
         DeployStateManager manager = DeployStateManager.load("endpoint", null);
     }
 

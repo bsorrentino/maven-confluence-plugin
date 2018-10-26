@@ -28,7 +28,7 @@ public class Comment extends MapObject {
         super();
     }
 
-    public Comment(Map data) {
+    public Comment(Map<String,Object> data) {
         super(data);
     }
 
@@ -109,8 +109,8 @@ public class Comment extends MapObject {
         setString("creator", creator);
     }
 
-    public Map toRawMap() {
-        Map map = super.toRawMap();
+    public Map<String,Object> toRawMap() {
+        Map<String,Object> map = super.toRawMap();
         map.put("created", getCreated());
         return map;
     }

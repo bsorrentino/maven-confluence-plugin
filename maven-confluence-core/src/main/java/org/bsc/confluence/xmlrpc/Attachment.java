@@ -29,7 +29,7 @@ class Attachment extends MapObject implements Model.Attachment {
         super();
     }
 
-    public Attachment(Map data) {
+    public Attachment(Map<String,Object> data) {
         super(data);
     }
 
@@ -143,8 +143,8 @@ class Attachment extends MapObject implements Model.Attachment {
         setString("comment", comment);
     }
 
-    public Map toRawMap() {
-        Map map = super.toRawMap();
+    public Map<String,Object> toRawMap() {
+        Map<String,Object> map = super.toRawMap();
         map.put("created", getCreated());
         return map;
     }

@@ -27,7 +27,7 @@ public class RSSFeed extends MapObject {
         super();
     }
 
-    public RSSFeed(Map data) {
+    public RSSFeed(Map<String,Object> data) {
         super(data);
     }
 

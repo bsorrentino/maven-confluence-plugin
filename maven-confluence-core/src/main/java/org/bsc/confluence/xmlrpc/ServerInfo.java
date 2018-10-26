@@ -27,7 +27,7 @@ public class ServerInfo extends MapObject {
         super();
     }
 
-    public ServerInfo(Map data) {
+    public ServerInfo(Map<String,Object> data) {
         super(data);
     }
 
@@ -97,8 +97,8 @@ public class ServerInfo extends MapObject {
         setString("baseUrl", baseUrl);
     }
 
-    public Map toRawMap() {
-        Map map = super.toRawMap();
+    public Map<String,Object> toRawMap() {
+        Map<String,Object> map = super.toRawMap();
         map.put("majorVersion", new Integer(getMajorVersion()));
         map.put("minorVersion", new Integer(getMinorVersion()));
         map.put("patchLevel", new Integer(getPatchLevel()));

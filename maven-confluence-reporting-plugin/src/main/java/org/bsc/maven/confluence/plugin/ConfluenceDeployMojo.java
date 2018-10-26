@@ -585,7 +585,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     private void generateProjectReport(
             final ConfluenceService confluence,
             final Site site,
-            final Locale locale ) throws Exception
+            final Locale locale ) 
     {
 
         final Model.Page _parentPage = loadParentPage(confluence, Optional.of(site));
@@ -619,7 +619,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         for( String label : site.getHome().getComputedLabels() ) {
 
-            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+            try {
+                confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+            } catch (Exception e) {
+                getLog().warn( format("Error adding label [%s] :\n%s", label, e.getMessage()) );
+            }
         }
 
         generateChildren(
@@ -631,21 +635,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
     }
 
-    private void generateProjectReport( final Site site, final Locale locale ) throws MojoExecutionException
+    private void generateProjectReport( final Site site, final Locale locale ) 
     {
-
-        super.confluenceExecute( (ConfluenceService confluence)  -> {
-                try {
-                    generateProjectReport(confluence, site, locale);
-                } catch( RuntimeException re ) {
-                    throw re;
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-
-        });
-
-
+        super.confluenceExecute( confluence  -> generateProjectReport(confluence, site, locale) );
     }
 
    /**
@@ -802,9 +794,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
 
         // Generate the plugin's documentation
-        super.confluenceExecute( (ConfluenceService confluence)  -> {
+        super.confluenceExecute( confluence  -> {
 
-                try {
+                
 
                     final Model.Page parentPage = loadParentPage(confluence, Optional.of(site));
 
@@ -817,32 +809,34 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     final PluginToolsRequest request =
                             new DefaultPluginToolsRequest(project, pluginDescriptor);
 
-                    Model.Page confluenceHomePage = generator.processMojoDescriptors(
-                        request.getPluginDescriptor(),
-                        confluence,
-                        parentPage,
-                        site,
-                        locale );
+                    try {
+                        
+                        final Model.Page confluenceHomePage = generator.processMojoDescriptors(
+                            request.getPluginDescriptor(),
+                            confluence,
+                            parentPage,
+                            site,
+                            locale );
 
-                    for( String label : site.getHome().getComputedLabels() ) {
+                        for( String label : site.getHome().getComputedLabels() ) {
+    
+                            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+    
+                        }
 
-                        confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
+                        final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
 
+                        generateChildren(   confluence,
+                                            site,
+                                            site.getHome(),
+                                            confluenceHomePage,
+                                            varsToParentPageMap);
+
+                        generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
+                        
+                    } catch( Throwable ex ) {
+                        throw new RuntimeException(ex);
                     }
-
-                    Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
-
-                    generateChildren(   confluence,
-                                        site,
-                                        site.getHome(),
-                                        confluenceHomePage,
-                                        varsToParentPageMap);
-
-                    generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
-
-                } catch( Exception ex ) {
-                    throw new RuntimeException(ex);
-                }
 
         });
 

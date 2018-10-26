@@ -27,7 +27,7 @@ public class Label extends MapObject {
         super();
     }
 
-    public Label(Map data) {
+    public Label(Map<String,Object> data) {
         super(data);
     }
 
