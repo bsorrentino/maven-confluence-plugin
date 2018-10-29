@@ -5,6 +5,11 @@
 ## Unreleased
 ### Generic changes
 
+**clean code**
+
+
+[4eb40ca92ff42d5](https://github.com/bsorrentino/maven-confluence-plugin/commit/4eb40ca92ff42d5) bsorrentino *2018-10-29 15:04:17*
+
 **update submodule**
 
 
@@ -34,6 +39,22 @@
 
 
 [3aeb3f10496afdc](https://github.com/bsorrentino/maven-confluence-plugin/commit/3aeb3f10496afdc) bsorrentino *2018-09-26 15:19:11*
+
+
+###  [#178](https://github.com/bsorrentino/maven-confluence-plugin/issues/178) Reuse session in XMLRPC protocol    *enhancement*  
+
+**issue #178 - reuse token in XMLRPC protocol**
+
+
+[c8ca5c1e5c09b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/c8ca5c1e5c09b17) bsorrentino *2018-10-26 16:13:12*
+
+
+###  [#179](https://github.com/bsorrentino/maven-confluence-plugin/issues/179) Log full REST API Conflunce response in case of REST API invocation error    *enhancement*  
+
+**fix issue #179**
+
+
+[d656f720d181af4](https://github.com/bsorrentino/maven-confluence-plugin/commit/d656f720d181af4) bsorrentino *2018-10-29 15:28:21*
 
 
 ## v6.0-rc3

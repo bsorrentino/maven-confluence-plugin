@@ -48,29 +48,36 @@ public class GitLogUtil {
 
     protected static RevCommit resolveCommitIdByTagName(Repository repository, String tagName) throws IOException, GitAPIException {
         if (tagName == null || tagName.isEmpty()) return null;
+        
         RevCommit revCommit = null;
-        Map<String, Ref> tagMap = repository.getTags();
-        Ref ref = tagMap.get(tagName);
+        
+        final Map<String, Ref> tagMap = repository.getTags();
+        
+        final Ref ref = tagMap.get(tagName);
+        
         if (ref != null) {
-            RevWalk walk = new RevWalk(repository);
-            //some reduce memory effors as described in jgit user guide
-            walk.setRetainBody(false);
-            ObjectId from;
+            
+            try(RevWalk walk = new RevWalk(repository)) {
+                //some reduce memory effors as described in jgit user guide
+                walk.setRetainBody(false);
+                
+                ObjectId from = repository.resolve("refs/heads/master");
+                
+                if (from == null) {
+                    try(Git git = new Git(repository)) {
+                        final String lastTagName = git.describe().call();
+                        from = repository.resolve("refs/tags/" + lastTagName);
+                    }
+                }
+    
+                if (from==null){
+                    throw new IllegalStateException("cannot determinate start commit");
+                }
+                
+                ObjectId to = repository.resolve("refs/remotes/origin/master");
 
-            from = repository.resolve("refs/heads/master");
-            if (from == null) {
-                Git git = new Git(repository);
-                String lastTagName = git.describe().call();
-                from = repository.resolve("refs/tags/" + lastTagName);
-            }
-            ObjectId to = repository.resolve("refs/remotes/origin/master");
-
-            if (from==null){
-                throw new IllegalStateException("cannot determinate start commit");
-            }
-            walk.markStart(walk.parseCommit(from));
-            walk.markUninteresting(walk.parseCommit(to));
-            try {
+                walk.markStart(walk.parseCommit(from));
+                walk.markUninteresting(walk.parseCommit(to));
 
                 RevObject revObject = walk.parseAny(ref.getObjectId());
                 if (revObject != null) {
@@ -78,8 +85,6 @@ public class GitLogUtil {
 
                 }
 
-            } finally {
-                walk.close();
             }
 
         }
@@ -92,18 +97,23 @@ public class GitLogUtil {
                                                 String sinceTagName,
                                                 String untilTagName,
                                                 String pattern) throws IOException, GitAPIException {
-        Git git = new Git(repository);
-        RevCommit startCommitId = resolveCommitIdByTagName(repository, sinceTagName);
-        if (startCommitId == null) {
-            throw new IOException("cannot resolveCommitIdByTagName by  " + sinceTagName);
+        try(Git git = new Git(repository)) {
+            final RevCommit startCommitId = resolveCommitIdByTagName(repository, sinceTagName);
+            
+            if (startCommitId == null) {
+                throw new IOException("cannot resolveCommitIdByTagName by  " + sinceTagName);
+            }
+            
+            ObjectId endCommitId = resolveCommitIdByTagName(repository, untilTagName);
+            
+            if (endCommitId == null) {
+                endCommitId = repository.resolve(Constants.HEAD);
+            }
+            
+            final Iterable<RevCommit> commits = git.log().addRange(startCommitId, endCommitId).call();
+    
+            return extractJiraIssues(pattern, commits);
         }
-        ObjectId endCommitId = resolveCommitIdByTagName(repository, untilTagName);
-        if (endCommitId == null) {
-            endCommitId = repository.resolve(Constants.HEAD);
-        }
-        Iterable<RevCommit> commits = git.log().addRange(startCommitId, endCommitId).call();
-
-        return extractJiraIssues(pattern, commits);
     }
 
 
@@ -125,7 +135,7 @@ public class GitLogUtil {
 
 
     private static Set<String> extractJiraIssues(String pattern, Iterable<RevCommit> commits) {
-        HashSet jiraIssues = new LinkedHashSet();  //preserve insertion order
+        HashSet<String> jiraIssues = new LinkedHashSet<>();  //preserve insertion order
         for (RevCommit commit : commits) {
             jiraIssues.addAll(extractJiraIssuesFromString(commit.getFullMessage(), pattern));
         }

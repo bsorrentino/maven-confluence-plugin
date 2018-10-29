@@ -646,6 +646,7 @@ public class ScmRenderer extends AbstractProjectInfoRenderer {
      * @param scmUrl an SCM URL
      * @return a valid SCM repository or null
      */
+    @SuppressWarnings("unchecked")
     public ScmRepository getScmRepository(String scmUrl) {
         if (StringUtils.isEmpty(scmUrl)) {
             return null;

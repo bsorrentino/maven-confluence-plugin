@@ -113,6 +113,7 @@ public class VersionUtil {
         return list;
     }
 
+    @SuppressWarnings("unchecked")
     public static String findNearestVersionTagsBefore(Collection<String> versionTagList, String versionTagNamePart) {
 
         Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
@@ -123,7 +124,7 @@ public class VersionUtil {
 
         ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
 
-        List<ArtifactVersion> sortedList = new ArrayList<ArtifactVersion>(map.keySet());
+        List<ArtifactVersion> sortedList = new ArrayList<>(map.keySet());
 
         Collections.sort(sortedList);
 
@@ -155,6 +156,7 @@ public class VersionUtil {
         return map.values();
     }
 
+    @SuppressWarnings("unchecked")
     public static LinkedList<String> sortAndFilter(Collection<String> versionNameList,
                                                    String start,
                                                    String end) {

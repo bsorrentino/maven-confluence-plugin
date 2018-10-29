@@ -21,7 +21,7 @@ public class SinkDelegate implements InvocationHandler
 	        public Object invoke( Object proxy, Method method, Object[] args )
 	            throws Throwable
 	        {
-	            Class[] parameterTypes = method.getParameterTypes();
+	            Class<?>[] parameterTypes = method.getParameterTypes();
 	
 	            for ( int i = parameterTypes.length - 1; i >= 0; i-- )
 	            {
