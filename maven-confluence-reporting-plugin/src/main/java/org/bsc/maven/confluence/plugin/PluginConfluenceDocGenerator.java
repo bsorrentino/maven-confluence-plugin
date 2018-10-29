@@ -257,7 +257,8 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         return result;
     }
     
-
+    
+    @SuppressWarnings("unused")
     private void writeGoals(Writer writer, List<MojoDescriptor> mojos) {
 
         ConfluenceWikiWriter w = new ConfluenceWikiWriter(writer);
