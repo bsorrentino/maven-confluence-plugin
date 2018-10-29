@@ -65,7 +65,8 @@ public abstract class AbstractRESTConfluenceService {
             final Response res = client.build().newCall(req).execute();
 
             if( !res.isSuccessful() ) {
-                throw new ServiceException( format("error: %s\n%s", description, res.toString()), res);
+                throw new ServiceException( 
+                        format("error: %s\n%s\n%s", description, res.toString(),res.body().string()), res);
             }
 
             return res;
