@@ -1,5 +1,6 @@
 package org.bsc.confluence.model;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -23,24 +24,24 @@ public class SiteLoadTest {
             
         try( InputStream is = getClass().getClassLoader().getResourceAsStream("site.yaml") ) {
             Site site = mapper.readValue( is, Site.class  );
+            assertThat( site, notNullValue());
             
             Path basedir = Paths.get("/tmp");
             site.setBasedir( basedir );
-            assertThat( site, notNullValue());
             
             assertThat( site.getHome(), notNullValue());
-            assertThat( site.getHome().getUri(), IsEqual.equalTo( 
+            assertThat( site.getHome().getUri(), equalTo( 
                     Paths.get(basedir.toString(), "encoding.confluence").toUri()));
             
             final List<Site.Page> children = site.getHome().getChildren();
             
             assertThat( children, notNullValue());
-            assertThat( children.size(), IsEqual.equalTo( 2 ) );
+            assertThat( children.size(), equalTo( 2 ) );
 
             final List<Site.Attachment> attachments = site.getHome().getAttachments();
             
             assertThat( attachments, notNullValue());
-            assertThat( attachments.size(), IsEqual.equalTo( 1 ) );
+            assertThat( attachments.size(), equalTo( 1 ) );
         }
 
     }
