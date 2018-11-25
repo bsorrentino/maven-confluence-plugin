@@ -1,0 +1,24 @@
+#site:
+home:
+  uri: encoding.confluence
+  children:
+    - name: "page 1  "
+      uri: page1.md    
+    - name: "page 2"
+      uri: page2.md    
+      attachments:
+        - name: "attach1.png" 
+          uri: attach1.png
+          comment: attach1_comment 
+          contentType: "image/png" 
+          version: 1  
+  attachments:
+    - name: " home.png" 
+      uri: home.png
+      comment: home_comment 
+      contentType: "image/png" 
+      version: 1  
+labels:    
+  - encoding
+  - test      
+        
