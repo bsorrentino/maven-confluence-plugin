@@ -4,6 +4,8 @@
  */
 package org.bsc.confluence.model;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -67,8 +70,13 @@ public class Site {
      */
     @XmlType(namespace = Site.NAMESPACE)
     protected static class Source {
-
+        private static final Pattern lead_trail_spaces = Pattern.compile("^(.*)\\s+$|^\\s+(.*)");
+        
         protected transient final Site site;
+
+        public Source() {
+            this.site = _SITE.peek();
+        }
 
         private java.net.URI uri;
 
@@ -102,11 +110,9 @@ public class Site {
         }
         
         public void setName(String name) {
+            if( lead_trail_spaces.matcher(name).matches() ) 
+                throw new IllegalArgumentException(format("name [%s] is not valid!", name));
             this.name = name;
-        }
-
-        public Source() {
-            this.site = _SITE.peek();
         }
 
         @Override

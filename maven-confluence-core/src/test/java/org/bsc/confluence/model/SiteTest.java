@@ -2,11 +2,13 @@ package org.bsc.confluence.model;
 
 import static org.bsc.confluence.model.SiteProcessor.processMarkdown;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.core.IsNull;
@@ -14,6 +16,19 @@ import org.junit.Test;
 
 public class SiteTest {
 
+    @Test
+    public void validateName() {
+        
+        final Pattern p = Pattern.compile("^(.*)\\s+$|^\\s+(.*)");
+        assertThat( p.matcher("name").matches(), is(false));
+        assertThat( p.matcher("name ").matches(), is(true));
+        assertThat( p.matcher("name  ").matches(), is(true));
+        assertThat( p.matcher(" name").matches(), is(true));
+        assertThat( p.matcher("  name").matches(), is(true));
+        assertThat( p.matcher(" name ").matches(), is(true));
+        assertThat( p.matcher(" name  ").matches(), is(true));
+    }
+    
     @Test
     public void shouldSupportReferenceNode() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");

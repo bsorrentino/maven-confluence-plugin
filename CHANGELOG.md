@@ -5,6 +5,17 @@
 ## Unreleased
 ### Generic changes
 
+**Encoding of special chars in confluence page title**
+
+ * update version of squareup okhttp3
+
+[c82f69d678fc80a](https://github.com/bsorrentino/maven-confluence-plugin/commit/c82f69d678fc80a) qwazer *2018-10-30 09:24:01*
+
+**clean code**
+
+
+[37abf19602cd962](https://github.com/bsorrentino/maven-confluence-plugin/commit/37abf19602cd962) bsorrentino *2018-10-29 16:04:18*
+
 **clean code**
 
 
