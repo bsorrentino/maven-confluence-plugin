@@ -8,25 +8,52 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Consumer;
 
-import org.hamcrest.core.IsEqual;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class SiteLoadTest {
 
-    
-    @Test
-    public void loadFromYAML() throws Exception {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            
-        try( InputStream is = getClass().getClassLoader().getResourceAsStream("site.yaml") ) {
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    private void loadFromYAML( String resource, Consumer<Site> c ) throws Exception {
+        final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        
+        try( InputStream is = getClass().getClassLoader().getResourceAsStream(resource) ) {
             Site site = mapper.readValue( is, Site.class  );
+            
             assertThat( site, notNullValue());
             
-            Path basedir = Paths.get("/tmp");
+            c.accept(site);
+        }
+    
+    }
+    
+    @Test
+    public void testIssue182() throws Exception {
+    
+        //thrown.expect(Exception.class);
+        thrown.expect(JsonMappingException.class);
+        //thrown.expectMessage("name [page 1 ] is not valid!");
+        loadFromYAML( "site-issue182.yaml", site -> {
+                        
+        });
+
+    }
+    
+    @Test
+    public void testLoadFromYAML() throws Exception {
+        
+        loadFromYAML( "site.yaml", site -> {
+            
+            final Path basedir = Paths.get("/tmp");
             site.setBasedir( basedir );
             
             assertThat( site.getHome(), notNullValue());
@@ -42,7 +69,8 @@ public class SiteLoadTest {
             
             assertThat( attachments, notNullValue());
             assertThat( attachments.size(), equalTo( 1 ) );
-        }
-
+            
+        });
+            
     }
 }
