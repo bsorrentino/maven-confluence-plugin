@@ -5,6 +5,16 @@
 ## Unreleased
 ### Generic changes
 
+**update changelog**
+
+
+[c1efd3ba10366da](https://github.com/bsorrentino/maven-confluence-plugin/commit/c1efd3ba10366da) bsorrentino *2018-11-25 20:01:55*
+
+**clean code**
+
+
+[d1031aaafe8ce04](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1031aaafe8ce04) bsorrentino *2018-11-23 13:08:56*
+
 **Encoding of special chars in confluence page title**
 
  * update version of squareup okhttp3
@@ -66,6 +76,19 @@
 
 
 [d656f720d181af4](https://github.com/bsorrentino/maven-confluence-plugin/commit/d656f720d181af4) bsorrentino *2018-10-29 15:28:21*
+
+
+###  [#182](https://github.com/bsorrentino/maven-confluence-plugin/issues/182) Warn about trailing space in page names    *enhancement*  
+
+**#182 - add check on name**
+
+
+[d57d2480497936c](https://github.com/bsorrentino/maven-confluence-plugin/commit/d57d2480497936c) bsorrentino *2018-11-25 20:01:06*
+
+**#182 - add unit tests**
+
+
+[9e178bfe1d43171](https://github.com/bsorrentino/maven-confluence-plugin/commit/9e178bfe1d43171) bsorrentino *2018-11-25 20:00:46*
 
 
 ## v6.0-rc3
@@ -4399,5 +4422,3 @@
 
 
 [370064b6ea246d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/370064b6ea246d8) softphone *2012-10-13 19:59:57*
-
-
