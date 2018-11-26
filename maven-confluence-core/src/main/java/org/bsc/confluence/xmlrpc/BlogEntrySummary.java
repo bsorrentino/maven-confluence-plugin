@@ -28,7 +28,7 @@ public class BlogEntrySummary extends MapObject {
         super();
     }
 
-    public BlogEntrySummary(Map data) {
+    public BlogEntrySummary(Map<String,Object> data) {
         super(data);
     }
 
@@ -98,8 +98,8 @@ public class BlogEntrySummary extends MapObject {
         setDate("publishDate", publishDate);
     }
 
-    public Map toRawMap() {
-        Map map = super.toRawMap();
+    public Map<String,Object> toRawMap() {
+        Map<String,Object> map = super.toRawMap();
         map.put("publishDate", getPublishDate());
         map.put("locks", new Integer(getLocks()));
         return map;

@@ -28,7 +28,7 @@ public class PageHistorySummary extends MapObject {
         super();
     }
 
-    public PageHistorySummary(Map data) {
+    public PageHistorySummary(Map<String,Object> data) {
         super(data);
     }
 

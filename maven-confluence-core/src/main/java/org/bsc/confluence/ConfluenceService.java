@@ -7,6 +7,7 @@ package org.bsc.confluence;
 
 import static java.lang.String.format;
 
+import java.io.Closeable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
@@ -16,7 +17,7 @@ import org.bsc.functional.Tuple2;
  *
  * @author bsorrentino
  */
-public interface ConfluenceService {
+public interface ConfluenceService extends Closeable{
 
     public enum Protocol {
         
@@ -174,8 +175,6 @@ public interface ConfluenceService {
                         ExportFormat exfmt, 
                         java.io.File outputFile) throws Exception;
     
-    void call(java.util.function.Consumer<ConfluenceService> task) throws Exception;
-    
     //
     // ATTACHMENT
     //
@@ -217,4 +216,4 @@ public interface ConfluenceService {
                 ;
         }
 
-}
+  }

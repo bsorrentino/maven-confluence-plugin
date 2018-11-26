@@ -7,11 +7,10 @@ package org.bsc.confluence.xmlrpc;
 
 import static java.lang.String.format;
 
-import static java.lang.String.format;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -26,7 +25,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.ssl.SSLCertificateInfo;
 
 /**
@@ -34,6 +32,7 @@ import org.bsc.ssl.SSLCertificateInfo;
  * @author bsorrentino
  */
 public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
+
 
     public final Confluence connection;
     public final Credentials credentials;
@@ -91,6 +90,11 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
+    public void close() throws IOException {
+        logout();
+    }
+
+    @Override
     public Credentials getCredentials() {
         return credentials;
     }
@@ -112,7 +116,6 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
             throw new IllegalArgumentException("title argument is null!");
         }
         
-        @SuppressWarnings("unchecked")
         final List<PageSummary> children = connection.getChildren(parentPageId);
 
         for (PageSummary pageSummary : children ) {
@@ -355,18 +358,6 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public void call(java.util.function.Consumer<ConfluenceService> task) throws Exception {
-        
-        try {
-            task.accept(this);
-        }
-        finally {
-            logout();
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public List<Model.PageSummary> getDescendents(String pageId) throws Exception {        
         return connection.getDescendents(pageId);
     }

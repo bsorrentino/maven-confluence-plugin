@@ -27,7 +27,7 @@ public class User extends MapObject {
         super();
     }
 
-    public User(Map data) {
+    public User(Map<String,Object> data) {
         super(data);
     }
 

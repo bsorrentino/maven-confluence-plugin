@@ -27,7 +27,7 @@ public class SpaceSummary extends MapObject {
         super();
     }
 
-    public SpaceSummary(Map data) {
+    public SpaceSummary(Map<String,Object> data) {
         super(data);
     }
 

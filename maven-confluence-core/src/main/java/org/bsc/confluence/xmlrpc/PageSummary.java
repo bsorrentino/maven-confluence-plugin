@@ -28,7 +28,7 @@ class PageSummary extends MapObject implements Model.PageSummary{
         super();
     }
 
-    public PageSummary(Map data) {
+    public PageSummary(Map<String,Object> data) {
         super(data);
     }
 

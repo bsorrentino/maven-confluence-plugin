@@ -9,6 +9,7 @@ import static java.lang.String.format;
 import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -126,16 +127,6 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public void call(java.util.function.Consumer<ConfluenceService> task) throws Exception {       
-            try {
-                task.accept(this);
-            }
-            finally {
-            		xmlrpcService.logout();
-            }
-        }
-
-        @Override
         public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
             return xmlrpcService.getDescendents(pageId);
         }
@@ -148,6 +139,15 @@ public class ConfluenceServiceFactory {
         @Override
         public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
             xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
+        }
+
+        /* (non-Javadoc)
+         * @see java.io.Closeable#close()
+         */
+        @Override
+        public void close() throws IOException {
+            xmlrpcService.logout();
+            
         }
         
     }

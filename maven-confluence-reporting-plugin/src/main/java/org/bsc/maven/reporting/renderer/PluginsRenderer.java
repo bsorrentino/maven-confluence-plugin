@@ -35,9 +35,9 @@ public class PluginsRenderer extends AbstractMavenReportRenderer
     {
         private final Log log;
 
-        private final List plugins;
+        private final List<Artifact> plugins;
 
-        private final List reports;
+        private final List<Artifact> reports;
 
         private final Locale locale;
 
@@ -63,9 +63,17 @@ public class PluginsRenderer extends AbstractMavenReportRenderer
          * @param artifactFactory
          * @param localRepository
          */
-        public PluginsRenderer( Log log, Sink sink, Locale locale, I18N i18n, Set plugins, Set reports,
-                                MavenProject project, MavenProjectBuilder mavenProjectBuilder,
-                                ArtifactFactory artifactFactory, ArtifactRepository localRepository )
+        public PluginsRenderer( 
+                Log log, 
+                Sink sink, 
+                Locale locale, 
+                I18N i18n, 
+                Set<Artifact> plugins, 
+                Set<Artifact> reports,
+                MavenProject project, 
+                MavenProjectBuilder mavenProjectBuilder,
+                ArtifactFactory artifactFactory, 
+                ArtifactRepository localRepository )
         {
             super( sink );
 
@@ -73,9 +81,9 @@ public class PluginsRenderer extends AbstractMavenReportRenderer
 
             this.locale = locale;
 
-            this.plugins = new ArrayList( plugins );
+            this.plugins = new ArrayList<>( plugins );
 
-            this.reports = new ArrayList( reports );
+            this.reports = new ArrayList<>( reports );
 
             this.i18n = i18n;
 
@@ -110,7 +118,7 @@ public class PluginsRenderer extends AbstractMavenReportRenderer
          */
         private void renderSectionPlugins( boolean isPlugins )
         {
-            List list = ( isPlugins ? plugins : reports );
+            List<Artifact> list = ( isPlugins ? plugins : reports );
             String[] tableHeader = getPluginTableHeader();
 
             startSection( ( isPlugins ? getReportString( "report.plugins.title" )
@@ -132,7 +140,7 @@ public class PluginsRenderer extends AbstractMavenReportRenderer
             startTable();
             tableHeader( tableHeader );
 
-            for ( Iterator iterator = list.iterator(); iterator.hasNext(); )
+            for ( Iterator<Artifact> iterator = list.iterator(); iterator.hasNext(); )
             {
                 Artifact artifact = (Artifact) iterator.next();
 
@@ -148,10 +156,10 @@ public class PluginsRenderer extends AbstractMavenReportRenderer
 
                 Artifact pluginArtifact = artifactFactory.createParentArtifact( artifact.getGroupId(), artifact
                     .getArtifactId(), versionRange.toString() );
-                List artifactRepositories = project.getPluginArtifactRepositories();
+                List<?> artifactRepositories = project.getPluginArtifactRepositories();
                 if ( artifactRepositories == null )
                 {
-                    artifactRepositories = new ArrayList();
+                    artifactRepositories = new ArrayList<>();
                 }
                 try
                 {
@@ -193,16 +201,13 @@ public class PluginsRenderer extends AbstractMavenReportRenderer
             return new String[] { groupId, artifactId, version };
         }
 
-        private Comparator getArtifactComparator()
+        private Comparator<Artifact> getArtifactComparator()
         {
-            return new Comparator()
+            return new Comparator<Artifact>()
             {
                 /** {@inheritDoc} */
-                public int compare( Object o1, Object o2 )
+                public int compare( Artifact a1, Artifact a2 )
                 {
-                    Artifact a1 = (Artifact) o1;
-                    Artifact a2 = (Artifact) o2;
-
                     int result = a1.getGroupId().compareTo( a2.getGroupId() );
                     if ( result == 0 )
                     {

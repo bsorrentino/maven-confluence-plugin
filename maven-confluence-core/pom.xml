@@ -4,7 +4,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.0-rc3</version>
+        <version>6.0-rc4</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>3.4.0-RC1</version>
+      <version>3.11.0</version>
     </dependency>
 
     <dependency>

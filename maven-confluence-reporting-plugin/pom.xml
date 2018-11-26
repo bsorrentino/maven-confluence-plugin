@@ -4,7 +4,7 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.0-rc3</version>
+      <version>6.0-rc4</version>
   </parent>
 
 

@@ -27,7 +27,7 @@ public class BlogEntry extends MapObject {
         super();
     }
 
-    public BlogEntry(Map data) {
+    public BlogEntry(Map<String,Object> data) {
         super(data);
     }
 
@@ -119,8 +119,8 @@ public class BlogEntry extends MapObject {
         setInt("locks", locks);
     }
 
-    public Map toRawMap() {
-        Map map = super.toRawMap();
+    public Map<String,Object> toRawMap() {
+        Map<String,Object> map = super.toRawMap();
         map.put("version", new Integer(getVersion()));
         map.put("locks", new Integer(getLocks()));
         return map;

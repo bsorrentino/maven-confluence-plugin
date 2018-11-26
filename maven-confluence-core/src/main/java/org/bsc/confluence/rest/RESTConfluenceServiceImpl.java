@@ -8,6 +8,7 @@ package org.bsc.confluence.rest;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -247,14 +248,6 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public void call(java.util.function.Consumer<ConfluenceService> task) throws Exception {
-    		if (task == null)
-				throw new java.lang.IllegalArgumentException("task is null!");
-
-    		task.accept(this);
-    }
-
-    @Override
     public Model.Attachment createAttachment() {    
         return new Attachment();
     }
@@ -294,10 +287,12 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public void removePage(String pageId) throws Exception {
-        
+    public void removePage(String pageId) throws Exception {        
         rxDeletePageById(pageId);
-        
+    }
+
+    @Override
+    public void close() throws IOException {
     }
 
     

@@ -60,7 +60,7 @@ public class ProjectTeamRenderer extends AbstractProjectInfoRenderer
 
         private final Model model;
 
-        private final Log log;
+        //private final Log log;
 
         private final boolean showAvatarImages;
 
@@ -68,7 +68,7 @@ public class ProjectTeamRenderer extends AbstractProjectInfoRenderer
             super( sink, i18n, locale );
 
             this.model = model;
-            this.log = log;
+            //this.log = log;
             this.showAvatarImages = showAvatarImages;
         }
 
@@ -185,10 +185,10 @@ public class ProjectTeamRenderer extends AbstractProjectInfoRenderer
                 sink.figure_();
                 sink.tableCell_();
             }
-            String type = "contributor";
+            //String type = "contributor";
             if ( member instanceof Developer )
             {
-                type = "developer";
+                //type = "developer";
                 if ( headersMap.get( ID ) == Boolean.TRUE )
                 {
                     String id = ( (Developer) member ).getId();

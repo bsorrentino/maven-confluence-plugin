@@ -181,53 +181,42 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @param task
      * @throws MojoExecutionException
      */
-    protected <T extends Consumer<ConfluenceService>> void confluenceExecute(T task) throws MojoExecutionException {
+    protected <T extends Consumer<ConfluenceService>> void confluenceExecute(T task)  {
 
-        ConfluenceService confluence = null;
-        
-        try {
+        ConfluenceProxy proxyInfo = null;
 
-            ConfluenceProxy proxyInfo = null;
+        final Proxy activeProxy = mavenSettings.getActiveProxy();
 
-            final Proxy activeProxy = mavenSettings.getActiveProxy();
+        if (activeProxy != null) {
 
-            if (activeProxy != null) {
-
-                proxyInfo =
-                        new ConfluenceProxy(
-                                activeProxy.getHost(),
-                                activeProxy.getPort(),
-                                activeProxy.getUsername(),
-                                activeProxy.getPassword(),
-                                activeProxy.getNonProxyHosts()
-                        );
-            }
-
-            final ConfluenceService.Credentials credentials = 
-                new ConfluenceService.Credentials(getUsername(), getPassword());
-
-            confluence = 
-                    ConfluenceServiceFactory.createInstance(
-                            getEndPoint(), 
-                            credentials, 
-                            proxyInfo, 
-                            sslCertificate
+            proxyInfo =
+                    new ConfluenceProxy(
+                            activeProxy.getHost(),
+                            activeProxy.getPort(),
+                            activeProxy.getUsername(),
+                            activeProxy.getPassword(),
+                            activeProxy.getNonProxyHosts()
                     );
-
-            confluence.call(task);
-            
-        } catch( RuntimeException re ) {
-            
-            throw re;
-            
-        } catch (Exception e) {
-
-            final String msg = "has been impossible connect to confluence due exception";
-            //getLog().error(msg, e);
-
-            throw new MojoExecutionException(msg, e);
         }
 
+        final ConfluenceService.Credentials credentials = 
+            new ConfluenceService.Credentials(getUsername(), getPassword());
+
+        try ( ConfluenceService confluence  = 
+                ConfluenceServiceFactory.createInstance(
+                        getEndPoint(), 
+                        credentials, 
+                        proxyInfo, 
+                        sslCertificate )) 
+        {
+
+                    task.accept(confluence);
+        
+        } 
+        catch( Throwable re ) {     
+            throw new RuntimeException(re);      
+        }
+               
     }
 
     /**

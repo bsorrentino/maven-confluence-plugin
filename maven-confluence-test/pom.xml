@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.0-rc3</version>
+        <version>6.0-rc4</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -128,7 +128,7 @@
                         </goals>
                         <configuration>
 
-                            <endPoint>http://localhost:8090/${api.rest}</endPoint>
+                            <endPoint>http://localhost:8090/${api}</endPoint>
                             <!--endPoint>https://localhost:8443/rpc/xmlrpc</endPoint-->
                             <spaceKey>TEST</spaceKey>
                             <parentPageTitle>Home</parentPageTitle>
