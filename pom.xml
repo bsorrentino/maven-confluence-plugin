@@ -264,7 +264,7 @@
     							<goal>git-changelog</goal>
     						</goals>
     						<configuration>
-    						  <settingsFile>changelog.json</settingsFile>    
+    						  <settingsFile>changelog.json</settingsFile>
     							<file>CHANGELOG.md</file>
     						</configuration>
     					</execution>
@@ -319,12 +319,14 @@
                     </plugin>
                     <!--
                     ====================================================================================
+                    # https://github.com/keybase/keybase-issues/issues/2798
+                    export GPG_TTY=$(tty)
                     mvn -Prelease source:jar javadoc:jar deploy -Dgpg.passphrase=thephrase
                     ====================================================================================
                     -->
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.3</version>
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -334,6 +336,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                          <gpgArguments>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
+                          </gpgArguments>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
