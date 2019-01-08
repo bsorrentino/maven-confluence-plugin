@@ -5,6 +5,21 @@
 ## Unreleased
 ### Generic changes
 
+**fix security alert**
+
+
+[11e6f4e94d434d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/11e6f4e94d434d8) Bartolomeo Sorrentino *2019-01-05 20:23:00*
+
+**add maven prerequisites**
+
+
+[2ddbcdd4d3fa069](https://github.com/bsorrentino/maven-confluence-plugin/commit/2ddbcdd4d3fa069) Bartolomeo Sorrentino *2019-01-05 20:10:11*
+
+**update to be compatible with java 11**
+
+
+[d92a4ea2b1d518a](https://github.com/bsorrentino/maven-confluence-plugin/commit/d92a4ea2b1d518a) Bartolomeo Sorrentino *2019-01-05 18:44:57*
+
 **update readme**
 
 
