@@ -4,7 +4,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>6.0-SNAPSHOT</version>
+    <version>6.0</version>
     <name>CONFLUENCE-REPORTING::Parent - ${project.version}</name>
     <description><![CDATA[
     Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
@@ -251,24 +251,18 @@
         </pluginManagement>
         <plugins>
 
-                <plugin>
-    				<groupId>se.bjurr.gitchangelog</groupId>
-    				<artifactId>git-changelog-maven-plugin</artifactId>
-                    <inherited>false</inherited>
-    				<executions>
-    					<!-- Minimal config // -->
-    					<execution>
-    						<id>GenerateGitChangelogMinimal</id>
-    						<phase>generate-sources</phase>
-    						<goals>
-    							<goal>git-changelog</goal>
-    						</goals>
+            <!--
+            mvn git-changelog-maven-plugin:git-changelog
+            -->
+            <plugin>
+      				<groupId>se.bjurr.gitchangelog</groupId>
+      				<artifactId>git-changelog-maven-plugin</artifactId>
+              <inherited>false</inherited>
+      					<!-- Minimal config // -->
     						<configuration>
     						  <settingsFile>changelog.json</settingsFile>
     							<file>CHANGELOG.md</file>
     						</configuration>
-    					</execution>
-            </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
