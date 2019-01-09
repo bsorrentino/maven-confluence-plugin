@@ -8,7 +8,7 @@
 "untaggedName": "Next release",
 "noIssueName": "Generic changes",
 "timeZone": "UTC",
-"removeIssueFromMessage": "false",
+// "removeIssueFromMessage": "true",
 
 // "jiraServer": "https://jiraserver/jira",
 // "jiraIssuePattern": "\\b[a-zA-Z]([a-zA-Z]+)-([0-9]+)\\b",
