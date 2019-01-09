@@ -4,9 +4,12 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.0-rc4</version>
+      <version>6.0</version>
   </parent>
 
+   <prerequisites>
+      <maven>3.5.0</maven>
+   </prerequisites>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>confluence-reporting-maven-plugin</artifactId>
