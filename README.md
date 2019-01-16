@@ -20,7 +20,11 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
 
 ### News ###
-Jan 14,2019  | **[confluence-site](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli)** has been moved to an independent repository [confluence-site-publisher](https://github.com/bsorrentino/confluence-site-publisher)| 
+
+jan 16, 2019 | [Release 6.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.1) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.1%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
+Jan 14,2019  | **[confluence-site](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli)** has been moved to an independent repository [confluence-site-publisher](https://github.com/bsorrentino/confluence-site-publisher)|
 ---- | ---- |
 
 jan 8, 2019 | [Release 6.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0%7Cmaven-plugin)**  |
