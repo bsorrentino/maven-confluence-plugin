@@ -336,7 +336,7 @@ TEST
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
                         <wikiFilesExt>.confluence</wikiFilesExt>
-                        <!--deployState></deployState-->
+                        <deployState></deployState>
                         <failOnError>false</failOnError>
                         <!--
                         <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
@@ -348,7 +348,7 @@ TEST
                             <goals>
                                 <goal>deploy</goal>
                             </goals>
-                            <phase>site</phase>
+                            <phase>package</phase>
                         </execution>
                     </executions>
                 </plugin>
