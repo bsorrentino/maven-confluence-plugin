@@ -4,7 +4,7 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.1</version>
+      <version>6.2-SNAPSHOT</version>
   </parent>
 
    <prerequisites>
@@ -336,12 +336,21 @@ TEST
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
                         <wikiFilesExt>.confluence</wikiFilesExt>
-                        <deployState></deployState>
+                        <!--deployState></deployState-->
+                        <failOnError>false</failOnError>
                         <!--
                         <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
                         -->
                         <removeSnapshots>true</removeSnapshots>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>deploy</goal>
+                            </goals>
+                            <phase>site</phase>
+                        </execution>
+                    </executions>
                 </plugin>
 
             </plugins>
