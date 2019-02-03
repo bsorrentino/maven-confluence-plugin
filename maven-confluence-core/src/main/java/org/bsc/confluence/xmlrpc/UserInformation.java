@@ -122,7 +122,7 @@ public class UserInformation extends MapObject {
 
     public Map<String,Object> toRawMap() {
         Map<String,Object> map = super.toRawMap();
-        map.put("version", new Integer(getVersion()));
+        map.put("version", getVersion());
         map.put("creationDate", getCreationDate());
         map.put("lastModificationDate", getLastModificationDate());
         return map;
