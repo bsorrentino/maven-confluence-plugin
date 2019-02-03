@@ -161,7 +161,7 @@ class Confluence {
      * exports a Confluence instance and returns a String holding the URL for the download. The boolean argument indicates whether or not attachments ought to be included in the export.
      */
     public String exportSite(boolean exportAttachments) throws Exception {
-        return (String) call("exportSite", new Boolean(exportAttachments));
+        return (String) call("exportSite", exportAttachments);
     }
 
     /**
@@ -374,7 +374,7 @@ class Confluence {
      * add a new attachment to a content entity object. *Note that this uses a lot of memory -- about 4 times the size of the attachment.*
      */
     public Attachment addAttachment(long contentId, Attachment attachment, byte[] attachmentData) throws Exception {
-        Map<String,Object> data = call("addAttachment", new Long(contentId), attachment, attachmentData);
+        Map<String,Object> data = call("addAttachment", contentId, attachment, attachmentData);
         return new Attachment(data);
     }
 
@@ -423,7 +423,7 @@ class Confluence {
      * Retrieves a blog post in the Space with the given spaceKey, with the title 'postTitle' and posted on the day 'dayOfMonth'.
      */
     public BlogEntry getBlogEntryByDayAndTitle(String spaceKey, int dayOfMonth, String postTitle) throws Exception {
-        Map<String,Object> data = call("getBlogEntryByDayAndTitle", spaceKey, new Integer(dayOfMonth), postTitle);
+        Map<String,Object> data = call("getBlogEntryByDayAndTitle", spaceKey, dayOfMonth, postTitle);
         return new BlogEntry(data);
     }
 
@@ -432,7 +432,7 @@ class Confluence {
      * empty parameter map.
      */
     public List<Object>search(String query, int maxResults) throws Exception {
-        Object[] vector = (Object[]) call("search", query, new Integer(maxResults));
+        Object[] vector = (Object[]) call("search", query, maxResults);
         return toList(vector, SearchResult.class);
     }
 
@@ -441,7 +441,7 @@ class Confluence {
      * default is used instead.
      */
     public List<Object>search(String query, Map<?,?> parameters, int maxResults) throws Exception {
-        Object[] vector = (Object[]) call("search", query, parameters, new Integer(maxResults));
+        Object[] vector = (Object[]) call("search", query, parameters, (maxResults));
         return toList(vector, SearchResult.class);
     }
 
@@ -647,7 +647,7 @@ class Confluence {
      * returns all registered users as Strings
      */
     public List<Object>getActiveUsers(boolean viewAll) throws Exception {
-        Object[] vector = (Object[]) call("getActiveUsers", new Boolean(viewAll));
+        Object[] vector = (Object[]) call("getActiveUsers", (viewAll));
         return Arrays.asList(vector);
     }
 
@@ -687,7 +687,7 @@ class Confluence {
      * Returns all {@link Label}s for the given ContentEntityObject ID
      */
     public List<Object>getLabelsById(long objectId) throws Exception {
-        Object[] vector = (Object[]) call("getLabelsById", new Long(objectId));
+        Object[] vector = (Object[]) call("getLabelsById", (objectId));
         return toList(vector, Label.class);
     }
 
@@ -695,7 +695,7 @@ class Confluence {
      * Returns the most popular {@link Label}s for the Confluence instance, with a specified maximum number.
      */
     public List<Object>getMostPopularLabels(int maxCount) throws Exception {
-        Object[] vector = (Object[]) call("getMostPopularLabels", new Integer(maxCount));
+        Object[] vector = (Object[]) call("getMostPopularLabels", (maxCount));
         return toList(vector, Label.class);
     }
 
@@ -703,7 +703,7 @@ class Confluence {
      * Returns the most popular {@link Label}s for the given {{spaceKey}}, with a specified maximum number of results.
      */
     public List<Object>getMostPopularLabelsInSpace(String spaceKey, int maxCount) throws Exception {
-        Object[] vector = (Object[]) call("getMostPopularLabelsInSpace", spaceKey, new Integer(maxCount));
+        Object[] vector = (Object[]) call("getMostPopularLabelsInSpace", spaceKey, (maxCount));
         return toList(vector, Label.class);
     }
 
@@ -711,7 +711,7 @@ class Confluence {
      * Returns the recently used {@link Label}s for the Confluence instance, with a specified maximum number of results.
      */
     public List<Object>getRecentlyUsedLabels(int maxResults) throws Exception {
-        Object[] vector = (Object[]) call("getRecentlyUsedLabels", new Integer(maxResults));
+        Object[] vector = (Object[]) call("getRecentlyUsedLabels", (maxResults));
         return toList(vector, Label.class);
     }
 
@@ -719,7 +719,7 @@ class Confluence {
      * Returns the recently used {@link Label}s for the given {{spaceKey}}, with a specified maximum number of results.
      */
     public List<Object>getRecentlyUsedLabelsInSpace(String spaceKey, int maxResults) throws Exception {
-        Object[] vector = (Object[]) call("getRecentlyUsedLabelsInSpace", spaceKey, new Integer(maxResults));
+        Object[] vector = (Object[]) call("getRecentlyUsedLabelsInSpace", spaceKey, (maxResults));
         return toList(vector, Label.class);
     }
 
@@ -735,7 +735,7 @@ class Confluence {
      * Returns the {@link Label}s related to the given label name, with a specified maximum number of results.
      */
     public List<Object>getRelatedLabels(String labelName, int maxResults) throws Exception {
-        Object[] vector = (Object[]) call("getRelatedLabels", labelName, new Integer(maxResults));
+        Object[] vector = (Object[]) call("getRelatedLabels", labelName, (maxResults));
         return toList(vector, Label.class);
     }
 
@@ -743,7 +743,7 @@ class Confluence {
      * Returns the {@link Label}s related to the given label name for the given {{spaceKey}}, with a specified maximum number of results.
      */
     public List<Object>getRelatedLabelsInSpace(String labelName, String spaceKey, int maxResults) throws Exception {
-        Object[] vector = (Object[]) call("getRelatedLabelsInSpace", labelName, spaceKey, new Integer(maxResults));
+        Object[] vector = (Object[]) call("getRelatedLabelsInSpace", labelName, spaceKey, (maxResults));
         return toList(vector, Label.class);
     }
 
@@ -759,7 +759,7 @@ class Confluence {
      * Returns the content for a given label ID
      */
     public List<Object> getLabelContentById(long labelId) throws Exception {
-        Object[] vector = (Object[]) call("getLabelContentById", new Long(labelId));
+        Object[] vector = (Object[]) call("getLabelContentById", (labelId));
         return Arrays.asList(vector);
     }
 
@@ -791,7 +791,7 @@ class Confluence {
      * Adds a label to the object with the given ContentEntityObject ID.
      */
     public boolean addLabelByName(String labelName, long objectId) throws Exception {
-        Boolean value = (Boolean) call("addLabelByName", labelName, new Long(objectId));
+        Boolean value = (Boolean) call("addLabelByName", labelName, (objectId));
         return value.booleanValue();
     }
 
@@ -799,7 +799,7 @@ class Confluence {
      * Adds a label with the given ID to the object with the given ContentEntityObject ID.
      */
     public boolean addLabelById(long labelId, long objectId) throws Exception {
-        Boolean value = (Boolean) call("addLabelById", new Long(labelId), new Long(objectId));
+        Boolean value = (Boolean) call("addLabelById", (labelId), (objectId));
         return value.booleanValue();
     }
 
@@ -807,7 +807,7 @@ class Confluence {
      * Adds the given label object to the object with the given ContentEntityObject ID.
      */
     public boolean addLabelByObject(Label labelObject, long objectId) throws Exception {
-        Boolean value = (Boolean) call("addLabelByObject", labelObject, new Long(objectId));
+        Boolean value = (Boolean) call("addLabelByObject", labelObject, (objectId));
         return value.booleanValue();
     }
 
@@ -823,7 +823,7 @@ class Confluence {
      * Removes the given label from the object with the given ContentEntityObject ID.
      */
     public boolean removeLabelByName(String labelName, long objectId) throws Exception {
-        Boolean value = (Boolean) call("removeLabelByName", labelName, new Long(objectId));
+        Boolean value = (Boolean) call("removeLabelByName", labelName, (objectId));
         return value.booleanValue();
     }
 
@@ -831,7 +831,7 @@ class Confluence {
      * Removes the label with the given ID from the object with the given ContentEntityObject ID.
      */
     public boolean removeLabelById(long labelId, long objectId) throws Exception {
-        Boolean value = (Boolean) call("removeLabelById", new Long(labelId), new Long(objectId));
+        Boolean value = (Boolean) call("removeLabelById", (labelId), (objectId));
         return value.booleanValue();
     }
 
@@ -839,7 +839,7 @@ class Confluence {
      * Removes the given label object from the object with the given ContentEntityObject ID.
      */
     public boolean removeLabelByObject(Label labelObject, long objectId) throws Exception {
-        Boolean value = (Boolean) call("removeLabelByObject", labelObject, new Long(objectId));
+        Boolean value = (Boolean) call("removeLabelByObject", labelObject, (objectId));
         return value.booleanValue();
     }
 
