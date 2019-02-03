@@ -76,11 +76,11 @@ public class MapObject {
     }
 
     protected void setInt(String key, int value) {
-        fields.put(key, new Integer(value));
+        fields.put(key,value);
     }
 
     protected void setInt(String key, String value) {
-        fields.put(key, new Integer(value));
+        fields.put(key, value);
     }
 
     protected int getInt(String key) {
@@ -101,7 +101,7 @@ public class MapObject {
     }
 
     protected void setBoolean(String key, boolean value) {
-        fields.put(key, new Boolean(value));
+        fields.put(key, value);
     }
 
     protected void setBoolean(String key, String value) {
