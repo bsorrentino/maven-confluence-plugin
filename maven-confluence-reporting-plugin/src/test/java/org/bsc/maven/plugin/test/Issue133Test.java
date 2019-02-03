@@ -31,14 +31,12 @@ public class Issue133Test {
         
         Assert.assertThat( endpoint.getPort(), Is.is(-1));
         
-        /*
-        final HttpUrl.Builder builder = new HttpUrl.Builder()
+        /*final HttpUrl.Builder builder = */new HttpUrl.Builder()
                .scheme(endpoint.getProtocol())
                .host(endpoint.getHost())
                .port(endpoint.getPort())
                .addPathSegments("rest/api")
              ; 
-  		*/
     }
 
     @Test
