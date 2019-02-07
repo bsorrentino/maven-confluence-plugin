@@ -209,7 +209,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
 
             a.setPageId( page.getId() );
 
-            result.complete(connection.addAttachment( new Long(page.getId()), a, baos.toByteArray() ));     
+            result.complete(connection.addAttachment( Long.parseLong(page.getId()), a, baos.toByteArray() ));     
             
         } catch (Exception e) {
             result.completeExceptionally(e);

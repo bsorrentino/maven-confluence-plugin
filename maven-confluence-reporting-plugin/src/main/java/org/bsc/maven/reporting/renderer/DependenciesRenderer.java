@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
     {
         // Dependencies report
     	
-        List<?> dependencies = listener.getRootNode().getChildren();
+        final List<ReportingResolutionListener.Node> dependencies = listener.getRootNode().getChildren();
 
         if ( dependencies.isEmpty() )
         {
@@ -102,23 +101,23 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
         String[] tableHeader = new String[]{groupId, artifactId, version, classifier, type, optional};
 
         // collect dependencies by scope
-        Map dependenciesByScope = getDependenciesByScope( dependencies );
+        Map<String,List<Artifact>> dependenciesByScope = getDependenciesByScope( dependencies );
 
         renderDependenciesForScope( Artifact.SCOPE_COMPILE,
-                                    (List) dependenciesByScope.get( Artifact.SCOPE_COMPILE ), tableHeader );
+                                    dependenciesByScope.get( Artifact.SCOPE_COMPILE ), tableHeader );
         renderDependenciesForScope( Artifact.SCOPE_RUNTIME,
-                                    (List) dependenciesByScope.get( Artifact.SCOPE_RUNTIME ), tableHeader );
-        renderDependenciesForScope( Artifact.SCOPE_TEST, (List) dependenciesByScope.get( Artifact.SCOPE_TEST ),
+                                    dependenciesByScope.get( Artifact.SCOPE_RUNTIME ), tableHeader );
+        renderDependenciesForScope( Artifact.SCOPE_TEST, dependenciesByScope.get( Artifact.SCOPE_TEST ),
                                     tableHeader );
         renderDependenciesForScope( Artifact.SCOPE_PROVIDED,
-                                    (List) dependenciesByScope.get( Artifact.SCOPE_PROVIDED ), tableHeader );
-        renderDependenciesForScope( Artifact.SCOPE_SYSTEM, (List) dependenciesByScope.get( Artifact.SCOPE_SYSTEM ),
+                                    dependenciesByScope.get( Artifact.SCOPE_PROVIDED ), tableHeader );
+        renderDependenciesForScope( Artifact.SCOPE_SYSTEM, dependenciesByScope.get( Artifact.SCOPE_SYSTEM ),
                                     tableHeader );
 
         endSection();
 
         // Transitive dependencies
-        List artifacts = new ArrayList( listener.getArtifacts() );
+        final List<ReportingResolutionListener.Node> artifacts = new ArrayList<>( listener.getArtifacts() );
         artifacts.removeAll( dependencies );
 
         startSection( getReportString( "report.dependencies.transitive.title" ) );
@@ -134,15 +133,15 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
             dependenciesByScope = getDependenciesByScope( artifacts );
 
             renderDependenciesForScope( Artifact.SCOPE_COMPILE,
-                                        (List) dependenciesByScope.get( Artifact.SCOPE_COMPILE ), tableHeader );
+                                        dependenciesByScope.get( Artifact.SCOPE_COMPILE ), tableHeader );
             renderDependenciesForScope( Artifact.SCOPE_RUNTIME,
-                                        (List) dependenciesByScope.get( Artifact.SCOPE_RUNTIME ), tableHeader );
-            renderDependenciesForScope( Artifact.SCOPE_TEST, (List) dependenciesByScope.get( Artifact.SCOPE_TEST ),
+                                        dependenciesByScope.get( Artifact.SCOPE_RUNTIME ), tableHeader );
+            renderDependenciesForScope( Artifact.SCOPE_TEST, dependenciesByScope.get( Artifact.SCOPE_TEST ),
                                         tableHeader );
             renderDependenciesForScope( Artifact.SCOPE_PROVIDED,
-                                        (List) dependenciesByScope.get( Artifact.SCOPE_PROVIDED ), tableHeader );
+                                        dependenciesByScope.get( Artifact.SCOPE_PROVIDED ), tableHeader );
             renderDependenciesForScope( Artifact.SCOPE_SYSTEM,
-                                        (List) dependenciesByScope.get( Artifact.SCOPE_SYSTEM ), tableHeader );
+                                        dependenciesByScope.get( Artifact.SCOPE_SYSTEM ), tableHeader );
         }
 
         endSection();
@@ -170,26 +169,27 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
         endSection();
     }
 
-    private Map getDependenciesByScope( List dependencies )
+    private Map<String,List<Artifact>> getDependenciesByScope( List<ReportingResolutionListener.Node> dependencies )
     {
-        Map dependenciesByScope = new HashMap();
-        for ( Iterator i = dependencies.iterator(); i.hasNext(); )
-        {
-            ReportingResolutionListener.Node node = (ReportingResolutionListener.Node) i.next();
+        Map<String,List<Artifact>> dependenciesByScope = new HashMap<>();
+        
+        dependencies.forEach( node -> {
+            
             Artifact artifact = node.getArtifact();
 
-            List multiValue = (List) dependenciesByScope.get( artifact.getScope() );
+            List<Artifact> multiValue = dependenciesByScope.get( artifact.getScope() );
             if ( multiValue == null )
             {
-                multiValue = new ArrayList();
+                multiValue = new ArrayList<>();
             }
             multiValue.add( artifact );
             dependenciesByScope.put( artifact.getScope(), multiValue );
-        }
+        	
+        });
         return dependenciesByScope;
     }
 
-    private void renderDependenciesForScope( String scope, List artifacts, String[] tableHeader )
+    private void renderDependenciesForScope( String scope, List<Artifact> artifacts, String[] tableHeader )
     {
         if ( artifacts != null )
         {
@@ -202,47 +202,44 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
             startTable();
             tableHeader( tableHeader );
 
-            for ( Iterator iterator = artifacts.iterator(); iterator.hasNext(); )
-            {
-                Artifact artifact = (Artifact) iterator.next();
-                tableRow( getArtifactRow( artifact ) );
-            }
+            artifacts.forEach( artifact -> tableRow( getArtifactRow( artifact ) ) );
+
             endTable();
 
             endSection();
         }
     }
 
-    private Comparator getArtifactComparator()
+    private Comparator<Artifact> getArtifactComparator()
     {
-        return new Comparator()
+        return ( Artifact a1, Artifact a2 ) -> 
         {
-            public int compare( Object o1, Object o2 )
+            // put optional last
+            if ( a1.isOptional() && !a2.isOptional() )
             {
-                Artifact a1 = (Artifact) o1;
-                Artifact a2 = (Artifact) o2;
-
-                // put optional last
-                if ( a1.isOptional() && !a2.isOptional() )
-                {
-                    return +1;
-                }
-                else if ( !a1.isOptional() && a2.isOptional() )
-                {
-                    return -1;
-                }
-                else
-                {
-                    return a1.compareTo( a2 );
-                }
+                return +1;
+            }
+            else if ( !a1.isOptional() && a2.isOptional() )
+            {
+                return -1;
+            }
+            else
+            {
+                return a1.compareTo( a2 );
             }
         };
     }
 
     private String[] getArtifactRow( Artifact artifact )
     {
-        return new String[]{artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion(),
-            artifact.getClassifier(), artifact.getType(), artifact.isOptional() ? "(optional)" : " "};
+        return new String[] {
+		        		artifact.getGroupId(), 
+		        		artifact.getArtifactId(), 
+		        		artifact.getVersion(),
+		        		artifact.getClassifier(), 
+		        		artifact.getType(), 
+		        		artifact.isOptional() ? "(optional)" : " "
+        			};
     }
 
     private void printDependencyListing( ReportingResolutionListener.Node node, boolean printRoot )
@@ -262,11 +259,7 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
         if ( !node.getChildren().isEmpty() )
         {
             sink.list();
-            for ( Iterator deps = node.getChildren().iterator(); deps.hasNext(); )
-            {
-                ReportingResolutionListener.Node dep = (ReportingResolutionListener.Node) deps.next();
-                printDependencyListing( dep, true );
-            }
+            node.getChildren().forEach( dep -> printDependencyListing( dep, true ) );
             sink.list_();
         }
 
@@ -316,12 +309,7 @@ public class DependenciesRenderer extends AbstractMavenReportRenderer {
             {
                 log.debug( e );
             }
-
-            for ( Iterator deps = node.getChildren().iterator(); deps.hasNext(); )
-            {
-                ReportingResolutionListener.Node dep = (ReportingResolutionListener.Node) deps.next();
-                printDescriptionsAndURLs( dep );
-            }
+            node.getChildren().forEach( dep ->  printDescriptionsAndURLs( dep ));
         }
         else
         {

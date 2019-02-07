@@ -240,6 +240,6 @@ From Release 3.0.1 this plugin is available from [MAVEN CENTRAL REPO|http://repo
 
 {code}
 
-----
 
-${plugin.goals}
+
+

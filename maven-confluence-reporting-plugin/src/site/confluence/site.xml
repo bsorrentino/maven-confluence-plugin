@@ -17,9 +17,8 @@
         <child name="Use Storage Format" uri="../markdown/storageformat_guide.md">
         </child>
 
-        <child name="Use Site Definition" uri="../markdown/site_guide.md">
-        <!--child name="Use Site Definition" uri="site_guide.confluence"-->
-        </child>
+        <child name="Use XML Site Definition" uri="../markdown/site_xml_guide.md"/>
+        <child name="Use YAML Site Definition" uri="../markdown/site_yaml_guide.md"/>
 
     </home>
 

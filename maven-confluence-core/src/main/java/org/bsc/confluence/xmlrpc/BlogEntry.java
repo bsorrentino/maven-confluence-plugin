@@ -121,8 +121,8 @@ public class BlogEntry extends MapObject {
 
     public Map<String,Object> toRawMap() {
         Map<String,Object> map = super.toRawMap();
-        map.put("version", new Integer(getVersion()));
-        map.put("locks", new Integer(getLocks()));
+        map.put("version", getVersion());
+        map.put("locks", getLocks());
         return map;
     }
 

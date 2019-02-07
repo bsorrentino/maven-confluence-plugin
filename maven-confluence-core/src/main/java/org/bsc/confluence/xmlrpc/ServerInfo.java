@@ -99,10 +99,10 @@ public class ServerInfo extends MapObject {
 
     public Map<String,Object> toRawMap() {
         Map<String,Object> map = super.toRawMap();
-        map.put("majorVersion", new Integer(getMajorVersion()));
-        map.put("minorVersion", new Integer(getMinorVersion()));
-        map.put("patchLevel", new Integer(getPatchLevel()));
-        map.put("developmentBuild", new Boolean(isDevelopmentBuild()));
+        map.put("majorVersion", getMajorVersion());
+        map.put("minorVersion", getMinorVersion());
+        map.put("patchLevel", getPatchLevel());
+        map.put("developmentBuild", isDevelopmentBuild());
         return map;
     }
 }

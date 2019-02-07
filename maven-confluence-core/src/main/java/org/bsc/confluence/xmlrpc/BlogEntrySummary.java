@@ -101,7 +101,7 @@ public class BlogEntrySummary extends MapObject {
     public Map<String,Object> toRawMap() {
         Map<String,Object> map = super.toRawMap();
         map.put("publishDate", getPublishDate());
-        map.put("locks", new Integer(getLocks()));
+        map.put("locks", getLocks());
         return map;
     }
 

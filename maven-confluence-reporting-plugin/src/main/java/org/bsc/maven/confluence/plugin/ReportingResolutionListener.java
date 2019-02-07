@@ -20,7 +20,7 @@ public class ReportingResolutionListener implements ResolutionListener {
 
     private Stack<Node> parents = new Stack<>();
 
-    private Map<String,Object> artifacts = new HashMap<>();
+    private Map<String,Node> artifacts = new HashMap<>();
 
     private Node rootNode;
 
@@ -34,7 +34,7 @@ public class ReportingResolutionListener implements ResolutionListener {
     @Override
     public void startProcessChildren( Artifact artifact )
     {
-        Node node = (Node) artifacts.get( artifact.getDependencyConflictId() );
+        Node node = artifacts.get( artifact.getDependencyConflictId() );
         if ( parents.isEmpty() )
         {
             rootNode = node;
@@ -46,7 +46,7 @@ public class ReportingResolutionListener implements ResolutionListener {
     @Override
     public void endProcessChildren( Artifact artifact )
     {
-        Node check = (Node) parents.pop();
+        Node check = parents.pop();
         assert artifact.equals( check.artifact );
     }
 
@@ -55,7 +55,7 @@ public class ReportingResolutionListener implements ResolutionListener {
     {
         assert omitted.getDependencyConflictId().equals( kept.getDependencyConflictId() );
 
-        Node prev = (Node) artifacts.get( omitted.getDependencyConflictId() );
+        Node prev = artifacts.get( omitted.getDependencyConflictId() );
         if ( prev != null )
         {
             if ( prev.parent != null )
@@ -79,7 +79,7 @@ public class ReportingResolutionListener implements ResolutionListener {
     {
         if ( artifacts.containsKey( artifact.getDependencyConflictId() ) )
         {
-            Node prev = (Node) artifacts.get( artifact.getDependencyConflictId() );
+            Node prev = artifacts.get( artifact.getDependencyConflictId() );
             if ( prev.parent != null )
             {
                 prev.parent.children.remove( prev );
@@ -100,7 +100,7 @@ public class ReportingResolutionListener implements ResolutionListener {
     @Override
     public void updateScope( Artifact artifact, String scope )
     {
-        Node node = (Node) artifacts.get( artifact.getDependencyConflictId() );
+        Node node = artifacts.get( artifact.getDependencyConflictId() );
 
         node.artifact.setScope( scope );
     }
@@ -108,7 +108,7 @@ public class ReportingResolutionListener implements ResolutionListener {
     @Override
     public void manageArtifact( Artifact artifact, Artifact replacement )
     {
-        Node node = (Node) artifacts.get( artifact.getDependencyConflictId() );
+        Node node = artifacts.get( artifact.getDependencyConflictId() );
 
         if ( node != null )
         {
@@ -141,7 +141,7 @@ public class ReportingResolutionListener implements ResolutionListener {
         // intentionally blank
     }
 
-    public Collection<Object> getArtifacts()
+    public Collection<Node> getArtifacts()
     {
         return artifacts.values();
     }
@@ -150,11 +150,11 @@ public class ReportingResolutionListener implements ResolutionListener {
     {
         private Node parent;
 
-        private List<Object> children = new ArrayList<>();
+        private List<Node> children = new ArrayList<>();
 
         private Artifact artifact;
 
-        public List<Object> getChildren()
+        public List<Node> getChildren()
         {
             return children;
         }
