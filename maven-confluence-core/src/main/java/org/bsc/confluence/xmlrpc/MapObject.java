@@ -91,7 +91,7 @@ public class MapObject {
         }
 
         if (o instanceof String) {
-            setInt(key, (String) o);
+            setInt(key, Integer.parseInt((String) o));
             return getInt(key);
         }
 
