@@ -7,7 +7,7 @@ target/
 .settings/
 .classpath
 .vscode/
-.factorypath/
+.factorypath
 
 maven-confluence-parent.iml
 maven-confluence-reporting-plugin/confluence-reporting-maven-plugin.iml
