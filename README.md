@@ -21,6 +21,9 @@ Please donate whether you wish support us to give more time to plugin's growth |
 
 ### News ###
 
+Feb 7, 2019 | [Release 6.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.2) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.2%7Cmaven-plugin)**  |
+---- | ---- | ---- |
+
 jan 16, 2019 | [Release 6.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.1) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
 
