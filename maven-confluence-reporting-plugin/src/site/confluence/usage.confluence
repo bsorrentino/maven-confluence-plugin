@@ -5,8 +5,9 @@ h3.Basic Declaration
 {code:xml}
 
  <plugin>
-  <groupId>org.bsc.maven</groupId>
-  <artifactId>confluence-reporting-maven-plugin</artifactId>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
   <configuration>
         <endPoint>${confluence.home}/rest/api</endPoint>
         <spaceKey>TEST</spaceKey>
