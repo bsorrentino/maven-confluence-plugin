@@ -96,7 +96,7 @@ _Italic text_
 
 #### portable image (can be used for confluence and not)
 ```
-![${pageTitle}^image-name.png](.images/image-name.png "")
+![./images/image-name.png](${pageTitle}^image-name.png "")
 ```
 
 ### Code / Verbatim

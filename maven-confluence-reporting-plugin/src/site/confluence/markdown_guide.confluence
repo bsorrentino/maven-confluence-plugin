@@ -97,7 +97,7 @@ h4.confluence specific
 
 h4.portable image (can be used for confluence and not)
 {noformat}
-![${pageTitle}^image-name.png](.images/image-name.png "")
+![./images/image-name.png](${pageTitle}^image-name.png "")
 {noformat}
 
 h3.Code / Verbatim
