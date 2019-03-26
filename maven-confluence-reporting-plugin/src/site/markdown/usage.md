@@ -92,7 +92,7 @@
 Put yours confluence credential within settings.xml as server
 
 ```xml
-    <server>s
+    <server>
         <id>my_confluence_server</id>
         <username>my_user</username>
         <password>my_password</password>
