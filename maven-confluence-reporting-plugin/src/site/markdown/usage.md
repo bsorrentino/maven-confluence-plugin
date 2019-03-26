@@ -92,7 +92,7 @@
 Put yours confluence credential within settings.xml as server
 
 ```xml
-    <server>
+    <server>s
         <id>my_confluence_server</id>
         <username>my_user</username>
         <password>my_password</password>
@@ -115,12 +115,14 @@ Variable | Description
  ```${project.team}```| project team information
  ```${project.scmManager}```   | scm information
  ```${project.dependencies}``` | dependencies    
- ```${pageTitle}```            | title of home page   
- ```${childTitle}```           | title of the current child page   
  ```${artifactId}```          | artifactId      
  ```${version}```            | version         
  ```${gitlog.jiraIssues}```     | list of JIRA issuses, extracted from gitlog since start tag
  ```${gitlog.sinceTagName}```   | name of version tag to start extract JIRA issues   
+ ```${home.title}```            | title of home page
+ ```${page.title}```           | title of the current page
+ ```${pageTitle}```            | title of home page **DEPRECATED, USE `home.title` INSTEAD**
+ ```${childTitle}```           | title of the current child page **DEPRECATED, USE `page.title` INSTEAD**
 
 #### Only available for plugin documentation
 

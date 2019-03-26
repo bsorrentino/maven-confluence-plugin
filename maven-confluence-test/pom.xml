@@ -17,7 +17,6 @@
 
         <api.rpc>rpc/xmlrpc</api.rpc>
         <api.rest>rest/api</api.rest>
-        <api>${api.rest}</api>
 
 
     </properties>
@@ -87,51 +86,39 @@
                             <goal>export</goal>
                         </goals>
                         <configuration>
-                            <endPoint>http://softwarefactory.softphone.it/confluence/${api}</endPoint>
-                            <spaceKey>~bsorrentino</spaceKey>
-                            <parentPageTitle>Home</parentPageTitle>
                             <pageTitle>GIT EXPERIENCE</pageTitle>
-                            <serverId>softphone-server</serverId>
                         </configuration>
                     </execution>
                     <!--
-                    mvn confluence-reporting:deploy@softphone
-                    mvn confluence-reporting:delete@softphone
+                    mvn confluence-reporting:deploy@test1
+                    mvn confluence-reporting:delete@test1
                     -->
                     <execution>
-                        <id>softphone</id>
+                        <id>test1</id>
                         <goals>
                             <goal>deploy</goal>
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <endPoint>http://softwarefactory.softphone.it/confluence/${api}</endPoint>
-                            <spaceKey>~bsorrentino</spaceKey>
-                            <parentPageTitle>Home</parentPageTitle>
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/site4confluence.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>softphone-server</serverId>
                         </configuration>
                     </execution>
                     <!--
-                    mvn confluence-reporting:deploy@local
-                    mvn confluence-reporting:delete@local
+                    mvn confluence-reporting:deploy@test2
+                    mvn confluence-reporting:delete@test2
                     -->
                     <execution>
-                        <id>local</id>
+                        <id>test2</id>
                         <goals>
                             <goal>deploy</goal>
                             <goal>delete</goal>
                         </goals>
                         <configuration>
 
-                            <endPoint>http://localhost:8090/${api}</endPoint>
-                            <!--endPoint>https://localhost:8443/rpc/xmlrpc</endPoint-->
-                            <spaceKey>TEST</spaceKey>
-                            <parentPageTitle>Home</parentPageTitle>
                             <!-- TEST ISSUE 147 -->
                             <skip>false</skip>
                             <!-- TEST ISSUE 107
@@ -143,7 +130,6 @@
                             <!--siteDescriptor>${basedir}/src/site/confluence/site5.xml</siteDescriptor-->
                             <siteDescriptor>${basedir}/src/site/confluence/site5-issue108.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>confluence-local</serverId>
 
                             <deployState/>
 
@@ -160,15 +146,10 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <endPoint>http://localhost:8090/${api.rpc}</endPoint>
-                            <spaceKey>TEST</spaceKey>
-                            <parentPageTitle>Home</parentPageTitle>
                             <!-- TEST ISSUE 40 -->
                             <siteDescriptor>${basedir}/src/site/confluence/issue158/site-issue158.xml</siteDescriptor>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>confluence-local</serverId>
-
 
                             <deployState>
                                 <active>true</active>
@@ -191,14 +172,10 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <endPoint>http://localhost:8090/${api}</endPoint>
-                            <spaceKey>TEST</spaceKey>
-                            <parentPageTitle>Home</parentPageTitle>
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>confluence-local</serverId>
 
                             <deployState>
                                 <active>true</active>
@@ -216,14 +193,10 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <endPoint>http://localhost:8090/${api}</endPoint>
-                            <spaceKey>TEST</spaceKey>
-                            <parentPageTitle>TEST</parentPageTitle>
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/issue129/template.confluence</templateWiki>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
-                            <serverId>confluence-local</serverId>
                         </configuration>
                     </execution>
                     <!--
@@ -237,15 +210,8 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <!--
-                            <endPoint>http://localhost:8090/rpc/xmlrpc</endPoint>
-                            -->
-                            <endPoint>http://softwarefactory.softphone.it/confluence/${api}</endPoint>
-                            <spaceKey>~bsorrentino</spaceKey>
-                            <parentPageTitle>Home</parentPageTitle>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/site-issue110.xml</siteDescriptor>
-                            <serverId>softphone-server</serverId>
                             <failOnError>false</failOnError>
                         </configuration>
                     </execution>
@@ -261,16 +227,26 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <!--
-                            <endPoint>http://localhost:8090/rpc/xmlrpc</endPoint>
-                            -->
-                            <endPoint>http://softwarefactory.softphone.it/confluence/${api.rpc}</endPoint>
-                            <spaceKey>~bsorrentino</spaceKey>
-                            <parentPageTitle>Home</parentPageTitle>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue187/site-issue187.xml</siteDescriptor>
-                            <serverId>softphone-server</serverId>
                             <failOnError>false</failOnError>
+                        </configuration>
+                    </execution>
+
+                    <!--
+                    mvn confluence-reporting:deploy@issue189
+                    mvn confluence-reporting:delete@issue189 -Dconfluence.page='TEST ISSUE 189'
+                    -->
+                    <execution>
+                        <id>issue189</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue189/site-issue189.yaml</siteDescriptor>
+                            <failOnError>true</failOnError>
                         </configuration>
                     </execution>
                 </executions>
@@ -286,4 +262,32 @@
       <tag>HEAD</tag>
   </scm>
 
+<profiles>
+    <profile>
+        <id>local</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+
+            <confluence.parentPage>Home</confluence.parentPage>
+            <confluence.serverId>confluence-local</confluence.serverId>
+            <confluence.spaceKey>TEST</confluence.spaceKey>
+            <confluence.endPoint>http://localhost:8090/${api.rest}</confluence.endPoint>
+
+        </properties>
+    </profile>
+
+    <profile>
+        <id>softphone</id>
+        <properties>
+
+            <confluence.parentPage>Home</confluence.parentPage>
+            <confluence.serverId>softphone-server</confluence.serverId>
+            <confluence.spaceKey>~bsorrentino</confluence.spaceKey>
+            <confluence.endPoint>http://softwarefactory.softphone.it/confluence/${api.rpc}</confluence.endPoint>
+
+        </properties>
+    </profile>
+</profiles>
 </project>
