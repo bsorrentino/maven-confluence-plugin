@@ -345,14 +345,14 @@
       
 <td><tt>${pageTitle}</tt> </td>
       
-<td>title of home page <b>DEPRECATED, USE <tt>home.title</tt> INSTEAD</b></td>
+<td>title of home page <b>DEPRECATED</b> (use <tt>home.title</tt> instead)</td>
     </tr>
     
 <tr class="a">
       
 <td><tt>${childTitle}</tt> </td>
       
-<td>title of the current child page <b>DEPRECATED, USE <tt>page.title</tt> INSTEAD</b></td>
+<td>title of the current child page <b>DEPRECATED</b> (use <tt>page.title</tt> instead)</td>
     </tr>
   </tbody>
 </table>
@@ -360,16 +360,25 @@
 <h4><a name="Only_available_for_plugin_documentation"></a>Only available for plugin documentation</h4>
 
 <table border="0" class="table table-striped">
-  <tbody>
+  <thead>
     
 <tr class="a">
       
-<td><tt>${plugin.summary}</tt></td>
+<th>Variable </th>
       
-<td>plugin summary <b>DEPRECATED</b> (use project.summary instead)</td>
+<th>Description</th>
     </tr>
+  </thead>
+  <tbody>
     
 <tr class="b">
+      
+<td><tt>${plugin.summary}</tt></td>
+      
+<td>plugin summary <b>DEPRECATED</b> (use <tt>project.summary</tt> instead)</td>
+    </tr>
+    
+<tr class="a">
       
 <td><tt>${plugin.goals}</tt></td>
       
