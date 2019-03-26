@@ -5,8 +5,14 @@ import static java.lang.String.format;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.parboiled.common.StringUtils;
 import org.pegdown.Extensions;
@@ -131,7 +137,63 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
         return new int[] {line,col};
     }
+  
+    /**
+     * 
+     * @param uri
+     * @return
+     */
+    private static CompletableFuture<String> getFileName( String uri ) {
+        
+        final CompletableFuture<String> result = new CompletableFuture<>();
+        try {
+            final java.net.URI uriObject = java.net.URI.create(uri);
+            
+            final String scheme = uriObject.getScheme();
+            if( scheme != null ) {
+                
+                switch( scheme.toLowerCase() ) {
+                case "classpath":
+                    result.completeExceptionally( 
+                            new IllegalArgumentException( "'classpath' scheme is not supported!"));    
+                    return result;
+                case "http":
+                case "https":
+                    result.complete(uri);
+                    return result;
+                }
+            }
+            
+            final Path path = Paths.get(uriObject.getPath());
+            
+            result.complete("${page.title}^".concat(path.getFileName().toString()));
+        
+        } catch( Throwable e) {
+            
+            result.completeExceptionally(e);
+        }
+        return result;
+    }
 
+    private static final Pattern patternUri = Pattern.compile("(?:(\\$\\{.+\\})\\^)?(.+)");
+
+    public static String processImageUrl( String url ) {
+        
+        final Matcher m = patternUri.matcher(url);
+        
+        if( !m.matches() ) {
+            throw new IllegalArgumentException( format("the URL [%s] is not valid!", url) ); 
+        }
+        
+        
+        if( m.group(1) != null ) { // the uri contains explictly a macro : ${ ... }
+            return url;
+        }
+        
+        return getFileName(m.group(2))
+                    .join();
+        
+    }
 
     @Override
     public String toString() {
@@ -183,10 +245,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
         private String title;
 
 
-        final FindPredicate<TextNode> isSpecialPanelText = new FindPredicate<TextNode>() {
+        final FindPredicate<TextNode> isSpecialPanelText = (TextNode p, Node parent, int index) -> {
 
-            @Override
-            public boolean f(TextNode p, Node parent, int index ) {
                 if( index != 0 ) return false;
 
                 if( "note:".equalsIgnoreCase(p.getText()) ) {
@@ -205,10 +265,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
                     element = "tip"; // SET ELEMENT TAG
                     return true;
                 }
-
-
+                
                 return false;
-            }
         };
 
         boolean apply( BlockQuoteNode bqn ) {
@@ -373,6 +431,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     @Override
     public void visit(ExpLinkNode eln) {
+
         _buffer.append( '[');
         visitChildren(eln);
         _buffer.append(format("|%s|%s]", eln.url, eln.title));
@@ -460,22 +519,19 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(final ExpImageNode ein) {
         // We always have a URL, relative or not
 
-        final ArrayList<String> alt = new ArrayList<String>();
-        boolean found = findByClass(ein, TextNode.class, new FindPredicate<TextNode>() {
-
-            @Override
-            public boolean f(TextNode node, Node parent, int index) {
+        final List<String> alt = new ArrayList<>();
+        boolean found = findByClass(ein, TextNode.class, (node, parent, index) -> {
                 alt.add(node.getText());
                 return true;
-            }
         });
 
-        if (!found) {
-            throw new IllegalStateException("The alt name should be mandatory in Markdown for images: " + ein.url);
-        }
-
-        String titlePart = isNotBlank(ein.title) ? format("|title=\"%s\"", ein.title) : "";
-        _buffer.append( format( "!%s|alt=\"%s\"%s!", ein.url, alt.get(0), titlePart));
+        final String altText = (found) ? alt.get(0) : "";
+        
+        final String titlePart = isNotBlank(ein.title) ? format("title=\"%s\"", ein.title) : "";
+        
+        final String url = processImageUrl(ein.url);
+        
+        _buffer.append( format( "!%s|%s!", url, altText, titlePart));
 
     }
 
@@ -483,33 +539,35 @@ public abstract class ToConfluenceSerializer implements Visitor {
     public void visit(final RefImageNode rin) {
 
         final ArrayList<String> alt = new ArrayList<String>();
-        boolean found = findByClass(rin, TextNode.class, new FindPredicate<TextNode>() {
-
-            @Override
-            public boolean f(TextNode node, Node parent, int index) {
+        boolean found = findByClass(rin, TextNode.class, (TextNode node, Node parent, int index) -> {
                 alt.add(node.getText());
                 return true;
-            }
         });
 
-        if (!found) {
-            throw new IllegalStateException("The alt name should be mandatory in Markdown for images. ");
-        }
+        final String altText = (found) ? alt.get(0) : "";
 
         final SuperNode referenceKey = rin.referenceKey;
         final String ref = getRefString(rin, referenceKey);
-        String url = ref;
+        String ref_url = ref;
         String title = null;
-        ReferenceNode referenceNode = referenceNodes.get(ref);
+
+        final ReferenceNode referenceNode = referenceNodes.get(ref);
         if (referenceNode != null) {
             if (isNotBlank(referenceNode.getUrl())) {
-                url = referenceNode.getUrl();
+                ref_url = referenceNode.getUrl();
             }
             title = referenceNode.getTitle();
         }
 
-        String titlePart = isNotBlank(title) ? format("|title=\"%s\"", title) : "";
-        _buffer.append( format( "!%s|alt=\"%s\"%s!", url, alt.get(0), titlePart));
+        final String url = processImageUrl(ref_url);
+
+        final String titlePart = isNotBlank(title) ? format("|title=\"%s\"", title) : "";
+        
+        _buffer.append( format( "!%s|%s!", url, altText, titlePart));
+        
+        
+        
+
     }
 
     private String getRefString(final SuperNode refnode, final SuperNode referenceKey) {

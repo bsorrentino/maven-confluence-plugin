@@ -1,0 +1,17 @@
+home:
+  uri: issue189.md
+  name: "TEST ISSUE 189"
+  attachments:
+    - name: dashboard.png
+      uri: dashboard.png
+      contentType: image/png
+      comment: test1
+    - name: meal.png
+      uri: images/meal.png
+      contentType: image/png
+      comment: test2
+  labels:
+    - issue189
+    - test
+    - markdown
+    - image

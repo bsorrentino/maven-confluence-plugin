@@ -1,11 +1,13 @@
 package org.bsc.maven.plugin.confluence;
 
-import org.bsc.markdown.ToConfluenceSerializer;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.function.Consumer;
+
 import org.apache.commons.io.IOUtils;
+import org.bsc.markdown.ToConfluenceSerializer;
 import org.junit.Test;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.AnchorLinkNode;
@@ -48,12 +50,6 @@ import org.pegdown.ast.Visitor;
  */
 public abstract class PegdownParse {
 
-    interface F<P extends Node> {
-        void f( P node );
-    }
-
-    //private static final String FILE0 = "TEST1.md";
-
     protected char[] loadResource( String name ) throws IOException {
 
         final ClassLoader cl = PegdownParse.class.getClassLoader();
@@ -90,15 +86,15 @@ public abstract class PegdownParse {
         }
 
 
-        <T extends Node> IfContext elseIf( Object n, Class<T> clazz, F<T> cb ) {
+        <T extends Node> IfContext elseIf( Object n, Class<T> clazz, Consumer<T> cb ) {
             return ( condition ) ? IsTrue : iF( n, clazz, cb );
         }
 
-        static <T extends Node> IfContext iF( Object n, Class<T> clazz, F<T> cb ) {
+        static <T extends Node> IfContext iF( Object n, Class<T> clazz, Consumer<T> cb ) {
 
             if( clazz.isInstance(n)) {
 
-                cb.f( clazz.cast(n));
+                cb.accept( clazz.cast(n));
                 return IsTrue;
             }
             return IsFalse;
@@ -106,54 +102,26 @@ public abstract class PegdownParse {
 
     }
 
-    final F<StrongEmphSuperNode> sesn = new F<StrongEmphSuperNode>() {
-
-        @Override
-        public void f(StrongEmphSuperNode node) {
+    final Consumer<StrongEmphSuperNode> sesn = ( node ) -> 
            System.out.printf( " chars=[%s], strong=%b, closed=%b", node.getChars(), node.isStrong(), node.isClosed() );
 
-        }
-
-    };
-
-    final F<ExpLinkNode> eln = new F<ExpLinkNode>() {
-
-        @Override
-        public void f(ExpLinkNode node) {
+    final Consumer<ExpLinkNode> eln = ( node ) ->
            System.out.printf( " title=[%s], url=[%s]", node.title, node.url );
-
-        }
-
-    };
-    final F<AnchorLinkNode> aln = new F<AnchorLinkNode>() {
-
-        @Override
-        public void f(AnchorLinkNode node) {
+    
+    final Consumer<AnchorLinkNode> aln = ( node ) ->
            System.out.printf( " name=[%s], text=[%s]", node.getName(), node.getText());
 
-        }
-
-    };
-    final F<VerbatimNode> vln = new F<VerbatimNode>() {
-
-        @Override
-        public void f(VerbatimNode node) {
+    final Consumer<VerbatimNode> vln = ( node ) ->
            System.out.printf( " text=[%s], type=[%s]", node.getText(), node.getType());
 
-        }
+    final Consumer<RefLinkNode> rln = ( node ) -> {
 
-    };
-    final F<RefLinkNode> rln = new F<RefLinkNode>() {
+        System.out.printf( " separatorSpace=[%s]", node.separatorSpace);
 
-        @Override
-        public void f(RefLinkNode node) {
-           System.out.printf( " separatorSpace=[%s]", node.separatorSpace);
-
-           if( node.referenceKey != null  ) {
-               System.out.println();
-               node.referenceKey.accept(newVisitor(4));
-           }
-        }
+       if( node.referenceKey != null  ) {
+           System.out.println();
+           node.referenceKey.accept(newVisitor(4));
+       }
 
     };
 
@@ -218,8 +186,12 @@ public abstract class PegdownParse {
         root.accept(newVisitor(0));
     }
 
-    @Test
-    public void serializerTest() throws IOException {
+    /**
+     * 
+     * @return
+     * @throws IOException
+     */
+    public String serializeToString() throws IOException {
 
         final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions());
 
@@ -241,7 +213,7 @@ public abstract class PegdownParse {
 
         root.accept( ser );
 
-        System.out.println( ser.toString() );
+        return ser.toString() ;
 
     }
 }
