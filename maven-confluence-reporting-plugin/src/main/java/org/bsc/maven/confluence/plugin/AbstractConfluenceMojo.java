@@ -250,7 +250,10 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
         processProperties( site );
 
-        getProperties().put("pageTitle", getTitle());
+        getProperties().put("pageTitle", getTitle()); // DEPRECATED USE home.title
+        getProperties().put("home.title", getTitle());
+        getProperties().put("page.title", getTitle());
+        
         getProperties().put("artifactId", project.getArtifactId());
         getProperties().put("version", project.getVersion());
         getProperties().put("groupId", project.getGroupId());
@@ -322,7 +325,8 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
 
                     addStdProperties(t);
 
-                    t.setVariableOpt("childTitle", pageName);
+                    t.setVariableOpt("childTitle", pageName); // DEPRECATED USE page.title
+                    t.setVariableOpt("page.title", pageName);
                 }
 
                 return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );

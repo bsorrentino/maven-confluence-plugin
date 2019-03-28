@@ -20,5 +20,14 @@ public class GettingStartedPegdownParseTest extends PegdownParse {
     protected char[] loadResource() throws IOException {
         return super.loadResource(FILE);
     }
+
+    public static void main( String args[] ) throws Exception  {
+        
+        final GettingStartedPegdownParseTest test = new GettingStartedPegdownParseTest();
+        
+        final String result = test.serializeToString();
+        
+        System.out.println( result );
+    }
     
 }

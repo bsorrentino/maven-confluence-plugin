@@ -27,7 +27,9 @@ public class SitePrinter {
      * @return
      */
     public static String getPrintableStringForResource( final Site site, final java.net.URI uri ) {
-        
+        if (uri == null)
+            throw new java.lang.IllegalArgumentException("uri is null!");
+
         try {
             Path p = Paths.get( uri );
             return site.getBasedir().relativize(p).toString();

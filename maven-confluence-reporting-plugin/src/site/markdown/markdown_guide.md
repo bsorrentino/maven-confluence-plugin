@@ -89,15 +89,25 @@ _Italic text_
 [conf-icon-none]: conf-icon-64.png
 ```
 
-#### confluence specific
+#### confluence specific (DEPRECATED)
 ```
-![ ](${pageTitle}^image-name.png )
+![](${page.title}^image-name.png)
 ```
 
-#### portable image (can be used for confluence and not)
+#### portable image
+
+**Original Size**
+
 ```
-![./images/image-name.png](${pageTitle}^image-name.png "")
+![](image-name.png)
 ```
+
+**Thumbnail**
+
+```
+![thumbnail](image-name.png)
+```
+
 
 ### Code / Verbatim
 

@@ -2,6 +2,137 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## v6.2
+### No issue
+
+**update ignore**
+
+
+[e239904cb787ec0](https://github.com/bsorrentino/maven-confluence-plugin/commit/e239904cb787ec0) bsorrentino *2019-02-07 17:00:40*
+
+**update ignore**
+
+
+[84aa61b73473210](https://github.com/bsorrentino/maven-confluence-plugin/commit/84aa61b73473210) bsorrentino *2019-02-07 17:00:15*
+
+**update readme**
+
+
+[bec2a160f918e4c](https://github.com/bsorrentino/maven-confluence-plugin/commit/bec2a160f918e4c) bsorrentino *2019-02-07 15:18:45*
+
+**promote version**
+
+
+[1eed2fd134a4d87](https://github.com/bsorrentino/maven-confluence-plugin/commit/1eed2fd134a4d87) bsorrentino *2019-02-07 15:17:45*
+
+**clean code**
+
+
+[53d7a051dbdcef4](https://github.com/bsorrentino/maven-confluence-plugin/commit/53d7a051dbdcef4) bsorrentino *2019-02-03 12:18:27*
+
+**clean code**
+
+
+[e34707a9410123a](https://github.com/bsorrentino/maven-confluence-plugin/commit/e34707a9410123a) bsorrentino *2019-02-03 12:14:46*
+
+**clean code**
+
+
+[c417e1009c81312](https://github.com/bsorrentino/maven-confluence-plugin/commit/c417e1009c81312) bsorrentino *2019-02-03 11:59:52*
+
+**clean code**
+
+
+[7b1b37605eae9c6](https://github.com/bsorrentino/maven-confluence-plugin/commit/7b1b37605eae9c6) bsorrentino *2019-02-03 11:56:20*
+
+**clean code**
+
+
+[79d177087e07f42](https://github.com/bsorrentino/maven-confluence-plugin/commit/79d177087e07f42) bsorrentino *2019-02-03 11:55:22*
+
+**clean code**
+
+
+[911971d06d774a8](https://github.com/bsorrentino/maven-confluence-plugin/commit/911971d06d774a8) bsorrentino *2019-02-03 11:52:48*
+
+**clean code**
+
+
+[7b13808569014ff](https://github.com/bsorrentino/maven-confluence-plugin/commit/7b13808569014ff) bsorrentino *2019-02-03 11:52:29*
+
+**clean code**
+
+
+[aaa8af98e3f14f5](https://github.com/bsorrentino/maven-confluence-plugin/commit/aaa8af98e3f14f5) bsorrentino *2019-02-03 11:51:53*
+
+**clean code**
+
+
+[257dfc0f8aae07f](https://github.com/bsorrentino/maven-confluence-plugin/commit/257dfc0f8aae07f) bsorrentino *2019-02-03 11:51:08*
+
+**clean code**
+
+
+[9230fe6d4c5e204](https://github.com/bsorrentino/maven-confluence-plugin/commit/9230fe6d4c5e204) bsorrentino *2019-02-03 11:50:42*
+
+**remove deprecation**
+
+
+[651f33abae20f0a](https://github.com/bsorrentino/maven-confluence-plugin/commit/651f33abae20f0a) bsorrentino *2019-02-03 11:49:31*
+
+**clean code**
+
+
+[7a769860d10e656](https://github.com/bsorrentino/maven-confluence-plugin/commit/7a769860d10e656) bsorrentino *2019-02-03 11:46:42*
+
+**unit test from version 4.8.3 => 4.12**
+
+
+[77143f5bc290a18](https://github.com/bsorrentino/maven-confluence-plugin/commit/77143f5bc290a18) bsorrentino *2019-02-03 11:46:29*
+
+**generate confluence doc on install phase**
+
+
+[7de98f93f1ff2d9](https://github.com/bsorrentino/maven-confluence-plugin/commit/7de98f93f1ff2d9) bsorrentino *2019-02-01 18:11:48*
+
+**move to next dev version**
+
+
+[9ba5d62710304d7](https://github.com/bsorrentino/maven-confluence-plugin/commit/9ba5d62710304d7) bsorrentino *2019-02-01 13:07:02*
+
+**move to parboiled-java version 1.1.7 to fix Pegdown Custom ParserPlugin**
+
+ * binding failed
+ * java.lang.RuntimeException: Error creating extended parser class: null
+
+[fab238c846ec55c](https://github.com/bsorrentino/maven-confluence-plugin/commit/fab238c846ec55c) bsorrentino *2019-02-01 13:06:46*
+
+**fix plugin doc**
+
+
+[aab3ad1fae2a3f3](https://github.com/bsorrentino/maven-confluence-plugin/commit/aab3ad1fae2a3f3) bsorrentino *2019-02-01 13:04:39*
+
+**refine confluence plugin doc**
+
+
+[f507c6bfe9fe8f6](https://github.com/bsorrentino/maven-confluence-plugin/commit/f507c6bfe9fe8f6) bsorrentino *2019-02-01 13:03:48*
+
+**clean code**
+
+
+[282b8c8d4585e53](https://github.com/bsorrentino/maven-confluence-plugin/commit/282b8c8d4585e53) bsorrentino *2019-02-01 13:03:19*
+
+**clean code**
+
+
+[2dc0c9fb7cb7256](https://github.com/bsorrentino/maven-confluence-plugin/commit/2dc0c9fb7cb7256) bsorrentino *2019-02-01 10:15:01*
+
+**update changelog**
+
+
+[49287762f3703b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/49287762f3703b0) bsorrentino *2019-01-16 11:43:04*
+
+
 ## v6.1
 ###  [#186](https://github.com/bsorrentino/maven-confluence-plugin/issues/186) downgrade maven prerequisites from 3.5.0 to 3.3.1    *Task*  
 

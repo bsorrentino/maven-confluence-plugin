@@ -5,8 +5,9 @@ h3.Basic Declaration
 {code:xml}
 
  <plugin>
-  <groupId>org.bsc.maven</groupId>
-  <artifactId>confluence-reporting-maven-plugin</artifactId>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
   <configuration>
         <endPoint>${confluence.home}/rest/api</endPoint>
         <spaceKey>TEST</spaceKey>
@@ -105,16 +106,19 @@ h3.Built-In template variables
 |{{$\{project.team}}}|project team information|
 |{{$\{project.scmManager}}} |scm information|
 |{{$\{project.dependencies}}} |dependencies|
-|{{$\{pageTitle}}} |title of home page|
-|{{$\{childTitle}}} |title of the current child page|
 |{{$\{artifactId}}} |artifactId|
 |{{$\{version}}} |version|
 |{{$\{gitlog.jiraIssues}}} |list of JIRA issuses, extracted from gitlog since start tag|
 |{{$\{gitlog.sinceTagName}}} |name of version tag to start extract JIRA issues|
+|{{$\{home.title}}}            | title of home page |
+|{{$\{page.title}}}           | title of the current page |
+|{{$\{pageTitle}}}            | title of home page *DEPRECATED (use {{home.title}} instead) |
+|{{$\{childTitle}}}           | title of the current child page *DEPRECATED* (use {{page.title}} instead) |
 
 {info:title=Only available for plugin documentation}
 
-|{{$\{plugin.summary}}}| plugin summary **DEPRECATED** (use project.summary instead)
+||Variable ||Description||
+|{{$\{plugin.summary}}}| plugin summary **DEPRECATED** (use {{project.summary}} instead)
 |{{$\{plugin.goals}}}}| plugin goals
 
 {info}
@@ -239,7 +243,3 @@ From Release 3.0.1 this plugin is available from [MAVEN CENTRAL REPO|http://repo
 
 
 {code}
-
-
-
-

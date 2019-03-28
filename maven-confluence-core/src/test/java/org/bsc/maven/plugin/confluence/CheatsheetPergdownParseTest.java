@@ -21,5 +21,13 @@ public class CheatsheetPergdownParseTest extends PegdownParse {
         return super.loadResource(FILE);
     }
     
+    public static void main( String args[] ) throws Exception  {
+        
+        final CheatsheetPergdownParseTest test = new CheatsheetPergdownParseTest();
+        
+        final String result = test.serializeToString();
+        
+        System.out.println( result );
+    }
     
 }

@@ -90,14 +90,23 @@ h3. Image Ref Link
 [conf-icon-none]: conf-icon-64.png
 {noformat}
 
-h4.confluence specific
+h4. confluence specific (DEPRECATED)
 {noformat}
-![ ](${pageTitle}^image-name.png )
+![](${page.title}^image-name.png)
 {noformat}
 
-h4.portable image (can be used for confluence and not)
+h4. portable image
+
+*Original Size*
+
 {noformat}
-![./images/image-name.png](${pageTitle}^image-name.png "")
+![](image-name.png)
+{noformat}
+
+*Thumbnail*
+
+{noformat}
+![thumbnail](image-name.png)
 {noformat}
 
 h3.Code / Verbatim
