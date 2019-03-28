@@ -19,19 +19,16 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
 Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
 
-### News ###
+### News
+ Date  | Info   
+--- | ---
+ **Mar 26, 2019** | [Release 6.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3)
+ **Feb 7, 2019** | [Release 6.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.2)
+ **Jan 16, 2019**  |[Release 6.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.1)
+ **Jan 14,2019**  | **[confluence-site](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli)** has been moved to an independent repository [confluence-site-publisher](https://github.com/bsorrentino/confluence-site-publisher)
+**jan 8, 2019** | [Release 6.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0)
 
-Feb 7, 2019 | [Release 6.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.2) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.2%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-jan 16, 2019 | [Release 6.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.1) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.1%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-Jan 14,2019  | **[confluence-site](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli)** has been moved to an independent repository [confluence-site-publisher](https://github.com/bsorrentino/confluence-site-publisher)|
----- | ---- |
-
-jan 8, 2019 | [Release 6.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0%7Cmaven-plugin)**  |
----- | ---- | ---- |
+#### 2018
 
 Nov 26, 2018 | [Release 6.0-rc4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc4) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc4%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
@@ -68,6 +65,8 @@ Jan 04, 2018 | **Release 5.1.1** | available from  **[MAVEN CENTRAL REPO](http:/
 ---- | ---- | ---- |
 
  * Refer to [Issue 148](https://github.com/bsorrentino/maven-confluence-plugin/issues/148) - confluence-reporting:export leads to `host parameter is null` exception
+
+#### 2017
 
 Nov 29, 2017 | **Release 5.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
@@ -132,6 +131,8 @@ Jan 18,2017  | **Release 5.0-rc2** | available from  **[MAVEN CENTRAL REPO](http
 ---- | ---- | ---- |
 
  * Refer to [Issue 133](https://github.com/bsorrentino/maven-confluence-plugin/issues/133) - Storage Format - `error generating report: unexpected port: -1`
+
+#### 2016
 
 Dec 6,2016  | **Release 5.0-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.0-rc1%7Cmaven-plugin)**  |
 ---- | ---- | ---- |
@@ -239,6 +240,8 @@ Aug 5,2016  | **Release 4.11** | available from  **[MAVEN CENTRAL REPO](http://s
 
   * Refer to [Issue 91](https://github.com/bsorrentino/maven-confluence-plugin/issues/91) - scm web access not shown as actual link
 
+#### 2015
+
 |Dec 29,2015 | **Release 4.4.3** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.4.3%7Cmaven-plugin)**  |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
@@ -307,6 +310,8 @@ Markdown support refinements, refer to documentation from:
   * Refer to [Issue 69](https://github.com/bsorrentino/maven-confluence-plugin/issues/69) -  allow PRE tag in comments.
   * Refer to [Issue 73](https://github.com/bsorrentino/maven-confluence-plugin/issues/73) -  SSL configuration   - **Thanks to [nadja.blaettel](https://code.google.com/u/110324327599883714561) for providing fix**.
 
+#### 2014
+
 |Jul 9,2014 | **Release 4.1.0** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C4.1.0%7Cmaven-plugin)**  |
 |:----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
@@ -348,6 +353,8 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
   * Refer to [Issue 62](https://github.com/bsorrentino/maven-confluence-plugin/issues/62) - Support for  exporting the  pages either in PDF and DOC
+
+#### 2013
 
 |Oct 29,2013 | **JBoss Forge plugin 1.1** | available for installation |
 |:-----------|:----------------------------|:---------------------------|
@@ -406,6 +413,10 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
   * fixed [Issue 51](https://github.com/bsorrentino/maven-confluence-plugin/issues/51) - 3.2.4 backward compatibility
 
+
+#### 2012
+
+
 |Dec 22,2012 | **Release 3.3.0-beta2** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**  |
 |:-----------|:-------------------------|:-------------------------------------------------------------------------|
 
@@ -451,6 +462,8 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
   * fixed [issue 27](https://github.com/bsorrentino/maven-confluence-plugin/issues/27) - add label support
   * fixed [issue 33](https://github.com/bsorrentino/maven-confluence-plugin/issues/33)
+
+#### 2011
 
 |Dec 28,2011 | **Release 3.1.3** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**  |
 |:-----------|:-------------------|:-------------------------------------------------------------------------|
@@ -511,6 +524,10 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
   * fixed [issue 8](https://github.com/bsorrentino/maven-confluence-plugin/issues/8) - add attachments support
 
+
+#### 2010
+
+
 |Aug 10,2010 | **Release 1.3.1** | Available from **JAVA.NET REPOSITORY** ( see [Issue 10](https://github.com/bsorrentino/maven-confluence-plugin/issues/10) ) |
 |:-----------|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------|
 
@@ -530,5 +547,11 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
 |Mar 2010|**Release 1.2 is out** this release allow to add child pages. (see [Issue 7](https://github.com/bsorrentino/maven-confluence-plugin/issues/7)) |
 |:-------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
-|Dec 2009| **Release 1.1 is out** this release allow to document both projects and plugin |
-|Oct 2009| This plugin has been accepted and published on [Atlassian plugin center](https://plugins.atlassian.com/plugin/home). Open page and search for **maven-confluence-plugin** |
+
+#### 2009
+
+Dec 2009 | **Release 1.1 is out** this release allow to document both projects and plugin
+ --- | ---
+
+Oct 2009| This plugin has been accepted and published on [Atlassian plugin center](https://plugins.atlassian.com/plugin/home). Open page and search for **maven-confluence-plugin**
+ --- | ---
