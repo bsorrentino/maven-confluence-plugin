@@ -112,12 +112,13 @@ h3.Built-In template variables
 |{{$\{gitlog.sinceTagName}}} |name of version tag to start extract JIRA issues|
 |{{$\{home.title}}}            | title of home page |
 |{{$\{page.title}}}           | title of the current page |
-|{{$\{pageTitle}}}            | title of home page *DEPRECATED, USE {home.title} INSTEAD* |
-|{{$\{childTitle}}}           | title of the current child page *DEPRECATED, USE {page.title} INSTEAD* |
+|{{$\{pageTitle}}}            | title of home page *DEPRECATED (use {{home.title}} instead) |
+|{{$\{childTitle}}}           | title of the current child page *DEPRECATED* (use {{page.title}} instead) |
 
 {info:title=Only available for plugin documentation}
 
-|{{$\{plugin.summary}}}| plugin summary **DEPRECATED** (use project.summary instead)
+||Variable ||Description||
+|{{$\{plugin.summary}}}| plugin summary **DEPRECATED** (use {{project.summary}} instead)
 |{{$\{plugin.goals}}}}| plugin goals
 
 {info}

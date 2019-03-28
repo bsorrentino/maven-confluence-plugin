@@ -97,12 +97,14 @@ h4. confluence specific (DEPRECATED)
 
 h4. portable image
 
-Original Size
+*Original Size*
+
 {noformat}
 ![](image-name.png)
 {noformat}
 
-Thumbnail
+*Thumbnail*
+
 {noformat}
 ![thumbnail](image-name.png)
 {noformat}

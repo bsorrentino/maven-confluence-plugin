@@ -96,12 +96,14 @@ _Italic text_
 
 #### portable image
 
-Original Size
+**Original Size**
+
 ```
 ![](image-name.png)
 ```
 
-Thumbnail
+**Thumbnail**
+
 ```
 ![thumbnail](image-name.png)
 ```
