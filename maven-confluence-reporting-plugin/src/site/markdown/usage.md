@@ -111,24 +111,25 @@ The template can include all valid confluence contents plus the following built-
 
 Variable | Description
 -----------------|-----------------
- ```${project.summary}```| project summary
- ```${project.team}```| project team information
- ```${project.scmManager}```   | scm information
- ```${project.dependencies}``` | dependencies    
- ```${artifactId}```          | artifactId      
- ```${version}```            | version         
- ```${gitlog.jiraIssues}```     | list of JIRA issuses, extracted from gitlog since start tag
- ```${gitlog.sinceTagName}```   | name of version tag to start extract JIRA issues   
- ```${home.title}```            | title of home page
- ```${page.title}```           | title of the current page
- ```${pageTitle}```            | title of home page **DEPRECATED, USE `home.title` INSTEAD**
- ```${childTitle}```           | title of the current child page **DEPRECATED, USE `page.title` INSTEAD**
+ `${project.summary}`| project summary
+ `${project.team}`| project team information
+ `${project.scmManager}`   | scm information
+ `${project.dependencies}` | dependencies    
+ `${artifactId}`          | artifactId      
+ `${version}`            | version         
+ `${gitlog.jiraIssues}`     | list of JIRA issuses, extracted from gitlog since start tag
+ `${gitlog.sinceTagName}`   | name of version tag to start extract JIRA issues   
+ `${home.title}`            | title of home page
+ `${page.title}`           | title of the current page
+ `${pageTitle}`            | title of home page **DEPRECATED** (use `home.title` instead)
+ `${childTitle}`           | title of the current child page **DEPRECATED** (use `page.title` instead)
 
 #### Only available for plugin documentation
 
+Variable | Description
 -----------------|-----------------
-```${plugin.summary}```| plugin summary **DEPRECATED** (use project.summary instead)
-```${plugin.goals}```| plugin goals
+`${plugin.summary}`| plugin summary **DEPRECATED** (use `project.summary` instead)
+`${plugin.goals}`| plugin goals
 
 
 ### Images
