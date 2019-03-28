@@ -2,6 +2,66 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## v6.3
+###  [#187](https://github.com/bsorrentino/maven-confluence-plugin/issues/187) Image Markdown does not work correctly    *under verification*  
+
+**update documentation - fix #187**
+
+
+[21f90a0ce7ec9c9](https://github.com/bsorrentino/maven-confluence-plugin/commit/21f90a0ce7ec9c9) bsorrentino *2019-03-22 09:01:07*
+
+**#187 add test to verify issue**
+
+
+[1ce5e41f65d6871](https://github.com/bsorrentino/maven-confluence-plugin/commit/1ce5e41f65d6871) bsorrentino *2019-03-21 16:17:16*
+
+
+###  [#189](https://github.com/bsorrentino/maven-confluence-plugin/issues/189) Markdown portable image format doesn&#39;t work    *bug*  
+
+**issue #189**
+
+
+[fe0642f3ba1548c](https://github.com/bsorrentino/maven-confluence-plugin/commit/fe0642f3ba1548c) bsorrentino *2019-03-26 19:46:19*
+
+**issue #189**
+
+
+[29e6f9ce768c457](https://github.com/bsorrentino/maven-confluence-plugin/commit/29e6f9ce768c457) bsorrentino *2019-03-26 19:46:05*
+
+
+### No issue
+
+**move to next version**
+
+
+[a4cebcecfd57c7f](https://github.com/bsorrentino/maven-confluence-plugin/commit/a4cebcecfd57c7f) bsorrentino *2019-03-28 15:41:30*
+
+**clean code**
+
+
+[fcdb726e4cbe50b](https://github.com/bsorrentino/maven-confluence-plugin/commit/fcdb726e4cbe50b) bsorrentino *2019-03-26 19:57:02*
+
+**update doc**
+
+
+[6b3a646d8d61f4e](https://github.com/bsorrentino/maven-confluence-plugin/commit/6b3a646d8d61f4e) bsorrentino *2019-02-12 11:12:02*
+
+**move to nex dev version**
+
+
+[23763afc7f2b202](https://github.com/bsorrentino/maven-confluence-plugin/commit/23763afc7f2b202) bsorrentino *2019-02-07 17:16:36*
+
+**fix problem on xmlrpc - getInt recursive call**
+
+
+[cb5b800661b0473](https://github.com/bsorrentino/maven-confluence-plugin/commit/cb5b800661b0473) bsorrentino *2019-02-07 17:14:44*
+
+**update changelog**
+
+
+[715064c9a913869](https://github.com/bsorrentino/maven-confluence-plugin/commit/715064c9a913869) bsorrentino *2019-02-07 17:03:43*
+
+
 ## v6.2
 ### No issue
 
