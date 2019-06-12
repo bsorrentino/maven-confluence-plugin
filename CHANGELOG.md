@@ -2,8 +2,23 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Unreleased
+## v6.3.1
 ### No issue
+
+**update CHANGELOG**
+
+
+[1ac14d9ff50b9ad](https://github.com/bsorrentino/maven-confluence-plugin/commit/1ac14d9ff50b9ad) bsorrentino *2019-06-12 08:45:37*
+
+**update submodule**
+
+
+[d78af19f40612c2](https://github.com/bsorrentino/maven-confluence-plugin/commit/d78af19f40612c2) bsorrentino *2019-06-12 08:41:43*
+
+**fix security alert - com.fasterxml.jackson.core:jackson-databind**
+
+
+[fc9dbdca2ded886](https://github.com/bsorrentino/maven-confluence-plugin/commit/fc9dbdca2ded886) bsorrentino *2019-06-12 08:35:25*
 
 **update readme**
 
