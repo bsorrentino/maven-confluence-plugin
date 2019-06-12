@@ -6,14 +6,14 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.3</version>
+        <version>6.3.1</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>maven-confluence-plugin-test</artifactId>
     <packaging>maven-plugin</packaging>
 
-    <name>CONFLUENCE-REPORTING::Test::Plugin - ${project.version}</name>
+    <name>CONFLUENCE-REPORTING::Test::Plugin</name>
     <description>Test generation for maven plugin</description>
 
     <properties>
@@ -47,7 +47,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
                 <configuration>
-                    <goalPrefix>hello</goalPrefix>
+                    <goalPrefix>confluencetest</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
                 <executions>

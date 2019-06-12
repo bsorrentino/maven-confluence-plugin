@@ -65,7 +65,7 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.4</version>
                 <configuration>
-                    <goalPrefix>hello</goalPrefix>
+                    <goalPrefix>confluencetest</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
                 <executions>
