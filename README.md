@@ -22,6 +22,7 @@ Please donate whether you wish support us to give more time to plugin's growth |
 ### News
  Date  | Info   
 --- | ---
+ **Jun 12, 2019** | [Release 6.3.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3.1)
  **Mar 26, 2019** | [Release 6.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3)
  **Feb 7, 2019** | [Release 6.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.2)
  **Jan 16, 2019**  |[Release 6.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.1)
