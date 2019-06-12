@@ -476,11 +476,14 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
   * fixed [issue 20](https://github.com/bsorrentino/maven-confluence-plugin/issues/20)
 
-Jun 18,2011 | **Release 3.0.1** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)** 
+
+Jun 18,2011 | **Release 3.0.1** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**  
  --- | --- | ---
 
-Jun 16,2011 | submitted request to [SONATYPE](http://oss.sonatype.org/) to allow, artifact deploying, within central repository 
+
+Jun 16,2011 | submitted request to [SONATYPE](http://oss.sonatype.org/) to allow, artifact deploying, within central repository  
  --- | --- | ---
+
 
 Apr 1,2011 | Created a branch to continue support of maven2 - the trunk now contains the 3.x code-line for support of maven3 
  --- | --- | ---
