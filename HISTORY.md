@@ -439,7 +439,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
   * fixed [issue 32](https://github.com/bsorrentino/maven-confluence-plugin/issues/32) - Add parameter to override page title.
 
 |Dec 15,2011 | Project has been approved in [CODEHAUS FOUNDATION](http://xircles.codehaus.org/) with name **Maven Confluence Site Plugin** 
- --- | --- | ---
+ --- | --- 
 
   * [Codehaus Site Home](http://xircles.codehaus.org/projects/maven-confluence-site)
   * [Codehaus Confluence Home](http://docs.codehaus.org/display/MVNCONFSITE)
