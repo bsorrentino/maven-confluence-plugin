@@ -261,7 +261,7 @@ Markdown support refinements, refer to documentation from:
 
 
 
-|Jun 5,2015 | [All Codehaus services have been terminated](http://www.codehaus.org/termination/) |
+|Jun 5,2015 | [All Codehaus services have been terminated](http://www.codehaus.org/termination/) 
  --- | --- | ---
 
   * Refer to [Issue 77] - http://docs.codehaus.org/display/MVNCONFSITE is dead
@@ -307,7 +307,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
   * Refer to [Issue 58](https://github.com/bsorrentino/maven-confluence-plugin/issues/58) - Rename Plugin
   * See [documentation](http://bsorrentino.github.io/maven-confluence-reporting-plugin/)
 
-|March 2014 | **Branch for release 4 has been moved to [GITHUB](https://github.com/bsorrentino/maven-confluence-reporting-plugin)** |
+|March 2014 | **Branch for release 4 has been moved to [GITHUB](https://github.com/bsorrentino/maven-confluence-reporting-plugin)** 
  --- | --- | ---
 
 |Feb 4,2014 | **Release 3.4.4-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cmaven-confluence-reporting-plugin%7C3.4.4-rc1%7Cmaven-plugin)**  |
@@ -368,15 +368,14 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 |May 28,2013 | **Release 3.3.0-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cmaven-confluence-reporting-plugin%7C3.3.0-rc1%7Cmaven-plugin)**
  --- | --- | ---
 
-
   * fixed [Issue 41](https://github.com/bsorrentino/maven-confluence-plugin/issues/41), [Issue 53](https://github.com/bsorrentino/maven-confluence-plugin/issues/53)
 
-|Apr 25,2013 | **Start developing [JBoss Forge](http://forge.jboss.org/) Integration**  
+| Apr 25,2013 | **Start developing [JBoss Forge](http://forge.jboss.org/) Integration**
  --- | --- | ---
 
   * [Issue 52](https://github.com/bsorrentino/maven-confluence-plugin/issues/52)
 
-|Feb 15,2013 | **Release 3.3.0-beta3** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**   --- | --- | ---
+| Feb 15,2013 | **Release 3.3.0-beta3** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**    --- | --- | ---
 
 * fixed [Issue 51](https://github.com/bsorrentino/maven-confluence-plugin/issues/51) - 3.2.4 backward compatibility
 
@@ -389,7 +388,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
   * See [What's new in 3.3.0 release](WhatsNewInRelease3_3.md)
 
-|Oct 12,2012 | **export code from svn to git**
+|Oct 12,2012 | **export code from svn to git** 
  --- | --- | ---
 
 |Oct 8,2012 | **Release 3.2.4** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**
@@ -438,7 +437,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
   * fixed [issue 30](https://github.com/bsorrentino/maven-confluence-plugin/issues/30) - add parentPageTitle as build-in variable
   * fixed [issue 32](https://github.com/bsorrentino/maven-confluence-plugin/issues/32) - Add parameter to override page title.
 
-|Dec 15,2011 | Project has been approved in [CODEHAUS FOUNDATION](http://xircles.codehaus.org/) with name **Maven Confluence Site Plugin**
+|Dec 15,2011 | Project has been approved in [CODEHAUS FOUNDATION](http://xircles.codehaus.org/) with name **Maven Confluence Site Plugin** 
  --- | --- | ---
 
   * [Codehaus Site Home](http://xircles.codehaus.org/projects/maven-confluence-site)
@@ -480,10 +479,10 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 Jun 18,2011 | **Release 3.0.1** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)** 
  --- | --- | ---
 
-Jun 16,2011 | submitted request to [SONATYPE](http://oss.sonatype.org/) to allow, artifact deploying, within central repository
+Jun 16,2011 | submitted request to [SONATYPE](http://oss.sonatype.org/) to allow, artifact deploying, within central repository 
  --- | --- | ---
 
-Apr 1,2011 | Created a branch to continue support of maven2 - the trunk now contains the 3.x code-line for support of maven3
+Apr 1,2011 | Created a branch to continue support of maven2 - the trunk now contains the 3.x code-line for support of maven3 
  --- | --- | ---
 
 * refer to [issue 15](https://github.com/bsorrentino/maven-confluence-plugin/issues/15)
