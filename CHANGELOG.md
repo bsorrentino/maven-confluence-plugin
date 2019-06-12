@@ -2,6 +2,20 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Unreleased
+### No issue
+
+**update readme**
+
+
+[f94d8dfac9cadb7](https://github.com/bsorrentino/maven-confluence-plugin/commit/f94d8dfac9cadb7) bsorrentino *2019-03-28 16:22:05*
+
+**update changelog**
+
+
+[2fe8de8bec7b582](https://github.com/bsorrentino/maven-confluence-plugin/commit/2fe8de8bec7b582) bsorrentino *2019-03-28 15:47:06*
+
+
 ## v6.3
 ###  [#187](https://github.com/bsorrentino/maven-confluence-plugin/issues/187) Image Markdown does not work correctly    *under verification*  
 
