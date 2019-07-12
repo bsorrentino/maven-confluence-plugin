@@ -1,0 +1,20 @@
+home:
+  uri: issue191.md
+  name: "[Design review] [Prism] CB integration module"
+  attachments:
+    - name: dashboard.png
+      uri: images/dashboard.png
+      contentType: image/png
+      comment: test1
+    - name: meal.png
+      uri: images/meal.png
+      contentType: image/png
+      comment: test2
+  children:
+    - name: "Issue#191"
+      uri: issue191.confluence
+  labels:
+    - issue191
+    - test
+    - markdown
+    - image

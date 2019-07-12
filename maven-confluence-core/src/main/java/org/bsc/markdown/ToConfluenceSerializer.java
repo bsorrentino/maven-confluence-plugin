@@ -166,7 +166,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
             
             final Path path = Paths.get(uriObject.getPath());
             
-            result.complete("${page.title}^".concat(path.getFileName().toString()));
+            //result.complete("${page.title}^".concat(path.getFileName().toString()));
+            result.complete(path.getFileName().toString());
         
         } catch( Throwable e) {
             
@@ -177,7 +178,13 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     private static final Pattern patternUri = Pattern.compile("(?:(\\$\\{.+\\})\\^)?(.+)");
 
-    public static String processImageUrl( String url ) {
+    /**
+     * 
+     * @param url
+     * @param addPrefix
+     * @return
+     */
+    public String processImageUrl( String url ) {
         
         final Matcher m = patternUri.matcher(url);
         
@@ -189,8 +196,9 @@ public abstract class ToConfluenceSerializer implements Visitor {
         if( m.group(1) != null ) { // the uri contains explictly a macro : ${ ... }
             return url;
         }
-        
+  
         return getFileName(m.group(2))
+                    .thenApply( s -> ( isImagePrefixEnabled() ) ? "${page.title}^".concat(s) : s )
                     .join();
         
     }
@@ -200,6 +208,15 @@ public abstract class ToConfluenceSerializer implements Visitor {
         return _buffer.toString();
     }
 
+    /**
+     * indicates whether the prefix ${page.title} should be added or not
+     * s
+     * @return
+     */
+    protected boolean isImagePrefixEnabled() {
+        return true;
+    }
+    
     /**
      * The home page title useful to manage #RefLinkNode
      *
@@ -529,7 +546,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
         
         final String titlePart = isNotBlank(ein.title) ? format("title=\"%s\"", ein.title) : "";
         
-        final String url = processImageUrl(ein.url);
+        final String url = processImageUrl(ein.url );
         
         _buffer.append( format( "!%s|%s!", url, altText, titlePart));
 

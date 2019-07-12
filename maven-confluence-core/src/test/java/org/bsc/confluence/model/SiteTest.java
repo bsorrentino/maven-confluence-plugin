@@ -1,13 +1,14 @@
 package org.bsc.confluence.model;
 
 import static org.bsc.confluence.model.SiteProcessor.processMarkdown;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
@@ -33,7 +34,7 @@ public class SiteTest {
     public void shouldSupportReferenceNode() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(stream, "Test");
+        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -46,7 +47,7 @@ public class SiteTest {
     public void shouldSupportImgRefLink() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(stream, "Test IMG");
+        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test IMG");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -63,7 +64,7 @@ public class SiteTest {
     public void shouldSupportSimpleNode() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(stream, "Test");
+        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -81,7 +82,7 @@ public class SiteTest {
     public void shouldCreateSpecificNoticeBlock() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(stream, "Test Macro");
+        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test Macro");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
