@@ -1,5 +1,7 @@
 package org.bsc.confluence.model;
 
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
@@ -237,7 +239,7 @@ public class SiteProcessor {
             protected void notImplementedYet(Node node) {
 
                 final int lc[] = ToConfluenceSerializer.lineAndColFromNode(new String(contents), node);
-                throw new UnsupportedOperationException(String.format("Node [%s] not supported yet. line=[%d] col=[%d]",
+                throw new UnsupportedOperationException(format("Node [%s] not supported yet. line=[%d] col=[%d]",
                         node.getClass().getSimpleName(), lc[0], lc[1]));
             }
 
