@@ -2,6 +2,73 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## v6.3.2
+###  [#191](https://github.com/bsorrentino/maven-confluence-plugin/issues/191) Markdown image link to Attlasian wiki format wrong conversion in case of page titles with uncommon chars like square braces    *under verification*  
+
+**fix issue #191**
+
+
+[f3f2397c47dc2c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/f3f2397c47dc2c5) bsorrentino *2019-07-12 15:26:43*
+
+**update test to verify #191**
+
+
+[8582b97232df30c](https://github.com/bsorrentino/maven-confluence-plugin/commit/8582b97232df30c) bsorrentino *2019-07-10 16:02:56*
+
+
+### No issue
+
+**move to next prod version**
+
+
+[18f87e9bd08f12a](https://github.com/bsorrentino/maven-confluence-plugin/commit/18f87e9bd08f12a) bsorrentino *2019-07-15 19:38:40*
+
+**move to next develop version**
+
+
+[ced975538a918d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/ced975538a918d0) bsorrentino *2019-07-12 15:26:33*
+
+**clean code**
+
+
+[a6de091b6cba4d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/a6de091b6cba4d2) bsorrentino *2019-07-12 13:11:17*
+
+**update doc**
+
+
+[cc3d763965c975a](https://github.com/bsorrentino/maven-confluence-plugin/commit/cc3d763965c975a) bsorrentino *2019-06-12 12:48:19*
+
+**update doc**
+
+
+[a497a5076be540c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a497a5076be540c) bsorrentino *2019-06-12 12:47:11*
+
+**update doc**
+
+
+[b440eb9c59b4ab6](https://github.com/bsorrentino/maven-confluence-plugin/commit/b440eb9c59b4ab6) bsorrentino *2019-06-12 12:44:34*
+
+**update doc**
+
+
+[2655c57238317b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/2655c57238317b1) bsorrentino *2019-06-12 12:42:42*
+
+**update documentation**
+
+
+[26dee555c4c43ad](https://github.com/bsorrentino/maven-confluence-plugin/commit/26dee555c4c43ad) bsorrentino *2019-06-12 12:37:44*
+
+**update readme**
+
+
+[40a6fe7d1c7b787](https://github.com/bsorrentino/maven-confluence-plugin/commit/40a6fe7d1c7b787) bsorrentino *2019-06-12 10:33:59*
+
+**update changelog**
+
+
+[c496bea1bd57fa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/c496bea1bd57fa9) bsorrentino *2019-06-12 08:56:32*
+
+
 ## v6.3.1
 ### No issue
 
@@ -248,16 +315,6 @@
 
 [906ad52e9b9934c](https://github.com/bsorrentino/maven-confluence-plugin/commit/906ad52e9b9934c) bsorrentino *2019-01-14 18:29:46*
 
-**update changelog config**
-
-
-[9155dbb9eaa1050](https://github.com/bsorrentino/maven-confluence-plugin/commit/9155dbb9eaa1050) bsorrentino *2019-01-09 17:19:02*
-
-**fix security alert**
-
-
-[11e6f4e94d434d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/11e6f4e94d434d8) Bartolomeo Sorrentino *2019-01-05 20:23:00*
-
 
 ## v6.0
 ###  [#178](https://github.com/bsorrentino/maven-confluence-plugin/issues/178) Reuse session in XMLRPC protocol    *enhancement*  
@@ -291,6 +348,11 @@
 
 ### No issue
 
+**update changelog config**
+
+
+[9155dbb9eaa1050](https://github.com/bsorrentino/maven-confluence-plugin/commit/9155dbb9eaa1050) bsorrentino *2019-01-09 17:19:02*
+
 **prepare release 6.0**
 
 
@@ -305,6 +367,11 @@
 
 
 [ca520fecf2df5bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/ca520fecf2df5bb) bsorrentino *2019-01-08 21:43:58*
+
+**fix security alert**
+
+
+[11e6f4e94d434d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/11e6f4e94d434d8) Bartolomeo Sorrentino *2019-01-05 20:23:00*
 
 **add maven prerequisites**
 
