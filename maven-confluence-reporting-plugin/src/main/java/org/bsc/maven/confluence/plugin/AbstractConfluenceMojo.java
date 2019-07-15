@@ -306,7 +306,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             final String pageName )
     {
 
-        return processPageUri(source, this.getTitle(), ( err, tuple2) -> {
+        return processPageUri(pageToUpdate, source, this.getTitle(), ( err, tuple2) -> {
 
             final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
@@ -463,7 +463,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     private String processUriContent( Site site, java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            return  SiteProcessor.processUriContent(uri, this.getTitle(), (InputStream is, Representation r) -> {
+            return  SiteProcessor.processUriContent( uri, this.getTitle(), (InputStream is, Representation r) -> {
 
                     try {
                         return AbstractConfluenceMojo.this.toString( is, charset );

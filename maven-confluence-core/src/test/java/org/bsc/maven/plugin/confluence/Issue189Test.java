@@ -20,7 +20,7 @@ import org.junit.Test;
  * @author bsorrentino
  *
  */
-public class Issue189 extends PegdownParse {
+public class Issue189Test extends PegdownParse {
 
     @Override
     protected char[] loadResource() throws IOException {
@@ -33,7 +33,7 @@ public class Issue189 extends PegdownParse {
             .append( "![alt text](img.png \"title\")" ).append("\n\n")
             .append( "![thumbnail](meal.png \"Meal\")" ).append("\n\n")
             .append( "![conf-icon](http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png \"My conf-icon\")" ).append("\n\n")
-            
+            .append( "![cb-integration-components.png](cb-integration-components.png)").append("\n\n")
             .toString()
             .toCharArray()
         ;
@@ -53,6 +53,7 @@ public class Issue189 extends PegdownParse {
         assertThat( lines[i++], equalTo("!${page.title}^img.png|alt text!"));
         assertThat( lines[i++], equalTo("!${page.title}^meal.png|thumbnail!"));
         assertThat( lines[i++], equalTo("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
+        assertThat( lines[i++], equalTo("!${page.title}^cb-integration-components.png|cb-integration-components.png!"));
     }
 
     /**

@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.3.1</version>
+        <version>6.3.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,21 +22,21 @@
     </properties>
 
     <contributors>
-    <contributor>
-      <name>Noelle</name>
-      <email>some.name@gmail.com</email>
-      <url>http://noellemarie.com</url>
-      <organization>Noelle Marie</organization>
-      <organizationUrl>http://noellemarie.com</organizationUrl>
-      <roles>
-        <role>tester</role>
-      </roles>
-      <timezone>America/Vancouver</timezone>
-      <properties>
-        <gtalk>some.name@gmail.com</gtalk>
-      </properties>
-    </contributor>
-  </contributors>
+      <contributor>
+        <name>Noelle</name>
+        <email>some.name@gmail.com</email>
+        <url>http://noellemarie.com</url>
+        <organization>Noelle Marie</organization>
+        <organizationUrl>http://noellemarie.com</organizationUrl>
+        <roles>
+          <role>tester</role>
+        </roles>
+        <timezone>America/Vancouver</timezone>
+        <properties>
+          <gtalk>some.name@gmail.com</gtalk>
+        </properties>
+      </contributor>
+    </contributors>
 
 
     <build>
@@ -83,7 +83,7 @@
                     <execution>
                         <id>issue148</id>
                         <goals>
-                            <goal>export</goal>
+                          <goal>export</goal>
                         </goals>
                         <configuration>
                             <pageTitle>GIT EXPERIENCE</pageTitle>
@@ -232,7 +232,6 @@
                             <failOnError>false</failOnError>
                         </configuration>
                     </execution>
-
                     <!--
                     mvn confluence-reporting:deploy@issue189
                     mvn confluence-reporting:delete@issue189 -Dconfluence.page='TEST ISSUE 189'
@@ -246,6 +245,22 @@
                         <configuration>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue189/site-issue189.yaml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue191
+                    mvn confluence-reporting:delete@issue191 -Dconfluence.page='...'
+                    -->
+                    <execution>
+                        <id>issue191</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue191/site-issue191.yaml</siteDescriptor>
                             <failOnError>true</failOnError>
                         </configuration>
                     </execution>

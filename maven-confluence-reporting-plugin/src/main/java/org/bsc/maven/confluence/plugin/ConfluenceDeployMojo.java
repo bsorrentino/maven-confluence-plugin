@@ -549,7 +549,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     {
         final java.net.URI uri = site.getHome().getUri();
 
-        return processPageUri(  uri, homePage.getTitle(), (err, tuple2) -> {
+        return processPageUri( homePage, uri, homePage.getTitle(), (err, tuple2) -> {
             final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
 
             try {
@@ -899,7 +899,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             final String title = getTitle();
 
-            return processPageUri(site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
+            return processPageUri(homePage, site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
 
                 final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
