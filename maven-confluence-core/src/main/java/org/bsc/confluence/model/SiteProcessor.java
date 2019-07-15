@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.apache.commons.io.IOUtils;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.functional.Tuple2;
 import org.bsc.markdown.ToConfluenceSerializer;
@@ -79,6 +80,7 @@ public class SiteProcessor {
     * @throws Exception
     */
    public static <T> T processPageUri(
+           final Model.Page page,
            final java.net.URI uri, 
            final String homePageTitle,
            final BiFunction<Optional<Exception>, 
@@ -116,7 +118,7 @@ public class SiteProcessor {
                final java.io.InputStream is = cl.getResourceAsStream(source);
 
                try {
-                   result = (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
+                   result = (isMarkdown) ? processMarkdown(Optional.ofNullable(page), is, homePageTitle) : is;
                    if (result == null) {
                        final Exception ex = new Exception(String.format("page [%s] doesn't exist in classloader", source));
                        return callback.apply( Optional.of(ex), Tuple2.of(Optional.empty(), representation) );
@@ -137,7 +139,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               result = (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown(Optional.ofNullable(page), is, homePageTitle) : is;
 
            } catch (IOException e) {
                final Exception ex = new Exception(String.format("error opening/processing page [%s]!", source), e);
@@ -155,7 +157,7 @@ public class SiteProcessor {
     * @return
     * @throws Exception
     */
-   public static <T> T processUriContent(   
+   public static <T> T processUriContent(
                final java.net.URI uri,                                  
                final String homePageTitle,
                final BiFunction<java.io.InputStream, Storage.Representation, T> onSuccess 
@@ -192,7 +194,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = cl.getResourceAsStream(source);
 
-               result = (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown(Optional.empty(), is, homePageTitle) : is;
 
                if (result == null) {
                    throw new Exception(String.format("resource [%s] doesn't exist in classloader", source));
@@ -208,7 +210,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               result = (isMarkdown) ? processMarkdown(is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown(Optional.empty(), is, homePageTitle) : is;
 
            } catch (IOException e) {
                throw new Exception(String.format("error opening url [%s]!", source), e);
@@ -221,13 +223,15 @@ public class SiteProcessor {
     
     /**
      * 
-     * @param is
+     * @param content
      * @return
      */
-    static java.io.InputStream processMarkdown(final java.io.InputStream is, final String homePageTitle)
-            throws IOException {
+    static java.io.InputStream processMarkdown(
+            final Optional<Model.Page> page,
+            final java.io.InputStream content, 
+            final String homePageTitle) throws IOException {
 
-        final char[] contents = IOUtils.toCharArray(is);
+        final char[] contents = IOUtils.toCharArray(content);
 
         final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions());
 
@@ -246,6 +250,13 @@ public class SiteProcessor {
             @Override
             protected String getHomePageTitle() {
                 return homePageTitle;
+            }
+
+            @Override
+            protected boolean isImagePrefixEnabled() {
+                if( !page.isPresent() ) return false;
+                
+                return !page.get().getTitle().contains("["); 
             }
 
         };
