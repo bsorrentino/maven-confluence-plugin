@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.bsc.maven</groupId>
@@ -6,9 +6,7 @@
     <packaging>pom</packaging>
     <version>6.3.2</version>
     <name>CONFLUENCE-REPORTING::Parent</name>
-    <description><![CDATA[
-    Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project & documentation
-    ]]></description>
+    <description>Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project &amp; documentation</description>
     <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
     <licenses>
         <license>
@@ -181,6 +179,15 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.8</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
     <build>
         <!--
         <extensions>

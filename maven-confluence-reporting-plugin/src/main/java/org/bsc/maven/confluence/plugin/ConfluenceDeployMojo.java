@@ -549,7 +549,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     {
         final java.net.URI uri = site.getHome().getUri();
 
-        return processPageUri( homePage, uri, homePage.getTitle(), (err, tuple2) -> {
+        return processPageUri( homePage, uri, homePage.getTitle(), (err, content) -> {
             final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
 
             try {
@@ -559,18 +559,18 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     return result;
                 }
 
-                if( !tuple2.value1.isPresent()) {
+                if( !content.isPresent()) {
                     result.complete( homePage );
                     return result; // SKIPPED
                 }
 
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
-                    .build( tuple2.value1.get(), getCharset() );
+                    .build( content.get().getInputStream(), getCharset() );
 
                 generateProjectHomeTemplate( t, site, locale );
 
-                return confluence.storePage(homePage, new Storage(t.generateOutput(),tuple2.value2) );
+                return confluence.storePage(homePage, new Storage(t.generateOutput(),content.get().getType()) );
 
             } catch (Exception ex) {
                 result.completeExceptionally(ex);
@@ -899,7 +899,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             final String title = getTitle();
 
-            return processPageUri(homePage, site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
+            return processPageUri(homePage, site.getHome().getUri(), getTitle(), ( err, content ) -> {
 
                 final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
@@ -911,14 +911,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         return result;
                     }
 
-                    if( !tuple2.value1.isPresent()) {
+                    if( !content.isPresent()) {
                         result.complete(homePage);
                         return result;
                     } // SKIPPED
 
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
-                            .build( tuple2.value1.get(), getCharset() );
+                            .build( content.get().getInputStream(), getCharset() );
 
                     /////////////////////////////////////////////////////////////////
                     // SUMMARY
@@ -1024,10 +1024,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
                 .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
                 .thenCompose( tuple -> {
-                    return ( tuple.value2.isPresent() ) ?
-                        completedFuture(tuple.value2.get()) :
+                    return ( tuple.getValue2().isPresent() ) ?
+                        completedFuture(tuple.getValue2().get()) :
                         resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset ->confluence.createPage(tuple.value1, title));
+                        .thenCompose( reset ->confluence.createPage(tuple.getValue1(), title));
                 })
                 .thenCompose( p ->
                     canProceedToUpdateResource( site.getHome().getUri())

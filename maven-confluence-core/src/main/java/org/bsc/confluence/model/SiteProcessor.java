@@ -6,18 +6,26 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.functional.Tuple2;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 
+import lombok.Value;
+
 public class SiteProcessor {
    
+    @Value(staticConstructor="of")
+    public static class PageContent {
+        java.io.InputStream inputStream;
+        Storage.Representation type;
+    }
+    
     /**
      * 
      * @param uri
@@ -83,8 +91,7 @@ public class SiteProcessor {
            final Model.Page page,
            final java.net.URI uri, 
            final String homePageTitle,
-           final BiFunction<Optional<Exception>, 
-           Tuple2<Optional<java.io.InputStream>, Storage.Representation>, T> callback)
+           final BiFunction<Optional<Exception>, Optional<PageContent>, T> callback)
    {
        Objects.requireNonNull(uri, "uri is null!");
 
@@ -121,11 +128,11 @@ public class SiteProcessor {
                    result = (isMarkdown) ? processMarkdown(Optional.ofNullable(page), is, homePageTitle) : is;
                    if (result == null) {
                        final Exception ex = new Exception(String.format("page [%s] doesn't exist in classloader", source));
-                       return callback.apply( Optional.of(ex), Tuple2.of(Optional.empty(), representation) );
+                       return callback.apply( Optional.of(ex), Optional.empty() );
                    }
                } catch (IOException e) {
                    final Exception ex = new Exception(String.format("error processing markdown for page [%s] ", source));
-                   return callback.apply( Optional.of(ex), Tuple2.of(Optional.empty(), representation) );
+                   return callback.apply( Optional.of(ex), Optional.empty() );
                }
 
 
@@ -143,11 +150,11 @@ public class SiteProcessor {
 
            } catch (IOException e) {
                final Exception ex = new Exception(String.format("error opening/processing page [%s]!", source), e);
-               return callback.apply( Optional.of(ex), Tuple2.of(Optional.empty(), representation) );
+               return callback.apply( Optional.of(ex), Optional.empty() );
            }
        }
 
-       return callback.apply( Optional.empty(), Tuple2.of(Optional.of(result), representation));
+       return callback.apply( Optional.empty(), Optional.of(PageContent.of(result, representation)) );
    }
 
     
@@ -160,7 +167,7 @@ public class SiteProcessor {
    public static <T> T processUriContent(
                final java.net.URI uri,                                  
                final String homePageTitle,
-               final BiFunction<java.io.InputStream, Storage.Representation, T> onSuccess 
+               final Function<PageContent, T> onSuccess 
            ) throws /* ProcessUri */Exception 
    {
        Objects.requireNonNull(uri, "uri is null!");
@@ -217,7 +224,7 @@ public class SiteProcessor {
            }
        }
 
-       return onSuccess.apply(result, representation);
+       return onSuccess.apply( PageContent.of(result, representation) );
    }
 
     

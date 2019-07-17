@@ -5,7 +5,6 @@ import static org.bsc.confluence.model.SiteProcessor.processPageUri;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -21,7 +20,6 @@ import org.apache.maven.project.MavenProject;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
@@ -306,7 +304,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
             final String pageName )
     {
 
-        return processPageUri(pageToUpdate, source, this.getTitle(), ( err, tuple2) -> {
+        return processPageUri(pageToUpdate, source, this.getTitle(), ( err, content ) -> {
 
             final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
@@ -315,11 +313,16 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                 result.completeExceptionally(RTE( "error processing uri [%s]", source, err.get() ));
                 return result;
             }
+            
+            if( !content.isPresent() ) {
+                result.completeExceptionally(RTE( "error content not present processing uri [%s]", source ));
+                return result;
+            }
 
             try {
                 final MiniTemplator t = new MiniTemplator.Builder()
                         .setSkipUndefinedVars(true)
-                        .build( tuple2.value1.get(), getCharset() );
+                        .build( content.get().getInputStream(), getCharset() );
 
                 if( !child.isIgnoreVariables() ) {
 
@@ -329,7 +332,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
                     t.setVariableOpt("page.title", pageName);
                 }
 
-                return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), tuple2.value2) );
+                return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), content.get().getType()) );
 
             } catch (Exception ex) {
                 result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(),ex));
@@ -463,10 +466,9 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
     private String processUriContent( Site site, java.net.URI uri, final Charset charset ) throws ProcessUriException {
 
         try {
-            return  SiteProcessor.processUriContent( uri, this.getTitle(), (InputStream is, Representation r) -> {
-
+            return  SiteProcessor.processUriContent( uri, this.getTitle(), content -> {
                     try {
-                        return AbstractConfluenceMojo.this.toString( is, charset );
+                        return AbstractConfluenceMojo.this.toString( content.getInputStream(), charset );
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }

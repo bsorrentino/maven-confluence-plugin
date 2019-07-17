@@ -5,24 +5,15 @@
  */
 package org.bsc.functional;
 
+import lombok.Value;
+
 /**
  *
  * @author bsorrentino
  */
+@Value(staticConstructor="of")
 public class Tuple2<V1,V2> {
-    
-    public final V1 value1;
-    public final V2 value2;
-
-    public Tuple2(V1 value1, V2 value2) {
-        this.value1 = value1;
-        this.value2 = value2;
-    }
-    
-    public static <V1,V2>  Tuple2<V1,V2> of(V1 value1, V2 value2) {
-        return new Tuple2<>( value1, value2 );
-    }
-    
-    
-    
+    V1 value1;
+    V2 value2;
 }
+
