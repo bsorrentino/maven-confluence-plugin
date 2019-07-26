@@ -64,4 +64,6 @@ patches
 #
 maven-project-info-reports-plugin/
 
-
+# Lombok
+.apt_generated/
+.apt_generated_tests/
