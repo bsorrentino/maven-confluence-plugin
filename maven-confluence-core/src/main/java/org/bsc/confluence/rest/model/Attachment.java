@@ -137,4 +137,23 @@ public class Attachment implements Model.Attachment {
                 .add( "extensions", extensions )
                 .build();
     }
+
+	@Override
+	public String toString() {
+		return new StringBuilder()
+		.append("Attachment [id=")
+		.append(id)
+		.append(", fileName=")
+		.append(fileName)
+		.append(", created=")
+		.append(created)
+		.append(", contentType=")
+		.append(contentType)
+		.append(", comment=")
+		.append(comment)
+		.append("]")
+		.toString();
+	}
+    
+    
 }

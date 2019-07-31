@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -26,6 +27,8 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
+
+import lombok.val;
 /**
  *
  * @author bsorrentino
@@ -110,33 +113,43 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
 
             final Path attachmentPath = Paths.get(attachment.getUri());
             
-            if( !Files.isDirectory(attachmentPath) ) {
-                generateAttachment(confluence, site, confluencePage, attachment);            
-            }
-            else {    
-                try( final DirectoryStream<Path> dirStream = newDirectoryStream(attachmentPath, attachment) ) {
-                    
-                    for( Path p : dirStream ) {
-                        
-                        final Site.Attachment fileAttachment = new Site.Attachment();
-                        
-                        fileAttachment.setName(p.getFileName().toString());
-                        fileAttachment.setUri(p.toUri());
-
-                        fileAttachment.setComment(attachment.getComment());
-                        fileAttachment.setVersion(attachment.getVersion());
-
-                        if( StringUtils.isNotEmpty(attachment.getContentType()) ) {
-                            fileAttachment.setContentType(attachment.getContentType());
-                        }
-                        
-                        generateAttachment(confluence, site, confluencePage, fileAttachment);
-                        
-                    }
-                    
-                } catch (IOException ex) {
-                    getLog().warn(format( "error reading directory [%s]", attachmentPath), ex);
-                }
+            try {
+            	            
+	            if( !Files.isDirectory(attachmentPath) ) {
+	                val result = generateAttachment(confluence, site, confluencePage, attachment).get();
+	                
+	                getLog().debug( format("generated attachment: %s", result.toString()));
+	            }
+	            else {    
+	                try( final DirectoryStream<Path> dirStream = newDirectoryStream(attachmentPath, attachment) ) {
+	                    
+	                    for( Path p : dirStream ) {
+	                        
+	                        final Site.Attachment fileAttachment = new Site.Attachment();
+	                        
+	                        fileAttachment.setName(p.getFileName().toString());
+	                        fileAttachment.setUri(p.toUri());
+	
+	                        fileAttachment.setComment(attachment.getComment());
+	                        fileAttachment.setVersion(attachment.getVersion());
+	
+	                        if( StringUtils.isNotEmpty(attachment.getContentType()) ) {
+	                            fileAttachment.setContentType(attachment.getContentType());
+	                        }
+	                        
+	                        val result = generateAttachment(confluence, site, confluencePage, fileAttachment).get();
+	    	                getLog().debug( format("generated attachment: %s", result.toString()));
+	                        
+	                    }
+	                    
+	                } catch (IOException ex) {
+	                    getLog().warn(format( "error reading directory [%s]", attachmentPath), ex);
+	                }
+	                
+	            }
+            } catch( InterruptedException | ExecutionException ex ) {
+                getLog().warn(format( "error generating remote attachment from [%s]", attachment.getName()), ex);
+            	
             }
         }
     }
@@ -156,9 +169,14 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                 result.completeExceptionally(err.get());
                 return result;
             }
-            return ( is.isPresent() ) ?
-                    confluence.addAttachment(confluencePage, attachment, is.get() ) :
-                    completedFuture(attachment) ;
+            
+            if( !is.isPresent() ) {
+            	getLog().warn( format( "getting problem to read local attacchment file at [%s]", uri ) ); 
+            	return completedFuture(attachment);
+            }
+            
+            return confluence.addAttachment(confluencePage, attachment, is.get() );
+                    
         });     
         
     }
@@ -168,7 +186,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @param confluencePage
      * @param attachment
      */
-    private void generateAttachment( 
+    private CompletableFuture<Model.Attachment> generateAttachment( 
             final ConfluenceService confluence, 
             final Site site, 
             final Model.Page confluencePage, 
@@ -182,7 +200,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
       
         final java.net.URI uri = attachment.getUri();
         
-        confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
+        return confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
         .exceptionally( e -> {
             getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(), e.getMessage()));
             return Optional.empty();
@@ -208,7 +226,9 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         .thenCompose( finalAttachment -> 
             canProceedToUpdateResource(uri)
             .thenCompose( updated -> {
-                if(updated) return updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment);
+                if(updated) { 
+                	return updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment);
+                }
                 else {
                     getLog().info( String.format("attachment [%s] has not been updated (deploy skipped)", 
                             getPrintableStringForResource(uri) ));
