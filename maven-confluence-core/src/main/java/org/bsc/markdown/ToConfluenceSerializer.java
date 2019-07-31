@@ -59,6 +59,9 @@ import org.pegdown.ast.VerbatimNode;
 import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
 
+import lombok.val;
+import lombok.var;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -79,8 +82,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
     private HashMap<String, ReferenceNode> referenceNodes = new HashMap<String, ReferenceNode>();
 
     private StringBuilder _buffer = new StringBuilder( 500 * 1024 );
-
-    private final Optional<Site> site;
 
     private final java.util.Stack<Node> nodeStack = new java.util.Stack<Node>();
 
@@ -180,28 +181,18 @@ public abstract class ToConfluenceSerializer implements Visitor {
         return result;
     }
 
-    private static final Pattern patternUri = Pattern.compile("(?:(\\$\\{.+\\})\\^)?(.+)");
-
-    /**
-     * 
-     */
-    public ToConfluenceSerializer() {
-        this.site = Optional.empty();
-
-    }
+    private boolean isURL( String value ) {
+        try {
+            new URL(value);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        return true;
         
-    /**
-     * 
-     * @param site
-     */
-    public ToConfluenceSerializer( Site site ) {
-        if (site == null)
-            throw new java.lang.IllegalArgumentException("site is null!");
-        this.site = Optional.of(site);
-
     }
     
-    
+    private static final Pattern patternUri = Pattern.compile("(?:(\\$\\{.+\\})\\^)?(.+)");
+   
     /**
      * 
      * @param url
@@ -209,6 +200,10 @@ public abstract class ToConfluenceSerializer implements Visitor {
      * @return
      */
     public String processImageUrl( String url ) {
+        
+        if( isURL(url) ) {
+            return url;
+        }
         
         final Matcher m = patternUri.matcher(url);
         
@@ -232,6 +227,14 @@ public abstract class ToConfluenceSerializer implements Visitor {
         return _buffer.toString();
     }
 
+    /**
+     * 
+     * @return
+     */
+    protected Optional<Site> getSite() {
+        return Optional.empty();
+    }
+    
     /**
      * indicates whether the prefix ${page.title} should be added or not
      * s
@@ -694,20 +697,18 @@ public abstract class ToConfluenceSerializer implements Visitor {
         visitChildren(rln);
         _buffer.append('|');
 
-        final String ref = getRefString(rln, rln.referenceKey);
+        val ref = getRefString(rln, rln.referenceKey);
 
-        final String parentPageTitle = getHomePageTitle();
-        String url = ref;
+        val parentPageTitle = getHomePageTitle();
+        var url = ref;
 
-        ReferenceNode referenceNode = referenceNodes.get(ref);
+        val referenceNode = referenceNodes.get(ref);
         if (referenceNode != null && referenceNode.getUrl() != null && url.length() > 0) {
             url = referenceNode.getUrl();
         }
 
         // If URL is a relative URL, we will create a link to the project
-        try {
-            new URL(url);
-        } catch (MalformedURLException e) {
+        if( !isURL(url) ) {            
             // not a valid URL (hence a relative link)
             if( parentPageTitle != null && !url.startsWith(parentPageTitle)) {
                 _buffer.append(parentPageTitle).append(" - ");
