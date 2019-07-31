@@ -194,7 +194,7 @@
     <profiles>
 
 		<profile>
-			<id>java8</id>
+			<id>java11</id>
 			<activation>
 				<jdk>11</jdk>
 			</activation>
@@ -226,6 +226,7 @@
 			<id>utest</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
+				<jdk>11</jdk>
 			</activation>
 			<build>
 				<plugins>
