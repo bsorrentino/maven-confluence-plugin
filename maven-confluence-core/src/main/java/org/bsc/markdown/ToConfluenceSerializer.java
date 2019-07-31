@@ -10,10 +10,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bsc.confluence.model.Site;
 import org.parboiled.common.StringUtils;
 import org.pegdown.Extensions;
 import org.pegdown.ast.AbbreviationNode;
@@ -77,6 +79,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
     private HashMap<String, ReferenceNode> referenceNodes = new HashMap<String, ReferenceNode>();
 
     private StringBuilder _buffer = new StringBuilder( 500 * 1024 );
+
+    private final Optional<Site> site;
 
     private final java.util.Stack<Node> nodeStack = new java.util.Stack<Node>();
 
@@ -178,6 +182,26 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
     private static final Pattern patternUri = Pattern.compile("(?:(\\$\\{.+\\})\\^)?(.+)");
 
+    /**
+     * 
+     */
+    public ToConfluenceSerializer() {
+        this.site = Optional.empty();
+
+    }
+        
+    /**
+     * 
+     * @param site
+     */
+    public ToConfluenceSerializer( Site site ) {
+        if (site == null)
+            throw new java.lang.IllegalArgumentException("site is null!");
+        this.site = Optional.of(site);
+
+    }
+    
+    
     /**
      * 
      * @param url

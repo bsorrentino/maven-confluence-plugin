@@ -8,15 +8,46 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.core.IsNull;
+import org.junit.Before;
 import org.junit.Test;
 
-public class SiteTest {
+import lombok.val;
 
+/**
+ * 
+ * @author bsorrentino
+ *
+ */
+public class SiteTest implements SiteFactory {
+
+    @Override
+    public Site createSiteFromFolder() {
+        throw new UnsupportedOperationException("createFromFolder is not supported!");
+    }
+
+    @Override
+    public Site createSiteFromModel() {
+        val path = Paths.get("src", "test", "resources", "site.yaml");
+        try {
+            return createFrom( path.toFile() );
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("error reading site descriptor at [%s]", path), e);
+        }
+    }
+
+    Site site;
+    
+    @Before
+    public void loadSite() {
+        site = createSiteFromModel();
+    }
+    
     @Test
     public void validateName() {
         
@@ -34,7 +65,7 @@ public class SiteTest {
     public void shouldSupportReferenceNode() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test");
+        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, "Test");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -47,7 +78,7 @@ public class SiteTest {
     public void shouldSupportImgRefLink() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test IMG");
+        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, "Test IMG");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -64,7 +95,7 @@ public class SiteTest {
     public void shouldSupportSimpleNode() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test");
+        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, "Test");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -82,7 +113,7 @@ public class SiteTest {
     public void shouldCreateSpecificNoticeBlock() throws IOException {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(Optional.empty(), stream, "Test Macro");
+        final InputStream inputStream = processMarkdown(site, Optional.empty(), stream, "Test Macro");
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 

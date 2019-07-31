@@ -254,7 +254,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         loadUserInfoFromSettings();
 
-        Site site = super.createFromModel();
+        Site site = super.createSiteFromModel();
 
         if( site != null ) {
             
@@ -273,7 +273,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
         }
         else {
-            site = super.createFromFolder();
+            site = super.createSiteFromFolder();
 
             try {
                 final Path p = templateWiki.toPath();
@@ -549,7 +549,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     {
         final java.net.URI uri = site.getHome().getUri();
 
-        return processPageUri( homePage, uri, homePage.getTitle(), (err, content) -> {
+        return processPageUri( site, homePage, uri, homePage.getTitle(), (err, content) -> {
             final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
 
             try {
@@ -899,7 +899,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             final String title = getTitle();
 
-            return processPageUri(homePage, site.getHome().getUri(), getTitle(), ( err, content ) -> {
+            return processPageUri(site, homePage, site.getHome().getUri(), getTitle(), ( err, content ) -> {
 
                 final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();

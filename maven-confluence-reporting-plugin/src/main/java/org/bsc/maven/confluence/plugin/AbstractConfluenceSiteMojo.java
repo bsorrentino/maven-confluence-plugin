@@ -372,7 +372,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
     }
    
     @Override
-    public Site createFromFolder() {
+    public Site createSiteFromFolder() {
     
         final Site result = new Site();
         
@@ -444,7 +444,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
      * @return 
      */
     @Override
-    public Site createFromModel() {
+    public Site createSiteFromModel() {
         
         if( !isSiteDescriptorValid() ) {      
             getLog().warn( "siteDescriptor is not valid!" ); 

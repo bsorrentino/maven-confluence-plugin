@@ -14,9 +14,9 @@ import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
-import org.pegdown.ast.RootNode;
 
 import lombok.Value;
+import lombok.val;
 
 public class SiteProcessor {
    
@@ -88,6 +88,7 @@ public class SiteProcessor {
     * @throws Exception
     */
    public static <T> T processPageUri(
+           final Site site,
            final Model.Page page,
            final java.net.URI uri, 
            final String homePageTitle,
@@ -125,7 +126,7 @@ public class SiteProcessor {
                final java.io.InputStream is = cl.getResourceAsStream(source);
 
                try {
-                   result = (isMarkdown) ? processMarkdown(Optional.ofNullable(page), is, homePageTitle) : is;
+                   result = (isMarkdown) ? processMarkdown( site, Optional.ofNullable(page), is, homePageTitle) : is;
                    if (result == null) {
                        final Exception ex = new Exception(String.format("page [%s] doesn't exist in classloader", source));
                        return callback.apply( Optional.of(ex), Optional.empty() );
@@ -146,7 +147,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               result = (isMarkdown) ? processMarkdown(Optional.ofNullable(page), is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown( site, Optional.ofNullable(page), is, homePageTitle) : is;
 
            } catch (IOException e) {
                final Exception ex = new Exception(String.format("error opening/processing page [%s]!", source), e);
@@ -165,6 +166,7 @@ public class SiteProcessor {
     * @throws Exception
     */
    public static <T> T processUriContent(
+               final Site site,
                final java.net.URI uri,                                  
                final String homePageTitle,
                final Function<PageContent, T> onSuccess 
@@ -201,7 +203,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = cl.getResourceAsStream(source);
 
-               result = (isMarkdown) ? processMarkdown(Optional.empty(), is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown( site, Optional.empty(), is, homePageTitle) : is;
 
                if (result == null) {
                    throw new Exception(String.format("resource [%s] doesn't exist in classloader", source));
@@ -217,7 +219,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               result = (isMarkdown) ? processMarkdown(Optional.empty(), is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown( site, Optional.empty(), is, homePageTitle) : is;
 
            } catch (IOException e) {
                throw new Exception(String.format("error opening url [%s]!", source), e);
@@ -234,17 +236,18 @@ public class SiteProcessor {
      * @return
      */
     static java.io.InputStream processMarkdown(
+            final Site site,
             final Optional<Model.Page> page,
             final java.io.InputStream content, 
             final String homePageTitle) throws IOException {
 
-        final char[] contents = IOUtils.toCharArray(content);
+        val contents = IOUtils.toCharArray(content);
 
-        final PegDownProcessor p = new PegDownProcessor(ToConfluenceSerializer.extensions());
+        val p = new PegDownProcessor(ToConfluenceSerializer.extensions());
 
-        final RootNode root = p.parseMarkdown(contents);
+        val root = p.parseMarkdown(contents);
 
-        ToConfluenceSerializer ser = new ToConfluenceSerializer() {
+        val ser = new ToConfluenceSerializer(site) {
 
             @Override
             protected void notImplementedYet(Node node) {
