@@ -249,8 +249,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
      *
      * @return home page title. nullable
      */
-    protected String getHomePageTitle() {
-        return null;
+    protected Optional<String> getHomePageTitle() {
+        return Optional.empty();
     }
 
     protected abstract void notImplementedYet( Node node );
@@ -478,7 +478,37 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
         _buffer.append( '[');
         visitChildren(eln);
-        _buffer.append(format("|%s|%s]", eln.url, eln.title));
+        
+        var url = eln.url;
+        if( !isURL(url) && url.toLowerCase().endsWith(".md")) {
+
+            val site = getSite();
+            if( site.isPresent() ) {            
+                val _uri1 = url;
+                val page = site.get().getHome().findPage( p -> {                    
+                    val _url2 = String.valueOf(p.getRelativeUri());
+                    return _uri1.equals( _url2 );
+                });
+                
+                if( page.isPresent() ) {
+
+                    val parentPageTitle = getHomePageTitle();
+                    
+                    if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
+                        url = String.format( "%s - %s", parentPageTitle.get(), page.get().getName() );
+                    }
+                    else {
+                        url = page.get().getName();                        
+                    }
+                    
+         
+                }
+            }
+            
+            
+        }
+
+        _buffer.append(format("|%s|%s]", url, eln.title));
     }
 
 
@@ -699,7 +729,6 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
         val ref = getRefString(rln, rln.referenceKey);
 
-        val parentPageTitle = getHomePageTitle();
         var url = ref;
 
         val referenceNode = referenceNodes.get(ref);
@@ -708,10 +737,12 @@ public abstract class ToConfluenceSerializer implements Visitor {
         }
 
         // If URL is a relative URL, we will create a link to the project
-        if( !isURL(url) ) {            
+        if( !isURL(url) ) { 
+            val parentPageTitle = getHomePageTitle();
+            
             // not a valid URL (hence a relative link)
-            if( parentPageTitle != null && !url.startsWith(parentPageTitle)) {
-                _buffer.append(parentPageTitle).append(" - ");
+            if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
+                _buffer.append(parentPageTitle.get()).append(" - ");
             }
         }
         _buffer.append(url);
