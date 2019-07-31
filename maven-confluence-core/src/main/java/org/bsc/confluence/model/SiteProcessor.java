@@ -247,7 +247,12 @@ public class SiteProcessor {
 
         val root = p.parseMarkdown(contents);
 
-        val ser = new ToConfluenceSerializer(site) {
+        val ser = new ToConfluenceSerializer() {
+
+            @Override
+            protected Optional<Site> getSite() {
+                return Optional.of(site);
+            }
 
             @Override
             protected void notImplementedYet(Node node) {
@@ -264,9 +269,7 @@ public class SiteProcessor {
 
             @Override
             protected boolean isImagePrefixEnabled() {
-                if( !page.isPresent() ) return false;
-                
-                return !page.get().getTitle().contains("["); 
+                return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
             }
 
         };
