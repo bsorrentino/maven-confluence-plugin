@@ -95,12 +95,13 @@ public class Site {
             if (null == value) {
                 throw new IllegalArgumentException("uri is null");
             }
-            // if (!value.isAbsolute()) {
-            // throw new IllegalArgumentException("uri is not absolute!");
-            // }
             this.uri = value;
         }
 
+        public java.net.URI getRelativeUri() {
+            return site.getBasedir().toUri().relativize(getUri());
+        }
+        
         String name;
 
         @XmlAttribute
@@ -436,7 +437,8 @@ public class Site {
         
         
     }
-    private transient Optional<Path> _basedir;
+    
+    private transient Optional<Path> _basedir = Optional.empty();
     
     @XmlTransient
     public void setBasedir( Path basedir ) {
