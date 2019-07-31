@@ -1,9 +1,11 @@
 package org.bsc.confluence.model;
 
+import static java.lang.String.format;
 import static org.bsc.confluence.model.SiteProcessor.processMarkdown;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -46,6 +48,7 @@ public class SiteTest implements SiteFactory {
     @Before
     public void loadSite() {
         site = createSiteFromModel();
+        site.setBasedir( Paths.get("src", "test", "resources"));
     }
     
     @Test
@@ -63,27 +66,30 @@ public class SiteTest implements SiteFactory {
     
     @Test
     public void shouldSupportRefLink() throws IOException {
+        val parentPageTitle = "Test";
         val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        val inputStream = processMarkdown(site, Optional.empty(), stream, "Test");
+        val inputStream = processMarkdown(site, Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
         val converted = IOUtils.toString(inputStream).split("\n+");
         int i = 2;
         
-        i++;
-        i++;
-        i++;
+        
+        assertThat(converted[i++], equalTo(format("* This is a relative link to another page [SECOND PAGE|%s - page 2|].", parentPageTitle)) );
+        assertThat(converted[i++], equalTo("* This one is [inline|http://google.com|Google].") );
+        assertThat(converted[i++], equalTo("* This one is [inline *wo* title|http://google.com|].") );
         assertThat(converted[i++], containsString("[google|http://google.com]"));
-        assertThat(converted[i++], containsString("[more complex google|http://google.com|Other google]"));
-        i++;
+        assertThat(converted[i++], containsString("[more complex google|http://google.com|Other google]"));  
+        assertThat(converted[i++], equalTo("* This is my [relative|relativepage|] link defined after.") );
         assertThat(converted[i++], containsString("[rel|Test - relativeagain]"));
     }
 
     @Test
     public void shouldSupportImgRefLink() throws IOException {
+        val parentPageTitle = "Test IMG";
         val stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        val inputStream = processMarkdown(site,Optional.empty(), stream, "Test IMG");
+        val inputStream = processMarkdown(site,Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
         val converted = IOUtils.toString(inputStream).split("\n+");
 
@@ -99,9 +105,11 @@ public class SiteTest implements SiteFactory {
 
     @Test
     public void shouldSupportSimpleNode() throws IOException {
+        val parentPageTitle = "Test";
+
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, "Test");
+        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -117,9 +125,11 @@ public class SiteTest implements SiteFactory {
     
     @Test
     public void shouldCreateSpecificNoticeBlock() throws IOException {
+        val parentPageTitle = "Test Macro";
+
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site, Optional.empty(), stream, "Test Macro");
+        final InputStream inputStream = processMarkdown(site, Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 

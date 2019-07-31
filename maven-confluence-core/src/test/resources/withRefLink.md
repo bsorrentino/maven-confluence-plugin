@@ -1,6 +1,6 @@
 # Site ref link test
 
-* this is a relative link to another page [SECOND PAGE](page2.md)
+* This is a relative link to another page [SECOND PAGE](page2.md).
 * This one is [inline](http://google.com "Google").
 * This one is [inline **wo** title](http://google.com).
 * This is my [google] link defined after. 
