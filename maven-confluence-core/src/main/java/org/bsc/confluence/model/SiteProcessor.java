@@ -263,8 +263,8 @@ public class SiteProcessor {
             }
 
             @Override
-            protected String getHomePageTitle() {
-                return homePageTitle;
+            protected Optional<String> getHomePageTitle() {
+                return Optional.ofNullable(homePageTitle);
             }
 
             @Override
