@@ -62,33 +62,39 @@ public class SiteTest implements SiteFactory {
     }
     
     @Test
-    public void shouldSupportReferenceNode() throws IOException {
-        final InputStream stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
+    public void shouldSupportRefLink() throws IOException {
+        val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, "Test");
+        val inputStream = processMarkdown(site, Optional.empty(), stream, "Test");
         assertThat( inputStream, IsNull.notNullValue());
-        final String converted = IOUtils.toString(inputStream);
-
-        assertThat(converted, containsString("[rel|Test - relativeagain]"));
-        assertThat(converted, containsString("[more complex google|http://google.com|Other google]"));
-        assertThat(converted, containsString("[google|http://google.com]"));
+        val converted = IOUtils.toString(inputStream).split("\n+");
+        int i = 2;
+        
+        i++;
+        i++;
+        i++;
+        assertThat(converted[i++], containsString("[google|http://google.com]"));
+        assertThat(converted[i++], containsString("[more complex google|http://google.com|Other google]"));
+        i++;
+        assertThat(converted[i++], containsString("[rel|Test - relativeagain]"));
     }
 
     @Test
     public void shouldSupportImgRefLink() throws IOException {
-        final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
+        val stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, "Test IMG");
+        val inputStream = processMarkdown(site,Optional.empty(), stream, "Test IMG");
         assertThat( inputStream, IsNull.notNullValue());
-        final String converted = IOUtils.toString(inputStream);
+        val converted = IOUtils.toString(inputStream).split("\n+");
 
-        assertThat(converted, containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
-        assertThat(converted, containsString("!${page.title}^conf-icon-64.png|conf-icon!"));
-        assertThat(converted, containsString("!${page.title}^conf-icon-64.png|conf-icon!"));
-        assertThat(converted, containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y!"));
-        assertThat(converted, containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y1!"));
-        assertThat(converted, containsString("!${page.title}^conf-icon-64.png|conf-icon-y2!"));
-        assertThat(converted, containsString("!${page.title}^conf-icon-64.png|conf-icon-none!"));
+        int i = 2;
+        assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
+        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon!"));
+        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon!"));
+        assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y!"));
+        assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y1!"));
+        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon-y2!"));
+        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon-none!"));
     }
 
     @Test
