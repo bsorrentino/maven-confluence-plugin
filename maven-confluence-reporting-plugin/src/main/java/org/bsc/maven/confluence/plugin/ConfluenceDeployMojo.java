@@ -562,7 +562,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 if( !content.isPresent()) {
                     result.complete( homePage );
                     return result; // SKIPPED
-                }
+                }   
 
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
