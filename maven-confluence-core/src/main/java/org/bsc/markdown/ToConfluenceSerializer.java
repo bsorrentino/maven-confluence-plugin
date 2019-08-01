@@ -2,6 +2,8 @@ package org.bsc.markdown;
 
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static org.bsc.confluence.FileExtension.MARKDOWN;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bsc.confluence.FileExtension;
 import org.bsc.confluence.model.Site;
 import org.parboiled.common.StringUtils;
 import org.pegdown.Extensions;
@@ -480,15 +483,14 @@ public abstract class ToConfluenceSerializer implements Visitor {
         visitChildren(eln);
         
         var url = eln.url;
-        if( !isURL(url) && url.toLowerCase().endsWith(".md")) {
+        if( !isURL(url) && MARKDOWN.isExentionOf(url)) {
 
             val site = getSite();
             if( site.isPresent() ) {            
                 val _uri1 = url;
-                val page = site.get().getHome().findPage( p -> {                    
-                    val _url2 = String.valueOf(p.getRelativeUri());
-                    return _uri1.equals( _url2 );
-                });
+                val page = site.get().getHome().findPage( p ->                    
+                    _uri1.equals( valueOf(p.getRelativeUri()) )
+                );
                 
                 if( page.isPresent() ) {
 

@@ -1,6 +1,9 @@
 package org.bsc.confluence.model;
 
 import static java.lang.String.format;
+import static org.bsc.confluence.FileExtension.MARKDOWN;
+import static org.bsc.confluence.FileExtension.XHTML;
+import static org.bsc.confluence.FileExtension.XML;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -11,6 +14,7 @@ import java.util.function.Function;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.FileExtension;
 import org.bsc.markdown.ToConfluenceSerializer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.Node;
@@ -104,7 +108,7 @@ public class SiteProcessor {
 
        final String path = uri.getRawPath();
 
-       final boolean isMarkdown = (path != null && path.endsWith(".md"));
+       final boolean isMarkdown =  FileExtension.MARKDOWN.isExentionOf(path); //(path != null && path.endsWith(".md"));
        final boolean isStorage = (path != null && (path.endsWith(".xml") || path.endsWith(".xhtml")));
 
        final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE
@@ -182,8 +186,8 @@ public class SiteProcessor {
 
        final String path = uri.getRawPath();
 
-       final boolean isMarkdown = (path != null && path.endsWith(".md"));
-       final boolean isStorage = (path != null && (path.endsWith(".xml") || path.endsWith(".xhtml")));
+       final boolean isMarkdown = MARKDOWN.isExentionOf(path);
+       final boolean isStorage = XML.isExentionOf(path) || XHTML.isExentionOf(path);
 
        final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE
                : Storage.Representation.WIKI;
