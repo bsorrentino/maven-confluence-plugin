@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,6 +23,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import lombok.val;
 
 /**
  *
@@ -92,12 +95,13 @@ public class Site {
             if (null == value) {
                 throw new IllegalArgumentException("uri is null");
             }
-            // if (!value.isAbsolute()) {
-            // throw new IllegalArgumentException("uri is not absolute!");
-            // }
             this.uri = value;
         }
 
+        public java.net.URI getRelativeUri() {
+            return site.getBasedir().toUri().relativize(getUri());
+        }
+        
         String name;
 
         @XmlAttribute
@@ -175,25 +179,6 @@ public class Site {
             this.version = DEFAULT_VERSION;
         }
         
-        /*
-        public boolean hasBeenUpdatedFrom(java.util.Date date) {
-            if (date != null) {
-
-                validateSource();
-
-                final java.net.URI _uri = super.getUri();
-
-                if (!_uri.isAbsolute() || "file".equals(_uri.getScheme())) {
-                    java.io.File f = new java.io.File(_uri);
-
-                    return f.lastModified() > date.getTime();
-                }
-            }
-
-            return true;
-        }
-        */
-
     }
 
     /**
@@ -377,6 +362,24 @@ public class Site {
 
         }
 
+        /**
+         * 
+         * @param criteria
+         * @return
+         */
+        public Optional<Page> findPage( Predicate<Page> criteria ) {
+            if( criteria.test(this) ) return Optional.of(this); 
+            
+            for( Page child : getChildren() ) {
+                
+                val result = child.findPage(criteria);
+                if( result.isPresent() ) {
+                    return result;
+                }
+            }
+            
+            return Optional.empty();
+        }
     }
   
     @XmlType(name = "home", namespace = Site.NAMESPACE)
@@ -434,7 +437,8 @@ public class Site {
         
         
     }
-    private transient Optional<Path> _basedir;
+    
+    private transient Optional<Path> _basedir = Optional.empty();
     
     @XmlTransient
     public void setBasedir( Path basedir ) {

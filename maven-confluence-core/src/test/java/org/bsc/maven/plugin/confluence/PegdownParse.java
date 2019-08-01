@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.apache.commons.io.IOUtils;
@@ -205,8 +206,8 @@ public abstract class PegdownParse {
             }
 
             @Override
-            protected String getHomePageTitle() {
-                return "Parent Page Title";
+            protected Optional<String> getHomePageTitle() {
+                return Optional.of("Parent Page Title");
             }
 
         };

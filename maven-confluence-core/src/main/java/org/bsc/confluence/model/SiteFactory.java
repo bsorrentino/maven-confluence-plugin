@@ -23,9 +23,9 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 public interface SiteFactory {
     
-    public Site createFromFolder();
+    public Site createSiteFromFolder();
     
-    public Site createFromModel();
+    public Site createSiteFromModel();
     
     default Site createFrom( java.io.File siteDescriptor ) throws Exception {
         Objects.requireNonNull(siteDescriptor, "siteDescriptor is null!");
@@ -42,6 +42,7 @@ public interface SiteFactory {
             final Unmarshaller unmarshaller = jc.createUnmarshaller();  
             return (Site) unmarshaller.unmarshal( siteDescriptor );
         }
+        case "yml":
         case "yaml":
         {
             final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
