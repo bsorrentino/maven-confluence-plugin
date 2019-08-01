@@ -4,6 +4,8 @@
  */
 package org.bsc.maven.confluence.plugin;
 
+import static java.lang.String.format;
+
 import java.util.Optional;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -11,8 +13,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Model.PageSummary;
+
+import lombok.val;
 
 /**
  *
@@ -22,15 +25,7 @@ import org.bsc.confluence.ConfluenceService.Model.PageSummary;
  * @since 3.4.0
  */
 @Mojo( name="delete", threadSafe = true, requiresProject = false  )
-public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
-
-    /**
-     * title of pageTitle that will be deleted
-     * 
-     * @since 3.4.0
-     */
-    @Parameter(alias = "title", property = "confluence.page", defaultValue = "${project.build.finalName}")
-    private String pageTitle;
+public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
 
     /**
      * perform recursive deletion 
@@ -42,31 +37,31 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
 
     
     private void deletePage(ConfluenceService confluence) throws Exception {
-        final Model.Page parentPage = loadParentPage(confluence, Optional.empty());
+        val parentPage = loadParentPage(confluence, Optional.empty());
 
         if( parentPage==null ) {
             getLog().warn("Parent page not found!");                    
             return;
         }
 
-        final Model.PageSummary root = confluence.findPageByTitle(parentPage.getId(),pageTitle);
+        val root = confluence.findPageByTitle(parentPage.getId(),getPageTitle());
 
         if( root==null ) {
-            getLog().warn(String.format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(),pageTitle, parentPage.getSpace()));                    
+            getLog().warn(format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));                    
             return;
         }
 
         if( recursive ) {
-            final java.util.List<Model.PageSummary> descendents = confluence.getDescendents(root.getId());
+            val descendents = confluence.getDescendents(root.getId());
 
             if( descendents==null || descendents.isEmpty() ) {
-                getLog().warn(String.format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(),pageTitle, parentPage.getSpace()));                    
+                getLog().warn(format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));                    
             }
             else {
 
                 for( PageSummary descendent : descendents) {
 
-                    getLog().info( String.format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),pageTitle, descendent.getTitle()) );
+                    getLog().info( format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),getPageTitle(), descendent.getTitle()) );
                     confluence.removePage(descendent.getId());
 
                 }
@@ -75,7 +70,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceMojo {
 
         confluence.removePage(root.getId());
 
-        getLog().info(String.format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),pageTitle, parentPage.getSpace()));
+        getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));
         
     }
     
