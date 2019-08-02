@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bsc.confluence.FileExtension;
 import org.bsc.confluence.model.Site;
 import org.parboiled.common.StringUtils;
 import org.pegdown.Extensions;
