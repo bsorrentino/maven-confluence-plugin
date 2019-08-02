@@ -5,6 +5,11 @@
 ## Next release
 ### Generic changes
 
+**update changelog**
+
+
+[38411400703c8e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/38411400703c8e3) bsorrentino *2019-08-02 15:56:27*
+
 **clean code**
 
 
