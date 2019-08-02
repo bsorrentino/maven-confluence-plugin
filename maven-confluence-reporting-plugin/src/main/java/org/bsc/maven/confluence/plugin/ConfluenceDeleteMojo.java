@@ -89,20 +89,20 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
         
     }
     
+    void tryDeletePage( ConfluenceService confluence ) {
+        try {
+            deletePage(confluence);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }       
+    }
+    
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         
         super.loadUserInfoFromSettings();
         
-        super.confluenceExecute( (ConfluenceService confluence)  -> {
-                
-                try {
-                    deletePage(confluence);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-        
-        });
+        super.confluenceExecute( this::tryDeletePage );
         
     }
  
