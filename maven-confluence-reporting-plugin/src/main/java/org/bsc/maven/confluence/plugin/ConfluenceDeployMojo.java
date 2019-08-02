@@ -72,7 +72,7 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
  *
  */
 @Mojo( name="deploy", threadSafe = true )
-public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
+public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     private static final String PROJECT_DEPENDENCIES_VAR    = "project.dependencies";
     private static final String PROJECT_SCM_MANAGER_VAR     = "project.scmManager";
@@ -261,10 +261,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             site.setBasedir(getSiteDescriptor().toPath());
             
             if( site.getHome().getName()!=null ) {
-                setTitle( site.getHome().getName() );
+                setPageTitle( site.getHome().getName() );
             }
             else {
-                site.getHome().setName(getTitle());
+                site.getHome().setName(getPageTitle());
             }
 
             java.util.List<String> _labels = getLabels();
@@ -593,7 +593,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         //
         // Issue 32
         //
-        final String _homePageTitle = getTitle();
+        final String _homePageTitle = getPageTitle();
 
         final Model.Page confluenceHomePage =
                 removeSnaphot(confluence, _parentPage, _homePageTitle)
@@ -897,9 +897,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 }
             }
 
-            final String title = getTitle();
+            final String title = getPageTitle();
 
-            return processPageUri(site, homePage, site.getHome().getUri(), getTitle(), ( err, content ) -> {
+            return processPageUri(site, homePage, site.getHome().getUri(), getPageTitle(), ( err, content ) -> {
 
                 final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
@@ -1009,7 +1009,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             // issue#102
             //final String title = format( "%s-%s", pluginDescriptor.getArtifactId(), pluginDescriptor.getVersion() );
-            final String title = getTitle();
+            final String title = getPageTitle();
 
             getProperties().put("pageTitle",    title);
             getProperties().put("artifactId",   getProject().getArtifactId());

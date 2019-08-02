@@ -26,12 +26,7 @@ import lombok.val;
  * @author bsorrentino
  *
  */
-public class SiteTest implements SiteFactory {
-
-    @Override
-    public Site createSiteFromFolder() {
-        throw new UnsupportedOperationException("createFromFolder is not supported!");
-    }
+public class SiteTest implements SiteFactory.Model {
 
     @Override
     public Site createSiteFromModel() {

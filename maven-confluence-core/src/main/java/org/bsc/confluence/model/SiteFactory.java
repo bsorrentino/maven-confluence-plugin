@@ -23,34 +23,40 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 public interface SiteFactory {
     
-    public Site createSiteFromFolder();
-    
-    public Site createSiteFromModel();
-    
-    default Site createFrom( java.io.File siteDescriptor ) throws Exception {
-        Objects.requireNonNull(siteDescriptor, "siteDescriptor is null!");
+    public interface Folder {
 
-        final String ext = 
-                Optional.ofNullable(FilenameUtils.getExtension(siteDescriptor.getName()))
-                .map( v -> v.toLowerCase() )
-                .orElse("");
+        public Site createSiteFromFolder();
         
-        switch( ext ) {
-        case "xml":
-        {           
-            final JAXBContext jc = JAXBContext.newInstance(Site.class);
-            final Unmarshaller unmarshaller = jc.createUnmarshaller();  
-            return (Site) unmarshaller.unmarshal( siteDescriptor );
-        }
-        case "yml":
-        case "yaml":
-        {
-            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            return mapper.readValue( siteDescriptor, Site.class  );
-        }
-        default:
-            throw new IllegalArgumentException( 
-                    format("file extension [%s] not supported! Currently only '.xml' and '.yaml' are valid", ext));
+    }
+    
+    public interface Model {
+        public Site createSiteFromModel();
+        
+        default Site createFrom( java.io.File siteDescriptor ) throws Exception {
+            Objects.requireNonNull(siteDescriptor, "siteDescriptor is null!");
+    
+            final String ext = 
+                    Optional.ofNullable(FilenameUtils.getExtension(siteDescriptor.getName()))
+                    .map( v -> v.toLowerCase() )
+                    .orElse("");
+            
+            switch( ext ) {
+            case "xml":
+            {           
+                final JAXBContext jc = JAXBContext.newInstance(Site.class);
+                final Unmarshaller unmarshaller = jc.createUnmarshaller();  
+                return (Site) unmarshaller.unmarshal( siteDescriptor );
+            }
+            case "yml":
+            case "yaml":
+            {
+                final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                return mapper.readValue( siteDescriptor, Site.class  );
+            }
+            default:
+                throw new IllegalArgumentException( 
+                        format("file extension [%s] not supported! Currently only '.xml' and '.yaml' are valid", ext));
+            }
         }
     }
 }
