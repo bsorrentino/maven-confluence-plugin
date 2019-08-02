@@ -13,6 +13,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 
 import lombok.val;
@@ -35,6 +36,20 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
     @Parameter(property = "recursive", defaultValue = "true")
     private boolean recursive;
 
+    private Model.PageSummary getStartPage(ConfluenceService confluence, Model.Page parentPage) throws Exception {
+        
+        final String startPageTitle;
+        if( isSiteDescriptorValid() ) {
+            val site = createSiteFromModel();
+            
+            startPageTitle = site.getHome().getName();
+        }
+        else {
+            startPageTitle = getPageTitle();
+        }
+             
+        return confluence.findPageByTitle(parentPage.getId(), startPageTitle);
+    }
     
     private void deletePage(ConfluenceService confluence) throws Exception {
         val parentPage = loadParentPage(confluence, Optional.empty());
@@ -44,15 +59,15 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
             return;
         }
 
-        val root = confluence.findPageByTitle(parentPage.getId(),getPageTitle());
-
-        if( root==null ) {
+        val start = getStartPage( confluence, parentPage);
+        
+        if( start==null ) {
             getLog().warn(format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));                    
             return;
         }
 
         if( recursive ) {
-            val descendents = confluence.getDescendents(root.getId());
+            val descendents = confluence.getDescendents(start.getId());
 
             if( descendents==null || descendents.isEmpty() ) {
                 getLog().warn(format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));                    
@@ -68,7 +83,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
             }
         }
 
-        confluence.removePage(root.getId());
+        confluence.removePage(start.getId());
 
         getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));
         
