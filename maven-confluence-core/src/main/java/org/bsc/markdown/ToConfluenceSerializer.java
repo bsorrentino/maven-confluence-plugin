@@ -2,6 +2,8 @@ package org.bsc.markdown;
 
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static org.bsc.confluence.FileExtension.MARKDOWN;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,10 +12,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bsc.confluence.model.Site;
 import org.parboiled.common.StringUtils;
 import org.pegdown.Extensions;
 import org.pegdown.ast.AbbreviationNode;
@@ -56,6 +60,9 @@ import org.pegdown.ast.TextNode;
 import org.pegdown.ast.VerbatimNode;
 import org.pegdown.ast.Visitor;
 import org.pegdown.ast.WikiLinkNode;
+
+import lombok.val;
+import lombok.var;
 
 
 /*
@@ -176,8 +183,18 @@ public abstract class ToConfluenceSerializer implements Visitor {
         return result;
     }
 
+    private boolean isURL( String value ) {
+        try {
+            new URL(value);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        return true;
+        
+    }
+    
     private static final Pattern patternUri = Pattern.compile("(?:(\\$\\{.+\\})\\^)?(.+)");
-
+   
     /**
      * 
      * @param url
@@ -185,6 +202,10 @@ public abstract class ToConfluenceSerializer implements Visitor {
      * @return
      */
     public String processImageUrl( String url ) {
+        
+        if( isURL(url) ) {
+            return url;
+        }
         
         final Matcher m = patternUri.matcher(url);
         
@@ -209,6 +230,14 @@ public abstract class ToConfluenceSerializer implements Visitor {
     }
 
     /**
+     * 
+     * @return
+     */
+    protected Optional<Site> getSite() {
+        return Optional.empty();
+    }
+    
+    /**
      * indicates whether the prefix ${page.title} should be added or not
      * s
      * @return
@@ -222,8 +251,8 @@ public abstract class ToConfluenceSerializer implements Visitor {
      *
      * @return home page title. nullable
      */
-    protected String getHomePageTitle() {
-        return null;
+    protected Optional<String> getHomePageTitle() {
+        return Optional.empty();
     }
 
     protected abstract void notImplementedYet( Node node );
@@ -451,7 +480,36 @@ public abstract class ToConfluenceSerializer implements Visitor {
 
         _buffer.append( '[');
         visitChildren(eln);
-        _buffer.append(format("|%s|%s]", eln.url, eln.title));
+        
+        var url = eln.url;
+        if( !isURL(url) && MARKDOWN.isExentionOf(url)) {
+
+            val site = getSite();
+            if( site.isPresent() ) {            
+                val _uri1 = url;
+                val page = site.get().getHome().findPage( p ->                    
+                    _uri1.equals( valueOf(p.getRelativeUri()) )
+                );
+                
+                if( page.isPresent() ) {
+
+                    val parentPageTitle = getHomePageTitle();
+                    
+                    if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
+                        url = String.format( "%s - %s", parentPageTitle.get(), page.get().getName() );
+                    }
+                    else {
+                        url = page.get().getName();                        
+                    }
+                    
+         
+                }
+            }
+            
+            
+        }
+
+        _buffer.append(format("|%s|%s]", url, eln.title));
     }
 
 
@@ -670,23 +728,22 @@ public abstract class ToConfluenceSerializer implements Visitor {
         visitChildren(rln);
         _buffer.append('|');
 
-        final String ref = getRefString(rln, rln.referenceKey);
+        val ref = getRefString(rln, rln.referenceKey);
 
-        final String parentPageTitle = getHomePageTitle();
-        String url = ref;
+        var url = ref;
 
-        ReferenceNode referenceNode = referenceNodes.get(ref);
+        val referenceNode = referenceNodes.get(ref);
         if (referenceNode != null && referenceNode.getUrl() != null && url.length() > 0) {
             url = referenceNode.getUrl();
         }
 
         // If URL is a relative URL, we will create a link to the project
-        try {
-            new URL(url);
-        } catch (MalformedURLException e) {
+        if( !isURL(url) ) { 
+            val parentPageTitle = getHomePageTitle();
+            
             // not a valid URL (hence a relative link)
-            if( parentPageTitle != null && !url.startsWith(parentPageTitle)) {
-                _buffer.append(parentPageTitle).append(" - ");
+            if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
+                _buffer.append(parentPageTitle.get()).append(" - ");
             }
         }
         _buffer.append(url);

@@ -209,9 +209,9 @@ public interface ConfluenceService extends Closeable{
                                 String.format("cannot find parent page [%s] in space [%s]", parentPageTitle))) )
                 .thenCombine( getPage(spaceKey, title), Tuple2::of)
                 .thenCompose( tuple -> {
-                    return ( tuple.value2.isPresent() ) ?
-                        CompletableFuture.completedFuture(tuple.value2.get()) :
-                        createPage(tuple.value1, title);
+                    return ( tuple.getValue2().isPresent() ) ?
+                        CompletableFuture.completedFuture(tuple.getValue2().get()) :
+                        createPage(tuple.getValue1(), title);
                 })
                 ;
         }

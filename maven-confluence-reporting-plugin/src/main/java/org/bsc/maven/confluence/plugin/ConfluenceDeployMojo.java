@@ -72,7 +72,7 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
  *
  */
 @Mojo( name="deploy", threadSafe = true )
-public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
+public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     private static final String PROJECT_DEPENDENCIES_VAR    = "project.dependencies";
     private static final String PROJECT_SCM_MANAGER_VAR     = "project.scmManager";
@@ -254,17 +254,17 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
         loadUserInfoFromSettings();
 
-        Site site = super.createFromModel();
+        Site site = super.createSiteFromModel();
 
         if( site != null ) {
             
             site.setBasedir(getSiteDescriptor().toPath());
             
             if( site.getHome().getName()!=null ) {
-                setTitle( site.getHome().getName() );
+                setPageTitle( site.getHome().getName() );
             }
             else {
-                site.getHome().setName(getTitle());
+                site.getHome().setName(getPageTitle());
             }
 
             java.util.List<String> _labels = getLabels();
@@ -273,7 +273,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
             }
         }
         else {
-            site = super.createFromFolder();
+            site = super.createSiteFromFolder();
 
             try {
                 final Path p = templateWiki.toPath();
@@ -549,7 +549,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
     {
         final java.net.URI uri = site.getHome().getUri();
 
-        return processPageUri( homePage, uri, homePage.getTitle(), (err, tuple2) -> {
+        return processPageUri( site, homePage, uri, homePage.getTitle(), (err, content) -> {
             final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
 
             try {
@@ -559,18 +559,18 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     return result;
                 }
 
-                if( !tuple2.value1.isPresent()) {
+                if( !content.isPresent()) {
                     result.complete( homePage );
                     return result; // SKIPPED
-                }
+                }   
 
                 final MiniTemplator t = new MiniTemplator.Builder()
                     .setSkipUndefinedVars(true)
-                    .build( tuple2.value1.get(), getCharset() );
+                    .build( content.get().getInputStream(), getCharset() );
 
                 generateProjectHomeTemplate( t, site, locale );
 
-                return confluence.storePage(homePage, new Storage(t.generateOutput(),tuple2.value2) );
+                return confluence.storePage(homePage, new Storage(t.generateOutput(),content.get().getType()) );
 
             } catch (Exception ex) {
                 result.completeExceptionally(ex);
@@ -593,7 +593,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
         //
         // Issue 32
         //
-        final String _homePageTitle = getTitle();
+        final String _homePageTitle = getPageTitle();
 
         final Model.Page confluenceHomePage =
                 removeSnaphot(confluence, _parentPage, _homePageTitle)
@@ -897,9 +897,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                 }
             }
 
-            final String title = getTitle();
+            final String title = getPageTitle();
 
-            return processPageUri(homePage, site.getHome().getUri(), getTitle(), ( err, tuple2 ) -> {
+            return processPageUri(site, homePage, site.getHome().getUri(), getPageTitle(), ( err, content ) -> {
 
                 final CompletableFuture<Model.Page> result =
                         new CompletableFuture<Model.Page>();
@@ -911,14 +911,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                         return result;
                     }
 
-                    if( !tuple2.value1.isPresent()) {
+                    if( !content.isPresent()) {
                         result.complete(homePage);
                         return result;
                     } // SKIPPED
 
                     final MiniTemplator t = new MiniTemplator.Builder()
                             .setSkipUndefinedVars(true)
-                            .build( tuple2.value1.get(), getCharset() );
+                            .build( content.get().getInputStream(), getCharset() );
 
                     /////////////////////////////////////////////////////////////////
                     // SUMMARY
@@ -1009,7 +1009,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
 
             // issue#102
             //final String title = format( "%s-%s", pluginDescriptor.getArtifactId(), pluginDescriptor.getVersion() );
-            final String title = getTitle();
+            final String title = getPageTitle();
 
             getProperties().put("pageTitle",    title);
             getProperties().put("artifactId",   getProject().getArtifactId());
@@ -1024,10 +1024,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceSiteMojo {
                     parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
                 .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
                 .thenCompose( tuple -> {
-                    return ( tuple.value2.isPresent() ) ?
-                        completedFuture(tuple.value2.get()) :
+                    return ( tuple.getValue2().isPresent() ) ?
+                        completedFuture(tuple.getValue2().get()) :
                         resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset ->confluence.createPage(tuple.value1, title));
+                        .thenCompose( reset ->confluence.createPage(tuple.getValue1(), title));
                 })
                 .thenCompose( p ->
                     canProceedToUpdateResource( site.getHome().getUri())

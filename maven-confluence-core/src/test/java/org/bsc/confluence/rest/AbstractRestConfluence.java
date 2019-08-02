@@ -139,8 +139,8 @@ public class AbstractRestConfluence {
                 .get()
                 ;
         
-        Model.Page p = result.value1;
-        Model.Page p1 = result.value2;
+        Model.Page p = result.getValue1();
+        Model.Page p1 = result.getValue2();
         
         int version = p.getVersion();
         Assert.assertThat( p, IsNull.notNullValue());

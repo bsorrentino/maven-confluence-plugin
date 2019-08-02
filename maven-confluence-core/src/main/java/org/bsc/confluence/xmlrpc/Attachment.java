@@ -148,4 +148,33 @@ class Attachment extends MapObject implements Model.Attachment {
         map.put("created", getCreated());
         return map;
     }
+
+	@Override
+	public String toString() {
+		return new StringBuilder()
+		.append("Attachment [Id=")
+		.append(getId())
+		.append(", PageId=")
+		.append(getPageId())
+		.append(", Title=")
+		.append(getTitle())
+		.append(", FileName=")
+		.append(getFileName())
+		.append(", FileSize=")
+		.append(getFileSize())
+		.append(", ContentType=")
+		.append(getContentType())
+		.append(", Created=")
+		.append(getCreated())
+		.append(", Creator=")
+		.append(getCreator())
+		.append(", Url=")
+		.append(getUrl())
+		.append(", Comment=")
+		.append(getComment())
+		.append("]")
+		.toString();
+	}
+    
+    
 }

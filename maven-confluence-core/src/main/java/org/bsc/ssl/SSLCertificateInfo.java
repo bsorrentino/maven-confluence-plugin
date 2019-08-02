@@ -6,6 +6,8 @@
 
 package org.bsc.ssl;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
@@ -23,7 +25,7 @@ public class SSLCertificateInfo {
             try {
                 final Class<?> loadedClass = Thread.currentThread().getContextClassLoader().loadClass(clazz);
                 //create an instance of loaded class i.e. with newInstance (just works for classes with non-arg const).
-                final Object initClass = loadedClass.newInstance();
+                final Object initClass = loadedClass.getDeclaredConstructor().newInstance();
                 return type.cast(initClass);
             } catch (final ClassNotFoundException e) {
                 final String msg = String.format("Could not found Class with name %s", clazz);
@@ -34,6 +36,8 @@ public class SSLCertificateInfo {
             }catch (final IllegalAccessException e){
                 final String msg = String.format("Could create Instance of Class with name %s. Class must have a no-arg constructor.",clazz);
                 throw new IllegalStateException(msg, e);
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                throw new IllegalStateException(e);
             }
         }
 
