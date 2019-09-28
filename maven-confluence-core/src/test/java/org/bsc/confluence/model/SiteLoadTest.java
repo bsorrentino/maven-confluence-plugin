@@ -5,11 +5,13 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
 
+import lombok.SneakyThrows;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -52,8 +54,8 @@ public class SiteLoadTest {
     public void testLoadFromYAML() throws Exception {
         
         loadFromYAML( "site.yaml", site -> {
-            
-            final Path basedir = Paths.get("/tmp");
+
+            final Path basedir = Paths.get(String.valueOf(getTempDirectory()));
             site.setBasedir( basedir );
             
             assertThat( site.getHome(), notNullValue());
@@ -73,4 +75,10 @@ public class SiteLoadTest {
         });
             
     }
+
+    @SneakyThrows
+    private Path getTempDirectory() {
+        return Files.createTempDirectory(null);
+    }
+
 }
