@@ -5,6 +5,48 @@
 ## Next release
 ### Generic changes
 
+**update Changelog settings**
+
+
+[e78fa2503173a5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/e78fa2503173a5b) bsorrentino *2019-10-01 09:34:12*
+
+**move to next release**
+
+
+[422ed53eb625696](https://github.com/bsorrentino/maven-confluence-plugin/commit/422ed53eb625696) bsorrentino *2019-10-01 09:22:53*
+
+**fix security alert #com.fasterxml.jackson.core:jackson-databind**
+
+
+[ce3a1541836eb50](https://github.com/bsorrentino/maven-confluence-plugin/commit/ce3a1541836eb50) bsorrentino *2019-10-01 08:56:04*
+
+
+###  [#195](https://github.com/bsorrentino/maven-confluence-plugin/issues/195) Two JUnit tests fail on Windows for path issues  
+
+**fix issue #195**
+
+
+[b55e70da0ee4fd5](https://github.com/bsorrentino/maven-confluence-plugin/commit/b55e70da0ee4fd5) Nicola Lagnena *2019-09-28 10:44:29*
+
+
+## v6.4
+### Generic changes
+
+**update doc**
+
+
+[c79afa3f3d845dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/c79afa3f3d845dc) bsorrentino *2019-08-02 16:14:38*
+
+**update version to next release**
+
+
+[ccb00a101a70b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccb00a101a70b17) bsorrentino *2019-08-02 15:59:24*
+
+**update changelog**
+
+
+[06cd6a2ea7b179c](https://github.com/bsorrentino/maven-confluence-plugin/commit/06cd6a2ea7b179c) bsorrentino *2019-08-02 15:57:46*
+
 **update changelog**
 
 
@@ -2424,44 +2466,44 @@
 
  * Merge branch &#39;hotfix/docs&#39; into develop
 
-[e8f43d417b43194](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8f43d417b43194) bsorrentino *2015-01-03 15:53:40*
+[e8f43d417b43194](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8f43d417b43194) bsorrentino *2016-01-03 15:53:40*
 
 **update readme**
 
 
-[87052fb55686ddf](https://github.com/bsorrentino/maven-confluence-plugin/commit/87052fb55686ddf) bsorrentino *2015-01-03 15:53:32*
+[87052fb55686ddf](https://github.com/bsorrentino/maven-confluence-plugin/commit/87052fb55686ddf) bsorrentino *2016-01-03 15:53:32*
 
 **update readme**
 
  * Merge branch &#39;hotfix/docs&#39; into develop
 
-[d4e6418c313e408](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4e6418c313e408) bsorrentino *2015-01-03 15:51:02*
+[d4e6418c313e408](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4e6418c313e408) bsorrentino *2016-01-03 15:51:02*
 
 **update readme**
 
 
-[ac36b5bb60526a8](https://github.com/bsorrentino/maven-confluence-plugin/commit/ac36b5bb60526a8) bsorrentino *2015-01-03 15:50:56*
+[ac36b5bb60526a8](https://github.com/bsorrentino/maven-confluence-plugin/commit/ac36b5bb60526a8) bsorrentino *2016-01-03 15:50:56*
 
 **update docs**
 
  * Merge branch &#39;hotfix/docs&#39; into develop
 
-[1c9f82e6824d982](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c9f82e6824d982) bsorrentino *2015-01-03 15:48:05*
+[1c9f82e6824d982](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c9f82e6824d982) bsorrentino *2016-01-03 15:48:05*
 
 **update docs**
 
 
-[17e8a130780646e](https://github.com/bsorrentino/maven-confluence-plugin/commit/17e8a130780646e) bsorrentino *2015-01-03 15:47:18*
+[17e8a130780646e](https://github.com/bsorrentino/maven-confluence-plugin/commit/17e8a130780646e) bsorrentino *2016-01-03 15:47:18*
 
 **merged from release 4.4.3**
 
 
-[e029d0caac884bc](https://github.com/bsorrentino/maven-confluence-plugin/commit/e029d0caac884bc) bsorrentino *2015-12-29 13:58:43*
+[e029d0caac884bc](https://github.com/bsorrentino/maven-confluence-plugin/commit/e029d0caac884bc) bsorrentino *2016-12-29 13:58:43*
 
 **updating poms for 4.4.4-SNAPSHOT development**
 
 
-[18200679cd172fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/18200679cd172fd) bsorrentino *2015-12-29 13:43:33*
+[18200679cd172fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/18200679cd172fd) bsorrentino *2016-12-29 13:43:33*
 
 
 ###  [#91](https://github.com/bsorrentino/maven-confluence-plugin/issues/91) scm web access not shown as actual link    *bug*  
@@ -2479,7 +2521,7 @@
 **update version**
 
 
-[8497e119b267dc2](https://github.com/bsorrentino/maven-confluence-plugin/commit/8497e119b267dc2) bsorrentino *2015-12-29 13:53:13*
+[8497e119b267dc2](https://github.com/bsorrentino/maven-confluence-plugin/commit/8497e119b267dc2) bsorrentino *2016-12-29 13:53:13*
 
 **update forge module**
 
