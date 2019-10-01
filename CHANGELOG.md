@@ -2,8 +2,13 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Next release
+## v6.4.1
 ### Generic changes
+
+**update changelog**
+
+
+[4e7515357072bc2](https://github.com/bsorrentino/maven-confluence-plugin/commit/4e7515357072bc2) bsorrentino *2019-10-01 09:34:50*
 
 **update Changelog settings**
 
