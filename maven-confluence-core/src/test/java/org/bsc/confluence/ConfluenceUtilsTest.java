@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ConfluenceUtilsTest {
@@ -21,6 +22,7 @@ public class ConfluenceUtilsTest {
     }
 
     @Test
+    @Ignore
     public void pathTest() throws Exception {
 
         //File f = new File(".");
