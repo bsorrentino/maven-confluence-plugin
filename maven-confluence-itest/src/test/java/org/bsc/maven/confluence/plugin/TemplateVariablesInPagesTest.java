@@ -178,7 +178,7 @@ public class TemplateVariablesInPagesTest {
     @Test
     public void shouldRenderTheIndexPage() throws IOException, VerificationException, InterruptedException {
         File testDir = simpleExtractResources(getClass(), "/simple-plugin-project");
-        testLaunchingMaven(testDir, Collections.emptyList(), "clean", "package", "confluence-reporting:deploy");
+        testLaunchingMaven(testDir, new ArrayList<>(), "clean", "package", "confluence-reporting:deploy");
         assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Fake Root=>Hello Plugin"));
         assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin=>Hello Plugin - Summary"));
 
@@ -195,7 +195,7 @@ public class TemplateVariablesInPagesTest {
     @Test
     public void shouldPutTheGoalsAsChildrenOfGoalsPage() throws IOException, VerificationException, InterruptedException {
         File testDir = simpleExtractResources(getClass(), "/plugin-project-goals-in-subpage");
-        testLaunchingMaven(testDir, Collections.emptyList(), "clean", "package", "confluence-reporting:deploy");
+        testLaunchingMaven(testDir, new ArrayList<>(), "clean", "package", "confluence-reporting:deploy");
         assertTrue(fileExists(testDir.getAbsolutePath() + "/results/Fake Root=>Hello Plugin"));
         String pluginGoalsPath = testDir.getAbsolutePath() + "/results/Hello Plugin=>Hello Plugin - Goals";
         assertTrue(fileExists(pluginGoalsPath));
