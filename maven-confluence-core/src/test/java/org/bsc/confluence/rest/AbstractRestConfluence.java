@@ -5,10 +5,7 @@
  */
 package org.bsc.confluence.rest;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import org.bsc.confluence.ConfluenceService.Credentials;
+import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.functional.Tuple2;
@@ -17,28 +14,24 @@ import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
  * @author bsorrentino
  */
-public class AbstractRestConfluence {
+public abstract class AbstractRestConfluence {
     //private static final String URL = "http://192.168.99.100:8090/rest/api";
     protected static String URL = "http://localhost:8090/rest/api";
-    
-    RESTConfluenceServiceImpl service;
-    
-    @Before
-    public void initService() throws Exception {
-      
-        final Credentials credentials = new Credentials("admin", "admin");
-        final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
-        
-        service = new RESTConfluenceServiceImpl(URL, credentials, sslInfo );
-    }
+    protected static String SPACE_KEY = "TEST";
+
+    ConfluenceService service;
+    final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials("admin", "admin");
+    final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
     
     @Test @Ignore
     public void dummy() {}
@@ -46,16 +39,14 @@ public class AbstractRestConfluence {
     @Test
     public void getOrCreatePageAndStoreWiki() throws Exception  {
 
-        final String spaceKey = "TEST";
         final String parentPageTitle = "Home";
         final String title = "MyPage2";
 
-
-        final Model.Page p = service.getOrCreatePage(spaceKey, parentPageTitle, title).get();
+        final Model.Page p = service.getOrCreatePage(SPACE_KEY, parentPageTitle, title).get();
 
         int version = p.getVersion();
         Assert.assertThat( p, IsNull.notNullValue());
-        Assert.assertThat( p.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat(p.getSpace(), IsEqual.equalTo(SPACE_KEY));
         Assert.assertThat( version > 0, Is.is(true));
 
         final String content = new StringBuilder()
@@ -69,7 +60,7 @@ public class AbstractRestConfluence {
         final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI)).get();
 
         Assert.assertThat( p1, IsNull.notNullValue());
-        Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat(p1.getSpace(), IsEqual.equalTo(SPACE_KEY));
         Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
         
         
@@ -85,7 +76,9 @@ public class AbstractRestConfluence {
         Model.Attachment result = 
             service.getAttachment(p1.getId(), "foto2.jpg", "")
             .thenApply( att -> {
-                if( att.isPresent() ) return att.get();
+                if( att.isPresent() ) {
+                    return att.get();
+                }
                 
                  Model.Attachment a = service.createAttachment();
                 
@@ -113,15 +106,12 @@ public class AbstractRestConfluence {
     @Test
     public void getOrCreatePageAndStoreStorage() throws Exception  {
 
-        final String spaceKey = "TEST";
         final String parentPageTitle = "Home";
         final String title = "MyPage3";
 
         final Tuple2<Model.Page,Model.Page> result =
-            service.getPage(spaceKey, parentPageTitle)
-                .thenApply( p -> p.orElseThrow( () -> new RuntimeException("parent page not found!")) )
-                .thenCompose( p -> service.createPage( p, title ))
-                .thenCompose( p -> {
+                service.getOrCreatePage(SPACE_KEY, parentPageTitle, title)
+                       .thenCompose(p -> {
     
                     final String content = new StringBuilder()
                             .append("<h1>")
@@ -136,7 +126,7 @@ public class AbstractRestConfluence {
                                     service.storePage(p, new Storage(content, Storage.Representation.STORAGE)), 
                                     Tuple2::of );
                 })
-                .get()
+                       .get()
                 ;
         
         Model.Page p = result.getValue1();
@@ -144,11 +134,11 @@ public class AbstractRestConfluence {
         
         int version = p.getVersion();
         Assert.assertThat( p, IsNull.notNullValue());
-        Assert.assertThat( p.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat(p.getSpace(), IsEqual.equalTo(SPACE_KEY));
         Assert.assertThat( version > 0, Is.is(true));
 
         Assert.assertThat( p1, IsNull.notNullValue());
-        Assert.assertThat( p1.getSpace(), IsEqual.equalTo("TEST"));
+        Assert.assertThat(p1.getSpace(), IsEqual.equalTo(SPACE_KEY));
         Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
         
     }
@@ -158,8 +148,8 @@ public class AbstractRestConfluence {
     	
         final String spaceKey	= "TEST";
         final String title 		= "Home";
-        
-        service.getPage(spaceKey, title).thenAccept( page -> {
+
+        service.getPage(SPACE_KEY, title).thenAccept(page -> {
             
             Assert.assertThat( page.isPresent(), IsEqual.equalTo(true) );
            
@@ -177,7 +167,7 @@ public class AbstractRestConfluence {
             }
             
         })
-        .exceptionally( e -> {           
+               .exceptionally( e -> {
             Assert.fail( e.getMessage() );
             return null;
         } );
