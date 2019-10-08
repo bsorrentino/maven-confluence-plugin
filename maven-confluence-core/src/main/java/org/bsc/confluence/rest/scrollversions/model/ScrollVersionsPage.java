@@ -1,4 +1,4 @@
-package org.bsc.confluence.rest.model;
+package org.bsc.confluence.rest.scrollversions.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

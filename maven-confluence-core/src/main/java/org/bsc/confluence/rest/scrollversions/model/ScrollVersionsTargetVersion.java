@@ -1,4 +1,4 @@
-package org.bsc.confluence.rest.model;
+package org.bsc.confluence.rest.scrollversions.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

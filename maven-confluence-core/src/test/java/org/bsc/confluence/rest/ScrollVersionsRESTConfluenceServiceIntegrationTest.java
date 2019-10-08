@@ -5,6 +5,7 @@
  */
 package org.bsc.confluence.rest;
 
+import org.bsc.confluence.rest.scrollversions.ScrollVersionsRESTConfluenceService;
 import org.junit.Before;
 
 public class ScrollVersionsRESTConfluenceServiceIntegrationTest extends AbstractRestConfluence {

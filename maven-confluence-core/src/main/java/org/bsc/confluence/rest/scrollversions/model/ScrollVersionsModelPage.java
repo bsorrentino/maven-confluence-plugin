@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.confluence.rest.model;
+package org.bsc.confluence.rest.scrollversions.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

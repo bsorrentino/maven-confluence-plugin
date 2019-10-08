@@ -1,4 +1,4 @@
-package org.bsc.confluence.rest;
+package org.bsc.confluence.rest.scrollversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -14,10 +14,11 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.rest.model.ScrollVersionsNewPage;
-import org.bsc.confluence.rest.model.ScrollVersionsPage;
-import org.bsc.confluence.rest.model.ScrollVersionsPageByTitle;
-import org.bsc.confluence.rest.model.ScrollVersionsTargetVersion;
+import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsNewPage;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsPage;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsPageByTitle;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsTargetVersion;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import java.io.File;
