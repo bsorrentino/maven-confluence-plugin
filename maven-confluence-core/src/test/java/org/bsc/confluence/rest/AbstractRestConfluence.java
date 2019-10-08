@@ -5,6 +5,15 @@
  */
 package org.bsc.confluence.rest;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
@@ -17,8 +26,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import lombok.val;
+import lombok.var;
 
 /**
  *
@@ -45,29 +54,29 @@ public abstract class AbstractRestConfluence {
         final Model.Page p = service.getOrCreatePage(SPACE_KEY, parentPageTitle, title).get();
 
         int version = p.getVersion();
-        Assert.assertThat( p, IsNull.notNullValue());
-        Assert.assertThat(p.getSpace(), IsEqual.equalTo(SPACE_KEY));
-        Assert.assertThat( version > 0, Is.is(true));
+        assertThat( p, notNullValue());
+        assertThat(p.getSpace(), equalTo(SPACE_KEY));
+        assertThat( version > 0, is(true));
 
-        final String content = new StringBuilder()
-                                        .append("h1.")
-                                        .append(" TEST ")
-                                        .append(System.currentTimeMillis()).append('\n')
-                                        .append("----").append('\n')
-                                        .append("*'wiki' \"wiki\"*")
-                                        .toString();
+        val content = new StringBuilder()
+                            .append("h1.")
+                            .append(" TEST ")
+                            .append(System.currentTimeMillis()).append('\n')
+                            .append("----").append('\n')
+                            .append("*'wiki' \"wiki\"*")
+                            .toString();
         
         final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI)).get();
 
-        Assert.assertThat( p1, IsNull.notNullValue());
-        Assert.assertThat(p1.getSpace(), IsEqual.equalTo(SPACE_KEY));
-        Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
+        assertThat( p1, notNullValue());
+        assertThat( p1.getSpace(), equalTo(SPACE_KEY));
+        assertThat( p1.getVersion(), equalTo(version+1));
         
         
         final Optional<Model.Page> p11 = service.getPage( p1.getId() ).get();
         
-        Assert.assertThat( p11.isPresent(), IsEqual.equalTo(true));
-        Assert.assertThat( p11.get().getTitle(), IsEqual.equalTo(p1.getTitle()));
+        assertThat( p11.isPresent(), equalTo(true));
+        assertThat( p11.get().getTitle(), equalTo(p1.getTitle()));
         
         final boolean addLabelResult = service.addLabelByName("label", Integer.parseInt(p1.getId()) );
         
@@ -80,7 +89,7 @@ public abstract class AbstractRestConfluence {
                     return att.get();
                 }
                 
-                 Model.Attachment a = service.createAttachment();
+                 var a = service.createAttachment();
                 
                  a.setFileName( "foto2.jpg");
                  a.setContentType("image/jpg");
@@ -93,12 +102,12 @@ public abstract class AbstractRestConfluence {
             .join()
             ;
       
-        Assert.assertThat( result, IsNull.notNullValue());
+        assertThat( result, IsNull.notNullValue());
 
         final Optional<Model.Attachment> att2 = 
                 service.getAttachment(p1.getId(), result.getFileName(), "").join();
 
-        Assert.assertThat( att2.isPresent(), IsEqual.equalTo(true));
+        assertThat( att2.isPresent(), IsEqual.equalTo(true));
 
         
     }
@@ -133,30 +142,30 @@ public abstract class AbstractRestConfluence {
         Model.Page p1 = result.getValue2();
         
         int version = p.getVersion();
-        Assert.assertThat( p, IsNull.notNullValue());
-        Assert.assertThat(p.getSpace(), IsEqual.equalTo(SPACE_KEY));
-        Assert.assertThat( version > 0, Is.is(true));
+        assertThat( p, notNullValue());
+        assertThat(p.getSpace(), equalTo(SPACE_KEY));
+        assertThat( version > 0, is(true));
 
-        Assert.assertThat( p1, IsNull.notNullValue());
-        Assert.assertThat(p1.getSpace(), IsEqual.equalTo(SPACE_KEY));
-        Assert.assertThat( p1.getVersion(), IsEqual.equalTo(version+1));
+        assertThat( p1, notNullValue());
+        assertThat(p1.getSpace(), equalTo(SPACE_KEY));
+        assertThat( p1.getVersion(), equalTo(version+1));
         
     }
 
     @Test //@Ignore
     public void getDescendentsTest()   {
     	
-        final String spaceKey	= "TEST";
+        //final String spaceKey	= "TEST";
         final String title 		= "Home";
 
         service.getPage(SPACE_KEY, title).thenAccept(page -> {
             
-            Assert.assertThat( page.isPresent(), IsEqual.equalTo(true) );
+            assertThat( page.isPresent(), equalTo(true) );
            
             try {
                 java.util.List<Model.PageSummary> descendents = service.getDescendents( page.get().getId() );
                 
-                Assert.assertThat( descendents, IsNull.notNullValue() );
+                assertThat( descendents, notNullValue() );
                 
                 for( Model.PageSummary p : descendents ) {
                     System.out.printf( "Descend Page: [%s]\n", p.getTitle());
@@ -167,8 +176,8 @@ public abstract class AbstractRestConfluence {
             }
             
         })
-               .exceptionally( e -> {
-            Assert.fail( e.getMessage() );
+        .exceptionally( e -> {
+            fail( e.getMessage() );
             return null;
         } );
 
