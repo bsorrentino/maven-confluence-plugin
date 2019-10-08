@@ -5,6 +5,7 @@
  */
 package org.bsc.confluence.rest;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -13,8 +14,15 @@ import org.junit.Test;
  * @author softphone
  */
 public class RESTConfluenceServiceIntegrationTest extends AbstractRestConfluence {
-    
+
+    RESTConfluenceServiceImpl restConfluenceService = new RESTConfluenceServiceImpl(URL, credentials, sslInfo);
+
     @Test @Ignore
     public void dummy() {}
-    
+
+    @Before
+    public void initService() throws Exception {
+        service = restConfluenceService;
+    }
+
 }

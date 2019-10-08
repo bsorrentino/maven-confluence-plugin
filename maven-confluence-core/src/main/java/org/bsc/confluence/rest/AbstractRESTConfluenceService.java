@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +26,9 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.rest.model.Attachment;
 
+import lombok.val;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -42,7 +46,7 @@ public abstract class AbstractRESTConfluenceService {
 
     private static final String EXPAND = "space,version,container";
 
-    final OkHttpClient.Builder client = new OkHttpClient.Builder();
+    protected final OkHttpClient.Builder client = new OkHttpClient.Builder();
 
     public abstract ConfluenceService.Credentials getCredentials();
 
@@ -59,6 +63,46 @@ public abstract class AbstractRESTConfluenceService {
 
     }
 
+    /**
+     * 
+     * @param req
+     * @param description
+     * @return
+     */
+    protected CompletableFuture<Response> fromRequestAsync( final Request req ) {
+
+        val result = new CompletableFuture<Response>();
+        
+        client.build().newCall(req).enqueue( new Callback() {
+                
+            @Override
+            public void onResponse(Call call, Response res) throws IOException {
+                if( !res.isSuccessful() ) {
+                    
+                    result.completeExceptionally( 
+                            new ServiceException( 
+                                    format("error: %s\n%s", 
+                                         res.toString(),
+                                        res.body().string()), 
+                                        res));
+                    return;
+                }
+                
+                result.complete(res);
+                
+            }
+            
+            @Override
+            public void onFailure(Call call, IOException e) {          
+                result.completeExceptionally( e );
+            }
+            
+        });
+
+        return result;
+
+    }
+    
     protected Response fromRequest( final Request req, final String description ) {
 
         try {
