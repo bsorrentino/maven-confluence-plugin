@@ -2,6 +2,7 @@ package org.bsc.confluence.rest.scrollversions;
 
 import static java.lang.Long.parseLong;
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Implements a {@link ConfluenceService} with Scroll Versions support via REST APIs.
@@ -70,29 +70,40 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     final RESTConfluenceServiceImpl delegate;
 
     final URL           scrollVersionsUrl;
-    final String        scrollVersionName;
+    final String        scrollVersionsName;
     final ObjectMapper  objectMapper;
 
     public ScrollVersionsRESTConfluenceService( String confluenceUrl, 
-                                                String scrollVersionsUrl, 
+                                                String scrollVersionName, 
                                                 Credentials credentials, 
-                                                SSLCertificateInfo sslCertificateInfo, 
-                                                String scrollVersionName) 
+                                                SSLCertificateInfo sslCertificateInfo) 
     {
+        if (scrollVersionName == null)
+            throw new java.lang.IllegalArgumentException("scrollVersionName is null!");
 
-        Objects.requireNonNull(scrollVersionsUrl, "url cannot be null");
         try {
-            this.scrollVersionsUrl = new URL(scrollVersionsUrl);
+            val regex = "/rest/api(/?)$";
+            this.scrollVersionsUrl = new URL(confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0"));
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("invalid url", e);
+            throw new IllegalArgumentException("invalid Scroll Versions url", e);
         }
 
-        Objects.requireNonNull(scrollVersionName, "scroll version name cannot be null");
-        this.scrollVersionName = scrollVersionName;
-
+        this.scrollVersionsName = scrollVersionName;
         this.delegate = new RESTConfluenceServiceImpl(confluenceUrl, credentials, sslCertificateInfo);
         this.objectMapper = new ObjectMapper();
 
+    }
+
+    HttpUrl.Builder urlBuilder() {
+        return new HttpUrl.Builder().scheme(scrollVersionsUrl.getProtocol())
+                                    .host(scrollVersionsUrl.getHost())
+                                    .port(scrollVersionsUrl.getPort())
+                                    .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
+    }
+
+    Request.Builder requestBuilder() {
+        return new Request.Builder().header("Authorization", okhttp3.Credentials.basic(getCredentials().username, getCredentials().password))
+                                    .header("X-Atlassian-Token", "nocheck");
     }
 
     @Override
@@ -107,7 +118,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                 new ScrollVersionsException(format("no page found for parent id %s and title %s in version %s",
                     parentPageId,
                     title,                                                                                                                   
-                    scrollVersionName));
+                    scrollVersionsName));
                 
         val page = delegate.findPageByTitle(parentPageId, title);
         
@@ -124,7 +135,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
             return removePageAsync(page.getId());
             
         } catch (Exception e) {
-            return CompletableFuture.completedFuture(false);
+            return completedFuture(false);
         }
     }
 
@@ -143,7 +154,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                                                  .thenCompose(scrollVersionId -> 
          {
             
-            val httpUrl = getHttpUrlBuilder().addPathSegment("page")
+            val httpUrl = urlBuilder().addPathSegment("page")
                                                  .addPathSegment("new")
                                                  .addPathSegment(parentPage.getSpace())
                                                  .addQueryParameter("parentConfluenceId", parentPageId)
@@ -155,7 +166,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                     .add("message", "Your message")
                     .build();
             
-            Request request = getRequestBuilder().url(httpUrl)
+            Request request = requestBuilder().url(httpUrl)
                                                  .post(body)
                                                  .build();
 
@@ -297,11 +308,11 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                 new ScrollVersionsPageByTitle(pageTitle)
         };
 
-        val httpUrl = getHttpUrlBuilder().addPathSegment("page")
+        val httpUrl = urlBuilder().addPathSegment("page")
                                              .addPathSegment(spaceKey)
                                              .build();
         val body = RequestBody.create(JSON_MEDIA_TYPE, mapToJsonString(scrollVersionsPageByTitle));
-        val request = getRequestBuilder().url(httpUrl)
+        val request = requestBuilder().url(httpUrl)
                                              .post(body)
                                              .build();
 
@@ -314,7 +325,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                 future.completeExceptionally(new ScrollVersionsException(format("could not retrieve content for page %s in space %s with version %s",
                         pageTitle,
                         spaceKey,
-                        scrollVersionName)));
+                        scrollVersionsName)));
                 return future ;
             }
             
@@ -324,7 +335,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                 val pages = objectMapper.readValue(responseBodyString, ScrollVersionsPage[].class);
                 
                 Optional<String> optionalFutureVersionedPageId = Arrays.stream(pages)
-                        .filter(scrollVersionsPage -> scrollVersionName.equals(scrollVersionsPage.getTargetVersion().getName()))
+                        .filter(scrollVersionsPage -> scrollVersionsName.equals(scrollVersionsPage.getTargetVersion().getName()))
                         .map(ScrollVersionsPage::getConfluencePageId)
                         .map(String::valueOf)
                         .findAny();
@@ -334,14 +345,14 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                     val msg = format("no page named %s found in space %s with version %s",
                                                                         pageTitle,
                                                                         spaceKey,
-                                                                        scrollVersionName);
+                                                                        scrollVersionsName);
                     completeExceptionally( future, msg );
                 }
             } catch (IOException e) {
                     val msg = format("could not interpret response for page named %s in space %s with version %s",
                             pageTitle,
                             spaceKey,
-                            scrollVersionName);
+                            scrollVersionsName);
                     completeExceptionally( future, msg, e );
                 }
             
@@ -355,11 +366,11 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
 
     CompletableFuture<String> getScrollVersionId(String spaceKey) {  
 
-        val httpUrl = getHttpUrlBuilder().addPathSegment("page")
+        val httpUrl = urlBuilder().addPathSegment("page")
                                              .addPathSegment(spaceKey)
                                              .build();
         val body = RequestBody.create(JSON_MEDIA_TYPE, REQUEST_BODY_GET_ALL_VERSIONED_PAGES);
-        val request = getRequestBuilder().url(httpUrl)
+        val request = requestBuilder().url(httpUrl)
                                              .post(body)
                                              .build();
 
@@ -381,7 +392,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                 
                 Optional<String> optionalVersionId = Arrays.stream(pages)
                                                            .map(ScrollVersionsPage::getTargetVersion)
-                                                           .filter(scrollVersionsTargetVersion -> scrollVersionName.equals(scrollVersionsTargetVersion.getName()))
+                                                           .filter(scrollVersionsTargetVersion -> scrollVersionsName.equals(scrollVersionsTargetVersion.getName()))
                                                            .map(ScrollVersionsTargetVersion::getVersionId)
                                                            .findAny();
 
@@ -389,7 +400,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                     futureResult.complete(optionalVersionId.get());
                 } else {
                     val msg = format("no version named %s found in space %s",
-                                                            scrollVersionName,
+                                                            scrollVersionsName,
                                                             spaceKey);
                     completeExceptionally( futureResult, msg );
                 }
@@ -421,14 +432,14 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                                val msg = format("failed to retrieve master page for page %s in space %s with version %s",
                                                                  page.getTitle(),
                                                                  page.getSpace(),
-                                                                 scrollVersionName);
+                                                                 scrollVersionsName);
                                completeExceptionally( futureResult, msg );
                            }
                        });
             } else {
                 val msg = format("failed to retrieve master page for page id %s with version %s",
                                                                               pageId,
-                                                                              scrollVersionName);
+                                                                              scrollVersionsName);
                 completeExceptionally( futureResult, msg );
             }
             return futureResult;
@@ -442,11 +453,11 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                     .thenCompose(optionalPage -> mapToPageId(spaceKey, pageTitle, optionalPage));
         }
 
-        val httpUrl = getHttpUrlBuilder().addPathSegment("page")
+        val httpUrl = urlBuilder().addPathSegment("page")
                                              .addPathSegment(spaceKey)
                                              .build();
         val body = RequestBody.create(JSON_MEDIA_TYPE, REQUEST_BODY_GET_ALL_VERSIONED_PAGES);
-        val request = getRequestBuilder().url(httpUrl)
+        val request = requestBuilder().url(httpUrl)
                                              .post(body)
                                              .build();
 
@@ -459,7 +470,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
            
                 val pages = objectMapper.readValue(responseBody, ScrollVersionsPage[].class);
                 Optional<String> optionalMasterPageTitle = Arrays.stream(pages)
-                                                                 .filter(page -> scrollVersionName.equals(page.getTargetVersion().getName())
+                                                                 .filter(page -> scrollVersionsName.equals(page.getTargetVersion().getName())
                                                                                  && spaceKey.equals(page.getSpaceKey())
                                                                                  && pageTitle.equals(page.getConfluencePageTitle()))
                                                                  .map(ScrollVersionsPage::getScrollPageTitle)
@@ -471,7 +482,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                     val msg = format("failed to retrieve page %s in space %s with version %s",
                             pageTitle,
                             spaceKey,
-                            scrollVersionName);
+                            scrollVersionsName);
                     completeExceptionally( futureResult, msg );
                 }
             
@@ -480,7 +491,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                 val msg = format("failed to retrieve page %s in space %s with version %s",
                         pageTitle,
                         spaceKey,
-                        scrollVersionName);
+                        scrollVersionsName);
                 completeExceptionally( futureResult, msg, e );
             }
 
@@ -493,31 +504,19 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     @SneakyThrows
     boolean isDotPage(String spaceKey, String pageTitle) {
         
-        val httpUrl = getHttpUrlBuilder().addPathSegment("page")
+        val httpUrl = urlBuilder().addPathSegment("page")
                                              .addPathSegment(spaceKey)
                                              .build();
         val body = RequestBody.create(JSON_MEDIA_TYPE, REQUEST_BODY_GET_ALL_VERSIONED_PAGES);
-        val request = getRequestBuilder().url(httpUrl)
+        val request = requestBuilder().url(httpUrl)
                                              .post(body)
                                              .build();
         val responseBody = delegate.fromRequest(request, "isDotPage" ).body().string();
         
         return Arrays.stream(objectMapper.readValue(responseBody, ScrollVersionsPage[].class))
-                     .anyMatch(page -> scrollVersionName.equals(page.getTargetVersion().getName())
+                     .anyMatch(page -> scrollVersionsName.equals(page.getTargetVersion().getName())
                                        && spaceKey.equals(page.getSpaceKey())
                                        && pageTitle.equals(page.getConfluencePageTitle()));
-    }
-
-    HttpUrl.Builder getHttpUrlBuilder() {
-        return new HttpUrl.Builder().scheme(scrollVersionsUrl.getProtocol())
-                                    .host(scrollVersionsUrl.getHost())
-                                    .port(scrollVersionsUrl.getPort())
-                                    .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
-    }
-
-    Request.Builder getRequestBuilder() {
-        return new Request.Builder().header("Authorization", okhttp3.Credentials.basic(getCredentials().username, getCredentials().password))
-                                    .header("X-Atlassian-Token", "nocheck");
     }
 
     CompletableFuture<String> mapToPageId(String spaceKey, String pageTitle, Optional<Model.Page> optionalPage) {
@@ -530,7 +529,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
             val msg = format("failed to retrieve page %s in space %s with version %s",              
                     pageTitle,
                     spaceKey,
-                    scrollVersionName);
+                    scrollVersionsName);
             completeExceptionally( future, msg);            
         }
         
@@ -618,9 +617,9 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
     final OkHttpClient  okHttpClient;
     final Credentials   credentials;
 
-    public DeprecatedMethods(String confluenceUrl, String scrollVersionsUrl, Credentials credentials,
-            SSLCertificateInfo sslCertificateInfo, String scrollVersionName) {
-        super(confluenceUrl, scrollVersionsUrl, credentials, sslCertificateInfo, scrollVersionName);
+    public DeprecatedMethods(String confluenceUrl, String scrollVersionName, Credentials credentials,
+            SSLCertificateInfo sslCertificateInfo) {
+        super(confluenceUrl, scrollVersionName, credentials, sslCertificateInfo);
         
         Objects.requireNonNull(credentials, "credentials cannot be null");
         this.credentials = credentials;
@@ -644,7 +643,7 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                                                  .thenCompose(scrollVersionId -> 
          {
             
-            HttpUrl httpUrl = getHttpUrlBuilder().addPathSegment("page")
+            HttpUrl httpUrl = urlBuilder().addPathSegment("page")
                                                  .addPathSegment("new")
                                                  .addPathSegment(parentPage.getSpace())
                                                  .addQueryParameter("parentConfluenceId", parentPageId)
@@ -656,7 +655,7 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                     .add("message", "Your message")
                     .build();
             
-            Request request = getRequestBuilder().url(httpUrl)
+            Request request = requestBuilder().url(httpUrl)
                                                  .post(body)
                                                  .build();                             
             
@@ -679,14 +678,14 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                                 if (optionalMasterPage.isPresent()) {
                                     Model.Page masterPage = optionalMasterPage.get();
 
-                                    HttpUrl httpUrl = getHttpUrlBuilder().addPathSegment("page")
+                                    HttpUrl httpUrl = urlBuilder().addPathSegment("page")
                                                                          .addPathSegment("modify")
                                                                          .addQueryParameter("masterPageId", masterPage.getId())
                                                                          .addEncodedQueryParameter("pageTitle", masterPage.getTitle())
                                                                          .addQueryParameter("versionId", scrollVersionId)
                                                                          .addQueryParameter("changeType", CHANGE_TYPE_MODIFY_QUERY_PARAM)
                                                                          .build();
-                                    Request request = getRequestBuilder().url(httpUrl)
+                                    Request request = requestBuilder().url(httpUrl)
                                                                          .post(new FormBody.Builder().build())
                                                                          .build();
 
@@ -696,7 +695,7 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                                             futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to create versioned page with title %s in space %s with version %s",
                                                                                                                        title,
                                                                                                                        parentPage.getSpace(),
-                                                                                                                       scrollVersionName), e));
+                                                                                                                       scrollVersionsName), e));
                                         }
 
                                         @Override
@@ -707,7 +706,7 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                                                 futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to interpret result of create versioned page with title %s in space %s with version %s",
                                                                                                                            title,
                                                                                                                            parentPage.getSpace(),
-                                                                                                                           scrollVersionName),
+                                                                                                                           scrollVersionsName),
                                                                                                              e));
                                             }
                                         }
