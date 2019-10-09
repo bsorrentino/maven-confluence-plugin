@@ -188,7 +188,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
         
-        return rxDescendantPages(pageId).stream()
+        return descendantPages(pageId).stream()
                 .map( (page) -> new Page(page))
                 .collect( Collectors.toList() );
         
@@ -226,7 +226,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     @Override
     public boolean addLabelByName(String label, long id) throws Exception {
  
-        rxAddLabels(String.valueOf(id), label);
+        addLabels(String.valueOf(id), label);
         return true;
     }
 

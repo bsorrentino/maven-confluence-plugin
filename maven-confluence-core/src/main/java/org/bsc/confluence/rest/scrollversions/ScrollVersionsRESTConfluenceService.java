@@ -185,14 +185,14 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     public CompletableFuture<Model.Page> storePage(Model.Page page, Storage content) {
         return getPage(page.getId()).thenCompose(dotPage -> dotPage.isPresent()
                                                             ? delegate.storePage(dotPage.get(), content)
-                                                            : failedFuture(new ScrollVersionsException(String.format("failed to store page with id %s", page.getId()))));
+                                                            : completeExceptionally(new ScrollVersionsException(String.format("failed to store page with id %s", page.getId()))));
     }
 
     @Override
     public CompletableFuture<Model.Page> storePage(Model.Page page) {
         return getPage(page.getId()).thenCompose(dotPage -> dotPage.isPresent()
                                                             ? delegate.storePage(dotPage.get())
-                                                            : failedFuture(new ScrollVersionsException(String.format("failed to store page with id %s", page.getId()))));
+                                                            : completeExceptionally(new ScrollVersionsException(String.format("failed to store page with id %s", page.getId()))));
     }
 
     @Override
@@ -550,17 +550,32 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
      * @param ex
      * @return
      */
-    <U> CompletableFuture<U> failedFuture(Throwable ex) {
-        CompletableFuture<U> completableFuture = new CompletableFuture<>();
+    <U> CompletableFuture<U> completeExceptionally(Throwable ex) {
+        val completableFuture = new CompletableFuture<U>();
         completableFuture.completeExceptionally(ex);
         return completableFuture;
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param future
+     * @param message
+     * @return
+     */
     <T> CompletableFuture<T> completeExceptionally( CompletableFuture<T> future, String message) {
         future.completeExceptionally(new ScrollVersionsException(format(message)));
         return future;
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param future
+     * @param message
+     * @param e
+     * @return
+     */
     <T> CompletableFuture<T> completeExceptionally( CompletableFuture<T> future, String message, Throwable e) {
         future.completeExceptionally(new ScrollVersionsException(format(message), e));
         return future;
@@ -601,18 +616,18 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                     if (optionalFoundPage.isPresent()) {
                         return CompletableFuture.completedFuture(optionalFoundPage);
                     } else {
-                        return failedFuture(new ScrollVersionsException(String.format("error getting page with title %s", title)));
+                        return completeExceptionally(new ScrollVersionsException(String.format("error getting page with title %s", title)));
                     }
                 } catch (Exception e) {
                     try {
                         Model.Page createdPage = createPage(parentPage.get(), title).get();
                         return CompletableFuture.completedFuture(Optional.of(createdPage));
                     } catch (Exception ex) {
-                        return failedFuture(new ScrollVersionsException(String.format("error creating page with title %s", title), ex));
+                        return completeExceptionally(new ScrollVersionsException(String.format("error creating page with title %s", title), ex));
                     }
                 }
             } else {
-                return failedFuture(new ScrollVersionsException(String.format("no parent page found with title %s", parentPageTitle)));
+                return completeExceptionally(new ScrollVersionsException(String.format("no parent page found with title %s", parentPageTitle)));
             }
         }).thenApply(Optional::get);
     }

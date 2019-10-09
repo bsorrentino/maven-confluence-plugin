@@ -251,7 +251,7 @@ public abstract class AbstractRESTConfluenceService {
         return fromUrlGET( url, "find page" ).flatMap(this::mapToStream).findFirst();
     }
 
-    protected List<JsonObject> rxfindPages( final String spaceKey, final String title ) {
+    protected List<JsonObject> findPages( final String spaceKey, final String title ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
@@ -263,7 +263,7 @@ public abstract class AbstractRESTConfluenceService {
 
     }
 
-    protected List<JsonObject> rxDescendantPages( final String id ) {
+    protected List<JsonObject> descendantPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
@@ -277,7 +277,7 @@ public abstract class AbstractRESTConfluenceService {
                 .flatMap(this::mapToStream)
                 .flatMap( (JsonObject o) -> {
                     final String childId = o.getString("id");
-                    return Stream.concat(Stream.of(o), rxDescendantPages(childId).stream()) ;
+                    return Stream.concat(Stream.of(o), descendantPages(childId).stream()) ;
                 })
                 .collect( Collectors.toList() )
                 ;
@@ -305,7 +305,7 @@ public abstract class AbstractRESTConfluenceService {
      */
     public Optional<JsonObject> findPage( final String spaceKey, final String title ) {
 
-        return rxfindPages(spaceKey, title).stream().findFirst();
+        return findPages(spaceKey, title).stream().findFirst();
     }
 
     protected boolean deletePageById( final String id ) {
@@ -359,7 +359,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return
      */
-    protected final void rxAddLabels( String id,  String ...labels ) {
+    protected final void addLabels( String id,  String ...labels ) {
 
 
         final JsonArrayBuilder inputBuilder = Json.createArrayBuilder();
