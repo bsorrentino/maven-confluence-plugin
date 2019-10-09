@@ -69,7 +69,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param description
      * @return
      */
-    protected CompletableFuture<Response> fromRequestAsync( final Request req ) {
+    public CompletableFuture<Response> fromRequestAsync( final Request req ) {
 
         val result = new CompletableFuture<Response>();
         
@@ -103,7 +103,7 @@ public abstract class AbstractRESTConfluenceService {
 
     }
     
-    protected Response fromRequest( final Request req, final String description ) {
+    public Response fromRequest( final Request req, final String description ) {
 
         try {
             final Response res = client.build().newCall(req).execute();
@@ -308,7 +308,7 @@ public abstract class AbstractRESTConfluenceService {
         return rxfindPages(spaceKey, title).stream().findFirst();
     }
 
-    protected boolean rxDeletePageById( final String id ) {
+    protected boolean deletePageById( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")

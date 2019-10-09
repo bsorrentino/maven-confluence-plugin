@@ -156,7 +156,12 @@ public interface ConfluenceService extends Closeable{
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 
-    void removePage( String pageId ) throws Exception;
+    CompletableFuture<Boolean> removePageAsync( String pageId ) ;
+    
+    @Deprecated
+    default void removePage( String pageId ) throws Exception {
+        removePageAsync( pageId ).get();
+    }
 
     CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
 
@@ -232,7 +237,7 @@ public interface ConfluenceService extends Closeable{
      * @see https://gist.github.com/gitplaneta/5065bbba980b2858a55f
      */
     default <T> CompletableFuture<T> retry( int times, 
-                                            int delay, 
+                                            long delay, 
                                             TimeUnit timeUnit,
                                             Optional<CompletableFuture<T>> resultHandler,
                                             Supplier<CompletableFuture<T>> action) {

@@ -281,14 +281,15 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                 childrenPages(parentPage.getId()).stream()
                 .map( page -> new Page(page))
                 .filter( page -> page.getTitle().equals(title) )
-                .map( page -> rxDeletePageById(page.getId()) )
+                .map( page -> deletePageById(page.getId()) )
                 .findFirst().orElse(false) );
         
     }
 
+    
     @Override
-    public void removePage(String pageId) throws Exception {        
-        rxDeletePageById(pageId);
+    public CompletableFuture<Boolean> removePageAsync(String pageId) {
+        return CompletableFuture.completedFuture( deletePageById(pageId) );
     }
 
     @Override
