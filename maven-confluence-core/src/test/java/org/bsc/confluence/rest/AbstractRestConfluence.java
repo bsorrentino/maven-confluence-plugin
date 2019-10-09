@@ -38,9 +38,9 @@ public abstract class AbstractRestConfluence {
     protected static String URL = "http://localhost:8090/rest/api";
     protected static String SPACE_KEY = "TEST";
 
-    ConfluenceService service;
-    final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials("admin", "admin");
-    final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
+    protected ConfluenceService service;
+    protected final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials("admin", "admin");
+    protected final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
     
     @Test @Ignore
     public void dummy() {}

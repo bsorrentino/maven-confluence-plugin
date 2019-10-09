@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.confluence.rest;
+package org.bsc.confluence.rest.scrollversions;
 
+import org.bsc.confluence.rest.AbstractRestConfluence;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsRESTConfluenceService;
 import org.junit.Before;
 
