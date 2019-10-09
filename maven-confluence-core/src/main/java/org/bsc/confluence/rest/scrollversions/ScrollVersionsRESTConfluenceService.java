@@ -279,12 +279,11 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     }
     
     private CompletableFuture<String> getDotPageId(String pageId) {
-        
         return delegate.getPage(pageId)
                         .thenCompose(optionalPage -> 
                             optionalPage.map( page ->  getDotPageId(page.getSpace(), page.getTitle()) )
-                            .orElseThrow( () -> new IllegalStateException(String.format("no page found for id %s", pageId))))
-                          ;  
+                                        .orElseGet( () -> completeExceptionally(format("no page found for id %s", pageId))))
+                                        ;  
        
     }
 
@@ -550,10 +549,34 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
      * @param ex
      * @return
      */
+    @Deprecated
     <U> CompletableFuture<U> completeExceptionally(Throwable ex) {
         val completableFuture = new CompletableFuture<U>();
         completableFuture.completeExceptionally(ex);
         return completableFuture;
+    }
+    
+    /**
+     * 
+     * @param <U>
+     * @param message
+     * @return
+     */
+    <U> CompletableFuture<U> completeExceptionally( String message ) {
+        val completableFuture = new CompletableFuture<U>();
+        return completeExceptionally( completableFuture, message );
+    }
+
+    /**
+     * 
+     * @param <U>
+     * @param message
+     * @param ex
+     * @return
+     */
+    <U> CompletableFuture<U> completeExceptionally( String message, Throwable ex ) {
+        val completableFuture = new CompletableFuture<U>();
+        return completeExceptionally( completableFuture, message, ex );
     }
     
     /**
@@ -584,6 +607,12 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
 
 }
 
+/**
+ * Old implementation from original PR
+ * 
+ * @author bsorrentino
+ *
+ */
 @Deprecated
 class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
     final OkHttpClient  okHttpClient;
@@ -607,177 +636,7 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
         this.okHttpClient = okHttpClientBuilder.build();
 
     }
-    public CompletableFuture<Model.Page> _getOrCreatePage(String spaceKey, String parentPageTitle, String title) {
-        return getPage(spaceKey, parentPageTitle).thenCompose(parentPage -> {
-            
-            if (parentPage.isPresent()) {
-                try {
-                    Optional<Model.Page> optionalFoundPage = getPage(spaceKey, title).get();
-                    if (optionalFoundPage.isPresent()) {
-                        return CompletableFuture.completedFuture(optionalFoundPage);
-                    } else {
-                        return completeExceptionally(new ScrollVersionsException(String.format("error getting page with title %s", title)));
-                    }
-                } catch (Exception e) {
-                    try {
-                        Model.Page createdPage = createPage(parentPage.get(), title).get();
-                        return CompletableFuture.completedFuture(Optional.of(createdPage));
-                    } catch (Exception ex) {
-                        return completeExceptionally(new ScrollVersionsException(String.format("error creating page with title %s", title), ex));
-                    }
-                }
-            } else {
-                return completeExceptionally(new ScrollVersionsException(String.format("no parent page found with title %s", parentPageTitle)));
-            }
-        }).thenApply(Optional::get);
-    }
     
-    @SuppressWarnings("unused")
-    private CompletableFuture<String> _getMasterPageTitle(String spaceKey, String pageTitle) {
-        if (!isDotPage(spaceKey, pageTitle)) {
-            return delegate.getPage(spaceKey, pageTitle)
-                                                .thenCompose(optionalPage -> mapToPageId(spaceKey, pageTitle, optionalPage));
-        }
-
-        HttpUrl httpUrl = getHttpUrlBuilder().addPathSegment("page")
-                                             .addPathSegment(spaceKey)
-                                             .build();
-        RequestBody body = RequestBody.create(JSON_MEDIA_TYPE, REQUEST_BODY_GET_ALL_VERSIONED_PAGES);
-        Request request = getRequestBuilder().url(httpUrl)
-                                             .post(body)
-                                             .build();
-
-        CompletableFuture<String> futureMasterPageTitle = new CompletableFuture<>();
-        okHttpClient.newCall(request)
-                    .enqueue(new Callback() {
-
-                        private void completeExceptionally(CompletableFuture<String> futureMasterPageId, String pageTitle, String spaceKey) {
-                            futureMasterPageId.completeExceptionally(new ScrollVersionsException(String.format("failed to retrieve page %s in space %s with version %s",
-                                                                                                               pageTitle,
-                                                                                                               spaceKey,
-                                                                                                               scrollVersionName)));
-                        }
-
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            completeExceptionally(futureMasterPageTitle, pageTitle, spaceKey);
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            String responseBody = response.body().string();
-
-                            Optional<String> optionalMasterPageTitle = Arrays.stream(objectMapper.readValue(responseBody, ScrollVersionsPage[].class))
-                                                                             .filter(page -> scrollVersionName.equals(page.getTargetVersion().getName())
-                                                                                             && spaceKey.equals(page.getSpaceKey())
-                                                                                             && pageTitle.equals(page.getConfluencePageTitle()))
-                                                                             .map(ScrollVersionsPage::getScrollPageTitle)
-                                                                             .findAny();
-
-                            if (optionalMasterPageTitle.isPresent()) {
-                                futureMasterPageTitle.complete(optionalMasterPageTitle.get());
-                            } else {
-                                completeExceptionally(futureMasterPageTitle, pageTitle, spaceKey);
-                            }
-                        }
-                    });
-        return futureMasterPageTitle;
-    }
-    
-    CompletableFuture<String> _getScrollVersionId(String spaceKey) {
-        CompletableFuture<String> futureVersionId = new CompletableFuture<>();
-
-        HttpUrl httpUrl = getHttpUrlBuilder().addPathSegment("page")
-                                             .addPathSegment(spaceKey)
-                                             .build();
-        RequestBody body = RequestBody.create(JSON_MEDIA_TYPE, REQUEST_BODY_GET_ALL_VERSIONED_PAGES);
-        Request request = getRequestBuilder().url(httpUrl)
-                                             .post(body)
-                                             .build();
-
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                futureVersionId.completeExceptionally(e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                ResponseBody responseBody = response.body();
-
-                if (null == responseBody) {
-                    futureVersionId.completeExceptionally(new ScrollVersionsException("could not retrieve versions info"));
-                } else {
-                    try {
-                        String responseBodyString = responseBody.string();
-                        Optional<String> optionalVersionId = Arrays.stream(objectMapper.readValue(responseBodyString, ScrollVersionsPage[].class))
-                                                                   .map(ScrollVersionsPage::getTargetVersion)
-                                                                   .filter(scrollVersionsTargetVersion -> scrollVersionName.equals(scrollVersionsTargetVersion.getName()))
-                                                                   .map(ScrollVersionsTargetVersion::getVersionId)
-                                                                   .findAny();
-
-                        if (optionalVersionId.isPresent()) {
-                            futureVersionId.complete(optionalVersionId.get());
-                        } else {
-                            futureVersionId.completeExceptionally(new ScrollVersionsException(String.format("no version named %s found in space %s",
-                                                                                                            scrollVersionName,
-                                                                                                            spaceKey)));
-                        }
-                    } catch (IOException e) {
-                        futureVersionId.completeExceptionally(new ScrollVersionsException("could not interpret response", e));
-                    }
-                }
-            }
-        });
-
-        return futureVersionId;
-    }
-    
-    @SneakyThrows
-    private boolean _isDotPage(String spaceKey, String pageTitle) {
-        HttpUrl httpUrl = getHttpUrlBuilder().addPathSegment("page")
-                                             .addPathSegment(spaceKey)
-                                             .build();
-        RequestBody body = RequestBody.create(JSON_MEDIA_TYPE, REQUEST_BODY_GET_ALL_VERSIONED_PAGES);
-        Request request = getRequestBuilder().url(httpUrl)
-                                             .post(body)
-                                             .build();
-
-        String responseBody = okHttpClient.newCall(request)
-                                          .execute()
-                                          .body()
-                                          .string();
-
-        return Arrays.stream(objectMapper.readValue(responseBody, ScrollVersionsPage[].class))
-                     .anyMatch(page -> scrollVersionName.equals(page.getTargetVersion().getName())
-                                       && spaceKey.equals(page.getSpaceKey())
-                                       && pageTitle.equals(page.getConfluencePageTitle()));
-    }
-    
-    private void _getCreatedPage( Response response, CompletableFuture<Model.Page> futurePage, String title) throws IOException, InterruptedException {
-        String responseBody = response.body().string();
-        ScrollVersionsNewPage scrollVersionsNewPage = objectMapper.readValue(responseBody, ScrollVersionsNewPage.class);
-
-        // even though we have a successful response, trying to immediately retrieve the page that was just created
-        // often results in a 404;
-        Model.Page createdPage = null;
-        int retries = 0;
-        do {
-            try {
-                createdPage = getPage(String.valueOf(scrollVersionsNewPage.getConfluencePage().getId())).thenApply(Optional::get).get();
-            } catch (Exception ignored) {
-                TimeUnit.MILLISECONDS.sleep(GET_CREATED_PAGE_WAIT_MS);
-            }
-        } while (null == createdPage && retries++ < GET_CREATED_PAGE_MAX_RETRIES);
-
-        if (null == createdPage) {
-            futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to get created page with title %s after %d attempts", title, retries)));
-        } else {
-            futurePage.complete(createdPage);
-        }
-    }
-
-
     @SuppressWarnings("unused")
     private CompletableFuture<Model.Page> _createPage(Model.Page parentPage, String title) {
         return getMasterPageId(parentPage.getId())
@@ -812,7 +671,7 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                 @Override
                 public void onResponse(Call call, Response response) {
                     try {
-                        _getCreatedPage(response, futurePage, title);
+                        //_getCreatedPage(response, futurePage, title);
                     } catch (Exception e) {
                         if (e.getMessage().contains("Validation Error: A page already exists with the title")) {
                             try {
@@ -843,7 +702,7 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
                                         @Override
                                         public void onResponse(Call call, Response response) {
                                             try {
-                                                _getCreatedPage(response, futurePage, title);
+                                                //_getCreatedPage(response, futurePage, title);
                                             } catch (Exception e) {
                                                 futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to interpret result of create versioned page with title %s in space %s with version %s",
                                                                                                                            title,
@@ -876,74 +735,5 @@ class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
         }));
     } 
         
-    @SuppressWarnings("unused")
-    private CompletableFuture<String> _getDotPageId(String spaceKey, String pageTitle) {
-            if ( isDotPage(spaceKey, pageTitle) ) {
-                return  delegate.getPage(spaceKey, pageTitle)
-                                .thenCompose( optionalPage -> mapToPageId(spaceKey, pageTitle, optionalPage));
-            }
-
-            ScrollVersionsPageByTitle[] scrollVersionsPageByTitle = {
-                    new ScrollVersionsPageByTitle(pageTitle)
-            };
-
-            HttpUrl httpUrl = getHttpUrlBuilder().addPathSegment("page")
-                                                 .addPathSegment(spaceKey)
-                                                 .build();
-            RequestBody body = RequestBody.create(JSON_MEDIA_TYPE, mapToJsonString(scrollVersionsPageByTitle));
-            Request request = getRequestBuilder().url(httpUrl)
-                                                 .post(body)
-                                                 .build();
-
-            CompletableFuture<String> futureVersionedPageId = new CompletableFuture<>();
-            okHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    futureVersionedPageId.completeExceptionally(new ScrollVersionsException(String.format("failed to retrieve page %s in space %s with version %s",
-                                                                                                          pageTitle,
-                                                                                                          spaceKey,
-                                                                                                          scrollVersionName),
-                                                                                            e));
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) {
-                    ResponseBody responseBody = response.body();
-
-                    if (null == responseBody) {
-                        futureVersionedPageId.completeExceptionally(new ScrollVersionsException(String.format("could not retrieve content for page %s in space %s with version %s",
-                                                                                                              pageTitle,
-                                                                                                              spaceKey,
-                                                                                                              scrollVersionName)));
-                    } else {
-                        try {
-                            String responseBodyString = responseBody.string();
-                            Optional<String> optionalFutureVersionedPageId = Arrays.stream(objectMapper.readValue(responseBodyString, ScrollVersionsPage[].class))
-                                                                                   .filter(scrollVersionsPage -> scrollVersionName.equals(scrollVersionsPage.getTargetVersion().getName()))
-                                                                                   .map(ScrollVersionsPage::getConfluencePageId)
-                                                                                   .map(String::valueOf)
-                                                                                   .findAny();
-
-                            if (optionalFutureVersionedPageId.isPresent()) {
-                                futureVersionedPageId.complete(optionalFutureVersionedPageId.get());
-                            } else {
-                                futureVersionedPageId.completeExceptionally(new ScrollVersionsException(String.format("no page named %s found in space %s with version %s",
-                                                                                                                      pageTitle,
-                                                                                                                      spaceKey,
-                                                                                                                      scrollVersionName)));
-                            }
-                        } catch (IOException e) {
-                            futureVersionedPageId.completeExceptionally(new ScrollVersionsException(String.format("could not interpret response for page named %s in space %s with version %s",
-                                                                                                                  pageTitle,
-                                                                                                                  spaceKey,
-                                                                                                                  scrollVersionName),
-                                                                                                    e));
-                        }
-                    }
-                }
-            });
-
-            return futureVersionedPageId;
-        }
     
 }
