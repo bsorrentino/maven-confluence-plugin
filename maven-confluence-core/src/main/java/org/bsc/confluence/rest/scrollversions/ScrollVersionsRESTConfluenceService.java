@@ -11,7 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -31,12 +30,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -45,6 +41,8 @@ import okhttp3.Response;
  * Implements a {@link ConfluenceService} with Scroll Versions support via REST APIs.
  *
  * @author Nicola Lagnena
+ * @reviewer bsorrentino
+ * 
  * @see <a href="https://help.k15t.com/scroll-versions/latest/api-resources-164037049.html">Scroll Versions API resources</a>
  */
 public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
@@ -173,19 +171,32 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
             
             return delegate.fromRequestAsync( request )
                 .thenCompose( response -> getCreatedPageAsync(response, title) )
+                .exceptionally( ex -> {
+                    if( ex.getMessage().contains("Validation Error: A page already exists with the title") ) {
+                        return parentPage;
+                    }
+                    throw new IllegalStateException( ex );
+                })
+                .thenCompose( (id) -> updatePage( parentPage, title, scrollVersionId))
                 ; 
          }));
     }
 
     @Override
     public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {
-        return getDotPageId(pageId).thenCompose(delegate::getPage);
+        return getDotPageId(pageId)
+                .thenCompose(delegate::getPage)
+                .exceptionally( e -> Optional.empty())
+                ;
     }
 
     @Override
     public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {
-        return getDotPageId(spaceKey, pageTitle).thenCompose(delegate::getPage);
-    }
+        return getDotPageId(spaceKey, pageTitle)
+                    .thenCompose(delegate::getPage)
+                    .exceptionally( e -> Optional.empty())
+                    ;
+  }
 
     @Override
     public boolean addLabelByName(String label, long id) throws Exception {
@@ -196,14 +207,14 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     public CompletableFuture<Model.Page> storePage(Model.Page page, Storage content) {
         return getPage(page.getId()).thenCompose(dotPage -> dotPage.isPresent()
                                                             ? delegate.storePage(dotPage.get(), content)
-                                                            : completeExceptionally(new ScrollVersionsException(String.format("failed to store page with id %s", page.getId()))));
+                                                            : completeExceptionally(format("failed to store page with id %s", page.getId())));
     }
 
     @Override
     public CompletableFuture<Model.Page> storePage(Model.Page page) {
         return getPage(page.getId()).thenCompose(dotPage -> dotPage.isPresent()
                                                             ? delegate.storePage(dotPage.get())
-                                                            : completeExceptionally(new ScrollVersionsException(String.format("failed to store page with id %s", page.getId()))));
+                                                            : completeExceptionally(format("failed to store page with id %s", page.getId())));
     }
 
     @Override
@@ -211,6 +222,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
         return delegate.getDescendents(getMasterPageId(pageId).get())
                                             .stream()
                                             .filter(page -> isDotPage(page.getSpace(), page.getTitle()))
+                                            .skip(1) // SKIP PARENT PAGE
                                             .collect(Collectors.toList());
     }
 
@@ -227,7 +239,10 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
 
     @Override
     public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
-        return getDotPageId(pageId).thenCompose(versionedPageId -> delegate.getAttachment(versionedPageId, name, version));
+        return getDotPageId(pageId)
+                .thenCompose(versionedPageId -> delegate.getAttachment(versionedPageId, name, version))
+                .exceptionally( e -> Optional.empty())
+                ;
     }
 
     @Override //todo: really?
@@ -541,6 +556,37 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
         return objectMapper.writeValueAsString(object);
     }
     
+    /**
+     * 
+     * @param parentPage
+     * @param title
+     * @param scrollVersionId
+     * @return
+     */
+    private CompletableFuture<Model.Page> updatePage( Model.Page parentPage, String title, String scrollVersionId ) {
+        
+        return delegate.getPage(parentPage.getSpace(), title)
+        .thenCompose( optionalMasterPage -> 
+            optionalMasterPage.map( p -> CompletableFuture.completedFuture(p) )
+                              .orElseGet( () -> completeExceptionally( format("failed to get master page with title %s in space %s", title, parentPage.getSpace())) ) )
+        .thenCompose(masterPage -> {
+
+            val httpUrl = urlBuilder().addPathSegment("page")
+                                                 .addPathSegment("modify")
+                                                 .addQueryParameter("masterPageId", masterPage.getId())
+                                                 .addEncodedQueryParameter("pageTitle", masterPage.getTitle())
+                                                 .addQueryParameter("versionId", scrollVersionId)
+                                                 .addQueryParameter("changeType", CHANGE_TYPE_MODIFY_QUERY_PARAM)
+                                                 .build();
+            val request = requestBuilder().url(httpUrl)
+                                                 .post(new FormBody.Builder().build())
+                                                 .build();
+
+            return delegate.fromRequestAsync( request )
+                    .thenCompose( response -> getCreatedPageAsync( response, title ))
+                    ;   
+        });
+    }
     
     /**
      * 
@@ -602,137 +648,5 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
         future.completeExceptionally(new ScrollVersionsException(format(message), e));
         return future;
     }
-
-
-}
-
-/**
- * Old implementation from original PR
- * 
- * @author bsorrentino
- *
- */
-@Deprecated
-class DeprecatedMethods extends ScrollVersionsRESTConfluenceService {
-    final OkHttpClient  okHttpClient;
-    final Credentials   credentials;
-
-    public DeprecatedMethods(String confluenceUrl, String scrollVersionName, Credentials credentials,
-            SSLCertificateInfo sslCertificateInfo) {
-        super(confluenceUrl, scrollVersionName, credentials, sslCertificateInfo);
-        
-        Objects.requireNonNull(credentials, "credentials cannot be null");
-        this.credentials = credentials;
-
-        Objects.requireNonNull(sslCertificateInfo, "ssl info cannot be null");
-
-        OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-        if (!sslCertificateInfo.isIgnore() && "https".equals(this.scrollVersionsUrl.getProtocol())) {
-            okHttpClientBuilder.hostnameVerifier(sslCertificateInfo.getHostnameVerifier())
-                               .sslSocketFactory(sslCertificateInfo.getSSLSocketFactory(),
-                                                 sslCertificateInfo.getTrustManager());
-        }
-        this.okHttpClient = okHttpClientBuilder.build();
-
-    }
-    
-    @SuppressWarnings("unused")
-    private CompletableFuture<Model.Page> _createPage(Model.Page parentPage, String title) {
-        return getMasterPageId(parentPage.getId())
-                .thenCompose(parentPageId -> getScrollVersionId(parentPage.getSpace())
-                                                 .thenCompose(scrollVersionId -> 
-         {
-            
-            HttpUrl httpUrl = urlBuilder().addPathSegment("page")
-                                                 .addPathSegment("new")
-                                                 .addPathSegment(parentPage.getSpace())
-                                                 .addQueryParameter("parentConfluenceId", parentPageId)
-                                                 .addEncodedQueryParameter("pageTitle", title)
-                                                 .addQueryParameter("versionId", scrollVersionId)
-                                                 .build();
-            val body = new FormBody.Builder()
-                    //todo
-                    .add("message", "Your message")
-                    .build();
-            
-            Request request = requestBuilder().url(httpUrl)
-                                                 .post(body)
-                                                 .build();                             
-            
-            final CompletableFuture<Model.Page> futurePage = new CompletableFuture<>();
-            
-            okHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to create page with title %s", title)));
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) {
-                    try {
-                        //_getCreatedPage(response, futurePage, title);
-                    } catch (Exception e) {
-                        if (e.getMessage().contains("Validation Error: A page already exists with the title")) {
-                            try {
-                                Optional<Model.Page> optionalMasterPage = delegate.getPage(parentPage.getSpace(), title).get();
-                                if (optionalMasterPage.isPresent()) {
-                                    Model.Page masterPage = optionalMasterPage.get();
-
-                                    HttpUrl httpUrl = urlBuilder().addPathSegment("page")
-                                                                         .addPathSegment("modify")
-                                                                         .addQueryParameter("masterPageId", masterPage.getId())
-                                                                         .addEncodedQueryParameter("pageTitle", masterPage.getTitle())
-                                                                         .addQueryParameter("versionId", scrollVersionId)
-                                                                         .addQueryParameter("changeType", CHANGE_TYPE_MODIFY_QUERY_PARAM)
-                                                                         .build();
-                                    Request request = requestBuilder().url(httpUrl)
-                                                                         .post(new FormBody.Builder().build())
-                                                                         .build();
-
-                                    okHttpClient.newCall(request).enqueue(new Callback() {
-                                        @Override
-                                        public void onFailure(Call call, IOException e) {
-                                            futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to create versioned page with title %s in space %s with version %s",
-                                                                                                                       title,
-                                                                                                                       parentPage.getSpace(),
-                                                                                                                       scrollVersionsName), e));
-                                        }
-
-                                        @Override
-                                        public void onResponse(Call call, Response response) {
-                                            try {
-                                                //_getCreatedPage(response, futurePage, title);
-                                            } catch (Exception e) {
-                                                futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to interpret result of create versioned page with title %s in space %s with version %s",
-                                                                                                                           title,
-                                                                                                                           parentPage.getSpace(),
-                                                                                                                           scrollVersionsName),
-                                                                                                             e));
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to get master page with title %s in space %s",
-                                                                                                               title,
-                                                                                                               parentPage.getSpace())));
-                                }
-                            } catch (Exception ex) {
-                                futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to get master page with title %s in space %s",
-                                                                                                           title,
-                                                                                                           parentPage.getSpace()),
-                                                                                             ex));
-                            }
-                        } else {
-                            futurePage.completeExceptionally(new ScrollVersionsException(String.format("failed to get created page with title %s in space %s",
-                                                                                                       title,
-                                                                                                       parentPage.getSpace())));
-                        }
-                    }
-                }
-            });
-            return futurePage;
-        }));
-    } 
-        
     
 }
