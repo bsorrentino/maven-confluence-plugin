@@ -23,8 +23,10 @@ import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import lombok.val;
 import lombok.var;
@@ -33,29 +35,92 @@ import lombok.var;
  *
  * @author bsorrentino
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractRestConfluence {
     //private static final String URL = "http://192.168.99.100:8090/rest/api";
-    protected static String URL = "http://localhost:8090/rest/api";
-    protected static String SPACE_KEY = "TEST";
-
+    String confluenceUrl    = "http://localhost:8090/rest/api";
+    String spaceKey         = "TEST";
+    String parentPageTitle  = "Home";
+    
     protected ConfluenceService service;
     protected final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials("admin", "admin");
     protected final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
     
+    protected enum Pages {
+        MyPage2,
+        MyPage3
+    }
+
+    
+    /**
+     * @return the confluenceUrl
+     */
+    protected String getConfluenceUrl() {
+        return confluenceUrl;
+    }
+
+    /**
+     * @param confluenceUrl the confluenceUrl to set
+     */
+    protected void setConfluenceUrl(String confluenceUrl) {
+        this.confluenceUrl = confluenceUrl;
+    }
+
+    /**
+     * @return the spaceKey
+     */
+    protected String getSpaceKey() {
+        return spaceKey;
+    }
+
+    /**
+     * @param spaceKey the spaceKey to set
+     */
+    protected void setSpaceKey(String spaceKey) {
+        this.spaceKey = spaceKey;
+    }
+
+    /**
+     * @return the homePage
+     */
+    protected String getParentPageTitle() {
+        return parentPageTitle;
+    }
+
+    /**
+     * @param homePage the homePage to set
+     */
+    protected void setgetParentPageTitle(String title) {
+        this.parentPageTitle = title;
+    }
+
+    /**
+     * @return the service
+     */
+    protected ConfluenceService getService() {
+        return service;
+    }
+
+    /**
+     * @param service the service to set
+     */
+    protected void setService(ConfluenceService service) {
+        this.service = service;
+    }
+
     @Test @Ignore
     public void dummy() {}
 
-    @Test
-    public void getOrCreatePageAndStoreWiki() throws Exception  {
+    @Test 
+    public void test101_getOrCreatePageAndStoreWiki() throws Exception  {
 
-        final String parentPageTitle = "Home";
-        final String title = "MyPage2";
+        val title           = Pages.MyPage2.name();
 
-        final Model.Page p = service.getOrCreatePage(SPACE_KEY, parentPageTitle, title).get();
+        val p = service.getOrCreatePage(spaceKey, getParentPageTitle(), title).get();
 
         int version = p.getVersion();
         assertThat( p, notNullValue());
-        assertThat(p.getSpace(), equalTo(SPACE_KEY));
+        assertThat(p.getSpace(), equalTo(spaceKey));
         assertThat( version > 0, is(true));
 
         val content = new StringBuilder()
@@ -66,10 +131,10 @@ public abstract class AbstractRestConfluence {
                             .append("*'wiki' \"wiki\"*")
                             .toString();
         
-        final Model.Page p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI)).get();
+        val p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI)).get();
 
         assertThat( p1, notNullValue());
-        assertThat( p1.getSpace(), equalTo(SPACE_KEY));
+        assertThat( p1.getSpace(), equalTo(spaceKey));
         assertThat( p1.getVersion(), equalTo(version+1));
         
         
@@ -113,13 +178,12 @@ public abstract class AbstractRestConfluence {
     }
     
     @Test
-    public void getOrCreatePageAndStoreStorage() throws Exception  {
+    public void test102_getOrCreatePageAndStoreStorage() throws Exception  {
 
-        final String parentPageTitle = "Home";
-        final String title = "MyPage3";
+        val title           = Pages.MyPage3.name();
 
         final Tuple2<Model.Page,Model.Page> result =
-                service.getOrCreatePage(SPACE_KEY, parentPageTitle, title)
+                service.getOrCreatePage(spaceKey, getParentPageTitle(), title)
                        .thenCompose(p -> {
     
                     final String content = new StringBuilder()
@@ -135,37 +199,35 @@ public abstract class AbstractRestConfluence {
                                     service.storePage(p, new Storage(content, Storage.Representation.STORAGE)), 
                                     Tuple2::of );
                 })
-                       .get()
+                .get()
                 ;
         
-        Model.Page p = result.getValue1();
-        Model.Page p1 = result.getValue2();
+        final Model.Page p = result.getValue1();
+        final Model.Page p1 = result.getValue2();
         
         int version = p.getVersion();
         assertThat( p, notNullValue());
-        assertThat(p.getSpace(), equalTo(SPACE_KEY));
+        assertThat(p.getSpace(), equalTo(spaceKey));
         assertThat( version > 0, is(true));
 
         assertThat( p1, notNullValue());
-        assertThat(p1.getSpace(), equalTo(SPACE_KEY));
+        assertThat(p1.getSpace(), equalTo(spaceKey));
         assertThat( p1.getVersion(), equalTo(version+1));
         
     }
 
     @Test //@Ignore
-    public void getDescendentsTest()   {
+    public void test103_getDescendentsTest() throws Exception  {
     	
-        //final String spaceKey	= "TEST";
-        final String title 		= "Home";
-
-        service.getPage(SPACE_KEY, title).thenAccept(page -> {
+        service.getPage(spaceKey, getParentPageTitle()).thenAccept(page -> {
             
             assertThat( page.isPresent(), equalTo(true) );
            
             try {
-                java.util.List<Model.PageSummary> descendents = service.getDescendents( page.get().getId() );
+                val descendents = service.getDescendents( page.get().getId() );
                 
                 assertThat( descendents, notNullValue() );
+                assertThat( descendents.isEmpty(), is(false) );
                 
                 for( Model.PageSummary p : descendents ) {
                     System.out.printf( "Descend Page: [%s]\n", p.getTitle());
@@ -179,7 +241,8 @@ public abstract class AbstractRestConfluence {
         .exceptionally( e -> {
             fail( e.getMessage() );
             return null;
-        } );
+        } )
+        .get();
 
     
     }

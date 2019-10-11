@@ -25,10 +25,6 @@ import javax.net.ssl.X509TrustManager;
 @Ignore
 public class Issue130IntegrationTest extends RESTConfluenceServiceIntegrationTest {
     
-    static {
-        URL = "https://localhost:8443/rest/api";
-    }
-   
     @Test @Ignore
     public void dummy() {}
 
@@ -36,9 +32,9 @@ public class Issue130IntegrationTest extends RESTConfluenceServiceIntegrationTes
     @Override
     public void initService() throws Exception {
 
+        setConfluenceUrl("https://localhost:8443/rest/api");
         super.initService();
-
-
+        
         try {
             // SSL Implementation
             final SSLSocketFactory sslSocketFactory = SSLFactories.newInstance( new YesTrustManager());
