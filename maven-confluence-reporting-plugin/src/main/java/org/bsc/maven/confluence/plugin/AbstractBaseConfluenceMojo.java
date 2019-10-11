@@ -16,6 +16,7 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceServiceFactory;
 import org.bsc.confluence.model.Site;
+import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
@@ -138,6 +139,20 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     private boolean failOnError = true;
 
     /**
+     * ScrollVersions addon configuration object
+     */
+    @Parameter( name = "scrollVersions")
+    private ScrollVersionsConfiguration scrollVersions;
+    
+    /**
+     * 
+     * @return
+     */
+    public Optional<ScrollVersionsConfiguration> getScrollVersions() {
+        return Optional.ofNullable(scrollVersions);
+    }
+
+    /**
      * 
      * Indicates whether the build will continue even if there are clean errors.     
      * 
@@ -207,7 +222,8 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                         getEndPoint(), 
                         credentials, 
                         proxyInfo, 
-                        sslCertificate )) 
+                        sslCertificate,
+                        getScrollVersions())) 
         {
 
                     task.accept(confluence);
