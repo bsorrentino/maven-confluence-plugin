@@ -264,6 +264,27 @@
                             <failOnError>true</failOnError>
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue194
+                    mvn confluence-reporting:delete@issue194 -Dconfluence.page='...'
+                    -->
+                    <execution>
+                        <id>issue194</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue194/site-issue194.yaml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                            <spaceKey>TESTSV</spaceKey>
+                            <parentPageTitle>TESTSV Home</parentPageTitle>
+                            <scrollVersions>
+                                <version>BETA</version>
+                            </scrollVersions>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
