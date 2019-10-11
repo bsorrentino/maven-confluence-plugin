@@ -5,9 +5,6 @@
  */
 package org.bsc.confluence.rest;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 import org.bsc.ssl.SSLFactories;
 import org.bsc.ssl.YesHostnameVerifier;
 import org.bsc.ssl.YesTrustManager;
@@ -17,26 +14,26 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+
 /**
  *
  * @author bsorrentino
  */
 @Ignore
-public class Issue130IntegrationTest extends AbstractRestConfluence {
+public class Issue130IntegrationTest extends RESTConfluenceServiceIntegrationTest {
     
-    static {
-        URL = "https://localhost:8443/rest/api";
-    }
-   
     @Test @Ignore
     public void dummy() {}
 
     @Before
     @Override
     public void initService() throws Exception {
-      
+
+        setConfluenceUrl("https://localhost:8443/rest/api");
         super.initService();
-        
         
         try {
             // SSL Implementation
@@ -45,8 +42,8 @@ public class Issue130IntegrationTest extends AbstractRestConfluence {
             
             final X509TrustManager trustManager = new YesTrustManager();
             final HostnameVerifier hostnameVerifier = new YesHostnameVerifier();
-            
-            service.client
+
+            restConfluenceService.client
                     .hostnameVerifier(hostnameVerifier)
                     .sslSocketFactory(sslSocketFactory, trustManager)
                     ;

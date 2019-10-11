@@ -22,6 +22,8 @@ import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
 import org.bsc.ssl.SSLCertificateInfo;
+
+import lombok.val;
 /**
  *
  * @author bsorrentino
@@ -132,8 +134,18 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public void removePage(String pageId) throws Exception {
-            xmlrpcService.removePage(pageId);
+        public CompletableFuture<Boolean> removePageAsync(String pageId) {
+            val future = new CompletableFuture<Boolean>();
+            
+            try {
+                
+                xmlrpcService.removePage(pageId);
+                future.complete(true);
+                
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+            return future;
         }
 
         @Override
@@ -141,8 +153,8 @@ public class ConfluenceServiceFactory {
             xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
         }
 
-        /* (non-Javadoc)
-         * @see java.io.Closeable#close()
+        /**
+         * 
          */
         @Override
         public void close() throws IOException {
