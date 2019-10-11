@@ -372,8 +372,8 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
             connection.removePage(pageId);
             future.complete(true);
         } catch (Exception e) {
-            //future.complete(false);
-            future.completeExceptionally(e);
+            future.complete(false);
+            //future.completeExceptionally(e);
         }
         return future;
     }
