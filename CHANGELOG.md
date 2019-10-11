@@ -2,6 +2,152 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**remove deprecated**
+
+
+[2543b9c78722fe4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2543b9c78722fe4) bsorrentino *2019-10-11 18:34:48*
+
+**remove deprecated**
+
+
+[acc5495484b4860](https://github.com/bsorrentino/maven-confluence-plugin/commit/acc5495484b4860) bsorrentino *2019-10-11 18:34:39*
+
+**move to next release**
+
+
+[dd751d1c16f9266](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd751d1c16f9266) bsorrentino *2019-10-11 17:03:58*
+
+**move to next developer version**
+
+
+[8edd1dc6b9cf5fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/8edd1dc6b9cf5fd) bsorrentino *2019-10-09 00:29:41*
+
+**add retry**
+
+
+[aebd1a76016e8a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/aebd1a76016e8a7) bsorrentino *2019-10-08 10:08:01*
+
+**add fromRequestAsync**
+
+
+[7b588cc2f242efa](https://github.com/bsorrentino/maven-confluence-plugin/commit/7b588cc2f242efa) bsorrentino *2019-10-08 10:07:47*
+
+**clean code**
+
+
+[180a4505e83d2a2](https://github.com/bsorrentino/maven-confluence-plugin/commit/180a4505e83d2a2) bsorrentino *2019-10-08 10:07:04*
+
+**add docker compose file**
+
+
+[c2fc9e797a7652d](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2fc9e797a7652d) bsorrentino *2019-10-07 16:26:10*
+
+**update documentation**
+
+
+[2f8cbdd7ab78965](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8cbdd7ab78965) bsorrentino *2019-10-01 09:43:24*
+
+**scroll version distribution**
+
+
+[2e8af193d4734de](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e8af193d4734de) bartolomeo sorrentino *2019-10-01 09:01:23*
+
+**add scroll versions confluence service via rest api**
+
+
+[d74aded3a980190](https://github.com/bsorrentino/maven-confluence-plugin/commit/d74aded3a980190) Nicola Lagnena *2019-09-29 19:55:40*
+
+
+###  [#194](https://github.com/bsorrentino/maven-confluence-plugin/issues/194) Add Scroll Versions for Confluence plugin support    *enhancement*  
+
+**issue #194 update javadoc**
+
+
+[069605b406b3f76](https://github.com/bsorrentino/maven-confluence-plugin/commit/069605b406b3f76) bsorrentino *2019-10-11 18:51:43*
+
+**issue #194 add integration test**
+
+
+[34f3ed56d285aa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/34f3ed56d285aa9) bsorrentino *2019-10-11 18:36:55*
+
+**issue #194 integrate ScrollVersions addon configuration in Mojo**
+
+
+[1dccae737f09ffd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1dccae737f09ffd) bsorrentino *2019-10-11 18:35:59*
+
+**issue #194 add fallback strategy on page creation**
+
+
+[0c0b42abb968dd6](https://github.com/bsorrentino/maven-confluence-plugin/commit/0c0b42abb968dd6) bsorrentino *2019-10-11 16:05:01*
+
+**issue #194 integration test refinements**
+
+
+[7802c6e9e513f0a](https://github.com/bsorrentino/maven-confluence-plugin/commit/7802c6e9e513f0a) bsorrentino *2019-10-11 16:02:30*
+
+**issue #194 derive scrollversions url from confluence url**
+
+
+[cfb795bc7563570](https://github.com/bsorrentino/maven-confluence-plugin/commit/cfb795bc7563570) bsorrentino *2019-10-09 21:17:40*
+
+**issue #194 update integration test**
+
+
+[d5492df5952c22e](https://github.com/bsorrentino/maven-confluence-plugin/commit/d5492df5952c22e) bsorrentino *2019-10-09 21:16:20*
+
+**issue #194 add unit test for parse url**
+
+
+[63f59f68a34b6f0](https://github.com/bsorrentino/maven-confluence-plugin/commit/63f59f68a34b6f0) bsorrentino *2019-10-09 21:15:42*
+
+**issue #194 clean code**
+
+
+[0232343dece9f36](https://github.com/bsorrentino/maven-confluence-plugin/commit/0232343dece9f36) bsorrentino *2019-10-09 10:22:45*
+
+**issue #194 update package layout for test**
+
+
+[1bbf5518e002bab](https://github.com/bsorrentino/maven-confluence-plugin/commit/1bbf5518e002bab) bsorrentino *2019-10-09 10:00:09*
+
+**issue #194 update package layout for test**
+
+
+[7ce1309009fcbe8](https://github.com/bsorrentino/maven-confluence-plugin/commit/7ce1309009fcbe8) bsorrentino *2019-10-09 09:59:58*
+
+**issue #194 clean code**
+
+
+[677a831dfe6f37b](https://github.com/bsorrentino/maven-confluence-plugin/commit/677a831dfe6f37b) bsorrentino *2019-10-09 00:29:22*
+
+**issue #194 merge and review PR #197**
+
+
+[050fe86a2bc2fa7](https://github.com/bsorrentino/maven-confluence-plugin/commit/050fe86a2bc2fa7) bsorrentino *2019-10-09 00:19:49*
+
+
+###  [#197](https://github.com/bsorrentino/maven-confluence-plugin/pull/197) add scroll versions confluence service via rest api  
+
+**issue #194 merge and review PR #197**
+
+
+[050fe86a2bc2fa7](https://github.com/bsorrentino/maven-confluence-plugin/commit/050fe86a2bc2fa7) bsorrentino *2019-10-09 00:19:49*
+
+**merge pull request #197**
+
+ * refactor package layout
+
+[84a2d1d2a8d016c](https://github.com/bsorrentino/maven-confluence-plugin/commit/84a2d1d2a8d016c) bsorrentino *2019-10-08 10:19:19*
+
+**merge pull request #197**
+
+
+[043cabc70aa34b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/043cabc70aa34b3) bsorrentino *2019-10-08 10:18:26*
+
+
 ## v6.4.1
 ### Generic changes
 
