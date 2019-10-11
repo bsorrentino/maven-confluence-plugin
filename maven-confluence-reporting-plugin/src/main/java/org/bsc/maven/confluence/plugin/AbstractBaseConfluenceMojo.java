@@ -139,7 +139,17 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     private boolean failOnError = true;
 
     /**
-     * ScrollVersions addon configuration object
+     * ScrollVersions addon configuration. Below the template
+     * 
+     * <pre>
+     *
+     * < scrollVersions>
+     *  < version>_version_name_</version>  // mandatory
+     * < /scrollVersions>
+     *
+     * </pre>
+     * 
+     * @since 6.5-beta1
      */
     @Parameter( name = "scrollVersions")
     private ScrollVersionsConfiguration scrollVersions;
