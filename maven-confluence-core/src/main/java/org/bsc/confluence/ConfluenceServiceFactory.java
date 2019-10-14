@@ -20,10 +20,10 @@ import javax.json.JsonObjectBuilder;
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
+import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
+import org.bsc.confluence.rest.scrollversions.ScrollVersionsRESTConfluenceService;
 import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
 import org.bsc.ssl.SSLCertificateInfo;
-
-import lombok.val;
 /**
  *
  * @author bsorrentino
@@ -135,17 +135,7 @@ public class ConfluenceServiceFactory {
 
         @Override
         public CompletableFuture<Boolean> removePageAsync(String pageId) {
-            val future = new CompletableFuture<Boolean>();
-            
-            try {
-                
-                xmlrpcService.removePage(pageId);
-                future.complete(true);
-                
-            } catch (Exception e) {
-                future.completeExceptionally(e);
-            }
-            return future;
+            return xmlrpcService.removePageAsync(pageId);
         }
 
         @Override
@@ -179,21 +169,42 @@ public class ConfluenceServiceFactory {
     													ConfluenceProxy proxyInfo, 
     													SSLCertificateInfo sslInfo) throws Exception 
     {
-    		if( ConfluenceService.Protocol.XMLRPC.match(endpoint)) {
-    	        return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);    			
-    		}
-    		if( ConfluenceService.Protocol.REST.match(endpoint)) {
-    			return new RESTConfluenceServiceImpl(endpoint, credentials /*, proxyInfo*/, sslInfo);    			
-    		}
-    		
-    		throw new IllegalArgumentException( 
-    				format("endpoint doesn't contain a valid API protocol\nIt must be '%s' or '%s'",
-    						ConfluenceService.Protocol.XMLRPC.path(),
-    						ConfluenceService.Protocol.REST.path()) 
-    				);
+        return createInstance(endpoint, credentials, proxyInfo, sslInfo, Optional.empty());
+    }
+    
+    /**
+     * return XMLRPC based Confluence services
+     * 
+     * @param endpoint
+     * @param credentials
+     * @param proxyInfo
+     * @param sslInfo
+     * @param sv scroll versions addon configuration
+     * @return XMLRPC based Confluence services
+     * @throws Exception
+     */
+    public static ConfluenceService createInstance( String endpoint, 
+                                                        Credentials credentials, 
+                                                        ConfluenceProxy proxyInfo, 
+                                                        SSLCertificateInfo sslInfo,
+                                                        Optional<ScrollVersionsConfiguration> sv ) throws Exception 
+    {
+            if( ConfluenceService.Protocol.XMLRPC.match(endpoint)) {
+                return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);               
+            }
+            if( ConfluenceService.Protocol.REST.match(endpoint)) {
+                return sv.map( config -> (ConfluenceService)new ScrollVersionsRESTConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
+                         .orElseGet( () -> new RESTConfluenceServiceImpl(endpoint, credentials /*, proxyInfo*/, sslInfo))
+                         ;               
+            }
+            
+            throw new IllegalArgumentException( 
+                    format("endpoint doesn't contain a valid API protocol\nIt must be '%s' or '%s'",
+                            ConfluenceService.Protocol.XMLRPC.path(),
+                            ConfluenceService.Protocol.REST.path()) 
+                    );
 
 
     }
-    
      
 }
