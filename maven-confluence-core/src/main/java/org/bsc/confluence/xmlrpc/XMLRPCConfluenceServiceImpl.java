@@ -27,6 +27,8 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.ssl.SSLCertificateInfo;
 
+import lombok.val;
+
 /**
  *
  * @author bsorrentino
@@ -363,8 +365,17 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public void removePage(String pageId) throws Exception {
-        connection.removePage(pageId);
+    public CompletableFuture<Boolean> removePageAsync(String pageId) {
+        val future = new CompletableFuture<Boolean>();
+        
+        try {
+            connection.removePage(pageId);
+            future.complete(true);
+        } catch (Exception e) {
+            future.complete(false);
+            //future.completeExceptionally(e);
+        }
+        return future;
     }
 
     @Override
