@@ -310,6 +310,13 @@ TEST
     <profile>
         <id>confluence</id>
 
+        <properties>
+          <confluence.endPoint>http://softwarefactory.softphone.it/confluence/rpc/xmlrpc</confluence.endPoint>
+          <confluence.spaceKey>~bsorrentino</confluence.spaceKey>
+          <confluence.parentPage>Home</confluence.parentPage>
+          <confluence.serverId>softphone-server</confluence.serverId>
+        </properties>
+
         <build>
 
             <plugins>
@@ -331,10 +338,12 @@ TEST
                     <version>${project.version}</version>
 
                     <configuration>
+                        <!--
                         <endPoint>http://softwarefactory.softphone.it/confluence/rpc/xmlrpc</endPoint>
                         <spaceKey>~bsorrentino</spaceKey>
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
+                        -->
                         <wikiFilesExt>.confluence</wikiFilesExt>
                         <deployState></deployState>
                         <failOnError>false</failOnError>
