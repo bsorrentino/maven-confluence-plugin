@@ -1,0 +1,11 @@
+home:
+  uri: release-version.wiki
+  children:
+    - name: "Dependencies"
+      uri: dependencies.wiki
+  attachments:
+    - name: "documentation.pdf"
+      uri: ../generated-docs/documentation.pdf
+      contentType: "application/pdf"
+      version: 1
+      comment: Documentation generated to PDF

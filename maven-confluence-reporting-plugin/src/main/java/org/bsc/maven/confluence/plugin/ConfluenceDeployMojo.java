@@ -1,23 +1,8 @@
 package org.bsc.maven.confluence.plugin;
 
-import static java.lang.String.format;
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.bsc.confluence.model.SitePrinter.print;
-import static org.bsc.confluence.model.SiteProcessor.processPageUri;
-
-import java.io.StringWriter;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -62,10 +47,23 @@ import org.bsc.maven.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.i18n.I18N;
 
-import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
+import java.io.StringWriter;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SitePrinter.print;
+import static org.bsc.confluence.model.SiteProcessor.processPageUri;
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -254,7 +252,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         loadUserInfoFromSettings();
 
-        Site site = super.createSiteFromModel();
+        Site site = super.createSiteFromModel(getSiteModelVariables());
 
         if( site != null ) {
             
@@ -550,7 +548,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         final java.net.URI uri = site.getHome().getUri();
 
         return processPageUri( site, homePage, uri, homePage.getTitle(), (err, content) -> {
-            final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
+            final CompletableFuture<Model.Page> result = new CompletableFuture<>();
 
             try {
 
@@ -631,7 +629,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                 site,
                 site.getHome(),
                 confluenceHomePage,
-                new HashMap<String, Model.Page>());
+                new HashMap<>());
 
     }
 
@@ -850,7 +848,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     class PluginGenerator extends PluginConfluenceDocGenerator {
 
 
-        final java.util.List<Goal> goals = new ArrayList<Goal>();
+        final java.util.List<Goal> goals = new ArrayList<>();
 
         void generateGoalsPages(final ConfluenceService confluence,
                                 final Model.Page confluenceHome,
@@ -902,7 +900,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             return processPageUri(site, homePage, site.getHome().getUri(), getPageTitle(), ( err, content ) -> {
 
                 final CompletableFuture<Model.Page> result =
-                        new CompletableFuture<Model.Page>();
+                        new CompletableFuture<>();
 
                 try {
 

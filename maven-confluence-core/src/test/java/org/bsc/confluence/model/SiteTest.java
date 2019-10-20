@@ -1,5 +1,19 @@
 package org.bsc.confluence.model;
 
+import lombok.val;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.core.IsNull;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
 import static java.lang.String.format;
 import static org.bsc.confluence.model.SiteProcessor.processMarkdown;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -7,19 +21,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.core.IsNull;
-import org.junit.Before;
-import org.junit.Test;
-
-import lombok.val;
 
 /**
  * 
@@ -29,10 +30,10 @@ import lombok.val;
 public class SiteTest implements SiteFactory.Model {
 
     @Override
-    public Site createSiteFromModel() {
+    public Site createSiteFromModel(Map<String, Object> variables) {
         val path = Paths.get("src", "test", "resources", "site.yaml");
         try {
-            return createFrom( path.toFile() );
+            return createFrom( path.toFile(), variables);
         } catch (Exception e) {
             throw new RuntimeException(String.format("error reading site descriptor at [%s]", path), e);
         }
@@ -42,7 +43,7 @@ public class SiteTest implements SiteFactory.Model {
     
     @Before
     public void loadSite() {
-        site = createSiteFromModel();
+        site = createSiteFromModel(Collections.emptyMap());
         site.setBasedir( Paths.get("src", "test", "resources"));
     }
     
