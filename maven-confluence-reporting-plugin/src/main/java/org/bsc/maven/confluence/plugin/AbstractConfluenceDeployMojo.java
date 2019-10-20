@@ -4,11 +4,19 @@
  */
 package org.bsc.maven.confluence.plugin;
 
-import static java.lang.String.format;
-
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.bsc.confluence.model.SiteProcessor.processPageUri;
-import static org.bsc.confluence.model.SiteProcessor.processUri;
+import biz.source_code.miniTemplator.MiniTemplator;
+import lombok.val;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.DeployStateManager;
+import org.bsc.confluence.model.ProcessUriException;
+import org.bsc.confluence.model.Site;
+import org.bsc.confluence.model.SiteFactory;
+import org.bsc.confluence.model.SiteProcessor;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -27,20 +35,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.DeployStateManager;
-import org.bsc.confluence.model.ProcessUriException;
-import org.bsc.confluence.model.Site;
-import org.bsc.confluence.model.SiteFactory;
-import org.bsc.confluence.model.SiteProcessor;
-
-import biz.source_code.miniTemplator.MiniTemplator;
-import lombok.val;
+import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SiteProcessor.processPageUri;
+import static org.bsc.confluence.model.SiteProcessor.processUri;
 
 
 /**
@@ -120,6 +118,15 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      */
     @Parameter
     protected DeployStateManager.Parameters deployState;
+
+    /**
+     * Use this property to disable processing of properties that are in the form of URI.
+     * If true all properties in the form of URI will be resolved, downloaded and the result will be used instead
+     *
+     * @since 6.5
+     */
+    @Parameter(defaultValue = "true")
+    private boolean processProperties = true;
 
     /**
      *
@@ -252,7 +259,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         return processPageUri(site, pageToUpdate, source, this.getPageTitle(), (err, content) -> {
 
-            final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
+            final CompletableFuture<Model.Page> result = new CompletableFuture<>();
 
             if (err.isPresent()) {
                 result.completeExceptionally(RTE("error processing uri [%s]", source, err.get()));
@@ -354,7 +361,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      *
      **/
     private void processProperties(Site site) {
-
+        if (!processProperties) return;
         for (Map.Entry<String, String> e : this.getProperties().entrySet()) {
 
             try {
