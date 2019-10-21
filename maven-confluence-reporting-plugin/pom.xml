@@ -49,6 +49,26 @@
         </license>
     </licenses>
 
+    <reporting>
+      <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${pluginToolsVersion}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${reports-plugin-version}</version>
+
+                <configuration>
+                    <!-- @see https://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+      </plugins>
+    </reporting>
 
     <build>
         <plugins>
@@ -107,25 +127,6 @@
 
                 </dependencies>
                 <configuration>
-                    <reportPlugins>
-
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-plugin-plugin</artifactId>
-                            <version>${pluginToolsVersion}</version>
-                        </plugin>
-
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>${reports-plugin-version}</version>
-
-                            <configuration>
-                                <!-- @see https://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
-                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                            </configuration>
-                        </plugin>
-                    </reportPlugins>
                 </configuration>
             </plugin>
 
