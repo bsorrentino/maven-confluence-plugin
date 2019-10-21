@@ -6,7 +6,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.5-SNAPSHOT</version>
+        <version>6.5-beta2</version>
         <relativePath>../..</relativePath>
     </parent>
 
