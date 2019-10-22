@@ -5,10 +5,48 @@
 ## Next release
 ### Generic changes
 
+**update readme**
+
+
+[fc6508120f5c09b](https://github.com/bsorrentino/maven-confluence-plugin/commit/fc6508120f5c09b) bsorrentino *2019-10-22 08:22:22*
+
+**use reporting standard configuration**
+
+
+[2e1f450db6d7548](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e1f450db6d7548) bsorrentino *2019-10-21 10:34:26*
+
+**move to next release**
+
+
+[4df8a59b7c490fb](https://github.com/bsorrentino/maven-confluence-plugin/commit/4df8a59b7c490fb) bsorrentino *2019-10-21 08:02:53*
+
+**update changelog**
+
+
+[5487b3c02bc653b](https://github.com/bsorrentino/maven-confluence-plugin/commit/5487b3c02bc653b) bsorrentino *2019-10-16 20:34:29*
+
+**add possibility to deploy plugin documentation to different  confluence server**
+
+
+[9cdbc301969a1f6](https://github.com/bsorrentino/maven-confluence-plugin/commit/9cdbc301969a1f6) bsorrentino *2019-10-16 10:46:49*
+
 **update documentation**
 
 
 [e5aaab79556dabc](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5aaab79556dabc) bsorrentino *2019-10-14 20:47:16*
+
+**move to next develop version**
+
+
+[ab853448b55e005](https://github.com/bsorrentino/maven-confluence-plugin/commit/ab853448b55e005) bsorrentino *2019-10-14 20:15:15*
+
+
+###  [#199](https://github.com/bsorrentino/maven-confluence-plugin/issues/199) Using ScrollVersions we got java.lang.IllegalArgumentException: unexpected port: -1    *bug*  
+
+**issue #199**
+
+
+[de75cbf14b13cf7](https://github.com/bsorrentino/maven-confluence-plugin/commit/de75cbf14b13cf7) bsorrentino *2019-10-17 18:39:00*
 
 
 ## v6.5-beta1
