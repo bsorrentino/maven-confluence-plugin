@@ -13,6 +13,13 @@ home:
   children:
     - name: "Issue#191"
       uri: issue191.confluence
+      attachments:
+        - name: meal.png
+          uri: images/meal.png
+          contentType: image/png
+          comment: test2
+    - name: "Issue#191 storage format"
+      uri: issue191.xhtml
   labels:
     - issue191
     - test
