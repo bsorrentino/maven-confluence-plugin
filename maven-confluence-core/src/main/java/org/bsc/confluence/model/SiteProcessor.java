@@ -1,6 +1,7 @@
 package org.bsc.confluence.model;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static org.bsc.confluence.FileExtension.MARKDOWN;
 import static org.bsc.confluence.FileExtension.XHTML;
 import static org.bsc.confluence.FileExtension.XML;
@@ -91,8 +92,9 @@ public class SiteProcessor {
     * @return
     * @throws Exception
     */
-   public static <T> T processPageUri(
+   public static <T,P extends Site.Page> T processPageUri(
            final Site site,
+           final P child,
            final Model.Page page,
            final java.net.URI uri, 
            final String homePageTitle,
@@ -130,7 +132,7 @@ public class SiteProcessor {
                final java.io.InputStream is = cl.getResourceAsStream(source);
 
                try {
-                   result = (isMarkdown) ? processMarkdown( site, Optional.ofNullable(page), is, homePageTitle) : is;
+                   result = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), is, homePageTitle) : is;
                    if (result == null) {
                        final Exception ex = new Exception(String.format("page [%s] doesn't exist in classloader", source));
                        return callback.apply( Optional.of(ex), Optional.empty() );
@@ -151,7 +153,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               result = (isMarkdown) ? processMarkdown( site, Optional.ofNullable(page), is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), is, homePageTitle) : is;
 
            } catch (IOException e) {
                final Exception ex = new Exception(String.format("error opening/processing page [%s]!", source), e);
@@ -169,8 +171,9 @@ public class SiteProcessor {
     * @return
     * @throws Exception
     */
-   public static <T> T processUriContent(
+   public static <T,P extends Site.Page> T processUriContent(
                final Site site,
+               final P child,
                final java.net.URI uri,                                  
                final String homePageTitle,
                final Function<PageContent, T> onSuccess 
@@ -207,7 +210,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = cl.getResourceAsStream(source);
 
-               result = (isMarkdown) ? processMarkdown( site, Optional.empty(), is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown( site, child, Optional.empty(), is, homePageTitle) : is;
 
                if (result == null) {
                    throw new Exception(String.format("resource [%s] doesn't exist in classloader", source));
@@ -223,7 +226,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               result = (isMarkdown) ? processMarkdown( site, Optional.empty(), is, homePageTitle) : is;
+               result = (isMarkdown) ? processMarkdown( site, child, Optional.empty(), is, homePageTitle) : is;
 
            } catch (IOException e) {
                throw new Exception(String.format("error opening url [%s]!", source), e);
@@ -241,6 +244,7 @@ public class SiteProcessor {
      */
     static java.io.InputStream processMarkdown(
             final Site site,
+            final Site.Page child,
             final Optional<Model.Page> page,
             final java.io.InputStream content, 
             final String homePageTitle) throws IOException {
@@ -252,7 +256,8 @@ public class SiteProcessor {
         val root = p.parseMarkdown(contents);
 
         val ser = new ToConfluenceSerializer() {
-
+            
+            
             @Override
             protected Optional<Site> getSite() {
                 return Optional.of(site);
@@ -273,6 +278,8 @@ public class SiteProcessor {
 
             @Override
             protected boolean isImagePrefixEnabled() {
+                if( child.isIgnoreVariables() ) return false;
+                
                 return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
             }
 
