@@ -239,7 +239,7 @@ public abstract class ToConfluenceSerializer implements Visitor {
     
     /**
      * indicates whether the prefix ${page.title} should be added or not
-     * s
+     * 
      * @return
      */
     protected boolean isImagePrefixEnabled() {
