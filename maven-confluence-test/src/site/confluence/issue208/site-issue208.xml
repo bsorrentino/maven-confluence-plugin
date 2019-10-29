@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bsc:site
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
+        xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-6.0.xsd'>
+    <home name="Test"
+          uri="./markdown/issue208.md" ignore-variables="true">
+        <child name="Test-child" uri="./markdown/issue208.child1.md" ignore-variables="true">
+            <attachment uri="markdown/Monitoring.png" name="Monitoring.png"/>
+        </child>
+    </home>
+</bsc:site>

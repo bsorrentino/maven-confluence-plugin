@@ -240,17 +240,26 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     }
 
     /**
-     *
+     * 
+     * @param <T>
+     * @param confluence
      * @param pageToUpdate
      * @param site
      * @param source
+     * @param child
+     * @param pageName
      * @return
      */
-    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(final ConfluenceService confluence,
-            final Model.Page pageToUpdate, final Site site, final java.net.URI source, final T child,
-            final String pageName) {
+    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(
+            final ConfluenceService confluence,
+            final Model.Page pageToUpdate, 
+            final Site site, 
+            final java.net.URI source, 
+            final T child,
+            final String pageName) 
+    {
 
-        return processPageUri(site, pageToUpdate, source, this.getPageTitle(), (err, content) -> {
+        return processPageUri(site, child, pageToUpdate, source, this.getPageTitle(), (err, content) -> {
 
             final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
 
@@ -370,7 +379,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     continue;
                 }
 
-                getProperties().put(e.getKey(), processUriContent(site, uri, getCharset()));
+                getProperties().put(e.getKey(), processUriContent(site, site.getHome(), uri, getCharset()));
 
             } catch (ProcessUriException ex) {
                 getLog().warn(
@@ -413,10 +422,10 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @return
      * @throws org.bsc.maven.reporting.AbstractBaseConfluenceSiteMojo.ProcessUriException
      */
-    private String processUriContent(Site site, java.net.URI uri, final Charset charset) throws ProcessUriException {
+    private String processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset) throws ProcessUriException {
 
         try {
-            return SiteProcessor.processUriContent(site, uri, this.getPageTitle(), content -> {
+            return SiteProcessor.processUriContent(site, child, uri, this.getPageTitle(), content -> {
                 try {
                     return AbstractConfluenceDeployMojo.this.toString(content.getInputStream(), charset);
                 } catch (IOException ex) {
