@@ -5,6 +5,16 @@
 ## Next release
 ### Generic changes
 
+**set release version**
+
+
+[edff1527dd990ab](https://github.com/bsorrentino/maven-confluence-plugin/commit/edff1527dd990ab) bsorrentino *2019-10-29 10:33:51*
+
+**update changelog**
+
+
+[df6e4cb163cbb5e](https://github.com/bsorrentino/maven-confluence-plugin/commit/df6e4cb163cbb5e) bsorrentino *2019-10-29 10:32:51*
+
 **update readme**
 
 
