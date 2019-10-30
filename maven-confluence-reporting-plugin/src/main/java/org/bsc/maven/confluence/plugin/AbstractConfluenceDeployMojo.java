@@ -123,7 +123,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * Use this property to disable processing of properties that are in the form of URI.
      * If true all properties in the form of URI will be resolved, downloaded and the result will be used instead
      *
-     * @since 6.5
+     * @since 6.6
      */
     @Parameter(defaultValue = "true")
     private boolean processProperties = true;
@@ -165,7 +165,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             return result;
 
         } catch (UnsupportedCharsetException e) {
-            getLog().warn(String.format("encoding [%s] is not valid! default charset will be used", encoding));
+            getLog().warn(format("encoding [%s] is not valid! default charset will be used", encoding));
             return Charset.defaultCharset();
 
         }
@@ -318,18 +318,18 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         final java.net.URI source = child.getUri(getFileExt());
 
-        getLog().debug(String.format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
+        getLog().debug(format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
                 parentPage.getSpace(), homeTitle, parentPage.getTitle(), child.getName(),
                 getPrintableStringForResource(source)));
 
         final String pageTitle = !isChildrenTitlesPrefixed() ? child.getName()
-                : String.format("%s - %s", homeTitle, child.getName());
+                : format("%s - %s", homeTitle, child.getName());
 
         if (!isSnapshot() && isRemoveSnapshots()) {
             final String snapshot = pageTitle.concat("-SNAPSHOT");
 
             confluence.removePage(parentPage, snapshot).thenAccept(deleted -> {
-                getLog().info(String.format("Page [%s] has been removed!", snapshot));
+                getLog().info(format("Page [%s] has been removed!", snapshot));
             }).exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
 
         }
@@ -342,7 +342,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             if (update)
                 return updatePageContent(confluence, p, site, source, child, pageTitle);
             else {
-                getLog().info(String.format("page [%s] has not been updated (deploy skipped)",
+                getLog().info(format("page [%s] has not been updated (deploy skipped)",
                         getPrintableStringForResource(source)));
                 return /* confluence.storePage(p) */ completedFuture(p);
             }
@@ -377,7 +377,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
                 String v = e.getValue();
                 if (v == null) {
-                    getLog().warn(String.format("property [%s] has null value!", e.getKey()));
+                    getLog().warn(format("property [%s] has null value!", e.getKey()));
                     continue;
                 }
                 final java.net.URI uri = new java.net.URI(v);
@@ -390,14 +390,14 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
             } catch (ProcessUriException ex) {
                 getLog().warn(
-                        String.format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
+                        format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
                 if (ex.getCause() != null)
                     getLog().debug(ex.getCause());
 
             } catch (URISyntaxException ex) {
 
                 // DO Nothing
-                getLog().debug(String.format("property [%s] is not a valid uri", e.getKey()));
+                getLog().debug(format("property [%s] is not a valid uri", e.getKey()));
             }
 
         }
@@ -629,7 +629,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     if (updated) {
                         return updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment);
                     } else {
-                        getLog().info(String.format("attachment [%s] has not been updated (deploy skipped)",
+                        getLog().info(format("attachment [%s] has not been updated (deploy skipped)",
                                 getPrintableStringForResource(uri)));
                         return completedFuture(finalAttachment);
                     }
