@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -229,6 +230,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     @Parameter(defaultValue="false")
     private Boolean gitLogGroupByVersions;
 
+    /**
+     * Overrides system locale used for content generation
+     *
+     * @since 6.6
+     */
+    @Parameter
+    private String locale;
+
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -248,7 +257,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
 		}
 
-        final Locale locale = Locale.getDefault();
+        final Locale parsedLocale = !StringUtils.isEmpty(locale) ? new Locale(locale) : Locale.getDefault();
 
         getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
@@ -298,14 +307,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
            // PLUGIN
            /////////////////////////////////////////////////////////////////
             {
-                generatePluginReport(site, locale);
+                generatePluginReport(site, parsedLocale);
             }
             else
            /////////////////////////////////////////////////////////////////
            // PROJECT
            /////////////////////////////////////////////////////////////////
             {
-                generateProjectReport(site, locale);
+                generateProjectReport(site, parsedLocale);
             }
 
         } catch( MojoExecutionException e ) {
