@@ -2,8 +2,23 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Next release
+## v6.6
 ### Generic changes
+
+**update readme**
+
+
+[28ed787d628e487](https://github.com/bsorrentino/maven-confluence-plugin/commit/28ed787d628e487) bsorrentino *2019-10-30 22:43:03*
+
+**set release version**
+
+
+[6345fab6bbb571c](https://github.com/bsorrentino/maven-confluence-plugin/commit/6345fab6bbb571c) bsorrentino *2019-10-30 22:39:29*
+
+**update changelog**
+
+
+[7d2dcf2504a96fb](https://github.com/bsorrentino/maven-confluence-plugin/commit/7d2dcf2504a96fb) bsorrentino *2019-10-30 22:38:53*
 
 **update javadoc version of processProperties parameter**
 
@@ -161,48 +176,6 @@
 
 [ab853448b55e005](https://github.com/bsorrentino/maven-confluence-plugin/commit/ab853448b55e005) bsorrentino *2019-10-14 20:15:15*
 
-
-###  [#199](https://github.com/bsorrentino/maven-confluence-plugin/issues/199) Using ScrollVersions we got java.lang.IllegalArgumentException: unexpected port: -1    *bug*  
-
-**issue #199**
-
-
-[de75cbf14b13cf7](https://github.com/bsorrentino/maven-confluence-plugin/commit/de75cbf14b13cf7) bsorrentino *2019-10-17 18:39:00*
-
-
-## v6.5-beta1
-### Generic changes
-
-**update changelog**
-
-
-[0b1113f3541ba24](https://github.com/bsorrentino/maven-confluence-plugin/commit/0b1113f3541ba24) bsorrentino *2019-10-14 20:12:18*
-
-**update doc**
-
-
-[97b3a5e54e0980c](https://github.com/bsorrentino/maven-confluence-plugin/commit/97b3a5e54e0980c) bsorrentino *2019-10-14 20:11:46*
-
-**update changelog**
-
-
-[9b200600f3081b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/9b200600f3081b1) bsorrentino *2019-10-11 18:56:07*
-
-**remove deprecated**
-
-
-[2543b9c78722fe4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2543b9c78722fe4) bsorrentino *2019-10-11 18:34:48*
-
-**remove deprecated**
-
-
-[acc5495484b4860](https://github.com/bsorrentino/maven-confluence-plugin/commit/acc5495484b4860) bsorrentino *2019-10-11 18:34:39*
-
-**move to next release**
-
-
-[dd751d1c16f9266](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd751d1c16f9266) bsorrentino *2019-10-11 17:03:58*
-
 **move to next developer version**
 
 
@@ -228,11 +201,6 @@
 
 [c2fc9e797a7652d](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2fc9e797a7652d) bsorrentino *2019-10-07 16:26:10*
 
-**update documentation**
-
-
-[2f8cbdd7ab78965](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8cbdd7ab78965) bsorrentino *2019-10-01 09:43:24*
-
 **scroll version distribution**
 
 
@@ -245,21 +213,6 @@
 
 
 ###  [#194](https://github.com/bsorrentino/maven-confluence-plugin/issues/194) Add Scroll Versions for Confluence plugin support    *enhancement*  
-
-**issue #194 update javadoc**
-
-
-[069605b406b3f76](https://github.com/bsorrentino/maven-confluence-plugin/commit/069605b406b3f76) bsorrentino *2019-10-11 18:51:43*
-
-**issue #194 add integration test**
-
-
-[34f3ed56d285aa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/34f3ed56d285aa9) bsorrentino *2019-10-11 18:36:55*
-
-**issue #194 integrate ScrollVersions addon configuration in Mojo**
-
-
-[1dccae737f09ffd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1dccae737f09ffd) bsorrentino *2019-10-11 18:35:59*
 
 **issue #194 add fallback strategy on page creation**
 
@@ -329,6 +282,71 @@
 
 
 [043cabc70aa34b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/043cabc70aa34b3) bsorrentino *2019-10-08 10:18:26*
+
+
+###  [#199](https://github.com/bsorrentino/maven-confluence-plugin/issues/199) Using ScrollVersions we got java.lang.IllegalArgumentException: unexpected port: -1    *bug*  
+
+**issue #199**
+
+
+[de75cbf14b13cf7](https://github.com/bsorrentino/maven-confluence-plugin/commit/de75cbf14b13cf7) bsorrentino *2019-10-17 18:39:00*
+
+
+## v6.5-beta1
+### Generic changes
+
+**update changelog**
+
+
+[0b1113f3541ba24](https://github.com/bsorrentino/maven-confluence-plugin/commit/0b1113f3541ba24) bsorrentino *2019-10-14 20:12:18*
+
+**update doc**
+
+
+[97b3a5e54e0980c](https://github.com/bsorrentino/maven-confluence-plugin/commit/97b3a5e54e0980c) bsorrentino *2019-10-14 20:11:46*
+
+**update changelog**
+
+
+[9b200600f3081b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/9b200600f3081b1) bsorrentino *2019-10-11 18:56:07*
+
+**remove deprecated**
+
+
+[2543b9c78722fe4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2543b9c78722fe4) bsorrentino *2019-10-11 18:34:48*
+
+**remove deprecated**
+
+
+[acc5495484b4860](https://github.com/bsorrentino/maven-confluence-plugin/commit/acc5495484b4860) bsorrentino *2019-10-11 18:34:39*
+
+**move to next release**
+
+
+[dd751d1c16f9266](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd751d1c16f9266) bsorrentino *2019-10-11 17:03:58*
+
+**update documentation**
+
+
+[2f8cbdd7ab78965](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8cbdd7ab78965) bsorrentino *2019-10-01 09:43:24*
+
+
+###  [#194](https://github.com/bsorrentino/maven-confluence-plugin/issues/194) Add Scroll Versions for Confluence plugin support    *enhancement*  
+
+**issue #194 update javadoc**
+
+
+[069605b406b3f76](https://github.com/bsorrentino/maven-confluence-plugin/commit/069605b406b3f76) bsorrentino *2019-10-11 18:51:43*
+
+**issue #194 add integration test**
+
+
+[34f3ed56d285aa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/34f3ed56d285aa9) bsorrentino *2019-10-11 18:36:55*
+
+**issue #194 integrate ScrollVersions addon configuration in Mojo**
+
+
+[1dccae737f09ffd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1dccae737f09ffd) bsorrentino *2019-10-11 18:35:59*
 
 
 ## v6.4.1
