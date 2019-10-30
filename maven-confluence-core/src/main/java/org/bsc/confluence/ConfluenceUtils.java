@@ -1,6 +1,7 @@
 package org.bsc.confluence;
 
 import java.net.MalformedURLException;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -8,6 +9,10 @@ import java.net.MalformedURLException;
  *
  */
 public class ConfluenceUtils {
+
+    private static final String LABEL_BAD_CHARS = "[:;,\\.,\\?&\\[\\]\\(\\)#^\\*!@ ]";
+    private static final Pattern LABEL_BAD_CHARS_PATTERN = Pattern.compile(LABEL_BAD_CHARS);
+    private static final String LABEL_REPLACEMENT = "-";
 
     /**
      *
@@ -73,6 +78,10 @@ public class ConfluenceUtils {
                 .append('\n');
 
         return wiki.toString();
+    }
+
+    public static String sanitizeLabel(String label) {
+        return LABEL_BAD_CHARS_PATTERN.matcher(label).replaceAll(LABEL_REPLACEMENT);
     }
 
 }
