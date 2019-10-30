@@ -87,6 +87,17 @@
  </configuration>
 ```
 
+### Change output Locale
+By default system Locale is used to generate the output. It can be changed by `locale` attribute.
+
+Given value will be parsed according to the following [specification](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html).
+
+```xml
+ <configuration>
+    <locale>en_US</locale>
+ </configuration>
+```
+
 ## Authentication Tip
 
 Put yours confluence credential within settings.xml as server
