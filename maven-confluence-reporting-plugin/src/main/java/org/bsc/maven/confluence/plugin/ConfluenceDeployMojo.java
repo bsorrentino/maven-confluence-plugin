@@ -233,7 +233,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     /**
      * Overrides system locale used for content generation
      *
-     * @since 6.5
+     * @since 6.6
      */
     @Parameter
     private String locale;
