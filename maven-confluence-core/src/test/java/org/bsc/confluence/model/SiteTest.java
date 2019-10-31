@@ -1,7 +1,9 @@
 package org.bsc.confluence.model;
 
+import lombok.Data;
 import lombok.val;
 import org.apache.commons.io.IOUtils;
+import org.bsc.confluence.ConfluenceService.Model;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,21 +23,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.IOUtils;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.hamcrest.core.IsNull;
-import org.junit.Before;
-import org.junit.Test;
-
-import lombok.Data;
-import lombok.val;
 
 /**
  * 

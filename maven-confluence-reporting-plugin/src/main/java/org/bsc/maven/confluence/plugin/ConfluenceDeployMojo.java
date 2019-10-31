@@ -3,24 +3,6 @@ package org.bsc.maven.confluence.plugin;
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
-import static java.lang.String.format;
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.bsc.confluence.model.SitePrinter.print;
-import static org.bsc.confluence.model.SiteProcessor.processPageUri;
-
-import java.io.StringWriter;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
