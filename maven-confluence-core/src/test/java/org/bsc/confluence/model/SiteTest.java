@@ -22,12 +22,53 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.hamcrest.core.IsNull;
+import org.junit.Before;
+import org.junit.Test;
+
+import lombok.Data;
+import lombok.val;
+
 /**
  * 
  * @author bsorrentino
  *
  */
 public class SiteTest implements SiteFactory.Model {
+
+    @Data(staticConstructor="of")
+    static class TestPage implements Model.Page {
+        final String title;
+        final String space;
+
+
+        @Override
+        public String getId() {
+            return null;
+        }
+
+        @Override
+        public String getParentId() {
+            return null;
+        }
+
+        @Override
+        public int getVersion() {
+            return 0;
+        }
+
+
+    }
+
+
 
     @Override
     public Site createSiteFromModel(Map<String, Object> variables) {
@@ -65,7 +106,7 @@ public class SiteTest implements SiteFactory.Model {
         val parentPageTitle = "Test";
         val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        val inputStream = processMarkdown(site, Optional.empty(), stream, parentPageTitle);
+        val inputStream = processMarkdown(site, site.getHome(), Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
         val converted = IOUtils.toString(inputStream).split("\n+");
         int i = 2;
@@ -82,12 +123,16 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldSupportImgRefLink() throws IOException {
-        val parentPageTitle = "Test IMG";
-        val stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
+
+        final Model.Page page = TestPage.of( "${page.title}", "spaceKey");
+
+        final String parentPageTitle = "Test IMG";
+
+        final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        val inputStream = processMarkdown(site,Optional.empty(), stream, parentPageTitle);
+        final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.of(page), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
-        val converted = IOUtils.toString(inputStream).split("\n+");
+        final String converted[] = IOUtils.toString(inputStream).split("\n+");
 
         int i = 2;
         assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
@@ -101,11 +146,11 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldSupportSimpleNode() throws IOException {
-        val parentPageTitle = "Test";
+        final String parentPageTitle = "Test";
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site,Optional.empty(), stream, parentPageTitle);
+        final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 
@@ -121,11 +166,11 @@ public class SiteTest implements SiteFactory.Model {
     
     @Test
     public void shouldCreateSpecificNoticeBlock() throws IOException {
-        val parentPageTitle = "Test Macro";
+        final String parentPageTitle = "Test Macro";
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site, Optional.empty(), stream, parentPageTitle);
+        final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());
         final String converted = IOUtils.toString(inputStream);
 

@@ -5,18 +5,6 @@
  */
 package org.bsc.confluence;
 
-import static java.lang.String.format;
-import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import javax.json.JsonObjectBuilder;
-
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
@@ -24,6 +12,17 @@ import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsRESTConfluenceService;
 import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
 import org.bsc.ssl.SSLCertificateInfo;
+
+import javax.json.JsonObjectBuilder;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
+import static java.lang.String.format;
+import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
 /**
  *
  * @author bsorrentino
@@ -100,7 +99,7 @@ public class ConfluenceServiceFactory {
 
         @Override
         public boolean addLabelByName(String label, long id) throws Exception {
-            return xmlrpcService.addLabelByName(label, id);
+            return xmlrpcService.addLabelByName(ConfluenceUtils.sanitizeLabel(label), id);
         }
 
         @Override

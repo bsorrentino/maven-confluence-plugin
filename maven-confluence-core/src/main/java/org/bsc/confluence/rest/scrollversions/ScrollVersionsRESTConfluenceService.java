@@ -93,9 +93,13 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     }
 
     HttpUrl.Builder urlBuilder() {
+        
+        int port = scrollVersionsUrl.getPort();
+        port = (port > -1 ) ? port : scrollVersionsUrl.getDefaultPort();
+
         return new HttpUrl.Builder().scheme(scrollVersionsUrl.getProtocol())
                                     .host(scrollVersionsUrl.getHost())
-                                    .port(scrollVersionsUrl.getPort())
+                                    .port(port)
                                     .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
     }
 

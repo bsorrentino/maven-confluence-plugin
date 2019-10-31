@@ -87,6 +87,17 @@
  </configuration>
 ```
 
+### Change output Locale
+By default system Locale is used to generate the output. It can be changed by `locale` attribute.
+
+Given value will be parsed according to the following [specification](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html).
+
+```xml
+ <configuration>
+    <locale>en_US</locale>
+ </configuration>
+```
+
 ## Authentication Tip
 
 Put yours confluence credential within settings.xml as server
@@ -135,18 +146,18 @@ Variable | Description
 ### Images
 
 * How to refer to an image
-> ``` !${pageTitle}^image_name! ```
+> ``` !${home.title}^image_name! ```
 
 * How to refer to an child's image within child page
-> ``` !${childTitle}^image_name! ```
+> ``` !${page.title}^image_name! ```
 
 ### Attachments
 
 * How to refer to an attachment
-> ``` [${pageTitle}^attachment_name] ```
+> ``` [${home.title}^attachment_name] ```
 
 * How to refer to an child's attachment within child page
-> ``` [${childTitle}^attachment_name] ```
+> ``` [${page.title}^attachment_name] ```
 
 ### Tips & Tricks
 

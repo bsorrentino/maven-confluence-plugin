@@ -1,4 +1,14 @@
 
 h1. TEST ISSUE 191
 
-!\[Design review\] \[Prism\] CB integration module^meal.png|!
+h2. with explicit path
+
+![Design review] [Prism] CB integration module^meal.png!
+
+h2. with variable $\{home.title\}
+
+!${home.title}^meal.png!
+
+h2. directly attached to the page
+
+!meal.png!

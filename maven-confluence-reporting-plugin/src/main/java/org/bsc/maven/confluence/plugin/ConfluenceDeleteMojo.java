@@ -10,7 +10,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 
 import java.util.Optional;
@@ -35,19 +34,18 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
     @Parameter(property = "recursive", defaultValue = "true")
     private boolean recursive;
 
-    private Model.PageSummary getStartPage(ConfluenceService confluence, Model.Page parentPage) throws Exception {
-        
-        final String startPageTitle;
+    private String getStartPageTitle() {
+        final String result;
         if( isSiteDescriptorValid() ) {
             val site = createSiteFromModel(getSiteModelVariables());
             
-            startPageTitle = site.getHome().getName();
+            result = site.getHome().getName();
         }
         else {
-            startPageTitle = getPageTitle();
+            result = getPageTitle();
         }
-             
-        return confluence.findPageByTitle(parentPage.getId(), startPageTitle);
+        return result;
+        
     }
     
     private void deletePage(ConfluenceService confluence) throws Exception {
@@ -58,10 +56,14 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
             return;
         }
 
-        val start = getStartPage( confluence, parentPage);
+        final String startPageTitle = getStartPageTitle();
+        
+        getLog().debug(  String.format( "start deleting from page [%s]", startPageTitle));   
+        
+        val start = confluence.findPageByTitle(parentPage.getId(), startPageTitle);
         
         if( start==null ) {
-            getLog().warn(format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));                    
+            getLog().warn(format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(), startPageTitle, parentPage.getSpace()));                    
             return;
         }
 
@@ -76,13 +78,13 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
                 for( PageSummary descendent : descendents) {
 
                     getLog().info( format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),getPageTitle(), descendent.getTitle()) );
-                    confluence.removePage(descendent.getId());
+                    confluence.removePageAsync( descendent.getId() ).join();
 
                 }
             }
         }
 
-        confluence.removePage(start.getId());
+        confluence.removePageAsync(start.getId()).join();
 
         getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));
         

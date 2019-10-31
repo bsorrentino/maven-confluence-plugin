@@ -126,18 +126,18 @@ h3.Built-In template variables
 h3. Images
 
 * How to refer to an image
-bq. {{\!$\{pageTitle}\^image_name!}}
+bq. {{\!$\{home.title}\^image_name!}}
 
 * How to refer to an child's image within child page
-bq. {{\!$\{childTitle}\^image_name!}}
+bq. {{\!$\{page.title}\^image_name!}}
 
 h3. Attachments
 
 * How to refer to an attachment
-bq. {{\[$\{pageTitle}\^attachment_name]}}
+bq. {{\[$\{home.title}\^attachment_name]}}
 
 * How to refer to an child's attachment within child page
-bq. {{\[$\{childTitle}\^attachment_name]}}
+bq. {{\[$\{page.title}\^attachment_name]}}
 
 h3. Tips & Tricks
 

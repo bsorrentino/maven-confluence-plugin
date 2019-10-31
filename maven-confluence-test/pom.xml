@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.5-beta1</version>
+        <version>6.6</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -218,7 +218,7 @@
 
                     <!--
                     mvn confluence-reporting:deploy@issue187
-                    mvn confluence-reporting:delete@issue187 -Dconfluence.page='TEST ISSUE 187'
+                    mvn confluence-reporting:delete@issue187
                     -->
                     <execution>
                         <id>issue187</id>
@@ -234,7 +234,7 @@
                     </execution>
                     <!--
                     mvn confluence-reporting:deploy@issue189
-                    mvn confluence-reporting:delete@issue189 -Dconfluence.page='TEST ISSUE 189'
+                    mvn confluence-reporting:delete@issue189
                     -->
                     <execution>
                         <id>issue189</id>
@@ -250,7 +250,7 @@
                     </execution>
                     <!--
                     mvn confluence-reporting:deploy@issue191
-                    mvn confluence-reporting:delete@issue191 -Dconfluence.page='...'
+                    mvn confluence-reporting:delete@issue191
                     -->
                     <execution>
                         <id>issue191</id>
@@ -266,7 +266,7 @@
                     </execution>
                     <!--
                     mvn confluence-reporting:deploy@issue194
-                    mvn confluence-reporting:delete@issue194 -Dconfluence.page='...'
+                    mvn confluence-reporting:delete@issue194
                     -->
                     <execution>
                         <id>issue194</id>
@@ -285,6 +285,23 @@
                             </scrollVersions>
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue208
+                    mvn confluence-reporting:delete@issue208
+                    -->
+                    <execution>
+                        <id>issue208</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue208/site-issue208.xml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
         </plugins>

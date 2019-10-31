@@ -22,6 +22,9 @@ Please donate whether you wish support us to give more time to plugin's growth |
 ### News
  Date  | Info   
 --- | ---
+**Oct 30, 2019** | [Release 6.6](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.6) - Merge PR #201 #205, #207 from [LZaruba](https://github.com/LZaruba)
+ **Oct 29, 2019** | [Release 6.5](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5)
+ **Oct 21, 2019** | [Release 6.5-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta2)
  **Oct 14, 2019** | [Release 6.5-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta1) - add support for [Scroll Versions for Confluence](https://marketplace.atlassian.com/apps/1210818/scroll-versions-for-confluence?hosting=server&tab=overview)
  **Oct 1, 2019** | [Release 6.4.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4.1)
  **Aug 2, 2019** | [Release 6.4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4)
