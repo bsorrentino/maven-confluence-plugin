@@ -1,16 +1,19 @@
 package org.bsc.confluence.preprocessor;
 
-import org.junit.Test;
+import static java.util.Collections.singletonMap;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
-import static java.util.Collections.singletonMap;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.Test;
+
+import lombok.val;
 
 public class PreprocessorImplTest {
 
@@ -35,7 +38,11 @@ public class PreprocessorImplTest {
     }
 
     private void testInternal(String resourceName) throws URISyntaxException, IOException {
-        assertThat(Preprocessor.INSTANCE.preprocess(read(resourceName + ".input"), singletonMap("key", singletonMap("innerKey", "value1"))), is(read(resourceName + ".output")));
+        val p = new PreprocessorImpl();
+        val readInput = read(resourceName + ".input");
+        final Map<String,Object> varInput = singletonMap("key", singletonMap("innerKey", "value1"));
+        val readOutput = read(resourceName + ".output");
+        assertThat(p.preprocess(readInput, varInput).join(), is(readOutput));
     }
 
     private String read(String inputName) throws IOException, URISyntaxException {
