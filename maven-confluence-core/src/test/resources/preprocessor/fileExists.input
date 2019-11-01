@@ -1,0 +1,15 @@
+home:
+  uri: release-version.wiki
+  children:
+    - name: "Dependencies"
+      uri: dependencies.wiki
+  attachments:
+    <#if Files.exists(Paths.get('src/test/resources/preprocessor/fileExists.input')) == true>- name: "documentation.pdf"
+      uri: ../generated-docs/documentation.pdf
+      contentType: "application/pdf"
+      version: 1
+      comment: Documentation generated to PDF</#if><#if Files.exists(Paths.get('src/test/resources/preprocessor/fileExists.nonexisting')) == true>- name: "documentation.html"
+      uri: ../generated-docs/documentation.html
+      contentType: "text/html"
+      version: 1
+      comment: Single page HTML documentation</#if>

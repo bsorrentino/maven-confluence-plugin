@@ -134,3 +134,53 @@ The **uri** attribute could refer to
 
 * **Network** resource
 > We can refer to resource using **http** scheme. (e.g. ` http://www.thesite.com/page.confluence `)
+
+## Using Freemarker in the Site Definition
+Since version 6.5 you can use [Freemarker markup](https://freemarker.apache.org/docs/dgui.html) inside the Site Definition.
+
+Following static Java classes are available in the model:
+* `Paths` (java.nio.Paths) 
+* `Files` (java.nio.Files)
+
+Ex. `Files.exists(Paths.get('src/docs/anyfile.txt'))`
+
+Following built-in Freemarker models are available:
+* `statics` (ex. `${statics["java.lang.System"].currentTimeMillis()}`)
+* `enums` (ex. `${enums["java.math.RoundingMode"].UP}`)
+
+Model of the Maven project is included as `project` variable. Ex. `<#assign tag = project.groupId + '-' + project.artifactId + '-' + project.version>`.
+
+```yaml
+<#assign tag = project.groupId + '-' + project.artifactId + '-' + project.version>
+home:
+  uri: release-version.wiki
+  children:
+    - name: "Dependencies"
+      uri: dependencies.wiki
+  attachments:
+    - name: "documentation-${tag}.pdf"
+      uri: ../generated-docs/documentation.pdf
+      contentType: "application/pdf"
+      version: 1
+      comment: Documentation generated to PDF
+    - name: "documentation-${tag}.html"
+      uri: ../generated-docs/documentation.html
+      contentType: "text/html"
+      version: 1
+      comment: Single page HTML documentation<#if Files.exists(Paths.get('target/generated-docs/openapi.json')) == true>
+    - name: "openapi-${tag}.json"
+      uri: ../generated-docs/openapi.json
+      contentType: "application/json"
+      version: 1
+      comment: OpenAPIv3 JSON Documentation</#if><#if Files.exists(Paths.get('target/generated-docs/openapi.yaml')) == true>
+    - name: "openapi-${tag}.yaml"
+      uri: ../generated-docs/openapi.yaml
+      contentType: "text/yaml"
+      version: 1
+      comment: OpenAPIv3 YAML Documentation</#if><#if Files.exists(Paths.get('target/generated-docs/generated-class-diagram.svg')) == true>
+    - name: "generated-class-diagram-${tag}.svg"
+      uri: ../generated-docs/generated-class-diagram.svg
+      contentType: "image/svg+xml"
+      version: 1
+      comment: Generated UML class diagram</#if>
+```

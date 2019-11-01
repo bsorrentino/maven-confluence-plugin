@@ -48,12 +48,6 @@ import static org.bsc.confluence.model.SiteProcessor.processUri;
 public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenceSiteMojo implements SiteFactory.Folder {
 
     /**
-     * Maven Project
-     */
-    @Parameter(property = "project", readonly = true, required = true)
-    protected MavenProject project;
-
-    /**
      * Home page template source. Template name will be used also as template source
      * for children
      */

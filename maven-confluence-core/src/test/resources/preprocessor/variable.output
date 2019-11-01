@@ -1,0 +1,5 @@
+home:
+  value1
+  children:
+    - name: "Dependencies"
+      uri: dependencies.wiki
