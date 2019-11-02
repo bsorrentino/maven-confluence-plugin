@@ -239,7 +239,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
+    	
+    	if( getLog().isDebugEnabled())
+    		System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
+    	
 		if( skip ) {
 	        getLog().info("plugin execution skipped");
 	        return;
