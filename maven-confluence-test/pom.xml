@@ -2,7 +2,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.4</version>
+        <version>6.7-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -39,14 +39,41 @@
     </contributors>
 
 
-    <build>
-        <finalName>site-generation-test</finalName>
+<build>
+    <finalName>site-generation-test</finalName>
+
+	<pluginManagement>
+	       <plugins>
+	           <plugin>
+	               <groupId>org.bsc.maven</groupId>
+	               <artifactId>confluence-reporting-maven-plugin</artifactId>
+	               <version>${project.version}</version>
+			</plugin>
+		</plugins>
+	</pluginManagement>
+</build>
+
+
+<scm>
+    <connection>scm:git:${scmUrl}</connection>
+    <developerConnection>scm:git:${scmUrl}</developerConnection>
+    <url>${siteUrl}</url>
+  <tag>HEAD</tag>
+</scm>
+
+<profiles>
+	<profile>
+		<id>default</id>
+		<activation>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+
+		<build>
 
         <plugins>
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>confluence-reporting-maven-plugin</artifactId>
-                <version>${project.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>${project.groupId}</groupId>
@@ -57,9 +84,7 @@
                 </dependencies>
 
                 <configuration>
-                    <!--encoding>ISO-8859-1</encoding-->
                     <encoding>UTF-8</encoding>
-                    <!--title>my-site-generation-test ${project.version}</title-->
                     <labels>
                         <label>maven</label>
                     </labels>
@@ -218,7 +243,7 @@
 
                     <!--
                     mvn confluence-reporting:deploy@issue187
-                    mvn confluence-reporting:delete@issue187 -Dconfluence.page='TEST ISSUE 187'
+                    mvn confluence-reporting:delete@issue187
                     -->
                     <execution>
                         <id>issue187</id>
@@ -234,7 +259,7 @@
                     </execution>
                     <!--
                     mvn confluence-reporting:deploy@issue189
-                    mvn confluence-reporting:delete@issue189 -Dconfluence.page='TEST ISSUE 189'
+                    mvn confluence-reporting:delete@issue189
                     -->
                     <execution>
                         <id>issue189</id>
@@ -250,7 +275,7 @@
                     </execution>
                     <!--
                     mvn confluence-reporting:deploy@issue191
-                    mvn confluence-reporting:delete@issue191 -Dconfluence.page='...'
+                    mvn confluence-reporting:delete@issue191
                     -->
                     <execution>
                         <id>issue191</id>
@@ -264,20 +289,93 @@
                             <failOnError>true</failOnError>
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue194
+                    mvn confluence-reporting:delete@issue194
+                    -->
+                    <execution>
+                        <id>issue194</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue194/site-issue194.yaml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                            <spaceKey>TESTSV</spaceKey>
+                            <parentPageTitle>TESTSV Home</parentPageTitle>
+                            <scrollVersions>
+                                <version>BETA</version>
+                            </scrollVersions>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue208
+                    mvn confluence-reporting:delete@issue208
+                    -->
+                    <execution>
+                        <id>issue208</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue208/site-issue208.xml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
         </plugins>
 
-    </build>
+		</build>
 
-    <scm>
-        <connection>scm:git:${scmUrl}</connection>
-        <developerConnection>scm:git:${scmUrl}</developerConnection>
-        <url>${siteUrl}</url>
-      <tag>HEAD</tag>
-  </scm>
+	</profile>
 
-<profiles>
+	<profile>
+		<id>freemaker</id>
+
+		<build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>confluence-reporting-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>maven-confluence-processor-freemarker</artifactId>
+                        <version>${project.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <executions>
+                  <!--
+                  mvn -Pfreemaker,local confluence-reporting:deploy@issue202
+                  mvn -Pfreemaker,local confluence-reporting:delete@issue202
+                  -->
+                  <execution>
+                      <id>issue202</id>
+                      <goals>
+                          <goal>deploy</goal>
+                          <goal>delete</goal>
+                      </goals>
+                      <configuration>
+                          <wikiFilesExt>.confluence</wikiFilesExt>
+                          <siteDescriptor>${basedir}/src/site/confluence/issue202/site-issue202.yml</siteDescriptor>
+                          <failOnError>true</failOnError>
+                      </configuration>
+                  </execution>
+
+                </executions>
+			</plugin>
+		</plugins>
+		</build>
+	</profile>
+
     <profile>
         <id>local</id>
         <activation>

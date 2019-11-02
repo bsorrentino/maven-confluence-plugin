@@ -5,26 +5,9 @@
  */
 package org.bsc.confluence.rest;
 
-import static java.lang.String.format;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.stream.JsonParsingException;
-
-import org.apache.commons.io.IOUtils;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.rest.model.Attachment;
-
+import lombok.val;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -33,6 +16,26 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.commons.io.IOUtils;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceUtils;
+import org.bsc.confluence.rest.model.Attachment;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.stream.JsonParsingException;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.lang.String.format;
 
 /**
  *
@@ -42,7 +45,7 @@ public abstract class AbstractRESTConfluenceService {
 
     private static final String EXPAND = "space,version,container";
 
-    final OkHttpClient.Builder client = new OkHttpClient.Builder();
+    protected final OkHttpClient.Builder client = new OkHttpClient.Builder();
 
     public abstract ConfluenceService.Credentials getCredentials();
 
@@ -59,7 +62,47 @@ public abstract class AbstractRESTConfluenceService {
 
     }
 
-    protected Response fromRequest( final Request req, final String description ) {
+    /**
+     * 
+     * @param req
+     * @param description
+     * @return
+     */
+    public CompletableFuture<Response> fromRequestAsync( final Request req ) {
+
+        val result = new CompletableFuture<Response>();
+        
+        client.build().newCall(req).enqueue( new Callback() {
+                
+            @Override
+            public void onResponse(Call call, Response res) throws IOException {
+                if( !res.isSuccessful() ) {
+                    
+                    result.completeExceptionally( 
+                            new ServiceException( 
+                                    format("error: %s\n%s", 
+                                         res.toString(),
+                                        res.body().string()), 
+                                        res));
+                    return;
+                }
+                
+                result.complete(res);
+                
+            }
+            
+            @Override
+            public void onFailure(Call call, IOException e) {          
+                result.completeExceptionally( e );
+            }
+            
+        });
+
+        return result;
+
+    }
+    
+    public Response fromRequest( final Request req, final String description ) {
 
         try {
             final Response res = client.build().newCall(req).execute();
@@ -207,7 +250,7 @@ public abstract class AbstractRESTConfluenceService {
         return fromUrlGET( url, "find page" ).flatMap(this::mapToStream).findFirst();
     }
 
-    protected List<JsonObject> rxfindPages( final String spaceKey, final String title ) {
+    protected List<JsonObject> findPages( final String spaceKey, final String title ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
@@ -219,7 +262,7 @@ public abstract class AbstractRESTConfluenceService {
 
     }
 
-    protected List<JsonObject> rxDescendantPages( final String id ) {
+    protected List<JsonObject> descendantPages( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
@@ -233,7 +276,7 @@ public abstract class AbstractRESTConfluenceService {
                 .flatMap(this::mapToStream)
                 .flatMap( (JsonObject o) -> {
                     final String childId = o.getString("id");
-                    return Stream.concat(Stream.of(o), rxDescendantPages(childId).stream()) ;
+                    return Stream.concat(Stream.of(o), descendantPages(childId).stream()) ;
                 })
                 .collect( Collectors.toList() )
                 ;
@@ -261,10 +304,10 @@ public abstract class AbstractRESTConfluenceService {
      */
     public Optional<JsonObject> findPage( final String spaceKey, final String title ) {
 
-        return rxfindPages(spaceKey, title).stream().findFirst();
+        return findPages(spaceKey, title).stream().findFirst();
     }
 
-    protected boolean rxDeletePageById( final String id ) {
+    protected boolean deletePageById( final String id ) {
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
@@ -315,7 +358,7 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return
      */
-    protected final void rxAddLabels( String id,  String ...labels ) {
+    protected final void addLabels( String id,  String ...labels ) {
 
 
         final JsonArrayBuilder inputBuilder = Json.createArrayBuilder();
@@ -325,7 +368,7 @@ public abstract class AbstractRESTConfluenceService {
             inputBuilder.add(
                     Json.createObjectBuilder()
                         .add("prefix", "global")
-                        .add("name", name)
+                        .add("name", ConfluenceUtils.sanitizeLabel(name))
             );
 
         }

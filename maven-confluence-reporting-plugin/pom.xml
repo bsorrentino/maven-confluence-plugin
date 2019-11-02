@@ -4,7 +4,7 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.4</version>
+      <version>6.7-SNAPSHOT</version>
   </parent>
 
    <prerequisites>
@@ -49,6 +49,26 @@
         </license>
     </licenses>
 
+    <reporting>
+      <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>${pluginToolsVersion}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${reports-plugin-version}</version>
+
+                <configuration>
+                    <!-- @see https://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+      </plugins>
+    </reporting>
 
     <build>
         <plugins>
@@ -107,25 +127,6 @@
 
                 </dependencies>
                 <configuration>
-                    <reportPlugins>
-
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-plugin-plugin</artifactId>
-                            <version>${pluginToolsVersion}</version>
-                        </plugin>
-
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>${reports-plugin-version}</version>
-
-                            <configuration>
-                                <!-- @see https://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
-                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                            </configuration>
-                        </plugin>
-                    </reportPlugins>
                 </configuration>
             </plugin>
 
@@ -310,6 +311,13 @@ TEST
     <profile>
         <id>confluence</id>
 
+        <properties>
+          <confluence.endPoint>http://softwarefactory.softphone.it/confluence/rpc/xmlrpc</confluence.endPoint>
+          <confluence.spaceKey>~bsorrentino</confluence.spaceKey>
+          <confluence.parentPage>Home</confluence.parentPage>
+          <confluence.serverId>softphone-server</confluence.serverId>
+        </properties>
+
         <build>
 
             <plugins>
@@ -331,10 +339,12 @@ TEST
                     <version>${project.version}</version>
 
                     <configuration>
+                        <!--
                         <endPoint>http://softwarefactory.softphone.it/confluence/rpc/xmlrpc</endPoint>
                         <spaceKey>~bsorrentino</spaceKey>
                         <parentPageTitle>Home</parentPageTitle>
                         <serverId>softphone-server</serverId>
+                        -->
                         <wikiFilesExt>.confluence</wikiFilesExt>
                         <deployState></deployState>
                         <failOnError>false</failOnError>

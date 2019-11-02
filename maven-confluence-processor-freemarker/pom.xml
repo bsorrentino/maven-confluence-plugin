@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.bsc.maven</groupId>
+		<artifactId>maven-confluence-parent</artifactId>
+		<version>6.7-SNAPSHOT</version>
+	</parent>
+	<artifactId>maven-confluence-processor-freemarker</artifactId>
+	<name>CONFLUENCE-REPORTING::Processor::Freemaker</name>
+	<description>maven confluence plugin - site preprocessor based on freemaker</description>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.kohsuke.metainf-services</groupId>
+			<artifactId>metainf-services</artifactId>
+			<version>1.8</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.freemarker</groupId>
+		    <artifactId>freemarker</artifactId>
+		    <version>2.3.29</version>
+		</dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>maven-confluence-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+	</dependencies>
+</project>

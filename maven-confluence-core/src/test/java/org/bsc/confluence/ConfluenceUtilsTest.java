@@ -1,16 +1,16 @@
 package org.bsc.confluence;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.hamcrest.core.IsEqual;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.hamcrest.core.IsEqual;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ConfluenceUtilsTest {
 
@@ -35,6 +35,22 @@ public class ConfluenceUtilsTest {
 
         Assert.assertThat( Files.exists(p1), IsEqual.equalTo(false) );
 
+    }
+
+    @Test
+    public void sanitationNotNeeded() {
+        assertThat(ConfluenceUtils.sanitizeLabel("label"), is("label"));
+    }
+
+    @Test
+    public void sanitation() {
+        assertThat(ConfluenceUtils.sanitizeLabel("labe:l"), is("labe-l"));
+    }
+
+    @Test
+    public void sanitationFull() {
+        assertThat(ConfluenceUtils.sanitizeLabel(": ; , . , ? & [ ] ( ) # ^ * ! @"),
+                is("-------------------------------"));
     }
 
 }

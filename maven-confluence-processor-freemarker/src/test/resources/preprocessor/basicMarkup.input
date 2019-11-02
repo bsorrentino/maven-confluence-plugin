@@ -1,0 +1,6 @@
+<#assign x = 5>
+home:
+  <#if 6 == x>Dependencies<#else>otherstring</#if>
+  children:
+    - name: "Dependencies"
+      uri: dependencies.wiki

@@ -15,4 +15,4 @@
 
 ## Option 4
 
-![thumbnail](${pageTitle}^meal.png "Meal")
+![thumbnail](${home.title}^meal.png "Meal")

@@ -1,10 +1,5 @@
 package org.bsc.maven.confluence.plugin;
 
-import static java.lang.String.format;
-
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -16,10 +11,16 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceServiceFactory;
 import org.bsc.confluence.model.Site;
+import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
+
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import static java.lang.String.format;
 
 
 /**
@@ -29,9 +30,10 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     /**
      * additional properties pass to template processor
+     * Properties in the form of URI will be loaded and loaded value will be used instead, see processProperties
      */
     @Parameter()
-    private java.util.Map<String, String> properties;    
+    private java.util.Map<String, String> properties;
     /**
      * Confluence api endpoint url
      * 
@@ -138,6 +140,30 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     private boolean failOnError = true;
 
     /**
+     * ScrollVersions addon configuration. Below the template
+     * 
+     * <pre>
+     *
+     * < scrollVersions>
+     *  < version>_version_name_</version>  // mandatory
+     * < /scrollVersions>
+     *
+     * </pre>
+     * 
+     * @since 6.5-beta1
+     */
+    @Parameter( name = "scrollVersions")
+    private ScrollVersionsConfiguration scrollVersions;
+    
+    /**
+     * 
+     * @return
+     */
+    public Optional<ScrollVersionsConfiguration> getScrollVersions() {
+        return Optional.ofNullable(scrollVersions);
+    }
+
+    /**
      * 
      * Indicates whether the build will continue even if there are clean errors.     
      * 
@@ -171,7 +197,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
     public final java.util.Map<String, String> getProperties() {
         if (null == properties) {
-            properties = new java.util.HashMap<String, String>(5);
+            properties = new java.util.HashMap<>(5);
         }
         return properties;
     }
@@ -207,7 +233,8 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                         getEndPoint(), 
                         credentials, 
                         proxyInfo, 
-                        sslCertificate )) 
+                        sslCertificate,
+                        getScrollVersions())) 
         {
 
                     task.accept(confluence);

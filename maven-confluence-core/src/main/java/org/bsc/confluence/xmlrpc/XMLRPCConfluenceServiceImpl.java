@@ -5,8 +5,14 @@
  */
 package org.bsc.confluence.xmlrpc;
 
-import static java.lang.String.format;
+import lombok.val;
+import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceUtils;
+import org.bsc.confluence.ExportFormat;
+import org.bsc.ssl.SSLCertificateInfo;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,12 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import org.bsc.confluence.ConfluenceProxy;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ExportFormat;
-import org.bsc.ssl.SSLCertificateInfo;
+import static java.lang.String.format;
 
 /**
  *
@@ -283,7 +284,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      */
     @Override
     public boolean addLabelByName(String label, long id) throws Exception {
-        return connection.addLabelByName(label, id);
+        return connection.addLabelByName(ConfluenceUtils.sanitizeLabel(label), id);
     }
     
 
@@ -363,8 +364,17 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public void removePage(String pageId) throws Exception {
-        connection.removePage(pageId);
+    public CompletableFuture<Boolean> removePageAsync(String pageId) {
+        val future = new CompletableFuture<Boolean>();
+        
+        try {
+            connection.removePage(pageId);
+            future.complete(true);
+        } catch (Exception e) {
+            future.complete(false);
+            //future.completeExceptionally(e);
+        }
+        return future;
     }
 
     @Override

@@ -4,11 +4,19 @@
  */
 package org.bsc.maven.confluence.plugin;
 
-import static java.lang.String.format;
-
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.bsc.confluence.model.SiteProcessor.processPageUri;
-import static org.bsc.confluence.model.SiteProcessor.processUri;
+import biz.source_code.miniTemplator.MiniTemplator;
+import lombok.val;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.DeployStateManager;
+import org.bsc.confluence.model.ProcessUriException;
+import org.bsc.confluence.model.Site;
+import org.bsc.confluence.model.SiteFactory;
+import org.bsc.confluence.model.SiteProcessor;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -27,20 +35,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.DeployStateManager;
-import org.bsc.confluence.model.ProcessUriException;
-import org.bsc.confluence.model.Site;
-import org.bsc.confluence.model.SiteFactory;
-import org.bsc.confluence.model.SiteProcessor;
-
-import biz.source_code.miniTemplator.MiniTemplator;
-import lombok.val;
+import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SiteProcessor.processPageUri;
+import static org.bsc.confluence.model.SiteProcessor.processUri;
 
 
 /**
@@ -48,12 +46,6 @@ import lombok.val;
  * @author bsorrentino
  */
 public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenceSiteMojo implements SiteFactory.Folder {
-
-    /**
-     * Maven Project
-     */
-    @Parameter(property = "project", readonly = true, required = true)
-    protected MavenProject project;
 
     /**
      * Home page template source. Template name will be used also as template source
@@ -122,6 +114,15 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     protected DeployStateManager.Parameters deployState;
 
     /**
+     * Use this property to disable processing of properties that are in the form of URI.
+     * If true all properties in the form of URI will be resolved, downloaded and the result will be used instead
+     *
+     * @since 6.6
+     */
+    @Parameter(defaultValue = "true")
+    private boolean processProperties = true;
+
+    /**
      *
      */
     protected DeployStateManager deployStateManager;
@@ -158,7 +159,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             return result;
 
         } catch (UnsupportedCharsetException e) {
-            getLog().warn(String.format("encoding [%s] is not valid! default charset will be used", encoding));
+            getLog().warn(format("encoding [%s] is not valid! default charset will be used", encoding));
             return Charset.defaultCharset();
 
         }
@@ -240,19 +241,28 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     }
 
     /**
-     *
+     * 
+     * @param <T>
+     * @param confluence
      * @param pageToUpdate
      * @param site
      * @param source
+     * @param child
+     * @param pageName
      * @return
      */
-    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(final ConfluenceService confluence,
-            final Model.Page pageToUpdate, final Site site, final java.net.URI source, final T child,
-            final String pageName) {
+    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(
+            final ConfluenceService confluence,
+            final Model.Page pageToUpdate, 
+            final Site site, 
+            final java.net.URI source, 
+            final T child,
+            final String pageName) 
+    {
 
-        return processPageUri(site, pageToUpdate, source, this.getPageTitle(), (err, content) -> {
+        return processPageUri(site, child, pageToUpdate, source, this.getPageTitle(), (err, content) -> {
 
-            final CompletableFuture<Model.Page> result = new CompletableFuture<Model.Page>();
+            final CompletableFuture<Model.Page> result = new CompletableFuture<>();
 
             if (err.isPresent()) {
                 result.completeExceptionally(RTE("error processing uri [%s]", source, err.get()));
@@ -302,18 +312,18 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         final java.net.URI source = child.getUri(getFileExt());
 
-        getLog().debug(String.format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
+        getLog().debug(format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
                 parentPage.getSpace(), homeTitle, parentPage.getTitle(), child.getName(),
                 getPrintableStringForResource(source)));
 
         final String pageTitle = !isChildrenTitlesPrefixed() ? child.getName()
-                : String.format("%s - %s", homeTitle, child.getName());
+                : format("%s - %s", homeTitle, child.getName());
 
         if (!isSnapshot() && isRemoveSnapshots()) {
             final String snapshot = pageTitle.concat("-SNAPSHOT");
 
             confluence.removePage(parentPage, snapshot).thenAccept(deleted -> {
-                getLog().info(String.format("Page [%s] has been removed!", snapshot));
+                getLog().info(format("Page [%s] has been removed!", snapshot));
             }).exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
 
         }
@@ -326,7 +336,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             if (update)
                 return updatePageContent(confluence, p, site, source, child, pageTitle);
             else {
-                getLog().info(String.format("page [%s] has not been updated (deploy skipped)",
+                getLog().info(format("page [%s] has not been updated (deploy skipped)",
                         getPrintableStringForResource(source)));
                 return /* confluence.storePage(p) */ completedFuture(p);
             }
@@ -354,14 +364,14 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      *
      **/
     private void processProperties(Site site) {
-
+        if (!processProperties) return;
         for (Map.Entry<String, String> e : this.getProperties().entrySet()) {
 
             try {
 
                 String v = e.getValue();
                 if (v == null) {
-                    getLog().warn(String.format("property [%s] has null value!", e.getKey()));
+                    getLog().warn(format("property [%s] has null value!", e.getKey()));
                     continue;
                 }
                 final java.net.URI uri = new java.net.URI(v);
@@ -370,18 +380,18 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     continue;
                 }
 
-                getProperties().put(e.getKey(), processUriContent(site, uri, getCharset()));
+                getProperties().put(e.getKey(), processUriContent(site, site.getHome(), uri, getCharset()));
 
             } catch (ProcessUriException ex) {
                 getLog().warn(
-                        String.format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
+                        format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
                 if (ex.getCause() != null)
                     getLog().debug(ex.getCause());
 
             } catch (URISyntaxException ex) {
 
                 // DO Nothing
-                getLog().debug(String.format("property [%s] is not a valid uri", e.getKey()));
+                getLog().debug(format("property [%s] is not a valid uri", e.getKey()));
             }
 
         }
@@ -413,10 +423,10 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @return
      * @throws org.bsc.maven.reporting.AbstractBaseConfluenceSiteMojo.ProcessUriException
      */
-    private String processUriContent(Site site, java.net.URI uri, final Charset charset) throws ProcessUriException {
+    private String processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset) throws ProcessUriException {
 
         try {
-            return SiteProcessor.processUriContent(site, uri, this.getPageTitle(), content -> {
+            return SiteProcessor.processUriContent(site, child, uri, this.getPageTitle(), content -> {
                 try {
                     return AbstractConfluenceDeployMojo.this.toString(content.getInputStream(), charset);
                 } catch (IOException ex) {
@@ -613,7 +623,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     if (updated) {
                         return updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment);
                     } else {
-                        getLog().info(String.format("attachment [%s] has not been updated (deploy skipped)",
+                        getLog().info(format("attachment [%s] has not been updated (deploy skipped)",
                                 getPrintableStringForResource(uri)));
                         return completedFuture(finalAttachment);
                     }

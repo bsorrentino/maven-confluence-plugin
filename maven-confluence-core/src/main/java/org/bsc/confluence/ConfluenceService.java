@@ -10,9 +10,13 @@ import static java.lang.String.format;
 import java.io.Closeable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.bsc.functional.Tuple2;
+
+import lombok.val;
 /**
  *
  * @author bsorrentino
@@ -152,7 +156,12 @@ public interface ConfluenceService extends Closeable{
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 
-    void removePage( String pageId ) throws Exception;
+    CompletableFuture<Boolean> removePageAsync( String pageId ) ;
+    
+    @Deprecated
+    default void removePage( String pageId ) throws Exception {
+        removePageAsync( pageId ).get();
+    }
 
     CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
 
@@ -206,7 +215,7 @@ public interface ConfluenceService extends Closeable{
                 .thenApply( parent -> 
                     parent.orElseThrow( () -> 
                         new RuntimeException( 
-                                String.format("cannot find parent page [%s] in space [%s]", parentPageTitle))) )
+                                String.format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
                 .thenCombine( getPage(spaceKey, title), Tuple2::of)
                 .thenCompose( tuple -> {
                     return ( tuple.getValue2().isPresent() ) ?
@@ -216,4 +225,40 @@ public interface ConfluenceService extends Closeable{
                 ;
         }
 
+    /**
+     * 
+     * @param <T>
+     * @param times
+     * @param delay
+     * @param timeUnit
+     * @param resultHandler
+     * @param action
+     * @return
+     * @see https://gist.github.com/gitplaneta/5065bbba980b2858a55f
+     */
+    default <T> CompletableFuture<T> retry( int times, 
+                                            long delay, 
+                                            TimeUnit timeUnit,
+                                            Optional<CompletableFuture<T>> resultHandler,
+                                            Supplier<CompletableFuture<T>> action) {
+        val future = resultHandler.orElseGet( () -> new CompletableFuture<>() );
+        action.get()
+                .thenAccept(a -> future.complete(a))
+                .exceptionally(ex -> {
+                    if (times <= 0) {
+                        future.completeExceptionally(ex);
+                    } else {
+                            try {
+                                timeUnit.sleep(delay);
+                                retry( times - 1, delay, timeUnit, Optional.of(future), action);       
+                            } catch (InterruptedException e) {
+                                future.completeExceptionally(e);
+                            }
+                    }
+                    return null;
+                });
+
+        return future;
+    }  
+    
   }
