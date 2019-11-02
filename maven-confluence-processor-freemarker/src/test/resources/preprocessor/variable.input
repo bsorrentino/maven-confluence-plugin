@@ -1,0 +1,5 @@
+home:
+  ${key.innerKey}
+  children:
+    - name: "Dependencies"
+      uri: dependencies.wiki

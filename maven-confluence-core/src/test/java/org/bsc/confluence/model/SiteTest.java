@@ -1,5 +1,21 @@
 package org.bsc.confluence.model;
 
+import lombok.Data;
+import lombok.val;
+import org.apache.commons.io.IOUtils;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.hamcrest.core.IsNull;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
 import static java.lang.String.format;
 import static org.bsc.confluence.model.SiteProcessor.processMarkdown;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -8,59 +24,44 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.IOUtils;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.hamcrest.core.IsNull;
-import org.junit.Before;
-import org.junit.Test;
-
-import lombok.Data;
-import lombok.val;
-
 /**
  * 
  * @author bsorrentino
  *
  */
 public class SiteTest implements SiteFactory.Model {
-    
+
     @Data(staticConstructor="of")
     static class TestPage implements Model.Page {
         final String title;
         final String space;
-        
+
 
         @Override
         public String getId() {
             return null;
         }
-        
+
         @Override
         public String getParentId() {
             return null;
         }
-        
+
         @Override
         public int getVersion() {
             return 0;
         }
-        
-        
+
+
     }
 
-    
+
 
     @Override
-    public Site createSiteFromModel() {
+    public Site createSiteFromModel(Map<String, Object> variables) {
         val path = Paths.get("src", "test", "resources", "site.yaml");
         try {
-            return createFrom( path.toFile() );
+            return createFrom( path.toFile(), variables);
         } catch (Exception e) {
             throw new RuntimeException(String.format("error reading site descriptor at [%s]", path), e);
         }
@@ -70,7 +71,7 @@ public class SiteTest implements SiteFactory.Model {
     
     @Before
     public void loadSite() {
-        site = createSiteFromModel();
+        site = createSiteFromModel(Collections.emptyMap());
         site.setBasedir( Paths.get("src", "test", "resources"));
     }
     
@@ -109,11 +110,11 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldSupportImgRefLink() throws IOException {
-        
+
         final Model.Page page = TestPage.of( "${page.title}", "spaceKey");
-        
+
         final String parentPageTitle = "Test IMG";
-        
+
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
         final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.of(page), stream, parentPageTitle);

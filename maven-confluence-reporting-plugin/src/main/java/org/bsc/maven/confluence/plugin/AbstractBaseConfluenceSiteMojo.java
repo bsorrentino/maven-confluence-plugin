@@ -1,19 +1,27 @@
 package org.bsc.maven.confluence.plugin;
 
-import java.io.File;
-
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import edu.emory.mathcs.backport.java.util.Collections;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import java.io.File;
+import java.util.Map;
 
 /**
  *
  * @author bsorrentino
  */
 public abstract class AbstractBaseConfluenceSiteMojo extends AbstractBaseConfluenceMojo implements SiteFactory.Model {
+
+    /**
+     * Maven Project
+     */
+    @Parameter(property = "project", readonly = true, required = true)
+    protected MavenProject project;
 
     /**
      * attachment folder
@@ -104,12 +112,16 @@ public abstract class AbstractBaseConfluenceSiteMojo extends AbstractBaseConflue
 
     }
 
+    protected Map<String, Object> getSiteModelVariables() {
+        return Collections.singletonMap("project", project);
+    }
+
     /**
      * 
      * @return
      */
     @Override
-    public Site createSiteFromModel() {
+    public Site createSiteFromModel(Map<String, Object> variables) {
 
         if (!isSiteDescriptorValid()) {
             getLog().warn("siteDescriptor is not valid!");
@@ -117,7 +129,7 @@ public abstract class AbstractBaseConfluenceSiteMojo extends AbstractBaseConflue
         }
 
         try {
-            return createFrom(siteDescriptor);
+            return createFrom(siteDescriptor, variables);
         } catch (Exception ex) {
             getLog().error("error creating site from model!", ex);
             return null;

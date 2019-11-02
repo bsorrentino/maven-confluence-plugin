@@ -4,10 +4,7 @@
  */
 package org.bsc.maven.confluence.plugin;
 
-import static java.lang.String.format;
-
-import java.util.Optional;
-
+import lombok.val;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -15,7 +12,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 
-import lombok.val;
+import java.util.Optional;
+
+import static java.lang.String.format;
 
 /**
  *
@@ -38,7 +37,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
     private String getStartPageTitle() {
         final String result;
         if( isSiteDescriptorValid() ) {
-            val site = createSiteFromModel();
+            val site = createSiteFromModel(getSiteModelVariables());
             
             result = site.getHome().getName();
         }
@@ -101,6 +100,9 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
     
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+    	
+    	if( getLog().isDebugEnabled())
+    		System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
         
         super.loadUserInfoFromSettings();
         

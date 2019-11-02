@@ -1,0 +1,5 @@
+home:
+  otherstring
+  children:
+    - name: "Dependencies"
+      uri: dependencies.wiki

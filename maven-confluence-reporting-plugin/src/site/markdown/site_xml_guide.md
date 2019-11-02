@@ -174,3 +174,6 @@ The **uri** attribute could refer to
 
 * **Network** resource
 > We can refer to resource using **http** scheme. (e.g. ` http://www.thesite.com/page.confluence `)
+
+## Using Freemarker in the Site Definition
+See YAML definition for details. Freemarker is not dependent on the output format and can be used in the same fashion.
