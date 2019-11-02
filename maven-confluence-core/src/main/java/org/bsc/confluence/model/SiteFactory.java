@@ -18,7 +18,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
-import org.bsc.confluence.preprocessor.Preprocessor;
+import org.bsc.confluence.preprocessor.PreprocessorService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -92,7 +92,7 @@ public interface SiteFactory {
             
             final String content = new String(Files.readAllBytes(siteDescriptor.toPath()), StandardCharsets.UTF_8);
             
-            final Optional<Preprocessor> siteProcessor = Preprocessor.getDefaultPreprocessorService();
+            final Optional<PreprocessorService> siteProcessor = PreprocessorService.getDefaultPreprocessorService();
             
             return siteProcessor.map( p -> p.preprocess(content, variables)
                                                 .thenCompose( _createSite )

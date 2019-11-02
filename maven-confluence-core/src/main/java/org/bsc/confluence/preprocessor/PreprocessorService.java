@@ -11,13 +11,13 @@ import java.util.stream.StreamSupport;
  * 
  * updated by bsorrentino
  */
-public interface Preprocessor {
+public interface PreprocessorService {
 
 
-    static Optional<Preprocessor> getDefaultPreprocessorService() {
-        final ServiceLoader<Preprocessor> loader = ServiceLoader.load(Preprocessor.class);
+    static Optional<PreprocessorService> getDefaultPreprocessorService() {
+        final ServiceLoader<PreprocessorService> loader = ServiceLoader.load(PreprocessorService.class);
         
-        final Iterable<Preprocessor> iterable = () -> loader.iterator();
+        final Iterable<PreprocessorService> iterable = () -> loader.iterator();
         
         return StreamSupport.stream(iterable.spliterator(), false)
                 .findFirst();

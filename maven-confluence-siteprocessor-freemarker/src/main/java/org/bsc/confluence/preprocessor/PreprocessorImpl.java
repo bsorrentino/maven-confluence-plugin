@@ -26,8 +26,8 @@ import freemarker.template.Version;
  * 
  * updated by bsorrentino
  */
-@MetaInfServices(Preprocessor.class)
-public class PreprocessorImpl implements Preprocessor {
+@MetaInfServices(PreprocessorService.class)
+public class PreprocessorImpl implements PreprocessorService {
 
     private static final Version VERSION = Configuration.VERSION_2_3_29;
 
