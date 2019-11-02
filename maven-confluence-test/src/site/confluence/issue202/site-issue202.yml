@@ -1,0 +1,19 @@
+#freemaker
+home:
+  name: "issue202"
+  uri: issue202.md
+  attachments:
+<#if Files.exists(Paths.get('src/site/confluence/issue202/images/dashboard.png')) == true>
+    - name: "dashboard.png"
+      uri: images/dashboard.png
+      contentType: "image/png"
+      version: 1
+      comment: image
+</#if>
+<#if Files.exists(Paths.get('src/site/confluence/issue202/images/unknown.png')) == true>
+    - name: "unknown.png"
+      uri: images/dashboard.png
+      contentType: "image/png"
+      version: 1
+      comment: unknown image
+</#if>

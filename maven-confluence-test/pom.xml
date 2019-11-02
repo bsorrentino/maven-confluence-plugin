@@ -39,14 +39,41 @@
     </contributors>
 
 
-    <build>
-        <finalName>site-generation-test</finalName>
+<build>
+    <finalName>site-generation-test</finalName>
+
+	<pluginManagement>
+	       <plugins>
+	           <plugin>
+	               <groupId>org.bsc.maven</groupId>
+	               <artifactId>confluence-reporting-maven-plugin</artifactId>
+	               <version>${project.version}</version>
+			</plugin>
+		</plugins>
+	</pluginManagement>
+</build>
+
+
+<scm>
+    <connection>scm:git:${scmUrl}</connection>
+    <developerConnection>scm:git:${scmUrl}</developerConnection>
+    <url>${siteUrl}</url>
+  <tag>HEAD</tag>
+</scm>
+
+<profiles>
+	<profile>
+		<id>default</id>
+		<activation>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+
+		<build>
 
         <plugins>
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>confluence-reporting-maven-plugin</artifactId>
-                <version>${project.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>${project.groupId}</groupId>
@@ -57,9 +84,7 @@
                 </dependencies>
 
                 <configuration>
-                    <!--encoding>ISO-8859-1</encoding-->
                     <encoding>UTF-8</encoding>
-                    <!--title>my-site-generation-test ${project.version}</title-->
                     <labels>
                         <label>maven</label>
                     </labels>
@@ -306,16 +331,51 @@
             </plugin>
         </plugins>
 
-    </build>
+		</build>
 
-    <scm>
-        <connection>scm:git:${scmUrl}</connection>
-        <developerConnection>scm:git:${scmUrl}</developerConnection>
-        <url>${siteUrl}</url>
-      <tag>HEAD</tag>
-  </scm>
+	</profile>
 
-<profiles>
+	<profile>
+		<id>freemaker</id>
+
+		<build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>confluence-reporting-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>maven-confluence-processor-freemarker</artifactId>
+                        <version>${project.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <executions>
+                  <!--
+                  mvn -Pfreemaker,local confluence-reporting:deploy@issue202
+                  mvn -Pfreemaker,local confluence-reporting:delete@issue202
+                  -->
+                  <execution>
+                      <id>issue202</id>
+                      <goals>
+                          <goal>deploy</goal>
+                          <goal>delete</goal>
+                      </goals>
+                      <configuration>
+                          <wikiFilesExt>.confluence</wikiFilesExt>
+                          <siteDescriptor>${basedir}/src/site/confluence/issue202/site-issue202.yml</siteDescriptor>
+                          <failOnError>true</failOnError>
+                      </configuration>
+                  </execution>
+
+                </executions>
+			</plugin>
+		</plugins>
+		</build>
+	</profile>
+
     <profile>
         <id>local</id>
         <activation>

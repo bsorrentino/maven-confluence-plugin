@@ -27,7 +27,7 @@
         <module>maven-confluence-test</module>
         <module>maven-confluence-test/plugin-test</module>
         <module>maven-confluence-itest</module>
-        <module>maven-confluence-siteprocessor-freemarker</module>
+        <module>maven-confluence-processor-freemarker</module>
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
