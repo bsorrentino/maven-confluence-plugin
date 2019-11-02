@@ -42,7 +42,7 @@ public class PreprocessorImplTest {
         val readInput = read(resourceName + ".input");
         final Map<String,Object> varInput = singletonMap("key", singletonMap("innerKey", "value1"));
         val readOutput = read(resourceName + ".output");
-        assertThat(p.preprocess(readInput, varInput).join(), is(readOutput));
+        assertThat(p.process(readInput, varInput).join(), is(readOutput));
     }
 
     private String read(String inputName) throws IOException, URISyntaxException {

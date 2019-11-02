@@ -26,8 +26,8 @@ import freemarker.template.Version;
  * 
  * updated by bsorrentino
  */
-@MetaInfServices(PreprocessorService.class)
-public class PreprocessorImpl implements PreprocessorService {
+@MetaInfServices(SitePocessorService.class)
+public class PreprocessorImpl implements SitePocessorService {
 
     private static final Version VERSION = Configuration.VERSION_2_3_29;
 
@@ -48,7 +48,7 @@ public class PreprocessorImpl implements PreprocessorService {
     }
 
     @Override
-    public CompletableFuture<String> preprocess(String input, Map<String, Object> variables) {
+    public CompletableFuture<String> process(String input, Map<String, Object> variables) {
         
         final CompletableFuture<String> result = new CompletableFuture<>();
         try {

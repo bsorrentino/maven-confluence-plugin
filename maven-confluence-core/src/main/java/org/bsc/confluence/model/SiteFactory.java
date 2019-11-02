@@ -18,17 +18,22 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
-import org.bsc.confluence.preprocessor.PreprocessorService;
+import org.bsc.confluence.preprocessor.SitePocessorService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  *
  * @author bsorrentino
  */
 public interface SiteFactory {
-    
+	
+	@CommonsLog
+	final class LogHolder {}
+	
     public interface Folder {
 
         public Site createSiteFromFolder();
@@ -39,6 +44,13 @@ public interface SiteFactory {
         
         public Site createSiteFromModel(Map<String, Object> variables);
         
+        /**
+         * 
+         * @param siteDescriptor
+         * @param variables
+         * @return
+         * @throws Exception
+         */
         default Site createFrom( java.io.File siteDescriptor, Map<String, Object> variables ) throws Exception {
             
             if (variables == null)
@@ -49,6 +61,7 @@ public interface SiteFactory {
                     .map( v -> v.toLowerCase() )
                     .orElse("");
             
+            // _createSite lambda function
             final Function<String,CompletableFuture<Site>> _createSite = ( String preprocessedDescriptor ) -> {
                 
                 final CompletableFuture<Site> result = new CompletableFuture<>();
@@ -88,17 +101,22 @@ public interface SiteFactory {
                 }
                 
                 return result;
-            };
+            }; // end lambda function
             
             final String content = new String(Files.readAllBytes(siteDescriptor.toPath()), StandardCharsets.UTF_8);
             
-            final Optional<PreprocessorService> siteProcessor = PreprocessorService.getDefaultPreprocessorService();
+            final Optional<SitePocessorService> siteProcessor = SitePocessorService.getDefaultPreprocessorService();
             
-            return siteProcessor.map( p -> p.preprocess(content, variables)
+            return siteProcessor.map( p -> p.process(content, variables)
                                                 .thenCompose( _createSite )
-                                                .exceptionally( e -> _createSite.apply(content).join() )
-                                                ).orElseGet( () -> _createSite.apply(content) )
-                    .join();
+                                                // uncomment if you want process source content ignoring preprocess exception
+                                                //.exceptionally( e -> _createSite.apply(content).join() ) 
+                                                )
+            									.orElseGet( () ->{
+            										LogHolder.log.debug( format("a Preprocessor service is not configurated") );
+            										return _createSite.apply(content);
+            									})
+                    .get();
                                                 
                    
     
