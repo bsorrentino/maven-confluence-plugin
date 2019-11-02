@@ -7,7 +7,7 @@ From **release 6.7** we have the possibility to pre-process the site descriptor 
 
 ### Configure a site processor
 
-To plug a **site processor** you have to **declare a plugin's dependency** the library containing it.
+To plug a **site processor** you have to **declare as plugin's dependency** the library containing it.
 > Currently a processor based on [Freemarker](https://freemarker.apache.org/) template engine is already available trought the module **maven-confluence-processor-freemarker**
 
 #### Example below declare freemarker as site processor
