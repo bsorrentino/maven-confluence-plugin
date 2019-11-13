@@ -23,6 +23,7 @@ Please donate whether you wish support us to give more time to plugin's growth |
 ### News
  Date  | Info   
 --- | ---
+ **Nov 13, 2019** | [Release 6.7.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.1)
  **Nov 02, 2019** | [Release 6.7](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7) - Add [site processor](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html) support - enhanced implementation inspired on PR *202* by [LZaruba](https://github.com/LZaruba)
  **Oct 30, 2019** | [Release 6.6](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.6) - Merge PR *201*,*205*,*207* by [LZaruba](https://github.com/LZaruba)
  **Oct 29, 2019** | [Release 6.5](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5)
