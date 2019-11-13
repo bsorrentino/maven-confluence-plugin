@@ -5,6 +5,7 @@
  */
 package org.bsc.confluence.rest.scrollversions.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,7 @@ import org.bsc.confluence.ConfluenceService.Model;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ScrollVersionsModelPage implements Model.Page {
 
     private String id;
