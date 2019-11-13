@@ -8,6 +8,36 @@
 **set release version**
 
 
+[4c3cbb7a0380d40](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c3cbb7a0380d40) bsorrentino *2019-11-13 14:37:09*
+
+**update a next development version**
+
+
+[832f0ee2bc689e9](https://github.com/bsorrentino/maven-confluence-plugin/commit/832f0ee2bc689e9) bsorrentino *2019-11-13 11:27:47*
+
+**ignore unknown json properties**
+
+
+[189d6592c8c0bf2](https://github.com/bsorrentino/maven-confluence-plugin/commit/189d6592c8c0bf2) Nicola Lagnena *2019-11-12 13:04:06*
+
+**update doc**
+
+
+[f30bb09ad50788a](https://github.com/bsorrentino/maven-confluence-plugin/commit/f30bb09ad50788a) bartolomeo sorrentino *2019-11-02 20:43:16*
+
+**update readme**
+
+
+[e2d76eb0efbf76b](https://github.com/bsorrentino/maven-confluence-plugin/commit/e2d76eb0efbf76b) bartolomeo sorrentino *2019-11-02 20:21:05*
+
+**update changelog**
+
+
+[2179af1be5850b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/2179af1be5850b0) bartolomeo sorrentino *2019-11-02 20:07:32*
+
+**set release version**
+
+
 [8c4fc4ba9ebf077](https://github.com/bsorrentino/maven-confluence-plugin/commit/8c4fc4ba9ebf077) bartolomeo sorrentino *2019-11-02 19:49:54*
 
 **move to next developer version**
