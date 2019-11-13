@@ -2,6 +2,127 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**set release version**
+
+
+[8c4fc4ba9ebf077](https://github.com/bsorrentino/maven-confluence-plugin/commit/8c4fc4ba9ebf077) bartolomeo sorrentino *2019-11-02 19:49:54*
+
+**move to next developer version**
+
+
+[cd3d38378010f33](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd3d38378010f33) bartolomeo sorrentino *2019-11-02 19:21:48*
+
+**upgrade maven-compiler-plugin**
+
+
+[222e158df5f5dd1](https://github.com/bsorrentino/maven-confluence-plugin/commit/222e158df5f5dd1) bartolomeo sorrentino *2019-11-02 17:36:06*
+
+**align commons logging default level to maven logging level**
+
+
+[5a38a327d26c5d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a38a327d26c5d0) bartolomeo sorrentino *2019-11-02 11:19:16*
+
+**configure commons logging to SimpleLog**
+
+
+[850235ed1ab764d](https://github.com/bsorrentino/maven-confluence-plugin/commit/850235ed1ab764d) bartolomeo sorrentino *2019-11-02 11:16:24*
+
+**fix security vulnerability #com.fasterxml.jackson.core:jackson-databind**
+
+
+[8db6f3176abb4d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/8db6f3176abb4d1) bartolomeo sorrentino *2019-11-02 10:10:33*
+
+**remove useless stuff**
+
+
+[a7a22467bcefa8c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a7a22467bcefa8c) bsorrentino *2019-11-01 20:36:27*
+
+**move to next developer version**
+
+
+[c30d4f25a0863d4](https://github.com/bsorrentino/maven-confluence-plugin/commit/c30d4f25a0863d4) bsorrentino *2019-11-01 20:15:08*
+
+**update changelog**
+
+
+[a0d8dfc75d5d5f4](https://github.com/bsorrentino/maven-confluence-plugin/commit/a0d8dfc75d5d5f4) bsorrentino *2019-10-30 23:03:54*
+
+**use hashtable as map implementation, change illegal character in file path, add children pages to webserver mock**
+
+
+[de3174dce71f7a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/de3174dce71f7a4) Nicola Lagnena *2019-10-05 12:03:17*
+
+**use mutable list**
+
+
+[ea290121703174d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ea290121703174d) Nicola Lagnena *2019-10-05 08:27:47*
+
+
+###  [#202](https://github.com/bsorrentino/maven-confluence-plugin/issues/202) Add possibility to use markup in the site definition    *enhancement*  
+
+**issue #202**
+
+ * add site processor usage documentation
+
+[4bbc7baf85a37b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/4bbc7baf85a37b3) bartolomeo sorrentino *2019-11-02 19:22:19*
+
+**issue #202**
+
+ * add an ah-hoc user drive test
+
+[0fba74cdcdc0d2e](https://github.com/bsorrentino/maven-confluence-plugin/commit/0fba74cdcdc0d2e) bartolomeo sorrentino *2019-11-02 11:26:48*
+
+**issue #202**
+
+ * rename from PreprocessorService to SiteProcessorService
+ * rename preprocess() method to process()
+
+[0b6407b40e0bbf6](https://github.com/bsorrentino/maven-confluence-plugin/commit/0b6407b40e0bbf6) bartolomeo sorrentino *2019-11-02 11:26:02*
+
+**issue #202**
+
+ * rename freemaker processor module
+
+[155f8fbf08dd6af](https://github.com/bsorrentino/maven-confluence-plugin/commit/155f8fbf08dd6af) bartolomeo sorrentino *2019-11-02 11:22:11*
+
+**issue #202**
+
+ * rename freemaker processor module
+
+[814d4151ee19652](https://github.com/bsorrentino/maven-confluence-plugin/commit/814d4151ee19652) bartolomeo sorrentino *2019-11-02 11:21:22*
+
+**issue #202**
+
+ * rename Preprocessor to PreprocessorService
+
+[f79e6fd35e7854e](https://github.com/bsorrentino/maven-confluence-plugin/commit/f79e6fd35e7854e) bartolomeo sorrentino *2019-11-02 08:09:50*
+
+**issue #202**
+
+ * create a new module maven-confluence-siteprocessor-freemarker and moved the freemaker implementation and unit test there
+ * use java service provider interface to load the markup engine so we can support more preprocessor engine
+
+[e766c4d70d6cdb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/e766c4d70d6cdb2) bsorrentino *2019-11-01 22:07:16*
+
+
+### Jira GH-202   
+
+**GH-202 Add possibility to use markup in the site definition**
+
+ * organized imports after the merge of master branch
+
+[0ef5166558b32ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ef5166558b32ec) Lukas Zaruba *2019-10-31 09:43:37*
+
+**GH-202 Add possibility to use markup in the site definition**
+
+ * Added freemarker capability to the site definition, tests, documentation
+
+[952c03196ca6a8d](https://github.com/bsorrentino/maven-confluence-plugin/commit/952c03196ca6a8d) Lukas Zaruba *2019-10-20 16:30:45*
+
+
 ## v6.6
 ### Generic changes
 
@@ -176,6 +297,48 @@
 
 [ab853448b55e005](https://github.com/bsorrentino/maven-confluence-plugin/commit/ab853448b55e005) bsorrentino *2019-10-14 20:15:15*
 
+
+###  [#199](https://github.com/bsorrentino/maven-confluence-plugin/issues/199) Using ScrollVersions we got java.lang.IllegalArgumentException: unexpected port: -1    *bug*  
+
+**issue #199**
+
+
+[de75cbf14b13cf7](https://github.com/bsorrentino/maven-confluence-plugin/commit/de75cbf14b13cf7) bsorrentino *2019-10-17 18:39:00*
+
+
+## v6.5-beta1
+### Generic changes
+
+**update changelog**
+
+
+[0b1113f3541ba24](https://github.com/bsorrentino/maven-confluence-plugin/commit/0b1113f3541ba24) bsorrentino *2019-10-14 20:12:18*
+
+**update doc**
+
+
+[97b3a5e54e0980c](https://github.com/bsorrentino/maven-confluence-plugin/commit/97b3a5e54e0980c) bsorrentino *2019-10-14 20:11:46*
+
+**update changelog**
+
+
+[9b200600f3081b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/9b200600f3081b1) bsorrentino *2019-10-11 18:56:07*
+
+**remove deprecated**
+
+
+[2543b9c78722fe4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2543b9c78722fe4) bsorrentino *2019-10-11 18:34:48*
+
+**remove deprecated**
+
+
+[acc5495484b4860](https://github.com/bsorrentino/maven-confluence-plugin/commit/acc5495484b4860) bsorrentino *2019-10-11 18:34:39*
+
+**move to next release**
+
+
+[dd751d1c16f9266](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd751d1c16f9266) bsorrentino *2019-10-11 17:03:58*
+
 **move to next developer version**
 
 
@@ -201,6 +364,11 @@
 
 [c2fc9e797a7652d](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2fc9e797a7652d) bsorrentino *2019-10-07 16:26:10*
 
+**update documentation**
+
+
+[2f8cbdd7ab78965](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8cbdd7ab78965) bsorrentino *2019-10-01 09:43:24*
+
 **scroll version distribution**
 
 
@@ -213,6 +381,21 @@
 
 
 ###  [#194](https://github.com/bsorrentino/maven-confluence-plugin/issues/194) Add Scroll Versions for Confluence plugin support    *enhancement*  
+
+**issue #194 update javadoc**
+
+
+[069605b406b3f76](https://github.com/bsorrentino/maven-confluence-plugin/commit/069605b406b3f76) bsorrentino *2019-10-11 18:51:43*
+
+**issue #194 add integration test**
+
+
+[34f3ed56d285aa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/34f3ed56d285aa9) bsorrentino *2019-10-11 18:36:55*
+
+**issue #194 integrate ScrollVersions addon configuration in Mojo**
+
+
+[1dccae737f09ffd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1dccae737f09ffd) bsorrentino *2019-10-11 18:35:59*
 
 **issue #194 add fallback strategy on page creation**
 
@@ -282,71 +465,6 @@
 
 
 [043cabc70aa34b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/043cabc70aa34b3) bsorrentino *2019-10-08 10:18:26*
-
-
-###  [#199](https://github.com/bsorrentino/maven-confluence-plugin/issues/199) Using ScrollVersions we got java.lang.IllegalArgumentException: unexpected port: -1    *bug*  
-
-**issue #199**
-
-
-[de75cbf14b13cf7](https://github.com/bsorrentino/maven-confluence-plugin/commit/de75cbf14b13cf7) bsorrentino *2019-10-17 18:39:00*
-
-
-## v6.5-beta1
-### Generic changes
-
-**update changelog**
-
-
-[0b1113f3541ba24](https://github.com/bsorrentino/maven-confluence-plugin/commit/0b1113f3541ba24) bsorrentino *2019-10-14 20:12:18*
-
-**update doc**
-
-
-[97b3a5e54e0980c](https://github.com/bsorrentino/maven-confluence-plugin/commit/97b3a5e54e0980c) bsorrentino *2019-10-14 20:11:46*
-
-**update changelog**
-
-
-[9b200600f3081b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/9b200600f3081b1) bsorrentino *2019-10-11 18:56:07*
-
-**remove deprecated**
-
-
-[2543b9c78722fe4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2543b9c78722fe4) bsorrentino *2019-10-11 18:34:48*
-
-**remove deprecated**
-
-
-[acc5495484b4860](https://github.com/bsorrentino/maven-confluence-plugin/commit/acc5495484b4860) bsorrentino *2019-10-11 18:34:39*
-
-**move to next release**
-
-
-[dd751d1c16f9266](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd751d1c16f9266) bsorrentino *2019-10-11 17:03:58*
-
-**update documentation**
-
-
-[2f8cbdd7ab78965](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8cbdd7ab78965) bsorrentino *2019-10-01 09:43:24*
-
-
-###  [#194](https://github.com/bsorrentino/maven-confluence-plugin/issues/194) Add Scroll Versions for Confluence plugin support    *enhancement*  
-
-**issue #194 update javadoc**
-
-
-[069605b406b3f76](https://github.com/bsorrentino/maven-confluence-plugin/commit/069605b406b3f76) bsorrentino *2019-10-11 18:51:43*
-
-**issue #194 add integration test**
-
-
-[34f3ed56d285aa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/34f3ed56d285aa9) bsorrentino *2019-10-11 18:36:55*
-
-**issue #194 integrate ScrollVersions addon configuration in Mojo**
-
-
-[1dccae737f09ffd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1dccae737f09ffd) bsorrentino *2019-10-11 18:35:59*
 
 
 ## v6.4.1

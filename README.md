@@ -12,6 +12,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
 > * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
 > * [Use YAML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_yaml_guide.html)
+> * [Site Processor Usage](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html)
 > * [Markdown Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 > * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
 > * [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
@@ -22,7 +23,8 @@ Please donate whether you wish support us to give more time to plugin's growth |
 ### News
  Date  | Info   
 --- | ---
-**Oct 30, 2019** | [Release 6.6](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.6) - Merge PR #201 #205, #207 from [LZaruba](https://github.com/LZaruba)
+ **Nov 02, 2019** | [Release 6.7](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7) - Add [site processor](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html) support - enhanced implementation inspired on PR *202* by [LZaruba](https://github.com/LZaruba)
+ **Oct 30, 2019** | [Release 6.6](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.6) - Merge PR *201*,*205*,*207* by [LZaruba](https://github.com/LZaruba)
  **Oct 29, 2019** | [Release 6.5](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5)
  **Oct 21, 2019** | [Release 6.5-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta2)
  **Oct 14, 2019** | [Release 6.5-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta1) - add support for [Scroll Versions for Confluence](https://marketplace.atlassian.com/apps/1210818/scroll-versions-for-confluence?hosting=server&tab=overview)
