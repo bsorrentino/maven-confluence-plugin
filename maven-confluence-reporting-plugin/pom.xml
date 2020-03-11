@@ -4,7 +4,7 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.7.1</version>
+      <version>6.7.2</version>
   </parent>
 
    <prerequisites>
@@ -149,6 +149,11 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>maven-confluence-scrollversions-addon</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 <!--
 =================================
 NEEDS FOR PASSWORD ENCRYPTION
@@ -346,7 +351,7 @@ TEST
                         <serverId>softphone-server</serverId>
                         -->
                         <wikiFilesExt>.confluence</wikiFilesExt>
-                        <deployState></deployState>
+                        <deployState/>
                         <failOnError>false</failOnError>
                         <!--
                         <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
