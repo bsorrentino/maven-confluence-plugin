@@ -5,6 +5,27 @@
 ## Next release
 ### Generic changes
 
+**add new module 'scrollversions-addon' to separate such implementation**
+
+ * rename directory from &#39;maven-confluence-processor-freemaker&#39; to &#39;site-processor-freemaker&#39;
+
+[600aa442c5bab26](https://github.com/bsorrentino/maven-confluence-plugin/commit/600aa442c5bab26) bsorrentino *2020-03-11 15:32:13*
+
+**update maven-compiler-plugin version : from 3.7.0 -> 3.8.1**
+
+
+[214a935b9d5cfa0](https://github.com/bsorrentino/maven-confluence-plugin/commit/214a935b9d5cfa0) bsorrentino *2020-02-10 16:16:32*
+
+**update readme**
+
+
+[c3185c26259a935](https://github.com/bsorrentino/maven-confluence-plugin/commit/c3185c26259a935) bsorrentino *2019-11-13 14:40:09*
+
+**update changelog**
+
+
+[6cc531f33009388](https://github.com/bsorrentino/maven-confluence-plugin/commit/6cc531f33009388) bsorrentino *2019-11-13 14:38:26*
+
 **set release version**
 
 
@@ -136,6 +157,14 @@
  * use java service provider interface to load the markup engine so we can support more preprocessor engine
 
 [e766c4d70d6cdb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/e766c4d70d6cdb2) bsorrentino *2019-11-01 22:07:16*
+
+
+###  [#211](https://github.com/bsorrentino/maven-confluence-plugin/pull/211) Bump jackson-databind from 2.9.10.1 to 2.9.10.3 in /maven-confluence-core    *dependencies*  
+
+**fix security #211**
+
+
+[ddf9bcb0530c00b](https://github.com/bsorrentino/maven-confluence-plugin/commit/ddf9bcb0530c00b) bsorrentino *2020-03-11 15:54:25*
 
 
 ### Jira GH-202   
