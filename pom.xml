@@ -29,7 +29,9 @@
         <module>maven-confluence-itest</module>
         <module>site-processor-freemarker</module>
         <module>scrollversions-addon</module>
-        <module>markdown-processor</module>
+        <module>markdown-processor-pegdown</module>
+        <module>markdown-processor-flexmark</module>
+        <module>markdown-processor-commonmark</module>
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>

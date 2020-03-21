@@ -149,23 +149,32 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!--
+        =================================
+        MARKDOWN PROCESSOR
+        =================================
+        -->
         <dependency>
             <groupId>org.bsc.maven</groupId>
-            <artifactId>confluence-markdown-processor</artifactId>
+            <artifactId>confluence-markdown-processor-pegdown</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
-
+        <!--
+        =================================
+        ADDON
+        =================================
+        -->
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-scrollversions-addon</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
-=================================
-NEEDS FOR PASSWORD ENCRYPTION
-=================================
--->
+        <!--
+        =================================
+        NEEDS FOR PASSWORD ENCRYPTION
+        =================================
+        -->
         <dependency>
             <groupId>org.sonatype.plexus</groupId>
             <artifactId>plexus-sec-dispatcher</artifactId>
