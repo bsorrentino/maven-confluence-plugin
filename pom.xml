@@ -4,7 +4,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>6.7.2</version>
+    <version>6.8-SNAPSHOT</version>
     <name>CONFLUENCE-REPORTING::Parent</name>
     <description>Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the same time, to keep in-sync both project &amp; documentation</description>
     <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
@@ -29,6 +29,7 @@
         <module>maven-confluence-itest</module>
         <module>site-processor-freemarker</module>
         <module>scrollversions-addon</module>
+        <module>markdown-processor</module>
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
@@ -145,11 +146,6 @@
                 <version>${mavenVersion}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.pegdown</groupId>
-                <artifactId>pegdown</artifactId>
-                <version>1.6.0</version>
-            </dependency>
 
             <dependency>
                <groupId>org.apache.xmlrpc</groupId>
@@ -162,6 +158,12 @@
                <artifactId>commons-httpclient</artifactId>
                <version>3.1</version>
            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.4</version>
+            </dependency>
 
             <dependency>
                 <groupId>commons-codec</groupId>
@@ -179,6 +181,12 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kohsuke.metainf-services</groupId>
+                <artifactId>metainf-services</artifactId>
+                <version>1.8</version>
             </dependency>
 
         </dependencies>

@@ -1,4 +1,4 @@
-package org.bsc.maven.plugin.confluence;
+package org.bsc.markdown;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bsc.markdown.PegdownParse;
 import org.junit.Test;
 
 

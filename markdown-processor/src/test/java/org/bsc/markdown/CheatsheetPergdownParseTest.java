@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.maven.plugin.confluence;
+package org.bsc.markdown;
 
 import java.io.IOException;
 
@@ -11,19 +11,19 @@ import java.io.IOException;
  *
  * @author bsorrentino
  */
-public class GettingStartedPegdownParseTest extends PegdownParse {
+public class CheatsheetPergdownParseTest extends PegdownParse {
 
         
-    private static final String FILE = "getting_started.md";
+    private static final String FILE = "cheatsheet.md";
 
     @Override
     protected char[] loadResource() throws IOException {
         return super.loadResource(FILE);
     }
-
+    
     public static void main( String args[] ) throws Exception  {
         
-        final GettingStartedPegdownParseTest test = new GettingStartedPegdownParseTest();
+        final CheatsheetPergdownParseTest test = new CheatsheetPergdownParseTest();
         
         final String result = test.serializeToString();
         

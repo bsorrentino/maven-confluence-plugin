@@ -1,9 +1,11 @@
-package org.bsc.confluence.model;
+package org.bsc.markdown;
 
 import lombok.Data;
 import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.model.Site;
+import org.bsc.confluence.model.SiteFactory;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,13 +99,13 @@ public class SiteTest implements SiteFactory.Model {
         assertThat( inputStream, IsNull.notNullValue());
         val converted = IOUtils.toString(inputStream).split("\n+");
         int i = 2;
-        
-        
+
+
         assertThat(converted[i++], equalTo(format("* This is a relative link to another page [SECOND PAGE|%s - page 2|].", parentPageTitle)) );
         assertThat(converted[i++], equalTo("* This one is [inline|http://google.com|Google].") );
         assertThat(converted[i++], equalTo("* This one is [inline *wo* title|http://google.com|].") );
         assertThat(converted[i++], containsString("[google|http://google.com]"));
-        assertThat(converted[i++], containsString("[more complex google|http://google.com|Other google]"));  
+        assertThat(converted[i++], containsString("[more complex google|http://google.com|Other google]"));
         assertThat(converted[i++], equalTo("* This is my [relative|relativepage|] link defined after.") );
         assertThat(converted[i++], containsString("[rel|Test - relativeagain]"));
     }
@@ -150,7 +152,7 @@ public class SiteTest implements SiteFactory.Model {
         assertThat(converted, containsString("Forcing a line-break\nNext line in the list"));
         assertThat(converted, containsString("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
     }
-    
+
     @Test
     public void shouldCreateSpecificNoticeBlock() throws IOException {
         final String parentPageTitle = "Test Macro";
@@ -170,6 +172,6 @@ public class SiteTest implements SiteFactory.Model {
         assertThat(converted, containsString("a *strong* and _pure_ feeling"));
 
     }
-    
+
     
 }

@@ -1,27 +1,23 @@
 package org.bsc.confluence.model;
 
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static org.bsc.confluence.FileExtension.MARKDOWN;
-import static org.bsc.confluence.FileExtension.XHTML;
-import static org.bsc.confluence.FileExtension.XML;
+import lombok.Value;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.FileExtension;
+import org.bsc.markdown.MarkdownProcessor;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import org.apache.commons.io.IOUtils;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.FileExtension;
-import org.bsc.markdown.ToConfluenceSerializer;
-import org.pegdown.PegDownProcessor;
-import org.pegdown.ast.Node;
-
-import lombok.Value;
-import lombok.val;
+import static java.util.Optional.ofNullable;
+import static org.bsc.confluence.FileExtension.*;
 
 public class SiteProcessor {
    
@@ -236,59 +232,32 @@ public class SiteProcessor {
        return onSuccess.apply( PageContent.of(result, representation) );
    }
 
-    
     /**
-     * 
+     *
+     * @param site
+     * @param child
+     * @param page
      * @param content
+     * @param homePageTitle
      * @return
+     * @throws IOException
      */
-    static java.io.InputStream processMarkdown(
+    public static  java.io.InputStream processMarkdown(
             final Site site,
             final Site.Page child,
-            final Optional<Model.Page> page,
-            final java.io.InputStream content, 
+            final Optional<ConfluenceService.Model.Page> page,
+            final java.io.InputStream content,
             final String homePageTitle) throws IOException {
 
-        val contents = IOUtils.toCharArray(content);
+        final ServiceLoader<MarkdownProcessor> loader = ServiceLoader.load(MarkdownProcessor.class);
 
-        val p = new PegDownProcessor(ToConfluenceSerializer.extensions());
+        final Stream<MarkdownProcessor> processors = StreamSupport.stream( loader.spliterator(), false );
 
-        val root = p.parseMarkdown(contents);
+        final Optional<MarkdownProcessor> processor = processors.findFirst();
 
-        val ser = new ToConfluenceSerializer() {
-            
-            
-            @Override
-            protected Optional<Site> getSite() {
-                return Optional.of(site);
-            }
-
-            @Override
-            protected void notImplementedYet(Node node) {
-
-                final int lc[] = ToConfluenceSerializer.lineAndColFromNode(new String(contents), node);
-                throw new UnsupportedOperationException(format("Node [%s] not supported yet. line=[%d] col=[%d]",
-                        node.getClass().getSimpleName(), lc[0], lc[1]));
-            }
-
-            @Override
-            protected Optional<String> getHomePageTitle() {
-                return Optional.ofNullable(homePageTitle);
-            }
-
-            @Override
-            protected boolean isImagePrefixEnabled() {
-                if( child.isIgnoreVariables() ) return false;
-                
-                return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
-            }
-
-        };
-
-        root.accept(ser);
-
-        return new java.io.ByteArrayInputStream(ser.toString().getBytes());
+        return processor
+                .orElseThrow( () -> new IllegalStateException( "Markdown processor not found!") )
+                .processMarkdown( site, child, page, content, homePageTitle );
     }
-
 
 }

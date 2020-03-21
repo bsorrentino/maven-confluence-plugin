@@ -1,4 +1,4 @@
-package org.bsc.maven.plugin.confluence;
+package org.bsc.markdown;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -7,8 +7,7 @@ import java.lang.reflect.Proxy;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.apache.commons.io.IOUtils;
-import org.bsc.markdown.ToConfluenceSerializer;
+
 import org.junit.Test;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.AnchorLinkNode;
@@ -55,8 +54,7 @@ public abstract class PegdownParse {
 
         final ClassLoader cl = PegdownParse.class.getClassLoader();
 
-        final java.io.InputStream is = cl.getResourceAsStream(name);
-        try {
+        try(final java.io.InputStream is = cl.getResourceAsStream(name) ) {
 
             java.io.CharArrayWriter caw = new java.io.CharArrayWriter();
 
@@ -66,9 +64,6 @@ public abstract class PegdownParse {
 
             return caw.toCharArray();
 
-        }
-        finally {
-            IOUtils.closeQuietly(is);
         }
 
     }

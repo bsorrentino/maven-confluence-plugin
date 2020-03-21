@@ -4,7 +4,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.7.2</version>
+        <version>6.8-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -74,17 +74,10 @@
         <artifactId>javax.json</artifactId>
         <version>1.0.4</version>
     </dependency>
-<!--
-	<dependency>
-	  <groupId>org.javalite</groupId>
-	  <artifactId>javalite-common</artifactId>
-	</dependency>
--->
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.4</version>
         </dependency>
 
         <dependency>
@@ -92,15 +85,6 @@
             <artifactId>minitemplator-repackaged</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.pegdown</groupId>
-            <artifactId>pegdown</artifactId>
-        </dependency>
-		<dependency>
-		  <groupId>org.parboiled</groupId>
-		  <artifactId>parboiled-java</artifactId>
-		  <version>1.1.7</version>
-		</dependency>
 		<dependency>
 		  <groupId>com.fasterxml.jackson.dataformat</groupId>
 		  <artifactId>jackson-dataformat-yaml</artifactId>
@@ -111,6 +95,10 @@
 		  <artifactId>jackson-databind</artifactId>
 		  <version>2.9.10.3</version>
 		</dependency>
+
+       <!-- TEST -->
+
+
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
