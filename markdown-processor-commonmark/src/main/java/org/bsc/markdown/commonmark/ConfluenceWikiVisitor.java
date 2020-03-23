@@ -15,4 +15,9 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
         _buffer.append("\n\n");
 
     }
+
+    @Override
+    public String toString() {
+        return _buffer.toString()
+    }
 }

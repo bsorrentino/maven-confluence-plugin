@@ -31,6 +31,6 @@ public class MarkdownCommonmarkProcessorImpl implements MarkdownProcessor {
         node.accept(visitor);
 
 
-        return null;
+        return visitor.toString();
     }
 }
