@@ -1,4 +1,4 @@
-package org.bsc.markdown.pegdown;
+package org.bsc.markdown.commonmark;
 
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.model.Site;

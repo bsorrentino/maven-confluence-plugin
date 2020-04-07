@@ -1,4 +1,4 @@
-package org.bsc.markdown.pegdown;
+package org.bsc.markdown.commonmark;
 
 import lombok.Data;
 import lombok.val;
@@ -8,6 +8,7 @@ import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ import static org.junit.Assert.assertThat;
  * @author bsorrentino
  *
  */
+@Ignore
 public class SiteTest implements SiteFactory.Model {
 
     @Data(staticConstructor="of")

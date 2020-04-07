@@ -25,12 +25,6 @@ public class MarkdownCommonmarkProcessorImpl implements MarkdownProcessor {
             final String content,
             final String homePageTitle) throws IOException {
 
-        final Parser parser = Parser.builder().build();
-        final Node node = parser.parse(content);
-        final ConfluenceWikiVisitor visitor = new ConfluenceWikiVisitor();
-        node.accept(visitor);
-
-
-        return visitor.toString();
+        return ConfluenceWikiVisitor.parser().parse(content);
     }
 }

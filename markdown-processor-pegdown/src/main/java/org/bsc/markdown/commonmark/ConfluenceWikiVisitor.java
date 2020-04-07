@@ -1,4 +1,4 @@
-package org.bsc.markdown.pegdown;
+package org.bsc.markdown.commonmark;
 
 
 import static java.lang.String.format;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.markdown.pegdown;
+package org.bsc.markdown.commonmark;
 
 import java.io.IOException;
 
