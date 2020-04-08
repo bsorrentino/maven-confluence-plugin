@@ -37,9 +37,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
         return new Parser();
     }
 
-    private StringBuilder _buffer = new StringBuilder( 500 * 1024 );
-
-    private Stack<Node> callStack = new Stack<>();
+    private Stack<StringBuilder> bufferStack = new Stack<>();
 
 /*
     @Override
@@ -48,16 +46,71 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     }
 */
 
+    ConfluenceWikiVisitor() {
+        bufferStack.push(  new StringBuilder( 500 * 1024 ) ) ;
+    }
+    private StringBuilder buffer() {
+        return bufferStack.peek();
+    }
+
+    /**
+     * A sequence of non-blank lines that cannot be interpreted as other kinds of blocks forms a paragraph.
+     * The contents of the paragraph are the result of parsing the paragraph’s raw content as inlines.
+     * The paragraph’s raw content is formed by concatenating the lines and removing initial and final whitespace.
+     *
+     * @param node
+     */
+    @Override
+    public void visit(Paragraph node) {
+        final Node parent = node.getParent();
+
+        final ChildrenProcessor p =
+                    processChildren(node)
+                    //.pre("<<PRGH>>")
+                    ;
+        if( parent instanceof Document ) {
+            p.post("\n");
+        }
+
+        p
+        //.post( "<</PRGH>>")
+        .process();
+    }
+
+    /**
+     * A line break (not in a code span or HTML tag) that is preceded by two or more spaces and does not occur at the end of a block is parsed as a hard line break
+     * (rendered in HTML as a <br /> tag):
+     *
+     * @param node
+     */
+    @Override
+    public void visit(HardLineBreak node) {
+        processChildren(node).pre("\\").process();
+    }
+
+    /**
+     * A regular line break (not in a code span or HTML tag) that is not preceded by two or more spaces or a backslash is parsed as a softbreak.
+     * (A softbreak may be rendered in HTML either as a line ending or as a space. The result will be the same in browsers. In the examples here, a line ending will be used.)
+     *
+     * @param node
+     */
+    @Override
+    public void visit(SoftLineBreak node) {
+        processChildren(node)
+                //.pre("<<SLB>>").post( "<</SLB>>")
+                .process(false);
+    }
+
     @Override
     public void visit(Text node) {
         final Node parent = node.getParent();
 
         if( parent instanceof Paragraph ) {
             if( parent.getParent() instanceof ListItem ) {
-                _buffer.append( " " );
+                buffer().append( " " );
             }
         }
-        _buffer.append( node.getLiteral() );
+        buffer().append( node.getLiteral() );
         visitChildren(node);
     }
 
@@ -65,7 +118,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     public void visit(Heading node) {
 
         processChildren(node)
-                .pre( format( "\nh%s. ", node.getLevel()) )
+                .pre( format( "h%s. ", node.getLevel()) )
                 .process();
 
     }
@@ -76,17 +129,20 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
         final Function<Node,String> f ;
         if( parent instanceof ListItem ) {
-            f =  ( parent.getParent() instanceof OrderedList )  ? n -> "\n## " : n -> "\n*# ";
+            f =  ( parent.getParent() instanceof OrderedList )  ? n -> "## " : n -> "*# ";
         }
         else {
             f = n -> "# ";
         }
-        processChildren(node).map(f).process();;
+        processChildren(node).map(f).process(false);;
     }
 
     @Override
     public void visit(BlockQuote blockQuote) {
-        processChildren(blockQuote).preAndPost("{quote}").process();
+        processChildren(blockQuote)
+                .pre("{quote}\n")
+                .post("{quote}\n")
+                .process();
     }
 
     @Override
@@ -95,12 +151,12 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
         final Function<Node,String> f ;
         if( parent instanceof ListItem ) {
-            f =  ( parent.getParent() instanceof OrderedList )  ? n -> "\n#* " : n -> "\n** ";
+            f =  ( parent.getParent() instanceof OrderedList )  ? n -> "#* " : n -> "** ";
         }
         else {
             f = n -> "* ";
         }
-        processChildren(node).map(f).process();;
+        processChildren(node).map(f).process(false);;
     }
 
     @Override
@@ -113,7 +169,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
     @Override
     public void visit(Emphasis node) {
-        processChildren(node).preAndPost("_").process( false);
+        processChildren(node).pre("_").post("_").process( false);
 
     }
 
@@ -123,16 +179,6 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
                 .pre( format("{code [%s] [%s]}",node.getLiteral(), node.getInfo() ) ).process();
     }
 
-    @Override
-    public void visit(Paragraph node) {
-        final Node parent = node.getParent();
-
-        if( parent instanceof ListItem ) {
-            processChildren(node).process(true);
-            return;
-        }
-        processChildren(node).preAndPost("\n").process();
-    }
 
     @Override
     public void visit(ListItem node) {
@@ -141,29 +187,45 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
     @Override
     public void visit(StrongEmphasis node) {
-        processChildren(node).preAndPost("*").process(false);;
+        processChildren(node).pre("*").post("*").process(false);;
+    }
+
+    @Override
+    public void visit(Image node) {
+        processChildren(node)
+                //.pre( format("<<IMG destination=[%s] title=[%s]>>", node.getDestination(), node.getTitle())).post("<</IMG>>")
+                .pre( "!%s", node.getDestination() )
+                .captureOutput( v -> {} ) // ignore text
+                .post("!")
+                .process( false);
+    }
+
+    @Override
+    public void visit(LinkReferenceDefinition node) {
+        processChildren(node)
+                //.preAndPost("<<LNKR>>")
+                .process();
+    }
+
+    @Override
+    public void visit(Link node) {
+        processChildren(node)
+                //.preAndPost("<<LNK>>")
+                .pre( "[" )
+                .captureOutput( v -> buffer().append(v) ) // ignore text
+                .post("|%s%s]", node.getDestination(), ofNullable(node.getTitle()).map( v -> "|"+v ).orElse(""))
+                .process(false);
     }
 
     @Override
     public void visit(CustomNode node) {
 
         if( node instanceof Strikethrough ) {
-            processChildren(node).preAndPost("-").process(false);
+            processChildren(node).pre("-").post("-").process(false);
             return;
         }
 
-        processChildren(node).preAndPost("<<CSTN>>").process();
-    }
-
-
-    @Override
-    public void visit(HardLineBreak node) {
-        processChildren(node).preAndPost("<<HLB>>").process();
-    }
-
-    @Override
-    public void visit(SoftLineBreak node) {
-        processChildren(node).preAndPost("<<SLB>>").process();
+        processChildren(node).pre("<<CSTN>>").post("<</CSTN>>").process();
     }
 
     @Override
@@ -173,42 +235,27 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
     @Override
     public void visit(HtmlInline node) {
-        processChildren(node).preAndPost("<<HTMI>>").process();
+        processChildren(node).pre("<<HTMI>>").post("<</HTMI>>").process();
     }
 
     @Override
     public void visit(HtmlBlock node) {
-        processChildren(node).preAndPost("<<HTMB>>").process();
-    }
-
-    @Override
-    public void visit(Image node) {
-        processChildren(node).preAndPost("<<IMG>>").process();
+        processChildren(node).pre("<<HTMB>>").post("<</HTMB>>").process();
     }
 
     @Override
     public void visit(IndentedCodeBlock node) {
-        processChildren(node).pre("<<ICB>>").process();
-    }
-
-    @Override
-    public void visit(Link node) {
-        processChildren(node).preAndPost("<<LNK>>").process();
-    }
-
-    @Override
-    public void visit(LinkReferenceDefinition node) {
-        processChildren(node).preAndPost("<<LNKR>>").process();
+        processChildren(node).pre("<<ICB>>").post("<</ICB>>").process();
     }
 
     @Override
     public void visit(CustomBlock node) {
-        processChildren(node).preAndPost("<<CSTB>>").process();
+        processChildren(node).pre("<<CSTB>>").post("<</CSTB>>").process();
     }
 
     @Override
     public String toString() {
-        return _buffer.toString();
+        return buffer().toString();
     }
 
 
@@ -217,6 +264,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
         Optional<String> post = Optional.empty();
         Optional<Consumer<Node>> forEach = Optional.empty();;
         Optional<Function<Node,String>> map = Optional.empty();;
+        Optional<Consumer<String>> captureOutput = Optional.empty();;
 
         final T parent;
 
@@ -224,16 +272,16 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
             this.parent = parent;
         }
 
-        ChildrenProcessor pre(String v) {
-            pre = ofNullable(v);
+        ChildrenProcessor captureOutput(Consumer<String> v) {
+            captureOutput = ofNullable(v);
             return this;
         }
-        ChildrenProcessor post(String v) {
-            post = ofNullable(v);
+        ChildrenProcessor pre(String v, Object ...args) {
+            pre = ofNullable(format( v, (Object[])args));
             return this;
         }
-        ChildrenProcessor preAndPost(String v) {
-            post = pre = ofNullable(v);
+        ChildrenProcessor post(String v, Object ...args) {
+            post = ofNullable(format( v, (Object[])args));
             return this;
         }
         ChildrenProcessor forEach(Consumer<Node> v ) {
@@ -248,9 +296,11 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
         void process( ) { process( true );  }
 
         void process( boolean writeln  ) {
-            callStack.push(parent);
 
-            pre.ifPresent( v -> _buffer.append(v) );
+            pre.ifPresent( v -> buffer().append(v) );
+
+            captureOutput.ifPresent( consumer -> bufferStack.push( new StringBuilder() ) );
+
             Node next;
             for(Node node = parent.getFirstChild(); node != null; node = next) {
                 next = node.getNext();
@@ -259,15 +309,19 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
                 }
                 else {
                     if( map.isPresent() ) {
-                        _buffer.append( map.get().apply( node ) );
+                        buffer().append( map.get().apply( node ) );
                     }
                     node.accept(ConfluenceWikiVisitor.this);
                 }
             }
-            post.ifPresent( v -> _buffer.append(v) );
-            if( writeln ) _buffer.append('\n');
+            captureOutput.ifPresent( consumer -> {
+                final String content = bufferStack.pop().toString();
+                consumer.accept(content);
+            });
 
-            callStack.pop();
+            post.ifPresent( v -> buffer().append(v) );
+            if( writeln ) buffer().append('\n');
+
         }
     }
 
