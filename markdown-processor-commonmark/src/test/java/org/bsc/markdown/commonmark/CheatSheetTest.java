@@ -168,4 +168,82 @@ public class CheatSheetTest {
 
     }
 
+    @Test
+    //@Ignore
+    public void parseCode() {
+
+        final String wiki  = parse( "code");
+
+        final List<String> lines = Arrays.stream(wiki.split( "\n"))
+                //.peek( System.out::println )
+                .collect(Collectors.toList())
+                ;
+
+        int l = 0;
+        Assert.assertThat( lines.get(l++), equalTo("Inline {{code}} has {{back-ticks around}} it.") );
+        l++;
+        Assert.assertThat( lines.get(l++), equalTo("{code:javascript}") );
+        Assert.assertThat( lines.get(l++), equalTo("var s = \"JavaScript syntax highlighting\";") );
+        Assert.assertThat( lines.get(l++), equalTo("alert(s);") );
+        Assert.assertThat( lines.get(l++), equalTo("{code}") );
+        Assert.assertThat( lines.get(l++), equalTo("{code:python}") );
+        Assert.assertThat( lines.get(l++), equalTo("s = \"Python syntax highlighting\"") );
+        Assert.assertThat( lines.get(l++), equalTo("print s") );
+        Assert.assertThat( lines.get(l++), equalTo("{code}") );
+        Assert.assertThat( lines.get(l++), equalTo("h3. Shell") );
+        Assert.assertThat( lines.get(l++), equalTo("{code}") );
+        Assert.assertThat( lines.get(l++), equalTo("No language indicated, so no syntax highlighting. ") );
+        Assert.assertThat( lines.get(l++), equalTo("But let's throw in a <b>tag</b>.") );
+        Assert.assertThat( lines.get(l++), equalTo("{code}") );
+
+    }
+
+    @Test
+    //@Ignore
+    public void parseHorizontalrule() {
+
+        final String wiki  = parse( "horizontalrule");
+
+        final List<String> lines = Arrays.stream(wiki.split( "\n"))
+                //.peek( System.out::println )
+                .collect(Collectors.toList())
+                ;
+
+        int l = 0;
+        Assert.assertThat( lines.get(l++), equalTo("Three or more...") );
+        l++;
+        Assert.assertThat( lines.get(l++), equalTo("---") );
+        Assert.assertThat( lines.get(l++), equalTo("Hyphens") );
+        l++;
+        Assert.assertThat( lines.get(l++), equalTo("---") );
+        Assert.assertThat( lines.get(l++), equalTo("Asterisks") );
+        l++;
+        Assert.assertThat( lines.get(l++), equalTo("---") );
+        Assert.assertThat( lines.get(l++), equalTo("Underscores" ) );
+
+    }
+
+    @Test
+    //@Ignore
+    public void parseTables() {
+
+        final String wiki  = parse( "tables");
+
+        final List<String> lines = Arrays.stream(wiki.split( "\n"))
+                //.peek( System.out::println )
+                .collect(Collectors.toList())
+                ;
+
+        int l = 2;
+        Assert.assertThat( lines.get(l++), equalTo("||Tables||Are||Cool||") );
+        Assert.assertThat( lines.get(l++), equalTo("|col 3 is|right-aligned|$1600|") );
+        Assert.assertThat( lines.get(l++), equalTo("|col 2 is|centered|$12|") );
+        Assert.assertThat( lines.get(l++), equalTo("|zebra stripes|are neat|$1|") );
+        l+=2;
+        Assert.assertThat( lines.get(l++), equalTo("||Markdown||Less||Pretty||") );
+        Assert.assertThat( lines.get(l++), equalTo("|_Still_|{{renders}}|*nicely*|" ) );
+        Assert.assertThat( lines.get(l++), equalTo("|1|2|3|" ) );
+
+    }
+
 }

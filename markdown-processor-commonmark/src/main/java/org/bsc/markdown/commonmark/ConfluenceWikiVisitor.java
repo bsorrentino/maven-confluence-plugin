@@ -3,6 +3,7 @@ package org.bsc.markdown.commonmark;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.strikethrough.Strikethrough;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
+import org.commonmark.ext.gfm.tables.*;
 import org.commonmark.node.*;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -21,7 +23,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
         private final ConfluenceWikiVisitor visitor = new ConfluenceWikiVisitor();
 
-        private final List<Extension> extensions = Arrays.asList(StrikethroughExtension.create());
+        private final List<Extension> extensions = Arrays.asList(StrikethroughExtension.create(), TablesExtension.create());
 
         private final org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().extensions(extensions).build();
 
@@ -162,8 +164,17 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     @Override
     public void visit(Code node) {
         processChildren(node)
-                .pre( format("{code[%s]}", node.getLiteral() ) )
-                .post( "{code}")
+                .pre( format("{{%s}}", node.getLiteral() ) )
+                .process(false);
+    }
+
+    @Override
+    public void visit(FencedCodeBlock node) {
+        final Function<String,String> info = (v) -> (v==null || v.length()==0 ) ? "" : ":"+v ;
+
+        processChildren(node)
+                .pre( format("{code%s}\n%s", info.apply(node.getInfo()), node.getLiteral() ) )
+                .post("{code}")
                 .process();
     }
 
@@ -171,12 +182,6 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     public void visit(Emphasis node) {
         processChildren(node).pre("_").post("_").process( false);
 
-    }
-
-    @Override
-    public void visit(FencedCodeBlock node) {
-        processChildren(node)
-                .pre( format("{code [%s] [%s]}",node.getLiteral(), node.getInfo() ) ).process();
     }
 
 
@@ -218,20 +223,87 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     }
 
     @Override
-    public void visit(CustomNode node) {
+    public void visit(ThematicBreak node) {
+        processChildren(node).pre("---").process();
+    }
 
-        if( node instanceof Strikethrough ) {
-            processChildren(node).pre("-").post("-").process(false);
-            return;
+    //@Custom
+    public void visit( TableBlock node ) {
+        processChildren(node).process(false);
+    }
+
+    //@Custom
+    public void visit( TableHead node ) {
+        processChildren(node).process(false);
+    }
+
+    //@Custom
+    public void visit( TableBody node ) {
+        processChildren(node).process(false);
+    }
+
+    //@Custom
+    public void visit( TableRow node ) {
+        final ChildrenProcessor p = processChildren(node).pre("|");
+
+        if( node.getParent() instanceof  TableHead ) {
+            p.post( "|" );
         }
+        p.process();
+    }
 
-        processChildren(node).pre("<<CSTN>>").post("<</CSTN>>").process();
+    //@Custom
+    public void visit( TableCell node ) {
+        final ChildrenProcessor p = processChildren(node);
+
+        if( node.isHeader()) {
+            p.pre( "|");
+        }
+        p.post("|").process(false);
+    }
+
+    //@Custom
+    public void visit( Strikethrough node ) {
+        processChildren(node).pre("-").post("-").process(false);
     }
 
     @Override
-    public void visit(ThematicBreak thematicBreak) {
-        processChildren(thematicBreak).pre("<<THB>>").process();
+    public void visit(CustomNode node) {
+
+        if( node instanceof Strikethrough ) {
+            visit( (Strikethrough)node );
+            return;
+        }
+        else if( node instanceof TableCell ) {
+            visit( (TableCell)node );
+            return;
+        }
+        else if( node instanceof TableRow ) {
+            visit( (TableRow)node );
+            return;
+        }
+        else if( node instanceof TableHead ) {
+            visit( (TableHead)node );
+            return;
+        }
+        else if( node instanceof TableBody ) {
+            visit( (TableBody)node );
+            return;
+        }
+
+        processChildren(node).pre(format("<<CSTN type=\"%s\">>", node.getClass().getSimpleName())).post("<</CSTN>>").process();
     }
+
+    @Override
+    public void visit(CustomBlock node) {
+
+        if( node instanceof TableBlock ) {
+            visit( (TableBlock)node );
+            return;
+        }
+        processChildren(node).pre(format("<<CSTB type=\"%s\">>", node.getClass().getSimpleName())).post("<</CSTB>>").process();
+    }
+
 
     @Override
     public void visit(HtmlInline node) {
@@ -246,11 +318,6 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     @Override
     public void visit(IndentedCodeBlock node) {
         processChildren(node).pre("<<ICB>>").post("<</ICB>>").process();
-    }
-
-    @Override
-    public void visit(CustomBlock node) {
-        processChildren(node).pre("<<CSTB>>").post("<</CSTB>>").process();
     }
 
     @Override
