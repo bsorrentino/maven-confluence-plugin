@@ -164,7 +164,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     @Override
     public void visit(Code node) {
         processChildren(node)
-                .pre( format("{{%s}}", node.getLiteral() ) )
+                .pre( "{{%s}}", node.getLiteral() )
                 .process(false);
     }
 
@@ -173,7 +173,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
         final Function<String,String> info = (v) -> (v==null || v.length()==0 ) ? "" : ":"+v ;
 
         processChildren(node)
-                .pre( format("{code%s}\n%s", info.apply(node.getInfo()), node.getLiteral() ) )
+                .pre( "{code%s}\n%s", info.apply(node.getInfo()), node.getLiteral() )
                 .post("{code}")
                 .process();
     }
@@ -297,7 +297,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
             return;
         }
 
-        processChildren(node).pre(format("<<CSTN type=\"%s\">>", node.getClass().getSimpleName())).post("<</CSTN>>").process();
+        processChildren(node).pre("<<CSTN type=\"%s\">>", node.getClass().getSimpleName()).post("<</CSTN>>").process();
     }
 
     @Override
@@ -307,7 +307,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
             visit( (TableBlock)node );
             return;
         }
-        processChildren(node).pre(format("<<CSTB type=\"%s\">>", node.getClass().getSimpleName())).post("<</CSTB>>").process();
+        processChildren(node).pre("<<CSTB type=\"%s\">>", node.getClass().getSimpleName()).post("<</CSTB>>").process();
     }
 
 
