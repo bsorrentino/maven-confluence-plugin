@@ -268,6 +268,12 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     }
 
     @Override
+    public void visit(HtmlBlock node) {
+        processChildren(node).pre("{html}\n%s\n", node.getLiteral()).post("{html}").process();
+    }
+
+
+    @Override
     public void visit(CustomNode node) {
 
         if( node instanceof Strikethrough ) {
@@ -308,11 +314,6 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     @Override
     public void visit(HtmlInline node) {
         processChildren(node).pre("<<HTMI>>").post("<</HTMI>>").process();
-    }
-
-    @Override
-    public void visit(HtmlBlock node) {
-        processChildren(node).pre("<<HTMB>>").post("<</HTMB>>").process();
     }
 
     @Override
