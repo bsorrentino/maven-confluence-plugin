@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 
 class CheatSheetTest {
 
-
     private fun parse(name:String ):String? = try {
             this.javaClass.classLoader.getResourceAsStream( "cheatsheet/$name.md").use {
                 ConfluenceWikiVisitor.parser().parse(IOUtils.toString(it)).trimEnd()
@@ -18,7 +17,6 @@ class CheatSheetTest {
             //Assertions.fail()
             null;
         }
-
 
     @Test
     //@Ignore
@@ -31,7 +29,7 @@ class CheatSheetTest {
         h6. H6
         h1. Alt-H1
         h2. Alt-H2
-        """.trimIndent() )
+    """.trimIndent() )
 
     @Test
     //@Ignore
@@ -43,7 +41,7 @@ class CheatSheetTest {
         Combined emphasis with *asterisks and _underscores_*.
 
         Strikethrough uses two tildes. -Scratch this.-
-        """.trimIndent() )
+    """.trimIndent() )
 
     @Test
     //@Ignore
@@ -59,7 +57,7 @@ class CheatSheetTest {
         *  Unordered list can use asterisks
         *  Or minuses
         *  Or pluses
-        """.trimIndent() )
+    """.trimIndent() )
 
     @Test
     //@Ignore
@@ -69,7 +67,7 @@ class CheatSheetTest {
         Inline-style:!https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png!
         
         Reference-style:!https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png!
-        """.trimIndent() )
+    """.trimIndent() )
 
     @Test
     //@Ignore
@@ -83,7 +81,7 @@ class CheatSheetTest {
         {quote}
         This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can _put_ *Markdown* into a blockquote.
         {quote}
-        """.trimIndent())
+    """.trimIndent())
 
     @Test
     //@Ignore
@@ -103,7 +101,7 @@ class CheatSheetTest {
         URLs and URLs in angle brackets will automatically get turned into links.http://www.example.com or [http://www.example.com|http://www.example.com] and sometimesexample.com (but not on Github, for example).
 
         Some text to show that the reference links can follow later.
-        """.trimIndent())
+    """.trimIndent())
 
     @Test
     //@Ignore
