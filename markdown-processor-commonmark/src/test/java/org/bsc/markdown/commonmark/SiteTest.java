@@ -159,7 +159,7 @@ public class SiteTest implements SiteFactory.Model {
     public void shouldCreateSpecificNoticeBlock() throws IOException {
         final String parentPageTitle = "Test Macro";
 
-        final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
+        final InputStream stream = getClass().getClassLoader().getResourceAsStream("cheatsheet/createSpecificNoticeBlock.md");
         assertThat( stream, IsNull.notNullValue());
         final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.empty(), stream, parentPageTitle);
         assertThat( inputStream, IsNull.notNullValue());

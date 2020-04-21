@@ -1,5 +1,7 @@
 package org.bsc.markdown.commonmark;
 
+import org.bsc.markdown.commonmark.extension.NoticeBlock;
+import org.bsc.markdown.commonmark.extension.NoticeBlockExtension;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.strikethrough.Strikethrough;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
@@ -12,7 +14,6 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -23,7 +24,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
         private final ConfluenceWikiVisitor visitor = new ConfluenceWikiVisitor();
 
-        private final List<Extension> extensions = Arrays.asList(StrikethroughExtension.create(), TablesExtension.create());
+        private final List<Extension> extensions = Arrays.asList(StrikethroughExtension.create(), TablesExtension.create(), NoticeBlockExtension.create());
 
         private final org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().extensions(extensions).build();
 
@@ -51,8 +52,13 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     ConfluenceWikiVisitor() {
         bufferStack.push(  new StringBuilder( 500 * 1024 ) ) ;
     }
+
     private StringBuilder buffer() {
         return bufferStack.peek();
+    }
+
+    private boolean isRoot( Block node ) {
+        return (node.getParent() instanceof Document);
     }
 
     /**
@@ -140,11 +146,12 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     }
 
     @Override
-    public void visit(BlockQuote blockQuote) {
-        processChildren(blockQuote)
+    public void visit(BlockQuote node) {
+
+        processChildren(node)
                 .pre("{quote}\n")
                 .post("{quote}\n")
-                .process();
+                .process( isRoot(node) );
     }
 
     @Override
@@ -262,16 +269,30 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
         p.post("|").process(false);
     }
 
-    //@Custom
-    public void visit( Strikethrough node ) {
-        processChildren(node).pre("-").post("-").process(false);
-    }
-
     @Override
     public void visit(HtmlBlock node) {
         processChildren(node).pre("{html}\n%s\n", node.getLiteral()).post("{html}").process();
     }
 
+    //@Custom
+    public void visit( Strikethrough node ) {
+        processChildren(node).pre("-").post("-").process(false);
+    }
+
+    //@custom
+    public void visit(NoticeBlock node) {
+        final String type = node.getType().getTagName();
+        final ChildrenProcessor p = processChildren(node);
+
+        if( node.getTitle().isPresent() ) {
+            p.pre( "{%s:title=%s}\n", type, node.getTitle().get());
+        }
+        else {
+            p.pre("{%s}\n", type);
+        }
+
+        p.post("{%s}\n", type).process(isRoot(node));
+    }
 
     @Override
     public void visit(CustomNode node) {
@@ -305,6 +326,10 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
         if( node instanceof TableBlock ) {
             visit( (TableBlock)node );
+            return;
+        }
+        else if( node instanceof NoticeBlock) {
+            visit( (NoticeBlock)node );
             return;
         }
         processChildren(node).pre("<<CSTB type=\"%s\">>", node.getClass().getSimpleName()).post("<</CSTB>>").process();

@@ -1,6 +1,6 @@
-# inlineCode with macro syntax 
+# Notice Block Syntax 
 
-## Imbricated info
+## info
 
 > **info:** About me
 > 
@@ -15,8 +15,7 @@
 > Contents of my note
 >
 
-
-## tip without imbrication
+## Tip with title
 
 > **tip:** About you
 > 
@@ -24,8 +23,7 @@
 >  mldjkflqsdif sqj
 >
 
-
-## warning with complex content
+## Warning with complex content
 
 > **warning:** About him
 > 
@@ -36,16 +34,4 @@
 > - two
 > 
 > have a **strong** and _pure_ feeling
-
-
-## oneline blockquote
-
-> test a simple
-> blockquote
-
-## blockquote block 
-
-> test a 2 paragraph block
->
-> this is my second part
 
