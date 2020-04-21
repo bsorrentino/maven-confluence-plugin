@@ -1,4 +1,4 @@
-package org.bsc.markdown.commonmark;
+package org.bsc.markdown.pegdown;
 
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.model.Site;
@@ -42,12 +42,12 @@ public class MarkDownPegdownProcessorImpl implements MarkdownProcessor{
 
 
             @Override
-            protected Optional<Site> getSite() {
+            public Optional<Site> getSite() {
                 return Optional.of(site);
             }
 
             @Override
-            protected void notImplementedYet(Node node) {
+            public void notImplementedYet(Node node) {
 
                 final int lc[] = ConfluenceWikiVisitor.lineAndColFromNode(new String(contents), node);
                 throw new UnsupportedOperationException(format("Node [%s] not supported yet. line=[%d] col=[%d]",
@@ -55,12 +55,12 @@ public class MarkDownPegdownProcessorImpl implements MarkdownProcessor{
             }
 
             @Override
-            protected Optional<String> getHomePageTitle() {
+            public Optional<String> getHomePageTitle() {
                 return Optional.ofNullable(homePageTitle);
             }
 
             @Override
-            protected boolean isImagePrefixEnabled() {
+            public boolean isImagePrefixEnabled() {
                 if( child.isIgnoreVariables() ) return false;
 
                 return page.map( p -> !p.getTitle().contains("[") ).orElse(true);

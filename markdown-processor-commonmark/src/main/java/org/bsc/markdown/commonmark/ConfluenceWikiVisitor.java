@@ -1,5 +1,6 @@
 package org.bsc.markdown.commonmark;
 
+import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.commonmark.extension.NoticeBlock;
 import org.bsc.markdown.commonmark.extension.NoticeBlockExtension;
 import org.commonmark.Extension;
@@ -18,20 +19,16 @@ import java.util.function.Function;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public class ConfluenceWikiVisitor extends AbstractVisitor {
+public class ConfluenceWikiVisitor extends AbstractVisitor  {
 
-    public static class Parser {
-
-        private final ConfluenceWikiVisitor visitor = new ConfluenceWikiVisitor();
+    public static class Parser  {
 
         private final List<Extension> extensions = Arrays.asList(StrikethroughExtension.create(), TablesExtension.create(), NoticeBlockExtension.create());
 
         private final org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().extensions(extensions).build();
 
-        public final String parse( String content ) {
-            final Node node = parser.parse(content);
-            node.accept(visitor);
-            return visitor.toString();
+        public final Node parse( String content ) {
+            return parser.parse(content);
         }
 
     }
@@ -42,6 +39,9 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
 
     private Stack<StringBuilder> bufferStack = new Stack<>();
 
+    private final MarkdownParserContext<Block> parseContext;
+
+
 /*
     @Override
     public void visit(Document document) {
@@ -49,7 +49,9 @@ public class ConfluenceWikiVisitor extends AbstractVisitor {
     }
 */
 
-    ConfluenceWikiVisitor() {
+    public ConfluenceWikiVisitor( MarkdownParserContext<Block> parseContext ) {
+        this.parseContext = parseContext;
+
         bufferStack.push(  new StringBuilder( 500 * 1024 ) ) ;
     }
 

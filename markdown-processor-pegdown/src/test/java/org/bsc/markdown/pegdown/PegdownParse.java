@@ -1,4 +1,4 @@
-package org.bsc.markdown.commonmark;
+package org.bsc.markdown.pegdown;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -196,12 +196,12 @@ public abstract class PegdownParse {
         ConfluenceWikiVisitor ser =  new ConfluenceWikiVisitor() {
 
             @Override
-            protected void notImplementedYet(Node node) {
+            public void notImplementedYet(Node node) {
                 throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. ", node.getClass().getSimpleName()) );
             }
 
             @Override
-            protected Optional<String> getHomePageTitle() {
+            public Optional<String> getHomePageTitle() {
                 return Optional.of("Parent Page Title");
             }
 

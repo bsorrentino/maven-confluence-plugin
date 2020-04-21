@@ -1,4 +1,4 @@
-package org.bsc.markdown.commonmark;
+package org.bsc.markdown.pegdown;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;

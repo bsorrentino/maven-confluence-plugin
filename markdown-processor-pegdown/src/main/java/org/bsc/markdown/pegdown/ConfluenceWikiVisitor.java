@@ -1,65 +1,22 @@
-package org.bsc.markdown.commonmark;
+package org.bsc.markdown.pegdown;
 
 
-import static java.lang.String.format;
-import static java.lang.String.valueOf;
+import org.bsc.confluence.FileExtension;
+import org.bsc.confluence.model.Site;
+import org.bsc.markdown.MarkdownParserContext;
+import org.parboiled.common.StringUtils;
+import org.pegdown.Extensions;
+import org.pegdown.ast.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.bsc.confluence.FileExtension;
-import org.bsc.confluence.model.Site;
-import org.parboiled.common.StringUtils;
-import org.pegdown.Extensions;
-import org.pegdown.ast.AbbreviationNode;
-import org.pegdown.ast.AnchorLinkNode;
-import org.pegdown.ast.AutoLinkNode;
-import org.pegdown.ast.BlockQuoteNode;
-import org.pegdown.ast.BulletListNode;
-import org.pegdown.ast.CodeNode;
-import org.pegdown.ast.DefinitionListNode;
-import org.pegdown.ast.DefinitionNode;
-import org.pegdown.ast.DefinitionTermNode;
-import org.pegdown.ast.ExpImageNode;
-import org.pegdown.ast.ExpLinkNode;
-import org.pegdown.ast.HeaderNode;
-import org.pegdown.ast.HtmlBlockNode;
-import org.pegdown.ast.InlineHtmlNode;
-import org.pegdown.ast.ListItemNode;
-import org.pegdown.ast.MailLinkNode;
-import org.pegdown.ast.Node;
-import org.pegdown.ast.OrderedListNode;
-import org.pegdown.ast.ParaNode;
-import org.pegdown.ast.QuotedNode;
-import org.pegdown.ast.RefImageNode;
-import org.pegdown.ast.RefLinkNode;
-import org.pegdown.ast.ReferenceNode;
-import org.pegdown.ast.RootNode;
-import org.pegdown.ast.SimpleNode;
-import org.pegdown.ast.SpecialTextNode;
-import org.pegdown.ast.StrikeNode;
-import org.pegdown.ast.StrongEmphSuperNode;
-import org.pegdown.ast.SuperNode;
-import org.pegdown.ast.TableBodyNode;
-import org.pegdown.ast.TableCaptionNode;
-import org.pegdown.ast.TableCellNode;
-import org.pegdown.ast.TableColumnNode;
-import org.pegdown.ast.TableHeaderNode;
-import org.pegdown.ast.TableNode;
-import org.pegdown.ast.TableRowNode;
-import org.pegdown.ast.TextNode;
-import org.pegdown.ast.VerbatimNode;
-import org.pegdown.ast.Visitor;
-import org.pegdown.ast.WikiLinkNode;
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static org.bsc.markdown.MarkdownVisitorHelper.isURL;
+import static org.bsc.markdown.MarkdownVisitorHelper.processImageUrl;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -71,7 +28,7 @@ import org.pegdown.ast.WikiLinkNode;
  *
  * @author bsorrentino
  */
-public abstract class ConfluenceWikiVisitor implements Visitor {
+public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserContext<org.pegdown.ast.Node> {
 
     //list level
     private int listLevel = 0;
@@ -141,84 +98,6 @@ public abstract class ConfluenceWikiVisitor implements Visitor {
         return new int[] {line,col};
     }
   
-    /**
-     * 
-     * @param uri
-     * @return
-     */
-    private static CompletableFuture<String> getFileName( String uri ) {
-        
-        final CompletableFuture<String> result = new CompletableFuture<>();
-        try {
-            final java.net.URI uriObject = java.net.URI.create(uri);
-            
-            final String scheme = uriObject.getScheme();
-            if( scheme != null ) {
-                
-                switch( scheme.toLowerCase() ) {
-                case "classpath":
-                    result.completeExceptionally( 
-                            new IllegalArgumentException( "'classpath' scheme is not supported!"));    
-                    return result;
-                case "http":
-                case "https":
-                    result.complete(uri);
-                    return result;
-                }
-            }
-            
-            final Path path = Paths.get(uriObject.getPath());
-            
-            //result.complete("${page.title}^".concat(path.getFileName().toString()));
-            result.complete(path.getFileName().toString());
-        
-        } catch( Throwable e) {
-            
-            result.completeExceptionally(e);
-        }
-        return result;
-    }
-
-    private boolean isURL( String value ) {
-        try {
-            new URL(value);
-        } catch (MalformedURLException e) {
-            return false;
-        }
-        return true;
-        
-    }
-    
-    private static final Pattern patternUri = Pattern.compile("(?:(\\$\\{.+\\})\\^)?(.+)");
-   
-    /**
-     * 
-     * @param url
-     * @param addPrefix
-     * @return
-     */
-    public String processImageUrl( String url ) {
-        
-        if( isURL(url) ) {
-            return url;
-        }
-        
-        final Matcher m = patternUri.matcher(url);
-        
-        if( !m.matches() ) {
-            throw new IllegalArgumentException( format("the URL [%s] is not valid!", url) ); 
-        }
-        
-        
-        if( m.group(1) != null ) { // the uri contains explictly a macro : ${ ... }
-            return url;
-        }
-  
-        return getFileName(m.group(2))
-                    .thenApply( s -> ( isImagePrefixEnabled() ) ? "${page.title}^".concat(s) : s )
-                    .join();
-        
-    }
 
     @Override
     public String toString() {
@@ -229,7 +108,8 @@ public abstract class ConfluenceWikiVisitor implements Visitor {
      * 
      * @return
      */
-    protected Optional<Site> getSite() {
+    @Override
+    public Optional<Site> getSite() {
         return Optional.empty();
     }
     
@@ -238,7 +118,8 @@ public abstract class ConfluenceWikiVisitor implements Visitor {
      * 
      * @return
      */
-    protected boolean isImagePrefixEnabled() {
+    @Override
+    public boolean isImagePrefixEnabled() {
         return true;
     }
     
@@ -247,11 +128,10 @@ public abstract class ConfluenceWikiVisitor implements Visitor {
      *
      * @return home page title. nullable
      */
-    protected Optional<String> getHomePageTitle() {
+    @Override
+    public Optional<String> getHomePageTitle() {
         return Optional.empty();
     }
-
-    protected abstract void notImplementedYet( Node node );
 
     protected StringBuilder bufferVisit( java.util.function.Consumer<Void> closure  ) {
 
@@ -601,7 +481,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor {
         
         final String titlePart = isNotBlank(ein.title) ? String.format("title=\"%s\"", ein.title) : "";
         
-        final String url = processImageUrl(ein.url );
+        final String url = processImageUrl(ein.url, this );
         
         _buffer.append( format( "!%s|%s!", url, altText, titlePart));
 
@@ -631,7 +511,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor {
             title = referenceNode.getTitle();
         }
 
-        final String url = processImageUrl(ref_url);
+        final String url = processImageUrl(ref_url, this);
 
         final String titlePart = isNotBlank(title) ? format("|title=\"%s\"", title) : "";
         
@@ -735,7 +615,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor {
         }
 
         // If URL is a relative URL, we will create a link to the project
-        if( !isURL(url) ) { 
+        if( !isURL(url) ) {
             final Optional<String> parentPageTitle = getHomePageTitle();
             
             // not a valid URL (hence a relative link)

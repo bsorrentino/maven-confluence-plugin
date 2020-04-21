@@ -1,16 +1,43 @@
 package org.bsc.makdown.commonmark;
 
 import org.apache.commons.io.IOUtils
+import org.bsc.confluence.model.Site
+import org.bsc.markdown.MarkdownParserContext
 import org.bsc.markdown.commonmark.ConfluenceWikiVisitor
+import org.commonmark.node.Block
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 
 class CheatSheetTest {
 
     private fun parse(name:String ):String? = try {
             this.javaClass.classLoader.getResourceAsStream( "cheatsheet/$name.md").use {
-                ConfluenceWikiVisitor.parser().parse(IOUtils.toString(it)).trimEnd()
+                val root = ConfluenceWikiVisitor.parser().parse(IOUtils.toString(it))
+
+                val visitor = ConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
+                    override fun getSite(): Optional<Site> {
+                        return Optional.empty()
+                    }
+
+                    override fun getHomePageTitle(): Optional<String> {
+                        return Optional.empty()
+                    }
+
+                    override fun isImagePrefixEnabled(): Boolean {
+                        return false
+                    }
+
+                    override fun notImplementedYet(node: Block?) {
+                        TODO("Not yet implemented")
+                    }
+                })
+
+                root.accept(visitor)
+
+                return visitor.toString().trimEnd()
+
             }
         }
         catch( e:Exception) {

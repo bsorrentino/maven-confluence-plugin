@@ -1,4 +1,4 @@
-package org.bsc.markdown.commonmark;
+package org.bsc.markdown.flexmark;
 
 import lombok.Data;
 import lombok.val;
