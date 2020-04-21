@@ -133,16 +133,27 @@ _Italic text_
 ### table
 
 ```
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+Colons can be used to align columns.
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+There must be at least 3 dashes separating each header cell.
+The outer pipes (|) are optional, and you don't need to make the 
+raw Markdown line up prettily. You can also use inline Markdown.
+
+Markdown | Less | Pretty
+--- | --- | ---
+*Still* | `renders` | **nicely**
+1 | 2 | 3
 ```
 
-## InlineCode with macro syntax
+## Notice Block Syntax 
 
-### Imbricated info
+### Info
 
 <pre><![CDATA[
 > **info:** About me
@@ -163,8 +174,7 @@ _Italic text_
 
 ]]></pre>
 
-
-### tip without imbrication
+### Tip without imbrication
 
 <pre><![CDATA[
 > **tip:** About you
@@ -176,7 +186,7 @@ _Italic text_
 ]]></pre>
 
 
-### warning with complex content
+### Warning with complex content
 
 <pre><![CDATA[
 > **warning:** About him
