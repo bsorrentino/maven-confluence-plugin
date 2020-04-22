@@ -15,7 +15,12 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 @MetaInfServices(MarkdownProcessor.class)
-public class MarkdownCommonmarkProcessorImpl implements MarkdownProcessor {
+public class CommonmarkMarkdownProcessorImpl implements MarkdownProcessor {
+
+    @Override
+    public String getName() {
+        return "commonmark";
+    }
 
     /**
      * @param content

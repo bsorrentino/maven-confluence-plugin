@@ -10,6 +10,13 @@ import java.util.Optional;
 public interface MarkdownProcessor {
 
     /**
+     * markdown processor identifier used to choose which procerror use at run-time
+     *
+     * @return identifier
+     */
+    String getName();
+
+    /**
      * use alternative version below
      *
      * @param site

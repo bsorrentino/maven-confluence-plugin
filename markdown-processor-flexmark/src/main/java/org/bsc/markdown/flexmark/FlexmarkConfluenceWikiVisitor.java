@@ -6,7 +6,7 @@ import com.vladsch.flexmark.util.data.DataHolder;
 /**
  *
  */
-public class ConfluenceWikiVisitor {
+public class FlexmarkConfluenceWikiVisitor {
 
     final static DataHolder OPTIONS() {
 

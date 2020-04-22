@@ -11,8 +11,12 @@ import java.io.IOException;
 import java.util.Optional;
 
 @MetaInfServices(MarkdownProcessor.class)
-public class MarkDownFlexmarkProcessorImpl implements MarkdownProcessor{
+public class FlexmarkMarkDownProcessorImpl implements MarkdownProcessor {
 
+    @Override
+    public String getName() {
+        return "flexmark";
+    }
 
     /**
      *
@@ -28,7 +32,7 @@ public class MarkDownFlexmarkProcessorImpl implements MarkdownProcessor{
             final String homePageTitle) throws IOException {
 
 
-        final Parser parser = Parser.builder(ConfluenceWikiVisitor.OPTIONS()).build();
+        final Parser parser = Parser.builder(FlexmarkConfluenceWikiVisitor.OPTIONS()).build();
 
         final Document doc = parser.parse( content );
 

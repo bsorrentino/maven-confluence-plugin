@@ -5,16 +5,13 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.FileExtension;
-import org.bsc.markdown.MarkdownProcessor;
+import org.bsc.markdown.MarkdownProcessorProvider;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.Optional.ofNullable;
 import static org.bsc.confluence.FileExtension.*;
@@ -26,14 +23,15 @@ public class SiteProcessor {
         java.io.InputStream inputStream;
         Storage.Representation type;
     }
-    
+
     /**
-     * 
+     *
      * @param uri
-     * @param onSuccess
+     * @param callback
+     * @param <T>
      * @return
      */
-    public static <T> T processUri( 
+    public static <T> T processUri(
             final java.net.URI uri, 
             java.util.function.BiFunction<Optional<Exception>,Optional<java.io.InputStream>, T> callback) 
     {
@@ -249,15 +247,7 @@ public class SiteProcessor {
             final java.io.InputStream content,
             final String homePageTitle) throws IOException {
 
-        final ServiceLoader<MarkdownProcessor> loader = ServiceLoader.load(MarkdownProcessor.class);
-
-        final Stream<MarkdownProcessor> processors = StreamSupport.stream( loader.spliterator(), false );
-
-        final Optional<MarkdownProcessor> processor = processors.findFirst();
-
-        return processor
-                .orElseThrow( () -> new IllegalStateException( "Markdown processor not found!") )
-                .processMarkdown( site, child, page, content, homePageTitle );
+        return MarkdownProcessorProvider.instance.Load().processMarkdown( site, child, page, content, homePageTitle );
     }
 
 }

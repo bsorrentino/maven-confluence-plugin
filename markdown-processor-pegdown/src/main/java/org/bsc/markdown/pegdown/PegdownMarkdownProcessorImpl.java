@@ -15,8 +15,12 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 @MetaInfServices(MarkdownProcessor.class)
-public class MarkdownPegdownProcessorImpl implements MarkdownProcessor{
+public class PegdownMarkdownProcessorImpl implements MarkdownProcessor{
 
+    @Override
+    public String getName() {
+        return "pegdown";
+    }
 
     /**
      *
