@@ -1,8 +1,8 @@
-package org.bsc.maven.confluence.plugin;
+package org.bsc.maven.reporting.plugin;
 
 import static org.bsc.confluence.ConfluenceUtils.decode;
-import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createAnchor;
-import static org.bsc.maven.confluence.plugin.ConfluenceWikiWriter.createLinkToAnchor;
+import static org.bsc.maven.reporting.plugin.ConfluenceWikiWriter.createAnchor;
+import static org.bsc.maven.reporting.plugin.ConfluenceWikiWriter.createLinkToAnchor;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
 
-    class Goal {
+    public class Goal {
 
         public final MojoDescriptor descriptor;
 

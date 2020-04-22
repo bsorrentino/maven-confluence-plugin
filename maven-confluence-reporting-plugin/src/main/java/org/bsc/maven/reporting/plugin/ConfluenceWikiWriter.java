@@ -1,4 +1,4 @@
-package org.bsc.maven.confluence.plugin;
+package org.bsc.maven.reporting.plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;

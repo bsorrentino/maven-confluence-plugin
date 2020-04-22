@@ -1,4 +1,4 @@
-package org.bsc.maven.confluence.plugin;
+package org.bsc.maven.reporting.renderer;
 
 import java.util.ArrayList;
 import java.util.Collection;
