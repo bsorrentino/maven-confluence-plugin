@@ -4,13 +4,15 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.model.Site;
 import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.MarkdownProcessor;
-import org.bsc.markdown.commonmark.ConfluenceWikiVisitor;
 import org.commonmark.node.Block;
 import org.commonmark.node.Node;
 import org.kohsuke.MetaInfServices;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 
 @MetaInfServices(MarkdownProcessor.class)
 public class MarkdownCommonmarkProcessorImpl implements MarkdownProcessor {
@@ -27,29 +29,32 @@ public class MarkdownCommonmarkProcessorImpl implements MarkdownProcessor {
             final String content,
             final String homePageTitle) throws IOException {
 
-        final Node node =  ConfluenceWikiVisitor.parser().parse(content);
+        final Node node =  CommonmarkConfluenceWikiVisitor.parser().parse(content);
 
-        final ConfluenceWikiVisitor visitor = new ConfluenceWikiVisitor(new MarkdownParserContext<Block>() {
+        final CommonmarkConfluenceWikiVisitor visitor = new CommonmarkConfluenceWikiVisitor(new MarkdownParserContext<Block>() {
 
             @Override
             public Optional<Site> getSite() {
-                return Optional.empty();
+                return ofNullable(site);
             }
 
             @Override
             public void notImplementedYet(Block node) {
-
+                throw new UnsupportedOperationException(format("Node [%s] not supported yet.", node.getClass().getSimpleName() ));
             }
 
             @Override
             public Optional<String> getHomePageTitle() {
-                return Optional.empty();
+                return ofNullable(homePageTitle);
             }
 
             @Override
             public boolean isImagePrefixEnabled() {
-                return false;
+                if( child.isIgnoreVariables() ) return false;
+
+                return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
             }
+
         });
 
         node.accept(visitor);

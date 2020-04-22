@@ -2,6 +2,7 @@ package org.bsc.markdown.pegdown;
 
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.model.Site;
+import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.MarkdownProcessor;
 import org.kohsuke.MetaInfServices;
 import org.pegdown.PegDownProcessor;
@@ -14,7 +15,7 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 @MetaInfServices(MarkdownProcessor.class)
-public class MarkDownPegdownProcessorImpl implements MarkdownProcessor{
+public class MarkdownPegdownProcessorImpl implements MarkdownProcessor{
 
 
     /**
@@ -34,12 +35,11 @@ public class MarkDownPegdownProcessorImpl implements MarkdownProcessor{
             final String contents,
             final String homePageTitle) throws IOException {
 
-        final PegDownProcessor p = new PegDownProcessor(ConfluenceWikiVisitor.extensions());
+        final PegDownProcessor p = new PegDownProcessor(PegdownConfluenceWikiVisitor.extensions());
 
         final RootNode root = p.parseMarkdown(contents.toCharArray());
 
-        final ConfluenceWikiVisitor ser = new ConfluenceWikiVisitor() {
-
+        final PegdownConfluenceWikiVisitor ser = new PegdownConfluenceWikiVisitor(new MarkdownParserContext<Node>() {
 
             @Override
             public Optional<Site> getSite() {
@@ -49,7 +49,7 @@ public class MarkDownPegdownProcessorImpl implements MarkdownProcessor{
             @Override
             public void notImplementedYet(Node node) {
 
-                final int lc[] = ConfluenceWikiVisitor.lineAndColFromNode(new String(contents), node);
+                final int lc[] = PegdownConfluenceWikiVisitor.lineAndColFromNode(new String(contents), node);
                 throw new UnsupportedOperationException(format("Node [%s] not supported yet. line=[%d] col=[%d]",
                         node.getClass().getSimpleName(), lc[0], lc[1]));
             }
@@ -66,7 +66,7 @@ public class MarkDownPegdownProcessorImpl implements MarkdownProcessor{
                 return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
             }
 
-        };
+        });
 
         root.accept(ser);
 

@@ -3,7 +3,7 @@ package org.bsc.makdown.commonmark
 import org.apache.commons.io.IOUtils
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.MarkdownParserContext
-import org.bsc.markdown.commonmark.ConfluenceWikiVisitor
+import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
 import org.commonmark.node.Block
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -41,9 +41,9 @@ class NoticeBlockTest {
 
     private fun parse():String? = try {
         this.javaClass.classLoader.getResourceAsStream( "cheatsheet/noticeblock.md").use {
-            val root = ConfluenceWikiVisitor.parser().parse(IOUtils.toString(it))
+            val root = CommonmarkConfluenceWikiVisitor.parser().parse(IOUtils.toString(it))
 
-            val visitor = ConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
+            val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
                 override fun getSite(): Optional<Site> {
                     return Optional.empty()
                 }

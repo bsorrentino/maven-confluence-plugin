@@ -19,7 +19,7 @@ import java.util.function.Function;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public class ConfluenceWikiVisitor extends AbstractVisitor  {
+public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
     public static class Parser  {
 
@@ -49,7 +49,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor  {
     }
 */
 
-    public ConfluenceWikiVisitor( MarkdownParserContext<Block> parseContext ) {
+    public CommonmarkConfluenceWikiVisitor(MarkdownParserContext<Block> parseContext ) {
         this.parseContext = parseContext;
 
         bufferStack.push(  new StringBuilder( 500 * 1024 ) ) ;
@@ -406,7 +406,7 @@ public class ConfluenceWikiVisitor extends AbstractVisitor  {
                     if( map.isPresent() ) {
                         buffer().append( map.get().apply( node ) );
                     }
-                    node.accept(ConfluenceWikiVisitor.this);
+                    node.accept(CommonmarkConfluenceWikiVisitor.this);
                 }
             }
             captureOutput.ifPresent( consumer -> {

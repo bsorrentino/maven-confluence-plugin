@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 
+import org.bsc.confluence.model.Site;
+import org.bsc.markdown.MarkdownParserContext;
 import org.junit.Test;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.AnchorLinkNode;
@@ -174,7 +176,7 @@ public abstract class PegdownParse {
     @Test
     public void parseTest() throws IOException {
 
-        final PegDownProcessor p = new PegDownProcessor(ConfluenceWikiVisitor.extensions() );
+        final PegDownProcessor p = new PegDownProcessor(PegdownConfluenceWikiVisitor.extensions() );
 
 
         final RootNode root = p.parseMarkdown(loadResource());
@@ -189,11 +191,15 @@ public abstract class PegdownParse {
      */
     public String serializeToString() throws IOException {
 
-        final PegDownProcessor p = new PegDownProcessor(ConfluenceWikiVisitor.extensions());
+        final PegDownProcessor p = new PegDownProcessor(PegdownConfluenceWikiVisitor.extensions());
 
         final RootNode root = p.parseMarkdown(loadResource());
 
-        ConfluenceWikiVisitor ser =  new ConfluenceWikiVisitor() {
+        PegdownConfluenceWikiVisitor ser =  new PegdownConfluenceWikiVisitor(new MarkdownParserContext<Node>() {
+            @Override
+            public Optional<Site> getSite() {
+                return Optional.empty();
+            }
 
             @Override
             public void notImplementedYet(Node node) {
@@ -205,7 +211,12 @@ public abstract class PegdownParse {
                 return Optional.of("Parent Page Title");
             }
 
-        };
+            @Override
+            public boolean isImagePrefixEnabled() {
+                return true;
+            }
+
+        });
 
         root.accept( ser );
 

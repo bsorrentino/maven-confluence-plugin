@@ -28,7 +28,9 @@ import static org.bsc.markdown.MarkdownVisitorHelper.processImageUrl;
  *
  * @author bsorrentino
  */
-public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserContext<org.pegdown.ast.Node> {
+public class PegdownConfluenceWikiVisitor implements Visitor {
+
+    private final MarkdownParserContext<org.pegdown.ast.Node> parseContext;
 
     //list level
     private int listLevel = 0;
@@ -97,40 +99,14 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
 
         return new int[] {line,col};
     }
-  
+
+    public PegdownConfluenceWikiVisitor(MarkdownParserContext<Node> parseContext) {
+        this.parseContext = parseContext;
+    }
 
     @Override
     public String toString() {
         return _buffer.toString();
-    }
-
-    /**
-     * 
-     * @return
-     */
-    @Override
-    public Optional<Site> getSite() {
-        return Optional.empty();
-    }
-    
-    /**
-     * indicates whether the prefix ${page.title} should be added or not
-     * 
-     * @return
-     */
-    @Override
-    public boolean isImagePrefixEnabled() {
-        return true;
-    }
-    
-    /**
-     * The home page title useful to manage #RefLinkNode
-     *
-     * @return home page title. nullable
-     */
-    @Override
-    public Optional<String> getHomePageTitle() {
-        return Optional.empty();
     }
 
     protected StringBuilder bufferVisit( java.util.function.Consumer<Void> closure  ) {
@@ -360,7 +336,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
         String url = eln.url;
         if( !isURL(url) && FileExtension.MARKDOWN.isExentionOf(url)) {
 
-            final Optional<Site> site = getSite();
+            final Optional<Site> site = parseContext.getSite();
             if( site.isPresent() ) {
 
                 String _uri1 = url;
@@ -370,7 +346,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
                 
                 if( page.isPresent() ) {
 
-                    final Optional<String> parentPageTitle = getHomePageTitle();
+                    final Optional<String> parentPageTitle = parseContext.getHomePageTitle();
                     
                     if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
                         url = String.format( "%s - %s", parentPageTitle.get(), page.get().getName() );
@@ -481,7 +457,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
         
         final String titlePart = isNotBlank(ein.title) ? String.format("title=\"%s\"", ein.title) : "";
         
-        final String url = processImageUrl(ein.url, this );
+        final String url = processImageUrl(ein.url, parseContext );
         
         _buffer.append( format( "!%s|%s!", url, altText, titlePart));
 
@@ -511,7 +487,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
             title = referenceNode.getTitle();
         }
 
-        final String url = processImageUrl(ref_url, this);
+        final String url = processImageUrl(ref_url, parseContext);
 
         final String titlePart = isNotBlank(title) ? format("|title=\"%s\"", title) : "";
         
@@ -582,7 +558,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
 
     @Override
     public void visit(TableCaptionNode tcn) {
-        notImplementedYet(tcn);
+        parseContext.notImplementedYet(tcn);
     }
 
     @Override
@@ -616,7 +592,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
 
         // If URL is a relative URL, we will create a link to the project
         if( !isURL(url) ) {
-            final Optional<String> parentPageTitle = getHomePageTitle();
+            final Optional<String> parentPageTitle = parseContext.getHomePageTitle();
             
             // not a valid URL (hence a relative link)
             if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
@@ -633,7 +609,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
 
     @Override
     public void visit(TableColumnNode tcn) {
-        notImplementedYet(tcn);
+        parseContext.notImplementedYet(tcn);
     }
 
     @Override
@@ -654,34 +630,34 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
 
     @Override
     public void visit(AbbreviationNode an) {
-        notImplementedYet(an);
+        parseContext.notImplementedYet(an);
     }
 
 
     @Override
     public void visit(AutoLinkNode aln) {
-        notImplementedYet(aln);
+        parseContext.notImplementedYet(aln);
     }
 
 
     @Override
     public void visit(DefinitionListNode dln) {
-        notImplementedYet(dln);
+        parseContext.notImplementedYet(dln);
     }
 
     @Override
     public void visit(DefinitionNode dn) {
-        notImplementedYet(dn);
+        parseContext.notImplementedYet(dn);
     }
 
     @Override
     public void visit(DefinitionTermNode dtn) {
-        notImplementedYet(dtn);
+        parseContext.notImplementedYet(dtn);
     }
 
     @Override
     public void visit(MailLinkNode mln) {
-        notImplementedYet(mln);
+        parseContext.notImplementedYet(mln);
     }
 
     @Override
@@ -722,7 +698,7 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
 
     @Override
     public void visit(QuotedNode qn) {
-        notImplementedYet(qn);
+        parseContext.notImplementedYet(qn);
     }
 
     @Override
@@ -752,18 +728,18 @@ public abstract class ConfluenceWikiVisitor implements Visitor, MarkdownParserCo
                 _buffer.append("&hellip;");
                 break;
             default:
-                notImplementedYet(sn);
+                parseContext.notImplementedYet(sn);
         }
     }
 
     @Override
     public void visit(WikiLinkNode wln) {
-        notImplementedYet(wln);
+        parseContext.notImplementedYet(wln);
     }
 
     @Override
     public void visit(Node node) {
-        notImplementedYet(node);
+        parseContext.notImplementedYet(node);
     }
 
 }
