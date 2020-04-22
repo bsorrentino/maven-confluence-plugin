@@ -15,15 +15,17 @@ public final class MarkdownProcessorProvider {
 
     public static final MarkdownProcessorProvider instance = new MarkdownProcessorProvider();
 
-    private Optional<String> processorName = Optional.empty();
+    private MarkdownProcessorInfo info = null;
 
-    public void setProcessorName(String processorName) {
-        this.processorName = ofNullable(processorName);
+    public void setInfo(MarkdownProcessorInfo info) {
+        this.info = info;
     }
 
-    public String getProcessorName() {
-        return processorName.orElse("");
+    public MarkdownProcessorInfo getInfo() {
+        return info;
     }
+
+    public Optional<MarkdownProcessorInfo> optInfo() { return ofNullable(info);  }
 
     private MarkdownProcessorProvider() { }
 
@@ -33,7 +35,7 @@ public final class MarkdownProcessorProvider {
      */
     public MarkdownProcessor Load() {
 
-        final String name = processorName.orElseThrow( () -> new IllegalStateException( "processorName doesn't set!" ));
+        final String name = optInfo().flatMap( info -> info.optName() ).orElseThrow( () -> new IllegalStateException( "processor's name doesn't set!" ));
 
         final ServiceLoader<MarkdownProcessor> loader = ServiceLoader.load(MarkdownProcessor.class);
 

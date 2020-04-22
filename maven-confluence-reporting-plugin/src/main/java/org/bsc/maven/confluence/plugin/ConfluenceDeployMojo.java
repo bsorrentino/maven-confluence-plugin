@@ -39,6 +39,8 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.model.Site;
 import org.bsc.functional.Tuple2;
+import org.bsc.markdown.MarkdownProcessorInfo;
+import org.bsc.markdown.MarkdownProcessorProvider;
 import org.bsc.maven.reporting.plugin.PluginConfluenceDocGenerator;
 import org.bsc.maven.reporting.renderer.*;
 import org.bsc.maven.reporting.sink.ConfluenceSink;
@@ -53,7 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -62,6 +63,7 @@ import static java.lang.String.format;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.bsc.confluence.model.SitePrinter.print;
 import static org.bsc.confluence.model.SiteProcessor.processPageUri;
+
 /**
  *
  * Generate Project's documentation in confluence wiki format and deploy it
@@ -87,7 +89,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
 	@Parameter(defaultValue = "false")
 	protected boolean skip = false;
-
     /**
      * Local Repository.
      *
@@ -95,10 +96,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     protected ArtifactRepository localRepository;
     /**
+     *
      */
     @Component
     protected ArtifactMetadataSource artifactMetadataSource;
     /**
+     *
      */
     @Component
     private ArtifactCollector collector;
@@ -119,21 +122,18 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Component
     protected I18N i18n;
-
     /**
      *
      */
     //@Parameter(property = "project.reporting.outputDirectory")
     @Parameter( property="project.build.directory/generated-site/confluence",required=true )
     protected java.io.File outputDirectory;
-
     /**
      * Maven SCM Manager.
      *
      */
     @Component(role=ScmManager.class)
     protected ScmManager scmManager;
-
     /**
      * The directory name to checkout right after the scm url
      *
@@ -158,7 +158,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue = "${project.scm.url}")
     private String webAccessUrl;
-
     /**
      * Set to true for enabling substitution of ${gitlog.jiraIssues} build-in variable
      *
@@ -166,7 +165,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue = "false")
     private Boolean gitLogJiraIssuesEnable;
-
     /**
      * Parse git log commits since last occurrence of specified tag name
      *
@@ -174,7 +172,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue = "")
     private String gitLogSinceTagName;
-
     /**
      * Parse git log commits until first occurrence of specified tag name
      *
@@ -182,7 +179,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue = "")
     private String gitLogUntilTagName;
-
     /**
      * If specified, plugin will try to calculate and replace actual gitLogSinceTagName value
      * based on current project version ${project.version} and provided rule.
@@ -198,8 +194,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue="NO_RULE")
     private CalculateRuleForSinceTagName gitLogCalculateRuleForSinceTagName;
-
-
     /**
      * Specify JIRA projects key to extract issues from gitlog
      * By default it will try extract all strings that match pattern (A-Za-z+)-\d+
@@ -208,7 +202,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue="")
     private List<String> gitLogJiraProjectKeyList;
-
     /**
      * The pattern to filter out tagName. Can be used for filter only version tags.
      *
@@ -216,7 +209,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue="")
     private String gitLogTagNamesPattern;
-
     /**
      * Enable grouping by versions tag
      *
@@ -224,7 +216,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue="false")
     private Boolean gitLogGroupByVersions;
-
     /**
      * Overrides system locale used for content generation
      *
@@ -232,41 +223,52 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter
     private String locale;
+    /**
+     * Markdown processor Info<br>
+     *
+     * set the name of processor to use (default is 'pegdown')
+     *
+     * @since 6.8
+     */
+    @Parameter
+    private MarkdownProcessorInfo markdownProcessorInfo;
 
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-    	
-    	if( getLog().isDebugEnabled())
-    		System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
-    	
-		if( skip ) {
-	        getLog().info("plugin execution skipped");
-	        return;
-		}
+    /**
+     *
+     */
+    private void initDeployStateManager() {
+        if( deployState == null ) return;
 
-		if( Objects.nonNull(deployState)) {
+        if( !deployState.getOutdir().isPresent() ) {
+            deployState.setOutdir( new java.io.File(getProject().getBuild().getDirectory()) );
+        }
 
-            if( !deployState.getOutdir().isPresent() ) {
-                deployState.setOutdir( new java.io.File(getProject().getBuild().getDirectory()) );             
-            }
+        deployStateManager = DeployStateManager.load( getEndPoint(), deployState );
 
-            deployStateManager = DeployStateManager.load( getEndPoint(), deployState );
+    }
 
-		}
+    /**
+     *
+     */
+    private void initMarkdownProcessorInfo() {
+        MarkdownProcessorProvider.instance.setInfo( ( markdownProcessorInfo != null )  ?
+                markdownProcessorInfo :
+                new MarkdownProcessorInfo("pegdown"));
 
-        final Locale parsedLocale = !StringUtils.isEmpty(locale) ? new Locale(locale) : Locale.getDefault();
+    }
 
-        getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
-
-        loadUserInfoFromSettings();
-
+    /**
+     *
+     * @return site
+     */
+    private Site loadSite() {
         Site site = super.createSiteFromModel(getSiteModelVariables());
 
         if( site != null ) {
-            
+
             site.setBasedir(getSiteDescriptor().toPath());
-            
+
             if( site.getHome().getName()!=null ) {
                 setPageTitle( site.getHome().getName() );
             }
@@ -291,14 +293,41 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             }
 
         }
-        
+
         print( site, System.out );
 
+        return site;
+    }
 
-        super.initTemplateProperties( site );
+    /**
+     *
+     * @throws MojoExecutionException
+     * @throws MojoFailureException
+     */
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+    	
+    	if( getLog().isDebugEnabled())
+    		System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
+    	
+		if( skip ) {
+	        getLog().info("plugin execution skipped");
+	        return;
+		}
 
+        getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
+
+		initDeployStateManager();
+        initMarkdownProcessorInfo();
+
+        loadUserInfoFromSettings();
+
+        final Site site = loadSite();
+
+        initTemplateProperties( site );
 
         try {
+            final Locale parsedLocale = !StringUtils.isEmpty(locale) ? new Locale(locale) : Locale.getDefault();
 
             if ( project.getPackaging().equals( "maven-plugin" ) )
            /////////////////////////////////////////////////////////////////

@@ -80,7 +80,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Parameter(property = "confluence.password", required = false)
     private String password;
-
     /**
      * @parameter expression="${settings}"
      * @readonly
@@ -88,7 +87,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Parameter(readonly = true, property = "settings")
     protected org.apache.maven.settings.Settings mavenSettings;
-
     /**
      * Issue 39
      *
@@ -99,7 +97,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Parameter(property = "confluence.serverId")
     private String serverId;
-
     /**
      * Issue 39
      *
@@ -109,7 +106,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Component(role = org.sonatype.plexus.components.sec.dispatcher.SecDispatcher.class, hint = "default")
     private SecDispatcher securityDispatcher;
-
     /**
      * if using a https url, configure if the plugin accepts every certifactes or
      * respects hostnameVerifierClass and trustManagerClass (if set).
@@ -129,7 +125,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Parameter
     protected SSLCertificateInfo sslCertificate = new SSLCertificateInfo();
-
     /**
      *
      * Indicates whether the build will continue even if there are clean errors.     
@@ -138,7 +133,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Parameter(property = "confluence.failOnError",defaultValue = "true")
     private boolean failOnError = true;
-
     /**
      * ScrollVersions addon configuration. Below the template
      * 
@@ -154,7 +148,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Parameter( name = "scrollVersions")
     private ScrollVersionsConfiguration scrollVersions;
-    
     /**
      * 
      * @return
@@ -162,7 +155,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     public Optional<ScrollVersionsConfiguration> getScrollVersions() {
         return Optional.ofNullable(scrollVersions);
     }
-
     /**
      * 
      * Indicates whether the build will continue even if there are clean errors.     

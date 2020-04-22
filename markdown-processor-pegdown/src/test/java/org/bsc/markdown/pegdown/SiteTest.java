@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
+import org.bsc.markdown.MarkdownProcessorInfo;
 import org.bsc.markdown.MarkdownProcessorProvider;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
@@ -75,7 +76,7 @@ public class SiteTest implements SiteFactory.Model {
 
     @BeforeClass
     public static void setMarkdownPorcessorProvider() {
-        MarkdownProcessorProvider.instance.setProcessorName("pegdown");
+        MarkdownProcessorProvider.instance.setInfo( new MarkdownProcessorInfo("pegdown") );
     }
     @Before
     public void loadSite() {
