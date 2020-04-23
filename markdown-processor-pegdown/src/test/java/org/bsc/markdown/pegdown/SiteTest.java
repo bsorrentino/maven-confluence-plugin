@@ -2,6 +2,7 @@ package org.bsc.markdown.pegdown;
 
 import lombok.Data;
 import lombok.val;
+import lombok.var;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
@@ -102,9 +103,9 @@ public class SiteTest implements SiteFactory.Model {
         val parentPageTitle = "Test";
         val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        val inputStream = processMarkdown(site, site.getHome(), Optional.empty(), stream, parentPageTitle);
-        assertThat( inputStream, IsNull.notNullValue());
-        val converted = IOUtils.toString(inputStream).split("\n+");
+        val content = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        assertThat( content, IsNull.notNullValue());
+        val converted = content.split("\n+");
         int i = 2;
 
 
@@ -126,9 +127,9 @@ public class SiteTest implements SiteFactory.Model {
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.of(page), stream, parentPageTitle);
-        assertThat( inputStream, IsNull.notNullValue());
-        final String converted[] = IOUtils.toString(inputStream).split("\n+");
+        val content = processMarkdown(site, site.getHome(), Optional.of(page), IOUtils.toString(stream), parentPageTitle);
+        assertThat( content, IsNull.notNullValue());
+        final String converted[] = content.split("\n+");
 
         int i = 2;
         assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
@@ -146,9 +147,8 @@ public class SiteTest implements SiteFactory.Model {
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.empty(), stream, parentPageTitle);
-        assertThat( inputStream, IsNull.notNullValue());
-        final String converted = IOUtils.toString(inputStream);
+        val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        assertThat( converted, IsNull.notNullValue());
 
         assertThat("All forms of HRules should be supported", converted, containsString("----\n1\n----\n2\n----\n3\n----\n4\n----"));
         /* only when Extensions.SMARTS is activated
@@ -166,9 +166,8 @@ public class SiteTest implements SiteFactory.Model {
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertThat( stream, IsNull.notNullValue());
-        final InputStream inputStream = processMarkdown(site, site.getHome(), Optional.empty(), stream, parentPageTitle);
-        assertThat( inputStream, IsNull.notNullValue());
-        final String converted = IOUtils.toString(inputStream);
+        val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        assertThat( converted, IsNull.notNullValue());
 
         assertThat(converted, containsString("{info:title=About me}\n"));
         assertThat("Should not generate unneeded param 'title'", converted, not(containsString("{note:title=}\n")));

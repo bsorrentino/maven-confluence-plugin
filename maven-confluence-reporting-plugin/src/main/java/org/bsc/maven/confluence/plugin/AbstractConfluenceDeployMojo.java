@@ -6,6 +6,7 @@ package org.bsc.maven.confluence.plugin;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import lombok.val;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -275,6 +276,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             }
 
             try {
+
                 final MiniTemplator t = new MiniTemplator.Builder().setSkipUndefinedVars(true)
                         .build(content.get().getInputStream(), getCharset());
 
