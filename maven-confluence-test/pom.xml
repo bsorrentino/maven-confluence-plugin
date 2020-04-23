@@ -367,9 +367,9 @@
                                 <wikiFilesExt>.confluence</wikiFilesExt>
                                 <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
                                 <failOnError>true</failOnError>
-                                <markdownProcessorInfo>
+                                <markdownProcessor>
                                     <name>commonmark</name>
-                                </markdownProcessorInfo>
+                                </markdownProcessor>
                             </configuration>
                         </execution>
                         <!--

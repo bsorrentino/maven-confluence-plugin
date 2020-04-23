@@ -230,7 +230,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      *
      * @since 6.8
      */
-    @Parameter
+    @Parameter( alias="markdownProcessor" )
     private MarkdownProcessorInfo markdownProcessorInfo;
 
 
