@@ -155,13 +155,13 @@ class CheatSheetTest {
     fun `parse Horizontal rule`() = Assertions.assertEquals( parse( "horizontalrule"), """
         Three or more...
         
-        ---
+        ----
         Hyphens
         
-        ---
+        ----
         Asterisks
         
-        ---
+        ----
         Underscores
     """.trimIndent())
 

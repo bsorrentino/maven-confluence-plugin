@@ -174,7 +174,7 @@ Markdown | Less | Pretty
 
 ]]></pre>
 
-### Tip without imbrication
+### Tip
 
 <pre><![CDATA[
 > **tip:** About you

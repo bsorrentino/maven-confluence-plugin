@@ -233,7 +233,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
     @Override
     public void visit(ThematicBreak node) {
-        processChildren(node).pre("---").process();
+        processChildren(node).pre("----").process();
     }
 
     //@Custom
