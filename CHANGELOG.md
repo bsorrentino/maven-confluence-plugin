@@ -2,6 +2,36 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**move to next develop version**
+
+
+[e973e49e077ef63](https://github.com/bsorrentino/maven-confluence-plugin/commit/e973e49e077ef63) bsorrentino *2020-04-23 21:40:20*
+
+**update changelog**
+
+
+[0dd3fe25a0a777d](https://github.com/bsorrentino/maven-confluence-plugin/commit/0dd3fe25a0a777d) bsorrentino *2020-03-11 20:15:50*
+
+
+###  [#213](https://github.com/bsorrentino/maven-confluence-plugin/issues/213) Problem with big ID of a parent page    *bug*  
+
+**issue #213 - move from int to long**
+
+
+[5a4b965da3fbfdb](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a4b965da3fbfdb) bsorrentino *2020-04-23 21:39:50*
+
+
+###  [#214](https://github.com/bsorrentino/maven-confluence-plugin/pull/214) Bump jackson-databind from 2.9.10.3 to 2.9.10.4 in /maven-confluence-core    *dependencies*  
+
+**fix security issue PR #214**
+
+
+[5be4a8e69c81e92](https://github.com/bsorrentino/maven-confluence-plugin/commit/5be4a8e69c81e92) bsorrentino *2020-04-23 21:43:46*
+
+
 ## v6.7.2
 ### Generic changes
 
@@ -141,21 +171,6 @@
 
 
 [ea290121703174d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ea290121703174d) Nicola Lagnena *2019-10-05 08:27:47*
-
-**update doc**
-
-
-[c79afa3f3d845dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/c79afa3f3d845dc) bsorrentino *2019-08-02 16:14:38*
-
-**update version to next release**
-
-
-[ccb00a101a70b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccb00a101a70b17) bsorrentino *2019-08-02 15:59:24*
-
-**update changelog**
-
-
-[06cd6a2ea7b179c](https://github.com/bsorrentino/maven-confluence-plugin/commit/06cd6a2ea7b179c) bsorrentino *2019-08-02 15:57:46*
 
 **update changelog**
 
@@ -732,6 +747,21 @@
 
 ## v6.4
 ### Generic changes
+
+**update doc**
+
+
+[c79afa3f3d845dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/c79afa3f3d845dc) bsorrentino *2019-08-02 16:14:38*
+
+**update version to next release**
+
+
+[ccb00a101a70b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccb00a101a70b17) bsorrentino *2019-08-02 15:59:24*
+
+**update changelog**
+
+
+[06cd6a2ea7b179c](https://github.com/bsorrentino/maven-confluence-plugin/commit/06cd6a2ea7b179c) bsorrentino *2019-08-02 15:57:46*
 
 **update readme**
 
