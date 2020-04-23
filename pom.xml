@@ -25,7 +25,7 @@
         <module>maven-confluence-core</module>
         <module>maven-confluence-reporting-plugin</module>
         <module>maven-confluence-test</module>
-        <module>maven-confluence-test/plugin-test</module>
+        <module>maven-confluence-plugin-test</module>
         <module>maven-confluence-itest</module>
         <module>site-processor-freemarker</module>
         <module>scrollversions-addon</module>
