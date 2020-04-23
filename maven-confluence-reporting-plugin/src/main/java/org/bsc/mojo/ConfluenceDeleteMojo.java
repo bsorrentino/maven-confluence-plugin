@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.maven.confluence.plugin;
+package org.bsc.mojo;
 
 import lombok.val;
 import org.apache.maven.plugin.MojoExecutionException;

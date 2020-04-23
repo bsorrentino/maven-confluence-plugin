@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting.renderer;
+package org.bsc.reporting.renderer;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
-import org.bsc.maven.reporting.sink.ConfluenceSink;
+import org.bsc.reporting.sink.ConfluenceSink;
 
 /**
  * Scm renderer class

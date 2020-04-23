@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting.renderer;
+package org.bsc.reporting.renderer;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

@@ -1,4 +1,4 @@
-package org.bsc.maven.confluence.plugin;
+package org.bsc.mojo;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
@@ -41,9 +41,9 @@ import org.bsc.confluence.model.Site;
 import org.bsc.functional.Tuple2;
 import org.bsc.markdown.MarkdownProcessorInfo;
 import org.bsc.markdown.MarkdownProcessorProvider;
-import org.bsc.maven.reporting.plugin.PluginConfluenceDocGenerator;
-import org.bsc.maven.reporting.renderer.*;
-import org.bsc.maven.reporting.sink.ConfluenceSink;
+import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
+import org.bsc.reporting.renderer.*;
+import org.bsc.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.i18n.I18N;
 

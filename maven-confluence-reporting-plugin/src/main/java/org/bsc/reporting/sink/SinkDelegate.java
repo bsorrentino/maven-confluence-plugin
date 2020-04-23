@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting.sink;
+package org.bsc.reporting.sink;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

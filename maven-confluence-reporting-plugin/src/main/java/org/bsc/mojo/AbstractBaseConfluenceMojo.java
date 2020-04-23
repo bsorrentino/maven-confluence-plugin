@@ -1,4 +1,4 @@
-package org.bsc.maven.confluence.plugin;
+package org.bsc.mojo;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

@@ -2,11 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.bsc.maven.confluence.plugin;
+package org.bsc.mojo;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import lombok.val;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;

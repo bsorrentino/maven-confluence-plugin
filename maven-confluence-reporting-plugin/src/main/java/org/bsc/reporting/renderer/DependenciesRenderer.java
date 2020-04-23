@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting.renderer;
+package org.bsc.reporting.renderer;
 
 import java.util.ArrayList;
 import java.util.Collections;

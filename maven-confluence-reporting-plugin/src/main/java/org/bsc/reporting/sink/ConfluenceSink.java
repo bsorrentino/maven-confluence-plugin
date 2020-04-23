@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting.sink;
+package org.bsc.reporting.sink;
 
 import java.io.PrintWriter;
 import java.io.Writer;

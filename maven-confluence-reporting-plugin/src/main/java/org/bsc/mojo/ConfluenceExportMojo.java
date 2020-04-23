@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.bsc.maven.confluence.plugin;
+package org.bsc.mojo;
 
 import java.util.Optional;
 

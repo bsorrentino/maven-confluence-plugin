@@ -1,4 +1,4 @@
-package org.bsc.maven.confluence.plugin;
+package org.bsc.mojo;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;

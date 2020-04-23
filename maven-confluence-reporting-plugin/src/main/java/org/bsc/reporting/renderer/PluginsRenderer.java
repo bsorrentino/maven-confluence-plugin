@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.bsc.maven.reporting.renderer;
+package org.bsc.reporting.renderer;
 
 import java.util.ArrayList;
 import java.util.Collections;

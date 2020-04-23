@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting.renderer;
+package org.bsc.reporting.renderer;
 
 import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import org.apache.maven.plugin.testing.SilentLog;

@@ -1,4 +1,4 @@
-package org.bsc.maven.reporting.plugin;
+package org.bsc.reporting.plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;

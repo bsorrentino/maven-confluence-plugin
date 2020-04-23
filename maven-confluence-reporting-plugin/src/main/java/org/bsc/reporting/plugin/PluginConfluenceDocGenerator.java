@@ -1,8 +1,8 @@
-package org.bsc.maven.reporting.plugin;
+package org.bsc.reporting.plugin;
 
 import static org.bsc.confluence.ConfluenceUtils.decode;
-import static org.bsc.maven.reporting.plugin.ConfluenceWikiWriter.createAnchor;
-import static org.bsc.maven.reporting.plugin.ConfluenceWikiWriter.createLinkToAnchor;
+import static org.bsc.reporting.plugin.ConfluenceWikiWriter.createAnchor;
+import static org.bsc.reporting.plugin.ConfluenceWikiWriter.createLinkToAnchor;
 
 import java.io.File;
 import java.io.IOException;
