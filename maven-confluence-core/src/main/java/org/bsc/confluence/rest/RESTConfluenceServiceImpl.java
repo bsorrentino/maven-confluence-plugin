@@ -103,7 +103,11 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                   ;
       }
 
-    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final int parentPageId, final String title  ) {
+    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final String parentPageId, final String title  ) {
+        return jsonForCreatingPage( spaceKey, Long.valueOf(parentPageId), title);
+    }
+
+    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final long parentPageId, final String title  ) {
           return jsonForCreatingPage( spaceKey, title )
                   .add("ancestors", Json.createArrayBuilder()
                                           .add(Json.createObjectBuilder().add("id", parentPageId )))
