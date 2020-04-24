@@ -1,11 +1,11 @@
 home:
   uri: home.md
   name: "TEST ISSUE 154 - COMMONMARK"
-#  attachments:
-#    - name: dashboard.png
-#      uri: dashboard.png
-#      contentType: image/png
-#      comment: test1
+  attachments:
+    - name: image2.png
+      uri: ..//attachments/GvpDashboard2.png
+      contentType: image/png
+      comment: sample image 2
 #    - name: meal.png
 #      uri: images/meal.png
 #      contentType: image/png
@@ -13,11 +13,6 @@ home:
   children:
     - name: "blockquote"
       uri: cheatsheet/blockquote.md
-#      attachments:
-#        - name: meal.png
-#          uri: images/meal.png
-#          contentType: image/png
-#          comment: test2
     - name: "code"
       uri: cheatsheet/code.md
     - name: "emphasis"
@@ -28,6 +23,11 @@ home:
       uri: cheatsheet/horizontalrule.md
     - name: "images"
       uri: cheatsheet/images.md
+      attachments:
+        - name: image1.png
+          uri: ../attachments/GvpDashboard.png
+          contentType: image/png
+          comment: sample image 1
     - name: "inline html"
       uri: cheatsheet/inlinehtml.md
     - name: "links"

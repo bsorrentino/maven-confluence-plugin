@@ -9,7 +9,7 @@ Currently the available Markdown processors compliant with plugin are:
 1. [Pegdown](https://github.com/sirthias/pegdown)
     > This implementation is the default one. Since it has been **DEPRECATED** we encourage to plug the new **Commonmark** implementation because in the next major release pegdown will be removed
 1. [Commonmark](https://github.com/atlassian/commonmark-java)
-   > Is the new implementation available from plugin version `6.8`
+    > Is the new implementation available from plugin version `6.8`
                                                                  
 ### Configure a new Markdown Processor
 
@@ -17,7 +17,6 @@ To plug a **markdown processor** you have to declare library **as plugin's depen
 
 #### Plug `commonmark` implementation
 ```xml
-
 <plugin>
     <groupId>org.bsc.maven</groupId>
     <artifactId>confluence-reporting-maven-plugin</artifactId>
@@ -32,14 +31,13 @@ To plug a **markdown processor** you have to declare library **as plugin's depen
     </dependencies>
     <configuration>
         <wikiFilesExt>.confluence</wikiFilesExt>
-        <siteDescriptor>${basedir}/src/site/confluence/site_to_process.yml</siteDescriptor>
+        <siteDescriptor>${basedir}/src/site/confluence/site.yml</siteDescriptor>
         <failOnError>true</failOnError>
         <markdownProcessor>
             <name>commonmark</name>
         </markdownProcessor>
     </configuration>
 </plugin>
-
 ```
 
 ## Implement a new 'Markdown processor' service
@@ -53,11 +51,11 @@ Create a simple java library project maven compliant
 ### 2. Add dependency to **maven-confluence-core** module      
 
 ```xml
-    <dependency>
-        <groupId>org.bsc.maven</groupId>
-        <artifactId>maven-confluence-core</artifactId>
-        <version>${version}</version>
-    </dependency>
+<dependency>
+    <groupId>org.bsc.maven</groupId>
+    <artifactId>maven-confluence-core</artifactId>
+    <version>${version}</version>
+</dependency>
 ```
 
 ### 3. Implement the interface `org.bsc.markdown.MarkdownProcessor`       
