@@ -5,11 +5,7 @@
 	<parent>
 		<groupId>org.bsc.maven</groupId>
 		<artifactId>maven-confluence-parent</artifactId>
-<<<<<<< HEAD
 		<version>6.8-SNAPSHOT</version>
-=======
-		<version>6.7.3</version>
->>>>>>> develop
 	</parent>
 	<artifactId>maven-confluence-processor-freemarker</artifactId>
 	<name>CONFLUENCE-REPORTING::Freemaker::Processor</name>

@@ -4,11 +4,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-<<<<<<< HEAD
         <version>6.8-SNAPSHOT</version>
-=======
-        <version>6.7.3</version>
->>>>>>> develop
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
