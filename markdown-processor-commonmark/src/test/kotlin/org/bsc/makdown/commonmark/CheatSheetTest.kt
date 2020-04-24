@@ -9,41 +9,47 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.*
 
+fun parseContent( content:String, imagePrefixEnabled: Boolean = true ):String {
+
+    val root = CommonmarkConfluenceWikiVisitor.parser().parse(content)
+
+    val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
+        override fun getSite(): Optional<Site> {
+            return Optional.empty()
+        }
+
+        override fun getHomePageTitle(): Optional<String> {
+            return Optional.empty()
+        }
+
+        override fun isImagePrefixEnabled(): Boolean {
+            return imagePrefixEnabled
+        }
+
+        override fun notImplementedYet(node: Block?) {
+            TODO("Not yet implemented")
+        }
+    })
+
+    root.accept(visitor)
+
+    return visitor.toString().trimEnd()
+
+}
+
+fun parseResource(type:Class<*>, name:String, imagePrefixEnabled: Boolean = true ):String? = try {
+    type.classLoader.getResourceAsStream( "$name.md").use {
+            parseContent( IOUtils.toString(it))
+        }
+    }
+    catch( e:Exception) {
+        //Assertions.fail()
+        null;
+    }
 
 class CheatSheetTest {
 
-    private fun parse(name:String ):String? = try {
-            this.javaClass.classLoader.getResourceAsStream( "cheatsheet/$name.md").use {
-                val root = CommonmarkConfluenceWikiVisitor.parser().parse(IOUtils.toString(it))
-
-                val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
-                    override fun getSite(): Optional<Site> {
-                        return Optional.empty()
-                    }
-
-                    override fun getHomePageTitle(): Optional<String> {
-                        return Optional.empty()
-                    }
-
-                    override fun isImagePrefixEnabled(): Boolean {
-                        return false
-                    }
-
-                    override fun notImplementedYet(node: Block?) {
-                        TODO("Not yet implemented")
-                    }
-                })
-
-                root.accept(visitor)
-
-                return visitor.toString().trimEnd()
-
-            }
-        }
-        catch( e:Exception) {
-            //Assertions.fail()
-            null;
-        }
+    private fun parse( name:String ):String? = parseResource( this.javaClass, "cheatsheet/$name" )
 
     @Test
     //@Ignore
@@ -91,9 +97,9 @@ class CheatSheetTest {
     fun parseImages() = Assertions.assertEquals( parse( "images"), """
         Here's our logo (hover to see the title text):
 
-        Inline-style:!https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png!
+        Inline-style:!https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png|alt text!
         
-        Reference-style:!https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png!
+        Reference-style:!https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png|alt text!
     """.trimIndent() )
 
     @Test

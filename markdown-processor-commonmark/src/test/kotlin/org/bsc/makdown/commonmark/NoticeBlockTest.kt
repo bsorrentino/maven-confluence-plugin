@@ -1,13 +1,7 @@
 package org.bsc.makdown.commonmark
 
-import org.apache.commons.io.IOUtils
-import org.bsc.confluence.model.Site
-import org.bsc.markdown.MarkdownParserContext
-import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
-import org.commonmark.node.Block
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import java.util.*
 import java.util.regex.Pattern
 
 
@@ -39,37 +33,7 @@ class NoticeBlockTest {
 
     }
 
-    private fun parse():String? = try {
-        this.javaClass.classLoader.getResourceAsStream( "cheatsheet/noticeblock.md").use {
-            val root = CommonmarkConfluenceWikiVisitor.parser().parse(IOUtils.toString(it))
-
-            val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
-                override fun getSite(): Optional<Site> {
-                    return Optional.empty()
-                }
-
-                override fun getHomePageTitle(): Optional<String> {
-                    return Optional.empty()
-                }
-
-                override fun isImagePrefixEnabled(): Boolean {
-                    return false
-                }
-
-                override fun notImplementedYet(node: Block?) {
-                    TODO("Not yet implemented")
-                }
-            })
-
-            root.accept(visitor)
-
-            return visitor.toString().trimEnd()
-        }
-    }
-    catch( e:Exception) {
-        //Assertions.fail()
-        null;
-    }
+    private fun parse():String? = parseResource( this.javaClass, "cheatsheet/noticeblock" )
 
     @Test
     //@Ignore

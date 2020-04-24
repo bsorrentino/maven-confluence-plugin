@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static org.bsc.markdown.MarkdownVisitorHelper.processImageUrl;
 
 public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
@@ -59,7 +60,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
         return bufferStack.peek();
     }
 
-    private boolean isRoot( Block node ) {
+    private boolean isParentRoot(Node node) {
         return (node.getParent() instanceof Document);
     }
 
@@ -72,13 +73,12 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
      */
     @Override
     public void visit(Paragraph node) {
-        final Node parent = node.getParent();
 
         final ChildrenProcessor p =
                     processChildren(node)
                     //.pre("<<PRGH>>")
                     ;
-        if( parent instanceof Document ) {
+        if( isParentRoot(node) ) {
             p.post("\n");
         }
 
@@ -153,7 +153,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
         processChildren(node)
                 .pre("{quote}\n")
                 .post("{quote}\n")
-                .process( isRoot(node) );
+                .process( isParentRoot(node) );
     }
 
     @Override
@@ -206,12 +206,14 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
     @Override
     public void visit(Image node) {
+
+        final String destination = processImageUrl(node.getDestination(), parseContext);
+
         processChildren(node)
                 //.pre( format("<<IMG destination=[%s] title=[%s]>>", node.getDestination(), node.getTitle())).post("<</IMG>>")
-                .pre( "!%s", node.getDestination() )
-                .captureOutput( v -> {} ) // ignore text
+                .pre( "!%s|", destination, node.getTitle() )
                 .post("!")
-                .process( false);
+                .process( isParentRoot(node) );
     }
 
     @Override
@@ -228,7 +230,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
                 .pre( "[" )
                 .captureOutput( v -> buffer().append(v) ) // ignore text
                 .post("|%s%s]", node.getDestination(), ofNullable(node.getTitle()).map( v -> "|"+v ).orElse(""))
-                .process(false);
+                .process(isParentRoot(node));
     }
 
     @Override
@@ -293,7 +295,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
             p.pre("{%s}\n", type);
         }
 
-        p.post("{%s}\n", type).process(isRoot(node));
+        p.post("{%s}\n", type).process(isParentRoot(node));
     }
 
     @Override
@@ -394,7 +396,8 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
             pre.ifPresent( v -> buffer().append(v) );
 
-            captureOutput.ifPresent( consumer -> bufferStack.push( new StringBuilder() ) );
+            captureOutput.ifPresent(
+                    consumer -> bufferStack.push( new StringBuilder() ) );
 
             Node next;
             for(Node node = parent.getFirstChild(); node != null; node = next) {
@@ -409,10 +412,9 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
                     node.accept(CommonmarkConfluenceWikiVisitor.this);
                 }
             }
-            captureOutput.ifPresent( consumer -> {
-                final String content = bufferStack.pop().toString();
-                consumer.accept(content);
-            });
+
+            captureOutput.ifPresent( consumer ->
+                    consumer.accept(bufferStack.pop().toString()) );
 
             post.ifPresent( v -> buffer().append(v) );
             if( writeln ) buffer().append('\n');

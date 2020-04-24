@@ -27,7 +27,6 @@ public class MarkdownVisitorHelper {
 
                 switch (scheme.toLowerCase()) {
                     case "classpath":
-                        //throw new IllegalArgumentException( "'classpath' scheme is not supported!"));
                         return Optional.empty();
                     case "http":
                     case "https":
@@ -72,7 +71,6 @@ public class MarkdownVisitorHelper {
         final Matcher m = patternUri.matcher(url);
 
         if( !m.matches() ) {
-            //throw new IllegalArgumentException( format("the URL [%s] is not valid!", url) );
             return url;
         }
 
