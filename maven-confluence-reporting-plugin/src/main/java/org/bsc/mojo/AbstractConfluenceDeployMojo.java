@@ -420,48 +420,19 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
     /**
      *
+     * @param site
+     * @param child
      * @param uri
+     * @param charset
      * @return
-     * @throws org.bsc.maven.reporting.AbstractBaseConfluenceSiteMojo.ProcessUriException
+     * @throws ProcessUriException
      */
     private String processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset) throws ProcessUriException {
 
         try {
-            return SiteProcessor.processUriContent(site, child, uri, this.getPageTitle(), content -> {
-                try {
-                    return AbstractConfluenceDeployMojo.this.toString(content.getInputStream(), charset);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-
+            return SiteProcessor.processUriContent(site, child, uri, this.getPageTitle(), content -> content.getContent(charset) );
         } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
-        }
-    }
-
-    /**
-     *
-     * @param reader
-     * @return
-     * @throws IOException
-     */
-    private String toString(java.io.InputStream stream, Charset charset) throws IOException {
-        if (stream == null) {
-            throw new IllegalArgumentException("stream");
-        }
-
-        try (final java.io.Reader r = new java.io.InputStreamReader(stream, charset)) {
-
-            final StringBuilder contents = new StringBuilder(4096);
-
-            int c;
-            while ((c = r.read()) != -1) {
-                contents.append((char) c);
-            }
-
-            return contents.toString();
-
         }
     }
 

@@ -10,6 +10,7 @@ import org.bsc.markdown.MarkdownProcessorProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -28,6 +29,17 @@ public class SiteProcessor {
 
         public InputStream getInputStream() {
             return IOUtils.toInputStream(content);
+        }
+
+        public InputStream getInputStream( Charset charset ) throws IOException {
+            return IOUtils.toInputStream(content, charset.toString());
+        }
+
+        public String getContent( Charset charset ) {
+            if( charset != Charset.defaultCharset() ) {
+                return new String(content.getBytes(Charset.defaultCharset()), charset);
+            }
+            return content;
         }
     }
 
