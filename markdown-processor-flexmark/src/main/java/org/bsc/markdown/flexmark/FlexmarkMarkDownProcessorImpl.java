@@ -25,11 +25,11 @@ public class FlexmarkMarkDownProcessorImpl implements MarkdownProcessor {
      */
     @Override
     public String processMarkdown(
-            final Site site,
-            final Site.Page child,
+            final Site siteModel,
+            final Site.Page pageModel,
             final Optional<ConfluenceService.Model.Page> page,
             final String content,
-            final String homePageTitle) throws IOException {
+            final Optional<String> pagePrefixToApply) throws IOException {
 
 
         final Parser parser = Parser.builder(FlexmarkConfluenceWikiVisitor.OPTIONS()).build();
