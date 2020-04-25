@@ -28,11 +28,11 @@ public class CommonmarkMarkdownProcessorImpl implements MarkdownProcessor {
      */
     @Override
     public String processMarkdown(
-            final Site site,
-            final Site.Page child,
+            final Site siteModel,
+            final Site.Page pageModel,
             final Optional<ConfluenceService.Model.Page> page,
             final String content,
-            final String homePageTitle) throws IOException {
+            final Optional<String> pagePrefixToApply) throws IOException {
 
         final Node node =  CommonmarkConfluenceWikiVisitor.parser().parse(content);
 
@@ -40,7 +40,12 @@ public class CommonmarkMarkdownProcessorImpl implements MarkdownProcessor {
 
             @Override
             public Optional<Site> getSite() {
-                return ofNullable(site);
+                return ofNullable(siteModel);
+            }
+
+            @Override
+            public Site.Page getPage() {
+                return pageModel;
             }
 
             @Override
@@ -49,13 +54,13 @@ public class CommonmarkMarkdownProcessorImpl implements MarkdownProcessor {
             }
 
             @Override
-            public Optional<String> getHomePageTitle() {
-                return ofNullable(homePageTitle);
+            public Optional<String> getPagePrefixToApply() {
+                return pagePrefixToApply;
             }
 
             @Override
-            public boolean isImagePrefixEnabled() {
-                if( child.isIgnoreVariables() ) return false;
+            public boolean isLinkPrefixEnabled() {
+                if( pageModel.isIgnoreVariables() ) return false;
 
                 return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
             }
