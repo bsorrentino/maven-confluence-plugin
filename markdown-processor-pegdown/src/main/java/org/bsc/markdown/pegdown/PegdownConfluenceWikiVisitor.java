@@ -1,9 +1,8 @@
 package org.bsc.markdown.pegdown;
 
 
-import org.bsc.confluence.FileExtension;
-import org.bsc.confluence.model.Site;
 import org.bsc.markdown.MarkdownParserContext;
+import org.bsc.markdown.MarkdownVisitorHelper;
 import org.parboiled.common.StringUtils;
 import org.pegdown.Extensions;
 import org.pegdown.ast.*;
@@ -333,37 +332,71 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
         _buffer.append( '[');
         visitChildren(eln);
 
-        String url = eln.url;
-        if( !isURL(url) && FileExtension.MARKDOWN.isExentionOf(url)) {
+        final String url = MarkdownVisitorHelper.processLinkUrl( eln.url, parseContext );
 
-            final Optional<Site> site = parseContext.getSite();
-            if( site.isPresent() ) {
-
-                String _uri1 = url;
-
-                final Optional<Site.Page> page =
-                        site.get().getHome().findPage( p -> _uri1.equals( valueOf(p.getRelativeUri()) ));
-                
-                if( page.isPresent() ) {
-
-                    final Optional<String> parentPageTitle = parseContext.getHomePageTitle();
-                    
-                    if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
-                        url = String.format( "%s - %s", parentPageTitle.get(), page.get().getName() );
-                    }
-                    else {
-                        url = page.get().getName();                        
-                    }
-                    
-         
-                }
-            }
-            
-            
-        }
+//        String url = eln.url;
+//
+//        if( !isURL(url) && FileExtension.MARKDOWN.isExentionOf(url)) {
+//
+//            final Optional<Site> site = parseContext.getSite();
+//            if( site.isPresent() ) {
+//
+//                String _uri1 = url;
+//
+//                final Optional<Site.Page> page =
+//                        site.get().getHome().findPage( p -> _uri1.equals( valueOf(p.getRelativeUri()) ));
+//
+//                if( page.isPresent() ) {
+//
+//                    final Optional<String> parentPageTitle = parseContext.getHomePageTitle();
+//
+//                    if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
+//                        url = String.format( "%s - %s", parentPageTitle.get(), page.get().getName() );
+//                    }
+//                    else {
+//                        url = page.get().getName();
+//                    }
+//
+//
+//                }
+//            }
+//        }
 
         _buffer.append(String.format("|%s|%s]", url, eln.title));
     }
+
+    @Override
+    public void visit(final RefLinkNode rln) {
+        _buffer.append( '[' );
+        visitChildren(rln);
+        _buffer.append('|');
+
+        final String ref = getRefString(rln, rln.referenceKey);
+
+        String url = ref;
+
+        final ReferenceNode referenceNode = referenceNodes.get(ref);
+        if (referenceNode != null && referenceNode.getUrl() != null && url.length() > 0) {
+            url = referenceNode.getUrl();
+        }
+
+        // If URL is a relative URL, we will create a link to the project
+        if( !isURL(url) ) {
+            final Optional<String> pagePrefixToApply = parseContext.getPagePrefixToApply();
+
+            // not a valid URL (hence a relative link)
+            if( pagePrefixToApply.isPresent() && !url.startsWith(pagePrefixToApply.get())) {
+                _buffer.append(pagePrefixToApply.get()).append(" - ");
+            }
+        }
+        _buffer.append(url);
+
+        if (referenceNode != null && referenceNode.getTitle() != null) {
+            _buffer.append('|').append(referenceNode.getTitle());
+        }
+        _buffer.append( ']' );
+    }
+
 
 
     @Override
@@ -573,38 +606,6 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
         else if( n instanceof TableBodyNode )
             _buffer.append('|');
 
-    }
-
-    @Override
-    public void visit(final RefLinkNode rln) {
-        _buffer.append( '[' );
-        visitChildren(rln);
-        _buffer.append('|');
-
-        final String ref = getRefString(rln, rln.referenceKey);
-
-        String url = ref;
-
-        final ReferenceNode referenceNode = referenceNodes.get(ref);
-        if (referenceNode != null && referenceNode.getUrl() != null && url.length() > 0) {
-            url = referenceNode.getUrl();
-        }
-
-        // If URL is a relative URL, we will create a link to the project
-        if( !isURL(url) ) {
-            final Optional<String> parentPageTitle = parseContext.getHomePageTitle();
-            
-            // not a valid URL (hence a relative link)
-            if( parentPageTitle.isPresent() && !url.startsWith(parentPageTitle.get())) {
-                _buffer.append(parentPageTitle.get()).append(" - ");
-            }
-        }
-        _buffer.append(url);
-
-        if (referenceNode != null && referenceNode.getTitle() != null) {
-            _buffer.append('|').append(referenceNode.getTitle());
-        }
-        _buffer.append( ']' );
     }
 
     @Override
