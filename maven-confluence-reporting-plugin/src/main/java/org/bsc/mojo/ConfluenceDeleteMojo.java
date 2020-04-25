@@ -71,13 +71,13 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
             val descendents = confluence.getDescendents(start.getId());
 
             if( descendents==null || descendents.isEmpty() ) {
-                getLog().warn(format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));                    
+                getLog().warn(format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(),startPageTitle, parentPage.getSpace()));
             }
             else {
 
                 for( PageSummary descendent : descendents) {
 
-                    getLog().info( format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),getPageTitle(), descendent.getTitle()) );
+                    getLog().info( format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),startPageTitle, descendent.getTitle()) );
                     confluence.removePageAsync( descendent.getId() ).join();
 
                 }
@@ -86,7 +86,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
 
         confluence.removePageAsync(start.getId()).join();
 
-        getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),getPageTitle(), parentPage.getSpace()));
+        getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),startPageTitle, parentPage.getSpace()));
         
     }
     
