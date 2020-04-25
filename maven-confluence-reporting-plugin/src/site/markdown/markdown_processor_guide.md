@@ -61,6 +61,9 @@ Create a simple java library project maven compliant
 ### 3. Implement the interface `org.bsc.markdown.MarkdownProcessor`       
 
 ```java
+/**
+ * Markdown Processor interface
+ */
 public interface MarkdownProcessor {
 
     /**
@@ -72,21 +75,21 @@ public interface MarkdownProcessor {
 
     /**
      *
-     * @param site
-     * @param child
-     * @param page
-     * @param content
-     * @param homePageTitle
-     * @return
+     * @param siteModel - Site model instance
+     * @param pageModel - current processing Page Model instance
+     * @param page - current processing page instance. Valid only if we are updating content of existent page
+     * @param content - content to process
+     * @param pagePrefixToApply - prefix to apply. Valid only if 'childrenTitlesPrefixed' parameter is true
+     * @return processed (i.e. translated) content
      * @throws IOException
      */
     String processMarkdown(
-            final Site site,
-            final Site.Page child,
+            final Site siteModel,
+            final Site.Page pageModel,
             final Optional<ConfluenceService.Model.Page> page,
             final String content,
-            final String homePageTitle) throws IOException;
-
+            final Optional<String> pagePrefixToApply) throws IOException;
+}
 ```
 
 ### 4. Publish implementation following [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html) specification
