@@ -316,11 +316,13 @@
                         </configuration>
                     </execution>
                     <!--
-                    mvn confluence-reporting:deploy@issue212
-                    mvn confluence-reporting:delete@issue212
+                    mvn confluence-reporting:deploy@issue215 -Dconfluence.childrenTitlesPrefixed=false
+                    mvn confluence-reporting:delete@issue215 -Dconfluence.childrenTitlesPrefixed=false
+
+                    <childrenTitlesPrefixed>false</childrenTitlesPrefixed>
                     -->
                     <execution>
-                        <id>issue212</id>
+                        <id>issue215</id>
                         <goals>
                             <goal>deploy</goal>
                             <goal>delete</goal>
@@ -328,8 +330,7 @@
                         <configuration>
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <failOnError>true</failOnError>
-                            <siteDescriptor>${basedir}/src/site/confluence/issue212/confluence/site.xml</siteDescriptor>
-                            <childrenTitlesPrefixed>true</childrenTitlesPrefixed>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
                         </configuration>
                     </execution>
 
@@ -402,6 +403,27 @@
                                     <siteDescriptor>${basedir}/src/site/confluence/issue154/site-pegdown.yaml
                                     </siteDescriptor>
                                     <failOnError>true</failOnError>
+                                </configuration>
+                            </execution>
+                            <!--
+                            mvn confluence-reporting:deploy@issue215 -Dconfluence.childrenTitlesPrefixed=false
+                            mvn confluence-reporting:delete@issue215 -Dconfluence.childrenTitlesPrefixed=false
+
+                            <childrenTitlesPrefixed>false</childrenTitlesPrefixed>
+                            -->
+                            <execution>
+                                <id>issue215</id>
+                                <goals>
+                                    <goal>deploy</goal>
+                                    <goal>delete</goal>
+                                </goals>
+                                <configuration>
+                                    <wikiFilesExt>.confluence</wikiFilesExt>
+                                    <failOnError>true</failOnError>
+                                    <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
+                                    <markdownProcessor>
+                                        <name>commonmark</name>
+                                    </markdownProcessor>
                                 </configuration>
                             </execution>
 
