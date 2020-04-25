@@ -11,11 +11,18 @@ import java.util.Optional;
 public interface MarkdownParserContext<N> {
 
     /**
-     * The site object
+     * The Site Model Object
      *
      * @return site object. nullable
      */
     Optional<Site> getSite();
+
+    /**
+     * the current Page Model Object
+     *
+     * @return
+     */
+    Site.Page getPage();
 
     /**
      * Strategy to publish 'not yet implemented' condition
@@ -25,17 +32,17 @@ public interface MarkdownParserContext<N> {
     void notImplementedYet(N node);
 
     /**
-     * The home page title
+     * the page prefix to apply
      *
-     * @return home page title. nullable
+     * @return page prefix to apply. nullable
      */
-    Optional<String> getHomePageTitle();
+    Optional<String> getPagePrefixToApply();
 
     /**
      * indicates whether the prefix ${page.title} should be added or not
      *
      * @return use the prefix
      */
-    boolean isImagePrefixEnabled();
+    boolean isLinkPrefixEnabled();
 
 }
