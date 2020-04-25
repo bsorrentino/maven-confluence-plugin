@@ -25,7 +25,7 @@ public class CheatsheetPergdownParseTest extends PegdownParse {
         
         final CheatsheetPergdownParseTest test = new CheatsheetPergdownParseTest();
         
-        final String result = test.serializeToString();
+        final String result = test.serializeToString( test.createPage( "TEST", "./test.md") );
         
         System.out.println( result );
     }

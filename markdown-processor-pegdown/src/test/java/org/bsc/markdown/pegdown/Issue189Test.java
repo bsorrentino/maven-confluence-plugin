@@ -41,8 +41,8 @@ public class Issue189Test extends PegdownParse {
     }
     
     @Test
-    public void parse() throws IOException {
-        final String [] lines = serializeToString().split( "\n" );
+    public void parse() throws Exception {
+        final String [] lines = serializeToString( createPage("Page1", "./Page1.md") ).split( "\n" );
         
         int i=0;
         assertThat( lines[i++], equalTo("!${page.title}^img.png|alt text!"));

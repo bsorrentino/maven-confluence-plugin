@@ -25,7 +25,7 @@ public class GettingStartedPegdownParseTest extends PegdownParse {
         
         final GettingStartedPegdownParseTest test = new GettingStartedPegdownParseTest();
         
-        final String result = test.serializeToString();
+        final String result = test.serializeToString( test.createPage( "TEST", "./test.md"));
         
         System.out.println( result );
     }

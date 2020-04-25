@@ -100,7 +100,7 @@ public class SiteTest implements SiteFactory.Model {
     
     @Test
     public void shouldSupportRefLink() throws IOException {
-        val parentPageTitle = "Test";
+        val parentPageTitle = Optional.of("Test");
         val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertThat( stream, IsNull.notNullValue());
         val content = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
@@ -109,7 +109,7 @@ public class SiteTest implements SiteFactory.Model {
         int i = 2;
 
 
-        assertThat(converted[i++], equalTo(format("* This is a relative link to another page [SECOND PAGE|%s - page 2|].", parentPageTitle)) );
+        assertThat(converted[i++], equalTo(format("* This is a relative link to another page [SECOND PAGE|%s - page 2|].", parentPageTitle.get())) );
         assertThat(converted[i++], equalTo("* This one is [inline|http://google.com|Google].") );
         assertThat(converted[i++], equalTo("* This one is [inline *wo* title|http://google.com|].") );
         assertThat(converted[i++], containsString("[google|http://google.com]"));
@@ -123,7 +123,7 @@ public class SiteTest implements SiteFactory.Model {
 
         final Model.Page page = TestPage.of( "${page.title}", "spaceKey");
 
-        final String parentPageTitle = "Test IMG";
+        final val parentPageTitle = Optional.of("Test IMG");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertThat( stream, IsNull.notNullValue());
@@ -143,7 +143,7 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldSupportSimpleNode() throws IOException {
-        final String parentPageTitle = "Test";
+        val parentPageTitle = Optional.of("Test");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertThat( stream, IsNull.notNullValue());
@@ -162,7 +162,7 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldCreateSpecificNoticeBlock() throws IOException {
-        final String parentPageTitle = "Test Macro";
+        val parentPageTitle = Optional.of("Test Macro");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertThat( stream, IsNull.notNullValue());

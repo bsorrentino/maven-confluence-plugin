@@ -1,11 +1,16 @@
 package org.bsc.makdown.commonmark
 
+import org.bsc.confluence.model.Site
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.nio.file.Paths
 import java.util.regex.Pattern
 
 
 class NoticeBlockTest {
+    var site = Site().apply {
+        basedir = Paths.get(System.getProperty("user.dir"))
+    }
 
     val pattern = Pattern.compile("^>\\s+[*][*]([Ww]arning|[Nn]ote|[Ii]nfo|[Tt]ip)[:][*][*]\\s*(.*)$")
 
@@ -33,7 +38,7 @@ class NoticeBlockTest {
 
     }
 
-    private fun parse():String? = parseResource( this.javaClass, "cheatsheet/noticeblock" )
+    private fun parse():String? = parseResource( this.javaClass, "cheatsheet/noticeblock", this.site )
 
     @Test
     //@Ignore
@@ -59,8 +64,8 @@ class NoticeBlockTest {
         h2. Warning with complex content
         {warning:title=About him}
         tposidufsqdf qsfpqs dfopqsdijf qmldjkflqsdif sqj
-        *  one
-        *  two
+        * one
+        * two
         have a *strong* and _pure_ feeling
         {warning}
     """.trimIndent() )
