@@ -36,6 +36,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.bsc.confluence.model.SiteProcessor.processPageUri;
 import static org.bsc.confluence.model.SiteProcessor.processUri;
@@ -259,8 +260,9 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             final T child,
             final String pageTitleToApply)
     {
+        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : Optional.empty();
 
-        return processPageUri(site, child, pageToUpdate, source, this.getPageTitle(), (err, content) -> {
+        return processPageUri(site, child, pageToUpdate, source, pagePrefixToApply, (err, content) -> {
 
             final CompletableFuture<Model.Page> result = new CompletableFuture<>();
 
@@ -433,8 +435,10 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      */
     private String processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset) throws ProcessUriException {
 
+        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : Optional.empty();
+
         try {
-            return SiteProcessor.processUriContent(site, child, uri, this.getPageTitle(), content -> content.getContent(charset) );
+            return SiteProcessor.processUriContent(site, child, uri, pagePrefixToApply, content -> content.getContent(charset) );
         } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
         }
