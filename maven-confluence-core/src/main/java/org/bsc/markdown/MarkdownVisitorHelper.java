@@ -1,13 +1,19 @@
 package org.bsc.markdown;
 
+import org.bsc.confluence.FileExtension;
+import org.bsc.confluence.model.Site;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
 public class MarkdownVisitorHelper {
@@ -79,10 +85,38 @@ public class MarkdownVisitorHelper {
         }
 
         return getFileName(m.group(2))
-                .map( fileName -> (context.isImagePrefixEnabled()) ? "${page.title}^".concat(fileName) : fileName )
+                .map( fileName -> (context.isLinkPrefixEnabled()) ? "${page.title}^".concat(fileName) : fileName )
                 .orElse(url);
 
 
     }
 
+    public static String processLinkUrl( String url, MarkdownParserContext<?> parseContext ) {
+
+        if( !isURL(url) && FileExtension.MARKDOWN.isExentionOf(url)) {
+
+            final Predicate<Site.Page> comparePath = ( p ) -> {
+
+                final Path parentPath = Paths.get(parseContext.getPage().getUri()).getParent();
+
+                final Path relativePath = parentPath.relativize( Paths.get(p.getUri()));
+
+                final boolean result =  relativePath.equals( Paths.get(url) );
+
+                return result;
+            };
+
+            return parseContext.getSite()
+                    .flatMap( site -> site.getHome().findPage( comparePath ) )
+                    .map( page -> parseContext.getPagePrefixToApply()
+                            .filter( prefixToApply -> !url.startsWith(prefixToApply) )
+                            .map( prefixToApply -> format( "%s - %s", prefixToApply, page.getName() ) )
+                            .orElse( page.getName() ) )
+                    .orElse(url)
+                    ;
+        }
+
+        return url;
+
+    }
 }

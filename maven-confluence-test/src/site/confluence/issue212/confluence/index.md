@@ -1,1 +1,0 @@
-## Test [Issue 212](https://github.com/bsorrentino/maven-confluence-plugin/issues/212)

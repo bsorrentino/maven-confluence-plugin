@@ -60,6 +60,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.bsc.confluence.model.SitePrinter.print;
 import static org.bsc.confluence.model.SiteProcessor.processPageUri;
@@ -586,8 +587,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         final Site.Page home = site.getHome();
         final java.net.URI uri = home.getUri();
+        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed())
+                    ? ofNullable(this.getPageTitle())
+                    : Optional.empty();
 
-        return processPageUri( site, home, homePage, uri, homePage.getTitle(), (err, content) -> {
+        return processPageUri( site, home, homePage, uri, pagePrefixToApply, (err, content) -> {
             final CompletableFuture<Model.Page> result = new CompletableFuture<>();
 
             try {
@@ -936,8 +940,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             }
 
             final String title = getPageTitle();
+            final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed())
+                    ? ofNullable(getPageTitle())
+                    : Optional.empty();
 
-            return processPageUri(site, site.getHome(), homePage, site.getHome().getUri(), getPageTitle(), ( err, content ) -> {
+            return processPageUri(site, site.getHome(), homePage, site.getHome().getUri(), pagePrefixToApply, ( err, content ) -> {
 
                 final CompletableFuture<Model.Page> result =
                         new CompletableFuture<>();

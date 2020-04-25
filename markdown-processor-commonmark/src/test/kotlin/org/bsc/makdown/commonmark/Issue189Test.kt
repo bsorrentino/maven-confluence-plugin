@@ -1,5 +1,6 @@
 package org.bsc.makdown.commonmark
 
+import org.bsc.confluence.model.Site
 import org.hamcrest.core.IsEqual
 import org.hamcrest.core.IsNull
 import org.junit.Assert
@@ -17,9 +18,13 @@ import java.util.regex.Pattern
  */
 class Issue189Test  {
 
+    var site = Site().apply {
+        basedir = Paths.get(System.getProperty("user.dir"))
+    }
+
     @Test
     fun parse() {
-        val content = parseResource( this.javaClass, "issue189" )
+        val content = parseResource( this.javaClass, "issue189", this.site )
         val pageTitle = "\${page.title}"
 
         Assertions.assertEquals("""

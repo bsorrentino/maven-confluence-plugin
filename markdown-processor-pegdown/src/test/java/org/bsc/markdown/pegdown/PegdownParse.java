@@ -4,10 +4,15 @@ import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 
+import lombok.Data;
+import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.model.Site;
 import org.bsc.markdown.MarkdownParserContext;
 import org.junit.Test;
@@ -52,6 +57,18 @@ import org.pegdown.ast.Visitor;
  */
 public abstract class PegdownParse {
 
+    final Site site = new Site();
+
+    PegdownParse() {
+        site.setBasedir( Paths.get( System.getProperty("user.dir") ));
+    }
+
+    protected Site.Page createPage( String name, String uri  ) throws URISyntaxException {
+        final Site.Page result = new Site.Page();
+        result.setUri( new java.net.URI(uri));
+        result.setName(name);
+        return result;
+    }
     protected char[] loadResource( String name ) throws IOException {
 
         final ClassLoader cl = PegdownParse.class.getClassLoader();
@@ -189,7 +206,7 @@ public abstract class PegdownParse {
      * @return
      * @throws IOException
      */
-    public String serializeToString() throws IOException {
+    public String serializeToString( Site.Page page ) throws IOException {
 
         final PegDownProcessor p = new PegDownProcessor(PegdownConfluenceWikiVisitor.extensions());
 
@@ -202,17 +219,22 @@ public abstract class PegdownParse {
             }
 
             @Override
+            public Site.Page getPage() {
+                return page;
+            }
+
+            @Override
             public void notImplementedYet(Node node) {
                 throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. ", node.getClass().getSimpleName()) );
             }
 
             @Override
-            public Optional<String> getHomePageTitle() {
+            public Optional<String> getPagePrefixToApply() {
                 return Optional.of("Parent Page Title");
             }
 
             @Override
-            public boolean isImagePrefixEnabled() {
+            public boolean isLinkPrefixEnabled() {
                 return true;
             }
 

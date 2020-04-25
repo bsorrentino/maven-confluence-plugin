@@ -36,6 +36,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.bsc.confluence.model.SiteProcessor.processPageUri;
 import static org.bsc.confluence.model.SiteProcessor.processUri;
@@ -248,7 +249,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param site
      * @param source
      * @param child
-     * @param pageName
+     * @param pageTitleToApply
      * @return
      */
     private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(
@@ -257,10 +258,11 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             final Site site, 
             final java.net.URI source, 
             final T child,
-            final String pageName) 
+            final String pageTitleToApply)
     {
+        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : Optional.empty();
 
-        return processPageUri(site, child, pageToUpdate, source, this.getPageTitle(), (err, content) -> {
+        return processPageUri(site, child, pageToUpdate, source, pagePrefixToApply, (err, content) -> {
 
             final CompletableFuture<Model.Page> result = new CompletableFuture<>();
 
@@ -276,15 +278,16 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
             try {
 
-                final MiniTemplator t = new MiniTemplator.Builder().setSkipUndefinedVars(true)
-                        .build(content.get().getInputStream(), getCharset());
+                final MiniTemplator t = new MiniTemplator.Builder()
+                            .setSkipUndefinedVars(true)
+                            .build(content.get().getInputStream(), getCharset());
 
                 if (!child.isIgnoreVariables()) {
 
                     addStdProperties(t);
 
-                    t.setVariableOpt("childTitle", pageName); // DEPRECATED USE page.title
-                    t.setVariableOpt("page.title", pageName);
+                    t.setVariableOpt("childTitle", pageTitleToApply); // DEPRECATED USE page.title
+                    t.setVariableOpt("page.title", pageTitleToApply);
                 }
 
                 return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), content.get().getType()));
@@ -317,46 +320,49 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                 parentPage.getSpace(), homeTitle, parentPage.getTitle(), child.getName(),
                 getPrintableStringForResource(source)));
 
-        final String pageTitle = !isChildrenTitlesPrefixed() ? child.getName()
-                : format("%s - %s", homeTitle, child.getName());
+        final String pageTitleToApply = isChildrenTitlesPrefixed()
+                ? format("%s - %s", homeTitle, child.getName())
+                : child.getName();
 
         if (!isSnapshot() && isRemoveSnapshots()) {
-            final String snapshot = pageTitle.concat("-SNAPSHOT");
+            final String snapshot = pageTitleToApply.concat("-SNAPSHOT");
 
-            confluence.removePage(parentPage, snapshot).thenAccept(deleted -> {
-                getLog().info(format("Page [%s] has been removed!", snapshot));
-            }).exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
-
+            confluence.removePage(parentPage, snapshot)
+                    .thenAccept(deleted -> getLog().info(format("Page [%s] has been removed!", snapshot)))
+                    .exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
         }
 
-        final Model.Page result = confluence.getPage(parentPage.getSpace(), pageTitle).thenCompose(page -> {
-            return (page.isPresent()) ? completedFuture(page.get())
-                    : resetUpdateStatusForResource(source)
-                            .thenCompose(reset -> confluence.createPage(parentPage, pageTitle));
-        }).thenCompose(p -> canProceedToUpdateResource(source).thenCompose(update -> {
-            if (update)
-                return updatePageContent(confluence, p, site, source, child, pageTitle);
-            else {
-                getLog().info(format("page [%s] has not been updated (deploy skipped)",
-                        getPrintableStringForResource(source)));
-                return /* confluence.storePage(p) */ completedFuture(p);
-            }
-        })).join();
+        final Model.Page result = confluence.getPage(parentPage.getSpace(), pageTitleToApply)
+                .thenCompose(page ->
+                        (page.isPresent())
+                                ? completedFuture(page.get())
+                                : resetUpdateStatusForResource(source)
+                                    .thenCompose(reset -> confluence.createPage(parentPage, pageTitleToApply)) )
 
-        try {
+                .thenCompose(p -> canProceedToUpdateResource(source)
+                                    .thenCompose(update -> {
+                                        if (update)
+                                            return updatePageContent(confluence, p, site, source, child, pageTitleToApply);
+                                        else {
+                                            getLog().info(format("page [%s] has not been updated (deploy skipped)",
+                                                    getPrintableStringForResource(source)));
+                                            return /* confluence.storePage(p) */ completedFuture(p);
+                                        }}))
+                .join();
 
-            for (String label : child.getComputedLabels()) {
+        child.setName(pageTitleToApply);
 
+        child.getComputedLabels().forEach( label -> {
+
+            try {
                 confluence.addLabelByName(label, Long.parseLong(result.getId()));
+            } catch (Exception e) {
+                getLog().warn( format( "error adding label [%s]", label), e );
             }
 
-            child.setName(pageTitle);
+        });
 
-            return result;
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return result;
 
     }
 
@@ -429,8 +435,10 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      */
     private String processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset) throws ProcessUriException {
 
+        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : Optional.empty();
+
         try {
-            return SiteProcessor.processUriContent(site, child, uri, this.getPageTitle(), content -> content.getContent(charset) );
+            return SiteProcessor.processUriContent(site, child, uri, pagePrefixToApply, content -> content.getContent(charset) );
         } catch (Exception ex) {
             throw new ProcessUriException("error reading content!", ex);
         }

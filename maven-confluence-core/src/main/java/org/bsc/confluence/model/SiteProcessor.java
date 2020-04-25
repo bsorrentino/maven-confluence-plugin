@@ -98,19 +98,24 @@ public class SiteProcessor {
         return callback.apply( Optional.empty(), Optional.of(result));
     }
 
-    
     /**
-    *
-    * @param uri
-    * @return
-    * @throws Exception
-    */
+     *
+     * @param site
+     * @param child
+     * @param page
+     * @param uri
+     * @param pagePrefixToApply
+     * @param callback
+     * @param <T>
+     * @param <P>
+     * @return
+     */
    public static <T,P extends Site.Page> T processPageUri(
            final Site site,
            final P child,
            final Model.Page page,
            final java.net.URI uri, 
-           final String homePageTitle,
+           final Optional<String> pagePrefixToApply,
            final BiFunction<Optional<Exception>, Optional<PageContent>, T> callback)
    {
        Objects.requireNonNull(uri, "uri is null!");
@@ -154,7 +159,7 @@ public class SiteProcessor {
                try {
                    final String candidateContent = IOUtils.toString(is);
 
-                   content = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), candidateContent, homePageTitle) : candidateContent;
+                   content = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), candidateContent, pagePrefixToApply) : candidateContent;
 
                } catch (IOException e) {
                    return throwException.apply( format("error processing markdown for page [%s] ", source) );
@@ -173,7 +178,7 @@ public class SiteProcessor {
 
                final String candidateContent = IOUtils.toString(is);
 
-               content = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), candidateContent, homePageTitle) : candidateContent;
+               content = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), candidateContent, pagePrefixToApply) : candidateContent;
 
            } catch (IOException e) {
                final Exception ex = new Exception(format("error opening/processing page [%s]!", source), e);
@@ -195,7 +200,7 @@ public class SiteProcessor {
                final Site site,
                final P child,
                final java.net.URI uri,                                  
-               final String homePageTitle,
+               final Optional<String> homePageTitle,
                final Function<PageContent, T> onSuccess 
            ) throws /* ProcessUri */Exception 
    {
@@ -267,7 +272,7 @@ public class SiteProcessor {
      * @param child
      * @param page
      * @param content
-     * @param homePageTitle
+     * @param pagePrefixToApply
      * @return
      * @throws IOException
      */
@@ -276,9 +281,9 @@ public class SiteProcessor {
             final Site.Page child,
             final Optional<ConfluenceService.Model.Page> page,
             final String content,
-            final String homePageTitle) throws IOException {
+            final Optional<String> pagePrefixToApply) throws IOException {
 
-        return MarkdownProcessorProvider.instance.Load().processMarkdown( site, child, page, content, homePageTitle );
+        return MarkdownProcessorProvider.instance.Load().processMarkdown( site, child, page, content, pagePrefixToApply );
     }
 
 }

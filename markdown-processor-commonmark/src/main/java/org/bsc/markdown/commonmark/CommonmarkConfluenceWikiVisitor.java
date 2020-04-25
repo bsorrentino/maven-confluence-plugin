@@ -19,6 +19,7 @@ import java.util.function.Function;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.bsc.markdown.MarkdownVisitorHelper.processImageUrl;
+import static org.bsc.markdown.MarkdownVisitorHelper.processLinkUrl;
 
 public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
@@ -95,7 +96,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
      */
     @Override
     public void visit(HardLineBreak node) {
-        processChildren(node).pre("\\").process();
+        processChildren(node).pre("\\\\").process();
     }
 
     /**
@@ -113,13 +114,6 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
     @Override
     public void visit(Text node) {
-        final Node parent = node.getParent();
-
-        if( parent instanceof Paragraph ) {
-            if( parent.getParent() instanceof ListItem ) {
-                buffer().append( " " );
-            }
-        }
         buffer().append( node.getLiteral() );
         visitChildren(node);
     }
@@ -219,17 +213,20 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
     @Override
     public void visit(LinkReferenceDefinition node) {
         processChildren(node)
-                //.preAndPost("<<LNKR>>")
+                //.pre("<<LNKR>>").post( "<</LNKR>>")
                 .process();
     }
 
     @Override
     public void visit(Link node) {
+
+        final String destination = processLinkUrl(node.getDestination(), parseContext);
+
         processChildren(node)
                 //.preAndPost("<<LNK>>")
                 .pre( "[" )
                 .captureOutput( v -> buffer().append(v) ) // ignore text
-                .post("|%s%s]", node.getDestination(), ofNullable(node.getTitle()).map( v -> "|"+v ).orElse(""))
+                .post("|%s%s]", destination, ofNullable(node.getTitle()).map( v -> "|"+v ).orElse(""))
                 .process(isParentRoot(node));
     }
 

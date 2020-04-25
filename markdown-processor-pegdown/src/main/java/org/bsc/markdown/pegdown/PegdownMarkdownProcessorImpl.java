@@ -24,8 +24,8 @@ public class PegdownMarkdownProcessorImpl implements MarkdownProcessor{
 
     /**
      *
-     * @param site
-     * @param child
+     * @param siteModel
+     * @param pageModel
      * @param page
      * @param contents
      * @param homePageTitle
@@ -33,11 +33,11 @@ public class PegdownMarkdownProcessorImpl implements MarkdownProcessor{
      * @throws IOException
      */
     public String processMarkdown(
-            final Site site,
-            final Site.Page child,
+            final Site siteModel,
+            final Site.Page pageModel,
             final Optional<ConfluenceService.Model.Page> page,
             final String contents,
-            final String homePageTitle) throws IOException {
+            final Optional<String> prefixToApply) throws IOException {
 
         final PegDownProcessor p = new PegDownProcessor(PegdownConfluenceWikiVisitor.extensions());
 
@@ -47,7 +47,12 @@ public class PegdownMarkdownProcessorImpl implements MarkdownProcessor{
 
             @Override
             public Optional<Site> getSite() {
-                return Optional.of(site);
+                return Optional.of(siteModel);
+            }
+
+            @Override
+            public Site.Page getPage() {
+                return pageModel;
             }
 
             @Override
@@ -59,13 +64,13 @@ public class PegdownMarkdownProcessorImpl implements MarkdownProcessor{
             }
 
             @Override
-            public Optional<String> getHomePageTitle() {
-                return Optional.ofNullable(homePageTitle);
+            public Optional<String> getPagePrefixToApply() {
+                return prefixToApply;
             }
 
             @Override
-            public boolean isImagePrefixEnabled() {
-                if( child.isIgnoreVariables() ) return false;
+            public boolean isLinkPrefixEnabled() {
+                if( pageModel.isIgnoreVariables() ) return false;
 
                 return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
             }

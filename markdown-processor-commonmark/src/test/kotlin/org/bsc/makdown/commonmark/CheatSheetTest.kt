@@ -7,24 +7,24 @@ import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
 import org.commonmark.node.Block
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.net.URI
+import java.net.URISyntaxException
+import java.nio.file.Paths
 import java.util.*
 
-fun parseContent( content:String, imagePrefixEnabled: Boolean = true ):String {
+fun parseContent( site:Site, content:String, linkPrefixEnabled: Boolean = true ):String {
 
     val root = CommonmarkConfluenceWikiVisitor.parser().parse(content)
 
     val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
-        override fun getSite(): Optional<Site> {
-            return Optional.empty()
-        }
 
-        override fun getHomePageTitle(): Optional<String> {
-            return Optional.empty()
-        }
+        override fun getSite() = Optional.of(site);
 
-        override fun isImagePrefixEnabled(): Boolean {
-            return imagePrefixEnabled
-        }
+        override fun getPage(): Site.Page  = site.home
+
+        override fun getPagePrefixToApply() = Optional.empty<String>()
+
+        override fun isLinkPrefixEnabled() = linkPrefixEnabled
 
         override fun notImplementedYet(node: Block?) {
             TODO("Not yet implemented")
@@ -37,9 +37,9 @@ fun parseContent( content:String, imagePrefixEnabled: Boolean = true ):String {
 
 }
 
-fun parseResource(type:Class<*>, name:String, imagePrefixEnabled: Boolean = true ):String? = try {
+fun parseResource(type:Class<*>, name:String, site:Site, imagePrefixEnabled: Boolean = true ):String? = try {
     type.classLoader.getResourceAsStream( "$name.md").use {
-            parseContent( IOUtils.toString(it))
+            parseContent( site, IOUtils.toString(it))
         }
     }
     catch( e:Exception) {
@@ -49,7 +49,18 @@ fun parseResource(type:Class<*>, name:String, imagePrefixEnabled: Boolean = true
 
 class CheatSheetTest {
 
-    private fun parse( name:String ):String? = parseResource( this.javaClass, "cheatsheet/$name" )
+    var site = Site().apply {
+        basedir = Paths.get(System.getProperty("user.dir"))
+
+        val home = Site.Home()
+        home.uri = URI("./page.md")
+        home.name = "page"
+
+        setHome( home )
+
+    }
+
+    private fun parse( name:String ):String? = parseResource( this.javaClass, "cheatsheet/$name", this.site )
 
     @Test
     //@Ignore
@@ -78,19 +89,19 @@ class CheatSheetTest {
 
     @Test
     //@Ignore
-    fun parseLists() = Assertions.assertEquals( parse( "lists"), """
-        #  First ordered list item
-        #  Another item
-        #*  Unordered sub-list.
-        #  Actual numbers don't matter, just that it's a number
-        ##  Ordered sub-list
-        #  And another item.
-         You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).
-         To have a line break without a paragraph, you will need to use two trailing spaces. Note that this line is separate, but within the same paragraph. (This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)
-        *  Unordered list can use asterisks
-        *  Or minuses
-        *  Or pluses
-    """.trimIndent() )
+    fun parseLists() = Assertions.assertEquals(  """
+    # First ordered list item
+    # Another item
+    #* Unordered sub-list.
+    # Actual numbers don't matter, just that it's a number
+    ## Ordered sub-list
+    # And another item.
+    You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).
+    To have a line break without a paragraph, you will need to use two trailing spaces.Note that this line is separate, but within the same paragraph.(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)
+    * Unordered list can use asterisks
+    * Or minuses
+    * Or pluses
+    """.trimIndent(), parse( "lists") )
 
     @Test
     //@Ignore
