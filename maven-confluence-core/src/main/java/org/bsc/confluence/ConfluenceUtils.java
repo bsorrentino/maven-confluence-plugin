@@ -24,17 +24,20 @@ public class ConfluenceUtils {
             return null;
         }
         final String result = value
-                .replaceAll("([{}\\[\\]\\+\\*_])", "\\\\$1") // escape every char that would mean something for confluence
+                .replaceAll("(?i)<br/?>", "\\\\\\\\")
+                .replaceAll("([{}_\\+\\*\\[\\]])", "\\\\$1") // escape every char that would mean something for confluence
                 .replaceAll("(?i)</?pre>", "{noformat}")
                 .replaceAll("(?i)<code>", "{{")
                 .replaceAll("(?i)</code>", "}}")
                 .replaceAll("(?i)</?(b|strong)>", "*")
-                .replaceAll("(?i)<br/?>", "\\\\")
                 .replaceAll("(?i)<hr/?>", "----")
                 .replaceAll("(?i)</?p>", "\n")
                 .replaceAll("(?i)</?u>", "+")
                 .replaceAll("(?i)</?(s|del)>", "-")
-                .replaceAll("(?i)</?(i|em)>", "_");
+                .replaceAll("(?i)</?(i|em)>", "_")
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
+                ;
         return ConfluenceHtmlListUtils.replaceHtmlList(result);
     }
 
