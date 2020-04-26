@@ -118,17 +118,17 @@
             </li>
                               <li class="nav-header">Processor</li>
                               
-      <li class="active">
-  
-            <a href="#"><i class="none"></i>Site Processor</a>
-          </li>
-                
       <li>
   
-                          <a href="markdown_processor_guide.html" title="Markdown Processor">
+                          <a href="site_processor_guide.html" title="Site Processor">
           <i class="none"></i>
-        Markdown Processor</a>
+        Site Processor</a>
             </li>
+                
+      <li class="active">
+  
+            <a href="#"><i class="none"></i>Markdown Processor</a>
+          </li>
                               <li class="nav-header">Summary</li>
                               
       <li>
@@ -166,18 +166,30 @@
         <div id="bodyColumn"  class="span9" >
                                   
             <h1>Introduction</h1>
-<p>From <b>release 6.7</b> we have the possibility to pre-process the site descriptor file before execute it to coordinate its deployment. Such processor (or <i>template engine</i>) can be plugged into processing using a module (i.e. <i>java library</i>) containing processor implementation that is published using <a class="externalLink" href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">Java Service Provide Interface (SPI)</a> specification.</p>
+<p>From <b>release 6.8</b> we have the possibility to plug different <b>Markdown Processor</b> so you can add extra features other than which provided built-in. Such processor can be plugged into processing using a module (i.e. <i>java library</i>) containing processor implementation that is published using <a class="externalLink" href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">Java Service Provide Interface (SPI)</a> specification.</p>
 <div class="section">
-<h2><a name="Site_processor_usage"></a>Site processor usage</h2>
-<div class="section">
-<h3><a name="Configure_a_site_processor"></a>Configure a site processor</h3>
-<p>To plug a <b>markdown processor</b> you have to declare library <b>as plugin&#x2019;s dependency</b>.</p>
+<h2><a name="Markdown_processor_usage"></a>Markdown processor usage</h2>
+<p>Currently the available Markdown processors compliant with plugin are:</p>
 
-<blockquote>
-<p>Currently a processor based on <a class="externalLink" href="https://freemarker.apache.org/">Freemarker</a> template engine is already available trought the module <b>maven-confluence-processor-freemarker</b></p>
-</blockquote>
+<ol style="list-style-type: decimal">
+  
+<li>
+<p><a class="externalLink" href="https://github.com/sirthias/pegdown">Pegdown</a></p>
+  
+<blockquote>This implementation is the default one. Since it has been <b>DEPRECATED</b> we encourage to plug the new <b>Commonmark</b> implementation because in the next major release pegdown will be removed
+  </blockquote></li>
+  
+<li>
+<p><a class="externalLink" href="https://github.com/atlassian/commonmark-java">Commonmark</a></p>
+  
+<blockquote>Is the new implementation available from plugin version <tt>6.8</tt>
+  </blockquote></li>
+</ol>
 <div class="section">
-<h4><a name="Example_below_declare_freemarker_as_site_processor"></a>Example below declare freemarker as site processor</h4>
+<h3><a name="Configure_a_new_Markdown_Processor"></a>Configure a new Markdown Processor</h3>
+<p>To plug a <b>markdown processor</b> you have to declare library <b>as plugin&#x2019;s dependency</b>. </p>
+<div class="section">
+<h4><a name="Plug_commonmark_implementation"></a>Plug <tt>commonmark</tt> implementation</h4>
 
 <div class="source">
 <div class="source">
@@ -186,55 +198,26 @@
     &lt;artifactId&gt;confluence-reporting-maven-plugin&lt;/artifactId&gt;
     &lt;version&gt;${confluence.plugin.version}&lt;/version&gt;
     &lt;dependencies&gt;
-        &lt;!-- Plug the freemarker processor --&gt;
         &lt;dependency&gt;
-            &lt;groupId&gt;org.bsc.maven&lt;/groupId&gt;
-            &lt;artifactId&gt;maven-confluence-processor-freemarker&lt;/artifactId&gt;
+            &lt;groupIdorg.bsc.maven&lt;/groupId&gt;
+            &lt;artifactId&gt;confluence-markdown-processor-commonmark&lt;/artifactId&gt;
             &lt;version&gt;${confluence.plugin.version}&lt;/version&gt;
             &lt;scope&gt;runtime&lt;/scope&gt;
         &lt;/dependency&gt;
-
-        &lt;configuration&gt;
-            &lt;wikiFilesExt&gt;.confluence&lt;/wikiFilesExt&gt;
-            &lt;siteDescriptor&gt;${basedir}/src/site/confluence/site_to_process.yml&lt;/siteDescriptor&gt;
-            &lt;failOnError&gt;true&lt;/failOnError&gt;
-        &lt;/configuration&gt;
     &lt;/dependencies&gt;
+    &lt;configuration&gt;
+        &lt;wikiFilesExt&gt;.confluence&lt;/wikiFilesExt&gt;
+        &lt;siteDescriptor&gt;${basedir}/src/site/confluence/site.yml&lt;/siteDescriptor&gt;
+        &lt;failOnError&gt;true&lt;/failOnError&gt;
+        &lt;markdownProcessor&gt;
+            &lt;name&gt;commonmark&lt;/name&gt;
+        &lt;/markdownProcessor&gt;
+    &lt;/configuration&gt;
 &lt;/plugin&gt;
-
-</pre></div></div></div></div>
-<div class="section">
-<h3><a name="Use_the_markup_language_in_site_definition"></a>Use the markup language in site definition</h3>
-<p>After declared a site processor in plugin&#x2019;s configuration we can start to use the related markup language in site&#x2019;s definition</p>
-<div class="section">
-<h4><a name="Example_below_use_freemarker_markup_language_in_site_definition"></a>Example below use freemarker markup language in site definition</h4>
-
-<div class="source">
-<div class="source">
-<pre>#freemaker
-home:
-  name: &quot;issue202&quot;
-  uri: issue202.md
-  attachments:
-&lt;#if Files.exists(Paths.get('src/site/confluence/issue202/images/dashboard.png')) == true&gt;
-    - name: &quot;dashboard.png&quot;
-      uri: images/dashboard.png
-      contentType: &quot;image/png&quot;
-      version: 1
-      comment: image
-&lt;/#if&gt;
-&lt;#if Files.exists(Paths.get('src/site/confluence/issue202/images/unknown.png')) == true&gt;
-    - name: &quot;unknown.png&quot;
-      uri: images/dashboard.png
-      contentType: &quot;image/png&quot;
-      version: 1
-      comment: unknown image
-&lt;/#if&gt;
-
 </pre></div></div></div></div></div>
 <div class="section">
-<h2><a name="Implement_a_new_site_processor_service"></a>Implement a new &#x2018;site processor&#x2019; service</h2>
-<p>To implement a new <b>site processor service</b> we have to follow steps below:</p>
+<h2><a name="Implement_a_new_Markdown_processor_service"></a>Implement a new &#x2018;Markdown processor&#x2019; service</h2>
+<p>To implement a new <b>Markdown processor service</b> we have to follow steps below:</p>
 <div class="section">
 <h3><a name="a1._Create_a_new_Project"></a>1. Create a new Project</h3>
 <p>Create a simple java library project maven compliant</p></div>
@@ -243,31 +226,46 @@ home:
 
 <div class="source">
 <div class="source">
-<pre>    &lt;dependency&gt;
-        &lt;groupId&gt;org.bsc.maven&lt;/groupId&gt;
-        &lt;artifactId&gt;maven-confluence-core&lt;/artifactId&gt;
-        &lt;version&gt;${version}&lt;/version&gt;
-    &lt;/dependency&gt;
+<pre>&lt;dependency&gt;
+    &lt;groupId&gt;org.bsc.maven&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-confluence-core&lt;/artifactId&gt;
+    &lt;version&gt;${version}&lt;/version&gt;
+&lt;/dependency&gt;
 </pre></div></div></div>
 <div class="section">
-<h3><a name="a3._Implement_the_interface_org.bsc.confluence.preprocessor.SitePocessorService"></a>3. Implement the interface <tt>org.bsc.confluence.preprocessor.SitePocessorService</tt></h3>
+<h3><a name="a3._Implement_the_interface_org.bsc.markdown.MarkdownProcessor"></a>3. Implement the interface <tt>org.bsc.markdown.MarkdownProcessor</tt></h3>
 
 <div class="source">
 <div class="source">
-<pre>public interface SitePocessorService {
+<pre>/**
+ * Markdown Processor interface
+ */
+public interface MarkdownProcessor {
+
     /**
-     * name of Preprocessor service
+     * markdown processor identifier used to choose which procerror use at run-time
      *
+     * @return identifier
      */
     String getName();
-    /**
-     * Handles preprocessing of the input using a markup library
-     *
-     * Variables are added to the markup model
-     */
-    CompletableFuture&lt;String&gt; process(String input, Map&lt;String, Object&gt; variables);
-}
 
+    /**
+     *
+     * @param siteModel - Site model instance
+     * @param pageModel - current processing Page Model instance
+     * @param page - current processing page instance. Valid only if we are updating content of existent page
+     * @param content - content to process
+     * @param pagePrefixToApply - prefix to apply. Valid only if 'childrenTitlesPrefixed' parameter is true
+     * @return processed (i.e. translated) content
+     * @throws IOException
+     */
+    String processMarkdown(
+            final Site siteModel,
+            final Site.Page pageModel,
+            final Optional&lt;ConfluenceService.Model.Page&gt; page,
+            final String content,
+            final Optional&lt;String&gt; pagePrefixToApply) throws IOException;
+}
 </pre></div></div></div>
 <div class="section">
 <h3><a name="a4._Publish_implementation_following_SPI_specification"></a>4. Publish implementation following <a class="externalLink" href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">SPI</a> specification</h3>
@@ -278,8 +276,8 @@ home:
 
 <div class="source">
 <div class="source">
-<pre>@MetaInfServices(SitePocessorService.class)
-public class PreprocessorImpl implements SitePocessorService {
+<pre>@MetaInfServices(MarkdownProcessor.class)
+public class CommonmarkMarkdownProcessorImpl implements MarkdownProcessor {
 
 }
 </pre></div></div></div></div></div>
