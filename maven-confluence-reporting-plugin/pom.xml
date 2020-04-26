@@ -4,7 +4,7 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.8-SNAPSHOT</version>
+      <version>6.8</version>
   </parent>
 
    <prerequisites>
@@ -360,18 +360,9 @@ TEST
                     <version>${project.version}</version>
 
                     <configuration>
-                        <!--
-                        <endPoint>http://softwarefactory.softphone.it/confluence/rpc/xmlrpc</endPoint>
-                        <spaceKey>~bsorrentino</spaceKey>
-                        <parentPageTitle>Home</parentPageTitle>
-                        <serverId>softphone-server</serverId>
-                        -->
                         <wikiFilesExt>.confluence</wikiFilesExt>
                         <deployState/>
                         <failOnError>false</failOnError>
-                        <!--
-                        <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
-                        -->
                         <removeSnapshots>true</removeSnapshots>
                     </configuration>
                     <executions>

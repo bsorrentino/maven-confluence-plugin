@@ -9,13 +9,17 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
 ## Documentation
 > The standard maven documentation is [here](http://bsorrentino.github.io/maven-confluence-plugin/)
+> * [Goals](http://bsorrentino.github.io/maven-confluence-plugin/plugin-info.html)
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
 > * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
 > * [Use YAML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_yaml_guide.html)
-> * [Site Processor Usage](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html)
-> * [Markdown Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
+### Format 
+> * [Markdown Syntax Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 > * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
-> * [Confluence Wiki Notation Guide](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
+> * [Confluence Wiki Support](http://bsorrentino.github.io/maven-confluence-plugin/Notation%20Guide%20-%20Confluence.html)
+### Processor
+> * [Site Processor Usage](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html)
+> * [Markdown Processor usage](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html)
 
 
 Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
@@ -23,6 +27,7 @@ Please donate whether you wish support us to give more time to plugin's growth |
 ### News
  Date  | Info   
 --- | ---
+ **Apr 26, 2020** | [Release 6.8](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.8) - - Add [markdown processor](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html) support future removal of **deprecated** [Pegdown](https://github.com/sirthias/pegdown) implementation
  **Mar 23, 2020** | [Release 6.7.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.3)
  **Mar 11, 2020** | [Release 6.7.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.2)
  **Nov 13, 2019** | [Release 6.7.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.1)
