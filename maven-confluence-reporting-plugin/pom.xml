@@ -4,7 +4,7 @@
   <parent>
       <artifactId>maven-confluence-parent</artifactId>
       <groupId>org.bsc.maven</groupId>
-      <version>6.7.3</version>
+      <version>6.8</version>
   </parent>
 
    <prerequisites>
@@ -149,16 +149,32 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!--
+        =================================
+        MARKDOWN PROCESSOR
+        =================================
+        -->
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>confluence-markdown-processor-pegdown</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!--
+        =================================
+        ADDON
+        =================================
+        -->
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-scrollversions-addon</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
-=================================
-NEEDS FOR PASSWORD ENCRYPTION
-=================================
--->
+        <!--
+        =================================
+        NEEDS FOR PASSWORD ENCRYPTION
+        =================================
+        -->
         <dependency>
             <groupId>org.sonatype.plexus</groupId>
             <artifactId>plexus-sec-dispatcher</artifactId>
@@ -344,18 +360,9 @@ TEST
                     <version>${project.version}</version>
 
                     <configuration>
-                        <!--
-                        <endPoint>http://softwarefactory.softphone.it/confluence/rpc/xmlrpc</endPoint>
-                        <spaceKey>~bsorrentino</spaceKey>
-                        <parentPageTitle>Home</parentPageTitle>
-                        <serverId>softphone-server</serverId>
-                        -->
                         <wikiFilesExt>.confluence</wikiFilesExt>
                         <deployState/>
                         <failOnError>false</failOnError>
-                        <!--
-                        <templateWiki>${basedir}/src/site/confluence/index.confluence</templateWiki>
-                        -->
                         <removeSnapshots>true</removeSnapshots>
                     </configuration>
                     <executions>

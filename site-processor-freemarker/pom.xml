@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>org.bsc.maven</groupId>
 		<artifactId>maven-confluence-parent</artifactId>
-		<version>6.7.3</version>
+		<version>6.8</version>
 	</parent>
 	<artifactId>maven-confluence-processor-freemarker</artifactId>
-	<name>CONFLUENCE-REPORTING::Processor::Freemaker</name>
+	<name>CONFLUENCE-REPORTING::Freemaker::Processor</name>
 	<description>maven confluence plugin - site preprocessor based on freemaker</description>
 
 	<dependencies>
@@ -16,7 +16,6 @@
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>
 			<artifactId>metainf-services</artifactId>
-			<version>1.8</version>
 			<optional>true</optional>
 		</dependency>
 
