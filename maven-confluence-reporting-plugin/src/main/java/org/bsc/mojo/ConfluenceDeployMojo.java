@@ -226,8 +226,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     private String locale;
     /**
      * Markdown processor Info<br>
-     *
-     * set the name of processor to use (default is 'pegdown')
+     * <pre>
+     *   &lt;markdownProcessor>
+     *     &lt;name>processor name&lt;/name> &lt;!-- default: pegdown -->
+     *   &lt;/markdownProcessor>
+     * </pre>
      *
      * @since 6.8
      */

@@ -35,18 +35,17 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Parameter()
     private java.util.Map<String, String> properties;
     /**
-     * Confluence api endpoint url
-     * 
+     * Confluence api endpoint url.
      * <ul>
      *  <li>To enable <b>xmlrpc api procotol</b> endpoint must end with <b>/rpc/xmlrpc</b></li>
      *  <li>To enable <b>rest api protocol</b> endpoint must end with <b>/rest/api</b></li>
   	 * </ul>
-  	 * 
   	 * Example:
      * <pre>  
-  	 * < endPoint>http://your_confluence-site/rest/api</endPoint>
+  	 * &lt;endPoint>http://your-confluence-site/rest/api</endPoint>
   	 * </pre>
-  	 *  
+     * <br>
+     *
      */
     @Parameter(property = "confluence.endPoint", defaultValue = "http://localhost:8080/rpc/xmlrpc")
     private String endPoint;
@@ -114,11 +113,11 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      *
      * <pre>
      *
-     * < sslCertificate>
-     *  < ignore>true|false</ignore>  // default false
-     *  < hostNameVerifierClass>FQN</hostNameVerifierClass> //default null
-     *  < trustManagerClass>FQN</trustManagerClass> // default null
-     * < /sslCertificate>
+     * &lt;sslCertificate>
+     *  &lt;ignore>true|false</ignore>  &lt;!-- default: false -->
+     *  &lt;hostNameVerifierClass>FQN</hostNameVerifierClass>  &lt;!-- default: null -->
+     *  &lt;trustManagerClass>FQN</trustManagerClass> &lt;!-- default: null -->
+     * &lt;/sslCertificate>
      *
      * </pre>
      * @since 4.1.0
@@ -137,11 +136,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * ScrollVersions addon configuration. Below the template
      * 
      * <pre>
-     *
-     * < scrollVersions>
-     *  < version>_version_name_</version>  // mandatory
-     * < /scrollVersions>
-     *
+     * &lt;scrollVersions>
+     *  &lt;version>version name</version>  &lt;!-- mandatory -->
+     * &lt;/scrollVersions>
      * </pre>
      * 
      * @since 6.5-beta1
