@@ -5,7 +5,7 @@
  */
 package org.bsc.maven.plugin.confluence;
 
-import org.bsc.confluence.ConfluenceHtmlListUtils;
+import org.bsc.confluence.ConfluenceHtmlUtils;
 import java.util.regex.*;
 import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
@@ -53,7 +53,7 @@ public class Issue99Test {
                 .toString()
                 ;
 
-                final String result = ConfluenceHtmlListUtils.replaceHtmlList(line);
+                final String result = ConfluenceHtmlUtils.replaceHtmlList(line);
 
                 final String expect = new StringBuilder()
                         .append("this is an example of comment")
@@ -86,7 +86,7 @@ public class Issue99Test {
                 .toString()
                 ;
 
-        final String result = ConfluenceHtmlListUtils.replaceHtmlList(line);
+        final String result = ConfluenceHtmlUtils.replaceHtmlList(line);
 
         final String expect = new StringBuilder()
                 .append('\n')
@@ -126,7 +126,7 @@ public class Issue99Test {
                 .toString()
                 ;
 
-        final String result =  ConfluenceHtmlListUtils.replaceHtmlList(line);
+        final String result =  ConfluenceHtmlUtils.replaceHtmlList(line);
 
         Assert.assertThat( result , IsEqual.equalTo(input));
 

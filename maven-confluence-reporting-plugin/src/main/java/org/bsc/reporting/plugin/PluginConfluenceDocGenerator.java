@@ -1,6 +1,6 @@
 package org.bsc.reporting.plugin;
 
-import static org.bsc.confluence.ConfluenceUtils.decode;
+import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
 import static org.bsc.reporting.plugin.ConfluenceWikiWriter.createAnchor;
 import static org.bsc.reporting.plugin.ConfluenceWikiWriter.createLinkToAnchor;
 
@@ -20,6 +20,7 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
 import org.apache.maven.tools.plugin.generator.Generator;
 import org.apache.maven.tools.plugin.generator.GeneratorException;
+import org.bsc.confluence.ConfluenceHtmlUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
@@ -52,7 +53,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                     .println();
 
             String description = (descriptor.getDescription() != null)
-                    ? decode(descriptor.getDescription())
+                    ? replaceHTML(descriptor.getDescription())
                     : "No description.";
 
             w.printQuote(description);
@@ -244,7 +245,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                 w.printf( "[%s|%s]",goal.descriptor.getFullGoalName(),
                                       goal.getPageName(parentName) );		
                 w.print('|');
-                w.print(decode(goal.descriptor.getDescription()));
+                w.print(replaceHTML(goal.descriptor.getDescription()));
                 w.println('|');
                 
                 result.add(goal);
@@ -321,7 +322,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
                 description = "No Description.";
             }
 
-            w.println(decode(description));
+            w.println(replaceHTML(description));
 
             writeDetail("Deprecated", parameter.getDeprecated(), w);
 
@@ -345,7 +346,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     private void writeDetail(String param, String value, ConfluenceWikiWriter w) {
         if (StringUtils.isNotEmpty(value)) {
-            w.printf("||%s|%s|\n", decode(param), decode(value));
+            w.printf("||%s|%s|\n", replaceHTML(param), replaceHTML(value));
         }
     }
 
@@ -402,10 +403,10 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             }
 
           
-            w.print(decode(description).replace("\n\n", "\n"));
+            w.print(replaceHTML(description).replace("\n\n", "\n"));
 
             if (StringUtils.isNotEmpty(parameter.getDefaultValue())) {
-                w.printf(" Default value is %s", decode(parameter.getDefaultValue()));
+                w.printf(" Default value is %s", replaceHTML(parameter.getDefaultValue()));
             }
 
             w.println('|');
