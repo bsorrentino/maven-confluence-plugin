@@ -1,6 +1,5 @@
 package org.bsc.makdown.commonmark
 
-import lombok.Data
 import org.apache.commons.io.IOUtils
 import org.bsc.confluence.ConfluenceService
 import org.bsc.confluence.model.Site
