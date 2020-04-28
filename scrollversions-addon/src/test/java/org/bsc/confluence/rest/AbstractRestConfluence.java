@@ -221,20 +221,15 @@ public abstract class AbstractRestConfluence {
             
             assertThat( page.isPresent(), equalTo(true) );
            
-            try {
-                val descendents = service.getDescendents( page.get().getId() );
-                
-                assertThat( descendents, notNullValue() );
-                assertThat( descendents.isEmpty(), is(false) );
-                
-                for( Model.PageSummary p : descendents ) {
-                    System.out.printf( "Descend Page: [%s]\n", p.getTitle());
-                }
-                
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            val descendents = service.getDescendents( page.get().getId() ).join();
+
+            assertThat( descendents, notNullValue() );
+            assertThat( descendents.isEmpty(), is(false) );
+
+            for( Model.PageSummary p : descendents ) {
+                System.out.printf( "Descend Page: [%s]\n", p.getTitle());
             }
-            
+
         })
         .exceptionally( e -> {
             fail( e.getMessage() );
