@@ -98,8 +98,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public boolean addLabelByName(String label, long id) throws Exception {
-            return xmlrpcService.addLabelByName(ConfluenceUtils.sanitizeLabel(label), id);
+        public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+            return xmlrpcService.addLabelsByName(id, labels);
         }
 
         @Override

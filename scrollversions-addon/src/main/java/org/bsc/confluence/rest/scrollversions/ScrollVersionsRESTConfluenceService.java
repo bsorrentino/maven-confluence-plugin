@@ -203,8 +203,9 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
   }
 
     @Override
-    public boolean addLabelByName(String label, long id) throws Exception {
-        return delegate.addLabelByName(label, parseLong(getDotPageId(String.valueOf(id)).get()));
+    public CompletableFuture<Void> addLabelsByName(long id, String[] labels ) {
+        return getDotPageId(String.valueOf(id))
+                .thenCompose( pageId -> delegate.addLabelsByName( pageId, labels) );
     }
 
     @Override

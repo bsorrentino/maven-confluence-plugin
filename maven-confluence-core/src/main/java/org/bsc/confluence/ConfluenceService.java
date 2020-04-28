@@ -169,8 +169,23 @@ public interface ConfluenceService extends Closeable{
 
     CompletableFuture<Optional<Model.Page>> getPage( String spaceKey, String pageTitle ) ;
 
-    boolean addLabelByName( String label, long id ) throws Exception;
-    
+    CompletableFuture<Void> addLabelsByName( long id, String[] labels ) ;
+
+    default CompletableFuture<Void> addLabelsByName( long id, java.util.List<String> labels ) {
+        if( labels == null || labels.isEmpty() ) return CompletableFuture.completedFuture(null);
+
+        final String[] labelArray = new String[ labels.size() ];
+        return addLabelsByName( id, labels.toArray(labelArray) );
+    }
+
+    default CompletableFuture<Void> addLabelsByName( String id, java.util.List<String> labels ) {
+        return addLabelsByName( Long.valueOf(id), labels);
+    }
+
+    default CompletableFuture<Void> addLabelsByName( String id, String[] labels  ) {
+        return addLabelsByName( Long.valueOf(id), labels);
+    }
+
     CompletableFuture<Model.Page> storePage( Model.Page page, Storage content ) ;
     
     CompletableFuture<Model.Page> storePage( Model.Page page ) ;

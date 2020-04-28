@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
+import static org.bsc.confluence.ConfluenceUtils.sanitizeLabel;
 
 /**
  *
@@ -276,15 +276,22 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     /**
-     * 
-     * @param label
+     *
      * @param id
+     * @param labels
      * @return
-     * @throws Exception 
      */
     @Override
-    public boolean addLabelByName(String label, long id) throws Exception {
-        return connection.addLabelByName(ConfluenceUtils.sanitizeLabel(label), id);
+    public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+        return CompletableFuture.runAsync( () -> {
+            asList(labels).forEach( label -> {
+                try {
+                    connection.addLabelByName(sanitizeLabel(label), id);
+                } catch (Exception e) {
+                    // Ignore exception
+                }
+            });
+        });
     }
     
 
@@ -299,7 +306,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         CompletableFuture<Optional<Model.Attachment>> result = new CompletableFuture<>();
         try {
             result.complete(
-                    Optional.ofNullable(connection.getAttachment(pageId, name, version)));
+                    ofNullable(connection.getAttachment(pageId, name, version)));
         } catch (Exception e) {
             //result.completeExceptionally(e);
             result.complete(Optional.empty());
@@ -315,7 +322,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         CompletableFuture<Optional<Model.Page>> result = new CompletableFuture<>();
         try {
             result.complete(
-                    Optional.ofNullable(connection.getPage(spaceKey, pageTitle) ));
+                    ofNullable(connection.getPage(spaceKey, pageTitle) ));
         } catch (Exception e) {
             //result.completeExceptionally(e);
             result.complete(Optional.empty());
@@ -330,7 +337,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         CompletableFuture<Optional<Model.Page>> result = new CompletableFuture<>();
         try {
             result.complete(
-                    Optional.ofNullable(connection.getPage(pageId)));
+                    ofNullable(connection.getPage(pageId)));
         } catch (Exception e) {
             //result.completeExceptionally(e);
             result.complete(Optional.empty());

@@ -228,10 +228,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public boolean addLabelByName(String label, long id) throws Exception {
- 
-        addLabels(String.valueOf(id), label);
-        return true;
+    public CompletableFuture<Void> addLabelsByName(long id, String[] labels ) {
+        return CompletableFuture.runAsync( () -> addLabels(String.valueOf(id), labels) );
     }
 
     @Override

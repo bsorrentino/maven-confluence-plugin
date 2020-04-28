@@ -659,17 +659,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                             return /*confluence.storePage(page)*/ completedFuture(page);
                         }})
                     )
+                .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
                 .join()
                 ;
 
-        for( String label : site.getHome().getComputedLabels() ) {
-
-            try {
-                confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
-            } catch (Exception e) {
-                getLog().warn( format("Error adding label [%s] :\n%s", label, e.getMessage()) );
-            }
-        }
 
         generateChildren(
                 confluence,
@@ -841,8 +834,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         // Generate the plugin's documentation
         super.confluenceExecute( confluence  -> {
 
-                
-
                     final Model.Page parentPage = loadParentPage(confluence, Optional.of(site));
 
                     outputDirectory.mkdirs();
@@ -863,11 +854,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                             site,
                             locale );
 
-                        for( String label : site.getHome().getComputedLabels() ) {
-    
-                            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
-    
-                        }
+                        confluence.addLabelsByName(confluenceHomePage.getId(), site.getHome().getComputedLabels() ).join();
 
                         final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
 

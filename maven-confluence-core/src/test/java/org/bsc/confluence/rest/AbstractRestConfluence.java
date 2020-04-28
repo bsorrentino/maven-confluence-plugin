@@ -142,11 +142,10 @@ public abstract class AbstractRestConfluence {
         
         assertThat( p11.isPresent(), equalTo(true));
         assertThat( p11.get().getTitle(), equalTo(p1.getTitle()));
-        
-        final boolean addLabelResult = service.addLabelByName("label", Integer.parseInt(p1.getId()) );
-        
-        Assert.assertThat( addLabelResult, Is.is(true));
-        
+
+        final String[] labels = {"label"};
+        service.addLabelsByName(p1.getId(), labels ).get();
+
         Model.Attachment result = 
             service.getAttachment(p1.getId(), "foto2.jpg", "")
             .thenApply( att -> {
