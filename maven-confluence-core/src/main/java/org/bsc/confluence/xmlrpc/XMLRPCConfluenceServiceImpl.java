@@ -371,7 +371,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Boolean> removePageAsync(String pageId) {
+    public CompletableFuture<Boolean> removePage(String pageId) {
         val future = new CompletableFuture<Boolean>();
         
         try {

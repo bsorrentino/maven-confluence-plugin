@@ -52,7 +52,7 @@ public class ScrollVersionsRESTConfluenceServiceIntegrationTest extends Abstract
                     descents.stream()
                         .forEach( pp -> { 
                             System.out.printf( "deleting page [%s]\n", pp.getTitle());
-                            service.removePageAsync( pp.getId() ).join();
+                            service.removePage( pp.getId() ).join();
                         });
                 } catch (Exception e) {
                     fail( e.getMessage() );

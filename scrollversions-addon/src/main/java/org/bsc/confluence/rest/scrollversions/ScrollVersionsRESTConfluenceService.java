@@ -134,7 +134,7 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
         try {
             
             Model.PageSummary page = delegate.findPageByTitle(parentPage.getId(), title);
-            return removePageAsync(page.getId());
+            return removePage(page.getId());
             
         } catch (Exception e) {
             return completedFuture(false);
@@ -142,9 +142,9 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Boolean> removePageAsync(String pageId) {
+    public CompletableFuture<Boolean> removePage(String pageId) {
         return getDotPageId(pageId)
-                .thenCompose( dotPageId -> delegate.removePageAsync(dotPageId) )
+                .thenCompose( dotPageId -> delegate.removePage(dotPageId) )
                 ;   
     }
 

@@ -133,8 +133,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Boolean> removePageAsync(String pageId) {
-            return xmlrpcService.removePageAsync(pageId);
+        public CompletableFuture<Boolean> removePage(String pageId) {
+            return xmlrpcService.removePage(pageId);
         }
 
         @Override

@@ -78,13 +78,13 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
                 for( PageSummary descendent : descendents) {
 
                     getLog().info( format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),startPageTitle, descendent.getTitle()) );
-                    confluence.removePageAsync( descendent.getId() ).join();
+                    confluence.removePage( descendent.getId() ).join();
 
                 }
             }
         }
 
-        confluence.removePageAsync(start.getId()).join();
+        confluence.removePage(start.getId()).join();
 
         getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),startPageTitle, parentPage.getSpace()));
         

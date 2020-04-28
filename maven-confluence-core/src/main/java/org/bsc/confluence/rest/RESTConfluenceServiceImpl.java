@@ -290,7 +290,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
 
     
     @Override
-    public CompletableFuture<Boolean> removePageAsync(String pageId) {
+    public CompletableFuture<Boolean> removePage(String pageId) {
         return CompletableFuture.completedFuture( deletePageById(pageId) );
     }
 
