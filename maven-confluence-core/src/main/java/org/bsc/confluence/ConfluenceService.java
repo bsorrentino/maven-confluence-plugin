@@ -10,6 +10,7 @@ import static java.lang.String.format;
 import java.io.Closeable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -121,7 +122,7 @@ public interface ConfluenceService extends Closeable{
     
     public interface Model {
 
-        public interface Attachment {
+        interface Attachment {
                 void setFileName(String name);
                 String getFileName();
 
@@ -132,7 +133,7 @@ public interface ConfluenceService extends Closeable{
                 java.util.Date getCreated();
         }            
 
-        public interface PageSummary {
+        interface PageSummary {
             
             String getId();
             
@@ -143,7 +144,7 @@ public interface ConfluenceService extends Closeable{
             String getParentId();
         }
 
-        public interface Page extends PageSummary {
+        interface Page extends PageSummary {
 
             int getVersion();
         }
@@ -152,7 +153,7 @@ public interface ConfluenceService extends Closeable{
     
     Credentials getCredentials();
 
-    Model.PageSummary findPageByTitle( String parentPageId, String title) throws Exception ;
+    CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle( String parentPageId, String title)  ;
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 
@@ -184,8 +185,8 @@ public interface ConfluenceService extends Closeable{
     CompletableFuture<Model.Page> storePage( Model.Page page, Storage content ) ;
     
     CompletableFuture<Model.Page> storePage( Model.Page page ) ;
-    
-    java.util.List<Model.PageSummary> getDescendents(String pageId) throws Exception;
+
+    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(String pageId) ;
 
     
     void exportPage(    String url, 
@@ -244,7 +245,7 @@ public interface ConfluenceService extends Closeable{
      * @param resultHandler
      * @param action
      * @return
-     * @see https://gist.github.com/gitplaneta/5065bbba980b2858a55f
+     * @see "https://gist.github.com/gitplaneta/5065bbba980b2858a55f"
      */
     default <T> CompletableFuture<T> retry( int times, 
                                             long delay, 
@@ -260,8 +261,8 @@ public interface ConfluenceService extends Closeable{
                     } else {
                             try {
                                 timeUnit.sleep(delay);
-                                retry( times - 1, delay, timeUnit, Optional.of(future), action);       
-                            } catch (InterruptedException e) {
+                                retry( times - 1, delay, timeUnit, Optional.of(future), action);
+                            } catch ( InterruptedException e) {
                                 future.completeExceptionally(e);
                             }
                     }

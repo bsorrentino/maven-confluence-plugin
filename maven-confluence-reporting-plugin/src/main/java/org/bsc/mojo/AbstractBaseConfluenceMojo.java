@@ -18,6 +18,7 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static java.lang.String.format;
@@ -241,39 +242,44 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected Model.Page loadParentPage( ConfluenceService confluence, Optional<Site> site ) {
-        
-        
-        final String _spaceKey =  site.flatMap( s -> s.optSpaceKey() ).orElse(spaceKey);
-        final String _parentPageId = site.flatMap( s -> s.getHome().optParentPageId()).orElse(parentPageId);
-        final String _parentPageTitle = site.flatMap( s -> s.getHome().optParentPageTitle()).orElse(parentPageTitle);
-        
-        Optional<Model.Page> result = Optional.empty();
-        
-        if( _parentPageId != null ) {
-            
-            result = confluence.getPage( _parentPageId ).join();
-            
-            if( !result.isPresent() ) {
-                getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]", 
-                                            _parentPageId, _parentPageTitle, spaceKey));
+    protected CompletableFuture<Optional<Model.Page>> loadParentPage(ConfluenceService confluence, Optional<Site> site ) {
+
+        return CompletableFuture.supplyAsync( () -> {
+
+            final String _spaceKey =  site.flatMap( s -> s.optSpaceKey() ).orElse(spaceKey);
+            final String _parentPageId = site.flatMap( s -> s.getHome().optParentPageId()).orElse(parentPageId);
+            final String _parentPageTitle = site.flatMap( s -> s.getHome().optParentPageTitle()).orElse(parentPageTitle);
+
+            Optional<Model.Page> result = Optional.empty();
+
+            if( _parentPageId != null ) {
+                result = confluence.getPage( _parentPageId ).join();
+
+                if( !result.isPresent() ) {
+                    getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]",
+                                                _parentPageId, _parentPageTitle, spaceKey));
+                }
             }
-        }
-        
-        if( !result.isPresent()  ) {
-            if( _spaceKey == null ) {
-                throw new IllegalStateException( "spaceKey is not set!");                
+
+            if( !result.isPresent()  ) {
+                if( _spaceKey == null ) {
+                    throw new IllegalStateException( "spaceKey is not set!");
+                }
+                result = confluence.getPage(_spaceKey, _parentPageTitle).join();
+
             }
-            result = confluence.getPage(_spaceKey, _parentPageTitle).join();
-            
-        }
-        
-        if( !result.isPresent() ) {
-            throwRTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey);                
-        }
-        getProperties().put("parentPageTitle", result.get().getTitle());
-        
-        return result.get();
+
+            if( result.isPresent() ) {
+                getProperties().put("parentPageTitle", result.get().getTitle());
+            }
+            else {
+                //throwRTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey);
+                getLog().warn( format( "cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey));
+            }
+
+            return result;
+
+        });
 
     }
     

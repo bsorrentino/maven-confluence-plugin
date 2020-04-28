@@ -51,7 +51,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
+        public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title)  {
             return xmlrpcService.findPageByTitle(parentPageId, title);
         }
 
@@ -128,7 +128,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
+        public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId)  {
             return xmlrpcService.getDescendents(pageId);
         }
 

@@ -633,7 +633,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             final Locale locale ) 
     {
 
-        final Model.Page _parentPage = loadParentPage(confluence, Optional.of(site));
+        final Model.Page _parentPage = loadParentPage(confluence, Optional.of(site))
+                                            .join()
+                                            .orElseThrow( () -> new IllegalStateException( "parent page not found!") );
 
         //
         // Issue 32
@@ -834,41 +836,43 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         // Generate the plugin's documentation
         super.confluenceExecute( confluence  -> {
 
-                    final Model.Page parentPage = loadParentPage(confluence, Optional.of(site));
+            final Model.Page parentPage = loadParentPage(confluence, Optional.of(site))
+                                                .join()
+                                                .orElseThrow( () -> new IllegalStateException( "parent page not found!") );
 
-                    outputDirectory.mkdirs();
+            outputDirectory.mkdirs();
 
-                    getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
+            getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
 
-                    final PluginGenerator generator = new PluginGenerator();
+            final PluginGenerator generator = new PluginGenerator();
 
-                    final PluginToolsRequest request =
-                            new DefaultPluginToolsRequest(project, pluginDescriptor);
+            final PluginToolsRequest request =
+                    new DefaultPluginToolsRequest(project, pluginDescriptor);
 
-                    try {
-                        
-                        final Model.Page confluenceHomePage = generator.processMojoDescriptors(
-                            request.getPluginDescriptor(),
-                            confluence,
-                            parentPage,
-                            site,
-                            locale );
+            try {
 
-                        confluence.addLabelsByName(confluenceHomePage.getId(), site.getHome().getComputedLabels() ).join();
+                final Model.Page confluenceHomePage = generator.processMojoDescriptors(
+                    request.getPluginDescriptor(),
+                    confluence,
+                    parentPage,
+                    site,
+                    locale );
 
-                        final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
+                confluence.addLabelsByName(confluenceHomePage.getId(), site.getHome().getComputedLabels() ).join();
 
-                        generateChildren(   confluence,
-                                            site,
-                                            site.getHome(),
-                                            confluenceHomePage,
-                                            varsToParentPageMap);
+                final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
 
-                        generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
-                        
-                    } catch( Throwable ex ) {
-                        throw new RuntimeException(ex);
-                    }
+                generateChildren(   confluence,
+                                    site,
+                                    site.getHome(),
+                                    confluenceHomePage,
+                                    varsToParentPageMap);
+
+                generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
+
+            } catch( Throwable ex ) {
+                throw new RuntimeException(ex);
+            }
 
         });
 

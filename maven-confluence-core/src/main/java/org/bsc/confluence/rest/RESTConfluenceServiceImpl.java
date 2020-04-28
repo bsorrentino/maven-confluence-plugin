@@ -33,7 +33,7 @@ import org.bsc.ssl.SSLCertificateInfo;
 import okhttp3.HttpUrl;
 
 /**
- * @see https://docs.atlassian.com/confluence/REST/latest/
+ * @see "https://docs.atlassian.com/confluence/REST/latest/"
  * 
  * @author bosrrentino
  */
@@ -153,12 +153,14 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
     
     @Override
-    public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
-        
-        return childrenPages(parentPageId).stream()
-                .map( Page::new )
-                .filter( page -> page.getTitle().equals( title ))
-                .findFirst().orElse(null);
+    public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title)  {
+
+        return supplyAsync( () ->
+            childrenPages(parentPageId).stream()
+                    .map( Page::new )
+                    .filter( page -> page.getTitle().equals( title ))
+                    .map( page -> (Model.PageSummary)page )
+                    .findFirst() );
     }
 
     @Override
@@ -191,12 +193,12 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     
     
     @Override
-    public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
-        
-        return descendantPages(pageId).stream()
-                .map( (page) -> new Page(page))
-                .collect( Collectors.toList() );
-        
+    public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId)  {
+        return supplyAsync( () ->
+            descendantPages(pageId).stream()
+                    .map( (page) -> new Page(page))
+                    .collect( Collectors.toList() )
+        );
     }
 
 
