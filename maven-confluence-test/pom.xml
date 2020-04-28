@@ -293,9 +293,9 @@
                             <siteDescriptor>${basedir}/src/site/confluence/issue194/site-issue194.yaml</siteDescriptor>
                             <failOnError>true</failOnError>
                             <spaceKey>TESTSV</spaceKey>
-                            <parentPageTitle>TESTSV Home</parentPageTitle>
+                            <parentPageTitle>Home</parentPageTitle>
                             <scrollVersions>
-                                <version>BETA</version>
+                                <version>ALFA</version>
                             </scrollVersions>
                         </configuration>
                     </execution>

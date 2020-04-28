@@ -26,10 +26,7 @@ public class Page implements Model.Page {
     
     
     @Override
-    public String getId() {
-        
-        return data.getString("id");
-    }
+    public String getId() { return data.getString("id"); }
 
     @Override
     public String getTitle() {

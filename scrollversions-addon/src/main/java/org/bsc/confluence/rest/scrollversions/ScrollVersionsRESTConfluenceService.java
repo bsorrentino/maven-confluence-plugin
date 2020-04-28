@@ -45,7 +45,7 @@ import okhttp3.Response;
  * 
  * @see <a href="https://help.k15t.com/scroll-versions/latest/api-resources-164037049.html">Scroll Versions API resources</a>
  */
-public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
+class ScrollVersionsRESTConfluenceService implements ConfluenceService {
 
     public static final String CHANGE_TYPE_MODIFY_QUERY_PARAM = "Modify";
 
