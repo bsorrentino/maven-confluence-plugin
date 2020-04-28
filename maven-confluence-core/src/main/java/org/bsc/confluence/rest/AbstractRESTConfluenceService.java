@@ -354,7 +354,7 @@ public abstract class AbstractRESTConfluenceService {
     }
 
     /**
-     * 
+     *
      * @param id
      * @param labels
      */

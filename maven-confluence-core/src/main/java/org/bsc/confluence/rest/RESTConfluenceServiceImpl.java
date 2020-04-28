@@ -6,6 +6,7 @@
 package org.bsc.confluence.rest;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import java.io.File;
 import java.io.IOException;
@@ -167,7 +168,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
         final String id = parentPage.getId();
         final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
 
-        return CompletableFuture.supplyAsync( () ->
+        return supplyAsync( () ->
             createPage( input.build() ).map( Page::new ).get()          
         , CurrentThreadExecutor.instance);
     }
@@ -217,7 +218,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                 .build()
                 ;        
         
-        return CompletableFuture.supplyAsync(() ->
+        return supplyAsync(() ->
             updatePage(page.getId(),input).map( Page::new ).get()
         , CurrentThreadExecutor.instance);
     }
@@ -256,24 +257,19 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
 
     @Override
     public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
-       
-        final Optional<Model.Attachment> att = 
+        return supplyAsync( () ->
                 getAttachment(pageId, name).stream()
-                .map( result -> (Model.Attachment)new Attachment(result) )
-                .findFirst();
-        return completedFuture(att);
+                        .findFirst()
+                        .map( result -> (Model.Attachment)new Attachment(result) ) );
     }
 
     @Override
     public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
-
-        final Optional<Model.Attachment> att = 
+        return supplyAsync( () ->
                 addAttachment(page.getId(), cast(attachment), source).stream()
-                .map( result -> (Model.Attachment)new Attachment(result) )
-                .findFirst();
-        
-        return completedFuture( att.get() );
-
+                        .findFirst()
+                        .map( result -> (Model.Attachment)new Attachment(result) )
+                        .get() );
     }
     
     @Override
