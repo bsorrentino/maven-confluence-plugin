@@ -104,7 +104,8 @@ public class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                                     .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
     }
 
-    Request.Builder requestBuilder() {
+
+    private Request.Builder requestBuilder() {
         return new Request.Builder().header("Authorization", okhttp3.Credentials.basic(getCredentials().username, getCredentials().password))
                                     .header("X-Atlassian-Token", "nocheck");
     }

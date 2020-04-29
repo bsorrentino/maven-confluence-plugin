@@ -292,11 +292,13 @@
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue194/site-issue194.yaml</siteDescriptor>
                             <failOnError>true</failOnError>
-                            <spaceKey>TESTSV</spaceKey>
-                            <parentPageTitle>TESTSV Home</parentPageTitle>
+                            <spaceKey>TSV</spaceKey>
+                            <parentPageTitle>Test Scroll Versions Home</parentPageTitle>
+                            <!--
                             <scrollVersions>
                                 <version>ALFA</version>
                             </scrollVersions>
+                            -->
                         </configuration>
                     </execution>
                     <!--
@@ -485,7 +487,7 @@
                 <confluence.parentPage>Home</confluence.parentPage>
                 <confluence.serverId>confluence-local</confluence.serverId>
                 <confluence.spaceKey>TEST</confluence.spaceKey>
-                <confluence.endPoint>http://localhost:8090/${api.rest}</confluence.endPoint>
+                <confluence.endPoint>http://192.168.1.145:8090/${api.rest}</confluence.endPoint>
 
             </properties>
         </profile>

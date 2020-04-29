@@ -105,7 +105,7 @@ public interface ConfluenceService extends Closeable{
         
         
     }
-    public static class Credentials {
+    class Credentials {
     
         public final String username;
         public final String password;
