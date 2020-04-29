@@ -55,14 +55,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
     private void deletePage(ConfluenceService confluence)  {
         boolean result =
                 loadParentPage(confluence, Optional.empty())
-                .thenCompose( parentPageOpt -> {
-
-                    if( !parentPageOpt.isPresent() ) {
-                        getLog().warn("Parent page not found!");
-                        return CompletableFuture.completedFuture(false);
-                    }
-
-                    final ConfluenceService.Model.Page parentPage = parentPageOpt.get();
+                .thenCompose( parentPage -> {
 
                     final String startPageTitle = getStartPageTitle();
 

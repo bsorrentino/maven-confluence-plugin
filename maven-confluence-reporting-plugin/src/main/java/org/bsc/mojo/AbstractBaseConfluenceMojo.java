@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
 /**
@@ -242,9 +243,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      * @throws MojoExecutionException 
      */
-    protected CompletableFuture<Optional<Model.Page>> loadParentPage(ConfluenceService confluence, Optional<Site> site ) {
+    protected CompletableFuture<Model.Page> loadParentPage(ConfluenceService confluence, Optional<Site> site ) {
 
-        return CompletableFuture.supplyAsync( () -> {
+        return supplyAsync( () -> {
 
             final String _spaceKey =  site.flatMap( s -> s.optSpaceKey() ).orElse(spaceKey);
             final String _parentPageId = site.flatMap( s -> s.getHome().optParentPageId()).orElse(parentPageId);
@@ -273,11 +274,11 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
                 getProperties().put("parentPageTitle", result.get().getTitle());
             }
             else {
-                //throwRTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey);
-                getLog().warn( format( "cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey));
+                throwRTE("cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey);
+                //sgetLog().warn( format( "cannot get page with parentPageTitle [%s] in space [%s]!",parentPageTitle, spaceKey));
             }
 
-            return result;
+            return result.get();
 
         });
 

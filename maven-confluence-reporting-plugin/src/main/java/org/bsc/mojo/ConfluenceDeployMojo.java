@@ -228,7 +228,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      * Markdown processor Info<br>
      * <pre>
      *   &lt;markdownProcessor>
-     *     &lt;name>processor name&lt;/name> &lt;!-- default: pegdown -->
+     *     &lt;name>processor name&lt;/name> &lt;git branch!-- default: pegdown -->
      *   &lt;/markdownProcessor>
      * </pre>
      *
@@ -632,38 +632,35 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             final Site site,
             final Locale locale ) 
     {
-
-        final Model.Page _parentPage = loadParentPage(confluence, Optional.of(site))
-                                            .join()
-                                            .orElseThrow( () -> new IllegalStateException( "parent page not found!") );
-
         //
         // Issue 32
         //
         final String _homePageTitle = getPageTitle();
 
         final Model.Page confluenceHomePage =
+            loadParentPage(confluence, Optional.of(site))
+            .thenCompose( _parentPage ->
                 removeSnaphot(confluence, _parentPage, _homePageTitle)
-                .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
-                .thenCompose( page -> {
-                    return ( page.isPresent() ) ?
-                        completedFuture(page.get()) :
-                        resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset -> confluence.createPage(_parentPage, _homePageTitle) );
-                })
-                .thenCompose( page ->
-                    canProceedToUpdateResource(site.getHome().getUri())
-                    .thenCompose( update ->  {
-                        if(update) return updateHomeContent(confluence, site, page, locale);
-                        else {
-                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
-                                    getPrintableStringForResource(site.getHome().getUri()) ));
-                            return /*confluence.storePage(page)*/ completedFuture(page);
-                        }})
+                    .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
+                    .thenCompose( page -> {
+                        return ( page.isPresent() ) ?
+                                completedFuture(page.get()) :
+                                resetUpdateStatusForResource(site.getHome().getUri())
+                                        .thenCompose( reset -> confluence.createPage(_parentPage, _homePageTitle) );
+                    })
+                    .thenCompose( page ->
+                            canProceedToUpdateResource(site.getHome().getUri())
+                                    .thenCompose( update ->  {
+                                        if(update) return updateHomeContent(confluence, site, page, locale);
+                                        else {
+                                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
+                                                    getPrintableStringForResource(site.getHome().getUri()) ));
+                                            return /*confluence.storePage(page)*/ completedFuture(page);
+                                        }})
                     )
-                .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
-                .join()
-                ;
+                    .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
+
+            ).join();
 
 
         generateChildren(
@@ -837,8 +834,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         super.confluenceExecute( confluence  -> {
 
             final Model.Page parentPage = loadParentPage(confluence, Optional.of(site))
-                                                .join()
-                                                .orElseThrow( () -> new IllegalStateException( "parent page not found!") );
+                                                .join();
 
             outputDirectory.mkdirs();
 

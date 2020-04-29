@@ -62,8 +62,7 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
         final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
 
         final Model.Page parentPage = loadParentPage(confluence, Optional.empty())
-                                            .join()
-                                            .orElseThrow( () -> new IllegalStateException( "parent page not found!") );
+                                            .join();
 
         if( outputFile == null ) {
 
