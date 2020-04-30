@@ -141,11 +141,10 @@ public abstract class AbstractRestConfluence {
         
         assertThat( p11.isPresent(), equalTo(true));
         assertThat( p11.get().getTitle(), equalTo(p1.getTitle()));
-        
-        final boolean addLabelResult = service.addLabelByName("label", Integer.parseInt(p1.getId()) );
-        
-        Assert.assertThat( addLabelResult, Is.is(true));
-        
+
+        final String[] labels = { "label" };
+        service.addLabelsByName(p1.getId(), labels ).get();
+
         Model.Attachment result = 
             service.getAttachment(p1.getId(), "foto2.jpg", "")
             .thenApply( att -> {
@@ -222,20 +221,15 @@ public abstract class AbstractRestConfluence {
             
             assertThat( page.isPresent(), equalTo(true) );
            
-            try {
-                val descendents = service.getDescendents( page.get().getId() );
-                
-                assertThat( descendents, notNullValue() );
-                assertThat( descendents.isEmpty(), is(false) );
-                
-                for( Model.PageSummary p : descendents ) {
-                    System.out.printf( "Descend Page: [%s]\n", p.getTitle());
-                }
-                
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            val descendents = service.getDescendents( page.get().getId() ).join();
+
+            assertThat( descendents, notNullValue() );
+            assertThat( descendents.isEmpty(), is(false) );
+
+            for( Model.PageSummary p : descendents ) {
+                System.out.printf( "Descend Page: [%s]\n", p.getTitle());
             }
-            
+
         })
         .exceptionally( e -> {
             fail( e.getMessage() );

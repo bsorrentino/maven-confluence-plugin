@@ -1,0 +1,540 @@
+package org.bsc.confluence.rest.scrollversions;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
+import lombok.Value;
+import lombok.val;
+import okhttp3.*;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ExportFormat;
+import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersions;
+import org.bsc.ssl.SSLCertificateInfo;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.stream.Collectors.toList;
+
+public class ScrollVersionsConfluenceService implements ConfluenceService {
+
+
+    enum ChangeType {
+        ADD_VERSION("Modify"),
+        REMOVE_VERSION("Remove");
+
+        String typeName;
+
+        ChangeType( String typeName ) {
+            this.typeName = typeName;
+        }
+    }
+
+
+    static final MediaType  JSON_MEDIA_TYPE     = MediaType.parse("application/json; charset=utf-8");
+    static final String     REQUEST_BODY_FORMAT = "[{\"queryArg\": \"%s\", \"value\": \"%s\"}]";
+
+    final RESTConfluenceServiceImpl delegate;
+    final URL           scrollVersionsUrl;
+    final String        versionName;
+    final ObjectMapper objectMapper = new ObjectMapper();
+
+    private Optional<ScrollVersions.Model.Version> currentVersion = Optional.empty();
+
+    public ScrollVersionsConfluenceService( String confluenceUrl,
+                                            String versionName,
+                                            Credentials credentials,
+                                            SSLCertificateInfo sslCertificateInfo)
+    {
+        if (versionName == null)
+            throw new java.lang.IllegalArgumentException("versionName is null!");
+        this.versionName = versionName;
+
+        try {
+            val regex = "/rest/api(/?)$";
+            this.scrollVersionsUrl = new URL(confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0"));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("invalid Scroll Versions url", e);
+        }
+
+        this.delegate = new RESTConfluenceServiceImpl(confluenceUrl, credentials, sslCertificateInfo);
+
+    }
+
+    private HttpUrl.Builder urlBuilder() {
+
+        int port = scrollVersionsUrl.getPort();
+        port = (port > -1 ) ? port : scrollVersionsUrl.getDefaultPort();
+
+        return new HttpUrl.Builder().scheme(scrollVersionsUrl.getProtocol())
+                .host(scrollVersionsUrl.getHost())
+                .port(port)
+                .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
+    }
+
+
+    private Request.Builder requestBuilder() {
+        val credentials = getCredentials();
+        return new Request.Builder()
+                .header("Authorization", okhttp3.Credentials.basic(credentials.username, credentials.password))
+                .header("X-Atlassian-Token", "nocheck");
+    }
+
+    /**
+     *
+     * @param spaceKey
+     * @return
+     */
+    CompletableFuture<ScrollVersions.Model.Version> getCurrentVersion(String spaceKey) {
+
+        return currentVersion
+                .map( v -> completedFuture(v) )
+                .orElseGet( () ->
+                    getScrollVersions(spaceKey)
+                        .thenCompose( versions ->
+                            versions.stream()
+                                    .filter(v -> versionName.equals(v.getName()))
+                                    .findFirst()
+                                    .map(v -> {
+                                        currentVersion = Optional.of(v); // cache version
+                                        return completedFuture(v);
+                                    })
+                                    .orElseGet(() ->
+                                        completeExceptionally( new Exception(format("version [%s] doesn't exists!", versionName)) )
+                                    )
+                        ));
+
+
+
+    }
+
+    /**
+     *
+     * @param spaceKey
+     * @return
+     */
+    CompletableFuture<List<ScrollVersions.Model.Version>> getScrollVersions(String spaceKey) {
+
+
+        val httpUrl =
+                urlBuilder()
+                .addPathSegment("versions")
+                .addPathSegment(spaceKey)
+                .build();
+        val request = requestBuilder()
+                .url(httpUrl)
+                .get()
+                .build();
+
+        return delegate.fromRequestAsync(request).thenCompose( response -> {
+
+            val futureResult = new CompletableFuture<List<ScrollVersions.Model.Version>>();
+
+            return ofNullable(response.body()).map(b -> {
+
+                try {
+                    val responseBodyString = b.string();
+
+                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Version[].class);
+
+                    futureResult.complete(asList(result));
+
+                } catch (IOException e) {
+                    futureResult.completeExceptionally(e);
+                }
+
+                return futureResult;
+
+            }).orElseGet(() -> {
+                futureResult.completeExceptionally(new Exception("could not retrieve versions info!"));
+                return futureResult;
+            });
+
+        });
+    }
+
+
+    /**
+     *
+     * @param spaceKey
+     * @return
+     */
+    CompletableFuture<Optional<ScrollVersions.Model.PageResult>> getVersionPage(String spaceKey, String title) {
+
+        val httpUrl =
+                urlBuilder()
+                        .addPathSegment("page")
+                        .addPathSegment(spaceKey)
+                        .build();
+
+        val body = RequestBody.create(JSON_MEDIA_TYPE, format(REQUEST_BODY_FORMAT, "scrollPageTitle", title) );
+
+        val request = requestBuilder()
+                .url(httpUrl)
+                .post(body)
+                .build();
+
+        return delegate.fromRequestAsync(request).thenCompose( response -> {
+
+            val futureResult = new CompletableFuture<Optional<ScrollVersions.Model.PageResult>>();
+
+            return ofNullable(response.body()).map( b -> {
+                try {
+                    val responseBodyString = b.string();
+                    System.out.printf( "getVersionPage( '%s', '%s')\n%s\n\n",spaceKey, title, responseBodyString );
+                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Page[].class);
+
+                    if( result == null || result.length == 0 ) {
+                        futureResult.complete( Optional.empty() );
+                    }
+                    else {
+
+                        if( result.length==1 ) {
+                            futureResult.complete( Optional.of( ScrollVersions.Model.PageResult.of( result[0], emptyList())) );
+                        }
+                        else {
+                            val masterPage = Arrays.stream(result).filter( p -> p.isMasterPage() ).findFirst();
+
+                            futureResult.complete(
+                                    masterPage.map( mp -> {
+                                        val versionPages = Arrays.stream(result).filter( p -> !p.isMasterPage() ).collect(toList());
+                                        return Optional.of( ScrollVersions.Model.PageResult.of( mp, versionPages ) );
+                                    }).orElse( Optional.empty()));
+                        }
+                    }
+
+
+                } catch (IOException e) {
+                    futureResult.completeExceptionally( e );
+                }
+                return futureResult;
+            }).orElseGet( () -> {
+                futureResult.completeExceptionally(new Exception("could not retrieve versions info!s"));
+                return futureResult;
+            });
+
+        });
+
+    }
+
+    /**
+     *
+     * @param spaceKey
+     * @param title
+     * @param byVersion
+     * @return
+     */
+    CompletableFuture<Optional<ScrollVersions.Model.PageResult>> getVersionPage(String spaceKey, String title, ScrollVersions.Model.Version byVersion ) {
+
+        return getVersionPage( spaceKey, title )
+                    .thenApply( result ->
+                        result.map( r ->
+                            r.getVersionPages().stream()
+                                .filter( p -> byVersion.getId().equals(p.getTargetVersion().getVersionId()) )
+                                .findFirst()
+                                .map( pp -> Optional.of(ScrollVersions.Model.PageResult.of( r.getMasterPage(), singletonList(pp) )) )
+                                .orElseGet( () -> Optional.of(ScrollVersions.Model.PageResult.of( r.getMasterPage(), emptyList() )) )
+                        ).orElse( result )
+                    );
+    }
+
+    /**
+     *
+     * @param spaceKey
+     * @param masterPageId
+     * @param title
+     * @param version
+     * @return
+     */
+    CompletableFuture<ScrollVersions.Model.NewPageResult> createVersionPage(String spaceKey, long masterPageId, String title, ScrollVersions.Model.Version version) {
+
+        val httpUrl =
+                urlBuilder()
+                        .addPathSegment("page")
+                        .addPathSegment("new")
+                        .addPathSegment(spaceKey)
+                        .build();
+
+        val body = new FormBody.Builder()
+                .add("parentConfluenceId", String.valueOf(masterPageId) )
+                .add( "versionId", version.getId() )
+                .add( "pageTitle", title )
+                .build();
+
+        val request = requestBuilder()
+                .url(httpUrl)
+                .post(body)
+                .build();
+
+        return delegate.fromRequestAsync(request).thenCompose( response -> {
+
+            val futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
+
+            return ofNullable(response.body()).map( b -> {
+                try {
+                    val responseBodyString = b.string();
+
+                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);
+
+                    futureResult.complete( result );
+
+                } catch (IOException e) {
+                    futureResult.completeExceptionally( e );
+                }
+                return futureResult;
+            }).orElseGet( () -> {
+                futureResult.completeExceptionally(new Exception( format("could not create new page [%s] in version [%s]!", title, version.getName() )));
+                return futureResult;
+            });
+
+        });
+
+    }
+
+    /**
+     *
+     * @param masterPageId
+     * @param title
+     * @param version
+     * @param changeType
+     * @return
+     */
+    CompletableFuture<ScrollVersions.Model.NewPageResult> manageVersionPage(long masterPageId, String title, ScrollVersions.Model.Version version, ChangeType changeType ) {
+
+        val httpUrl =
+                urlBuilder()
+                        .addPathSegment("page")
+                        .addPathSegment("modify")
+                        .build();
+
+        val body = new FormBody.Builder()
+                .add("masterPageId", String.valueOf(masterPageId) )
+                .add( "pageTitle", title)
+                .add( "versionId", version.getId() )
+                .add( "changeType", changeType.typeName )
+                .build();
+
+        val request = requestBuilder()
+                .url(httpUrl)
+                .post(body)
+                .build();
+
+        return delegate.fromRequestAsync(request).thenCompose( response -> {
+
+            val futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
+
+            return ofNullable(response.body()).map( b -> {
+                try {
+                    val responseBodyString = b.string();
+
+                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);
+
+                    futureResult.complete( result );
+
+                } catch (IOException e) {
+                    futureResult.completeExceptionally( e );
+                }
+                return futureResult;
+            }).orElseGet( () -> {
+                futureResult.completeExceptionally(new Exception( format("could not create new page [%s] in version [%s]!", title, version.getName() )));
+                return futureResult;
+            });
+
+        });
+
+    }
+
+    public static void main( String...args ) {
+        val ssl = new SSLCertificateInfo();
+
+        val service = new ScrollVersionsConfluenceService(
+                "http://192.168.1.145:8090/rest/api",
+                "alpha",
+                new Credentials( "admin", "admin"),
+                ssl);
+
+        val space = "SVTS";
+        val currentVersion = "beta";
+        val parentTitle = "Topic 1";
+
+        service.getScrollVersions(space)
+            .thenApply( versions -> versions.stream().filter( v -> currentVersion.equals(v.getName()) ).findFirst().get() )
+            .thenCompose( version ->
+                service.getVersionPage( space, parentTitle)
+                    .thenCompose( parentPage -> {
+
+                        if (!parentPage.isPresent())
+                            return completeExceptionally(new Exception( format("page '%s' not found!", parentTitle)) );
+
+                        val title = "New Page from Code 1";
+
+                        return service.getVersionPage(space, title, version)
+                            .thenCompose(page -> {
+
+                                if (!page.isPresent()) {
+                                    System.out.println("Page doesn't exist we have to create it");
+                                    val masterpage = parentPage.get().getMasterPage();
+                                    return service.createVersionPage(masterpage.getSpaceKey(), masterpage.getConfluencePageId(), title, version);
+                                } else {
+                                    if( page.get().getVersionPages().isEmpty() ) {
+                                        System.out.printf("Page doesn't exist in version '%s' we have to create it\n", version.getName());
+                                        val masterpage = page.get().getMasterPage();
+                                        return service.manageVersionPage(masterpage.getConfluencePageId(), title, version, ChangeType.ADD_VERSION);
+                                    }
+                                    else {
+                                        System.out.println("Page exist we have to update it");
+                                        return completedFuture(null);
+                                    }
+                                }
+                            });
+                    })
+            )
+            .join();
+
+    }
+
+    /**
+     *
+     * @param ex
+     * @param <U>
+     * @return
+     */
+    static <U> CompletableFuture<U> completeExceptionally( Throwable ex ) {
+        val future = new CompletableFuture<U>();
+        future.completeExceptionally( ex );
+        return future;
+    }
+
+    private ScrollVersions.Model.MasterPage toMasterPage(Model.Page page ) {
+        if( page instanceof ScrollVersions.Model.MasterPage) {
+            return (ScrollVersions.Model.PageResult)page;
+        }
+        throw new IllegalArgumentException( format("mode page [%s] is not a scroll versions page result!", page.getTitle()));
+    }
+
+    private <S,T> CompletableFuture<T> cast( CompletableFuture<S> s ) {
+        return (CompletableFuture<T>)s;
+    }
+
+    private <S,T> Optional<T> cast( Optional<S> s ) {
+        return (Optional<T>)s;
+    }
+
+    ///
+    /// Confluence Service Implementation
+    ///
+
+    @Override
+    public Credentials getCredentials() {
+        return delegate.getCredentials();
+    }
+
+    @Override
+    public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title) {
+        return delegate.findPageByTitle(parentPageId, title);
+    }
+
+    @Override
+    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
+
+        val parentMasterPage = toMasterPage(parentPage);
+
+        return getCurrentVersion( parentPage.getSpace() )
+                .thenCompose(version -> cast(createVersionPage( parentPage.getSpace(), parentMasterPage.getMasterPageId(),  title, version)) );
+    }
+
+    @Override
+    public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {
+        return delegate.getPage(pageId);
+    }
+
+    @Override
+    public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {
+
+        return getCurrentVersion(spaceKey)
+                .thenCompose( version ->
+                        getVersionPage( spaceKey, pageTitle, version)
+                            .thenCompose( vpage ->
+                                ( !vpage.isPresent() || vpage.get().getVersionPages().isEmpty() )
+                                    ? completedFuture(Optional.empty())
+                                    : completedFuture( cast(vpage) )
+                            ));
+
+    }
+
+    @Override
+    public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId) {
+        return delegate.getDescendents(pageId);
+    }
+
+    @Override
+    public CompletableFuture<Model.Page> storePage(Model.Page page, Storage content) {
+        System.out.println( page );
+        System.out.printf( "page.id=[%s] page.version=[%d]\n", page.getId(), page.getVersion() );
+
+        return delegate.storePage(page, content)
+                .thenCompose( result -> completedFuture(page) );
+    }
+
+    @Override
+    public CompletableFuture<Model.Page> storePage(Model.Page page) {
+        return delegate.storePage(page);
+    }
+
+    @Override
+    public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+        return delegate.addLabelsByName(id, labels);
+    }
+
+    @Override
+    public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
+        delegate.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
+    }
+
+    @Override
+    public Model.Attachment createAttachment() {
+        return delegate.createAttachment();
+    }
+
+    @Override
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
+        return delegate.getAttachment(pageId, name, version);
+    }
+
+    @Override
+    public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
+        return delegate.addAttachment(page, attachment, source);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
+        return delegate.removePage(parentPage, title);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> removePage(String pageId) {
+        return delegate.removePage(pageId);
+    }
+
+    @Override
+    public void close() throws IOException {
+        delegate.close();
+    }
+
+
+}

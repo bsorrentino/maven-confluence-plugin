@@ -1,8 +1,17 @@
 package org.bsc.confluence.rest.scrollversions;
 
-import static java.lang.Long.parseLong;
-import static java.lang.String.format;
-import static java.util.concurrent.CompletableFuture.completedFuture;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import lombok.val;
+import okhttp3.*;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ExportFormat;
+import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsNewPage;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsPage;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsPageByTitle;
+import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsTargetVersion;
+import org.bsc.ssl.SSLCertificateInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,28 +23,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
-import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsNewPage;
-import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsPage;
-import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsPageByTitle;
-import org.bsc.confluence.rest.scrollversions.model.ScrollVersionsTargetVersion;
-import org.bsc.ssl.SSLCertificateInfo;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.SneakyThrows;
-import lombok.val;
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 /**
  * Implements a {@link ConfluenceService} with Scroll Versions support via REST APIs.
@@ -45,6 +36,7 @@ import okhttp3.Response;
  * 
  * @see <a href="https://help.k15t.com/scroll-versions/latest/api-resources-164037049.html">Scroll Versions API resources</a>
  */
+@Deprecated
 class ScrollVersionsRESTConfluenceService implements ConfluenceService {
 
     public static final String CHANGE_TYPE_MODIFY_QUERY_PARAM = "Modify";
@@ -103,7 +95,8 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
                                     .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
     }
 
-    Request.Builder requestBuilder() {
+
+    private Request.Builder requestBuilder() {
         return new Request.Builder().header("Authorization", okhttp3.Credentials.basic(getCredentials().username, getCredentials().password))
                                     .header("X-Atlassian-Token", "nocheck");
     }
@@ -114,37 +107,31 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title)  {
        
-        Supplier<ScrollVersionsException> notFoundException = () -> 
-                new ScrollVersionsException(format("no page found for parent id %s and title %s in version %s",
-                    parentPageId,
-                    title,                                                                                                                   
-                    scrollVersionsName));
-                
-        val page = delegate.findPageByTitle(parentPageId, title);
+        final CompletableFuture<?> result = delegate.findPageByTitle(parentPageId, title)
+               .thenCompose( page -> {
+                   if( page.isPresent() ) {
+                       return getPage(page.get().getSpace(), page.get().getTitle());
+                   }
+                   return completedFuture( Optional.empty() );
+                });
+
+        return (CompletableFuture<Optional<? extends Model.PageSummary>>) result;
         
-        return getPage(page.getSpace(), page.getTitle())
-                    .get()
-                    .orElseThrow(notFoundException);
     }
 
     @Override
     public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
-        try {
-            
-            Model.PageSummary page = delegate.findPageByTitle(parentPage.getId(), title);
-            return removePageAsync(page.getId());
-            
-        } catch (Exception e) {
-            return completedFuture(false);
-        }
+
+        return delegate.findPageByTitle(parentPage.getId(), title)
+                            .thenCompose( page -> removePage(page.get().getId()) );
     }
 
     @Override
-    public CompletableFuture<Boolean> removePageAsync(String pageId) {
+    public CompletableFuture<Boolean> removePage(String pageId) {
         return getDotPageId(pageId)
-                .thenCompose( dotPageId -> delegate.removePageAsync(dotPageId) )
+                .thenCompose( dotPageId -> delegate.removePage(dotPageId) )
                 ;   
     }
 
@@ -153,8 +140,7 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
         return getMasterPageId(parentPage.getId())
                 .thenCompose(parentPageId -> getScrollVersionId(parentPage.getSpace())
-                                                 .thenCompose(scrollVersionId -> 
-         {
+                                                 .thenCompose(scrollVersionId -> {
             
             val httpUrl = urlBuilder().addPathSegment("page")
                                                  .addPathSegment("new")
@@ -189,13 +175,16 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     @Override
     public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {
         return getDotPageId(pageId)
-                .thenCompose(delegate::getPage)
+                .thenComposeAsync(delegate::getPage)
                 .exceptionally( e -> Optional.empty())
                 ;
     }
 
     @Override
     public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {
+        if( pageTitle.startsWith("?") ) {
+            return delegate.getPage( spaceKey, pageTitle.substring(1));
+        }
         return getDotPageId(spaceKey, pageTitle)
                     .thenCompose(delegate::getPage)
                     .exceptionally( e -> Optional.empty())
@@ -203,8 +192,9 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
   }
 
     @Override
-    public boolean addLabelByName(String label, long id) throws Exception {
-        return delegate.addLabelByName(label, parseLong(getDotPageId(String.valueOf(id)).get()));
+    public CompletableFuture<Void> addLabelsByName(long id, String[] labels ) {
+        return getDotPageId(String.valueOf(id))
+                .thenCompose( pageId -> delegate.addLabelsByName( pageId, labels) );
     }
 
     @Override
@@ -222,12 +212,15 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
-        return delegate.getDescendents(getMasterPageId(pageId).get())
-                                            .stream()
-                                            .filter(page -> isDotPage(page.getSpace(), page.getTitle()))
-                                            .skip(1) // SKIP PARENT PAGE
-                                            .collect(Collectors.toList());
+    public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId)  {
+        return getMasterPageId(pageId)
+                .thenCompose( id -> delegate.getDescendents(id) )
+                .thenCompose( descendents ->
+                    completedFuture(
+                            descendents.stream()
+                            .filter(page -> isDotPage(page.getSpace(), page.getTitle()))
+                            .skip(1) // SKIP PARENT PAGE
+                            .collect(Collectors.toList()) ));
     }
 
     @Override
@@ -287,7 +280,6 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
     }
 
     private CompletableFuture<Model.Page> getCreatedPageAsync( Response response, String title) {
-        
         val result = new CompletableFuture<Model.Page>();
         
         try {
@@ -571,7 +563,7 @@ class ScrollVersionsRESTConfluenceService implements ConfluenceService {
         
         return delegate.getPage(parentPage.getSpace(), title)
         .thenCompose( optionalMasterPage -> 
-            optionalMasterPage.map( p -> CompletableFuture.completedFuture(p) )
+            optionalMasterPage.map( p -> completedFuture(p) )
                               .orElseGet( () -> completeExceptionally( format("failed to get master page with title %s in space %s", title, parentPage.getSpace())) ) )
         .thenCompose(masterPage -> {
 

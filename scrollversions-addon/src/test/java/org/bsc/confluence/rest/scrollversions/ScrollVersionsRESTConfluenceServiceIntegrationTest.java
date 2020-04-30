@@ -45,19 +45,13 @@ public class ScrollVersionsRESTConfluenceServiceIntegrationTest extends Abstract
                assertThat( format("page [%s] not found", getParentPageTitle()), p.isPresent(), is(true) );
                return p.get();               
            })
-           .thenAccept( page -> {
-                
-                try {
-                    val descents = service.getDescendents(page.getId());
-                    descents.stream()
-                        .forEach( pp -> { 
-                            System.out.printf( "deleting page [%s]\n", pp.getTitle());
-                            service.removePageAsync( pp.getId() ).join();
-                        });
-                } catch (Exception e) {
-                    fail( e.getMessage() );
-                }
-                              
+           .thenCompose( page -> service.getDescendents(page.getId()) )
+           .thenAccept( descents -> {
+                descents.stream()
+                    .forEach( pp -> {
+                        System.out.printf( "deleting page [%s]\n", pp.getTitle());
+                        service.removePage( pp.getId() ).join();
+                    });
            }).get()
        ;
     }

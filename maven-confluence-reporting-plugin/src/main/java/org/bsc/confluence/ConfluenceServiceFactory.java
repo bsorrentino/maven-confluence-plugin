@@ -9,7 +9,7 @@ import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
-import org.bsc.confluence.rest.scrollversions.SimpleScrollVersionsConfluenceService;
+import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfluenceService;
 import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
 import org.bsc.ssl.SSLCertificateInfo;
 
@@ -192,7 +192,7 @@ public class ConfluenceServiceFactory {
                 return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);               
             }
             if( ConfluenceService.Protocol.REST.match(endpoint)) {
-                return sv.map( config -> (ConfluenceService)new SimpleScrollVersionsConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
+                return sv.map( config -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
                          .orElseGet( () -> new RESTConfluenceServiceImpl(endpoint, credentials /*, proxyInfo*/, sslInfo))
                          ;               
             }
