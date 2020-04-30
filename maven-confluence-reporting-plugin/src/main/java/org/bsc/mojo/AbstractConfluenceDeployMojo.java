@@ -343,19 +343,11 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                                     getPrintableStringForResource(source)));
                                             return /* confluence.storePage(p) */ completedFuture(p);
                                         }}))
+                .thenCompose( p -> confluence.addLabelsByName( p.getId(), child.getComputedLabels() ).thenApply( (v) -> p) )
                 .join();
 
         child.setName(pageTitleToApply);
 
-        child.getComputedLabels().forEach( label -> {
-
-            try {
-                confluence.addLabelByName(label, Long.parseLong(result.getId()));
-            } catch (Exception e) {
-                getLog().warn( format( "error adding label [%s]", label), e );
-            }
-
-        });
 
         return result;
 

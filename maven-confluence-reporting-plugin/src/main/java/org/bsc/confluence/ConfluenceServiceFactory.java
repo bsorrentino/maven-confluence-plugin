@@ -51,7 +51,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
+        public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title)  {
             return xmlrpcService.findPageByTitle(parentPageId, title);
         }
 
@@ -98,8 +98,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public boolean addLabelByName(String label, long id) throws Exception {
-            return xmlrpcService.addLabelByName(ConfluenceUtils.sanitizeLabel(label), id);
+        public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+            return xmlrpcService.addLabelsByName(id, labels);
         }
 
         @Override
@@ -128,13 +128,13 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
+        public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId)  {
             return xmlrpcService.getDescendents(pageId);
         }
 
         @Override
-        public CompletableFuture<Boolean> removePageAsync(String pageId) {
-            return xmlrpcService.removePageAsync(pageId);
+        public CompletableFuture<Boolean> removePage(String pageId) {
+            return xmlrpcService.removePage(pageId);
         }
 
         @Override

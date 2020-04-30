@@ -355,8 +355,8 @@ public abstract class AbstractRESTConfluenceService {
 
     /**
      *
-     * @param inputData
-     * @return
+     * @param id
+     * @param labels
      */
     protected final void addLabels( String id,  String ...labels ) {
 
