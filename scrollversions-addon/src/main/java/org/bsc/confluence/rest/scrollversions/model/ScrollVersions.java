@@ -16,8 +16,6 @@ public interface ScrollVersions {
         interface Result {
 
             long getMasterPageId();
-
-            boolean isVersioned();
         }
 
         @Data
@@ -97,7 +95,7 @@ public interface ScrollVersions {
             public String getId() { return String.valueOf(resolvePage().getConfluencePageId()); }
 
             @Override
-            public String getTitle() { return resolvePage().getConfluencePageTitle(); }
+            public String getTitle() { return masterPage.getConfluencePageTitle(); }
 
             @Override
             public String getSpace() { return masterPage.getSpaceKey(); }
@@ -107,9 +105,6 @@ public interface ScrollVersions {
 
             @Override
             public int getVersion() { return 1; }
-
-            @Override
-            public boolean isVersioned() { return !versionPages.isEmpty(); }
 
             @Override
             public long getMasterPageId() { return masterPage.getConfluencePageId(); }
@@ -156,9 +151,6 @@ public interface ScrollVersions {
             public long getMasterPageId() {
                 return masterConfluencePage.getId();
             }
-
-            @Override
-            public boolean isVersioned() { return true; }
 
         }
 
