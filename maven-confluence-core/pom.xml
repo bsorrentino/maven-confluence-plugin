@@ -4,7 +4,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.9-SNAPSHOT</version>
+        <version>6.9-beta1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -127,13 +127,13 @@
             ===================================
             JAXB SCHEMA GENERATION
 
-            jaxb2:schemagen
+            mvn jaxb2:schemagen
             ===================================
             -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5.0</version>
                 <configuration>
                     <sources>
                         <source>src/main/java/org/bsc/confluence/model/Site.java</source>

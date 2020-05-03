@@ -1,6 +1,7 @@
 home:
   uri: issue194.md
-  name: "[Design review] [Prism] CB integration module"
+  name: "Parent - Issue#194"
+  ignoreVariables: true
   attachments:
     - name: dashboard.png
       uri: images/dashboard.png
@@ -11,7 +12,7 @@ home:
       contentType: image/png
       comment: test2
   children:
-    - name: "Issue#194"
+    - name: "Child1 - Issue#194"
       uri: issue194.confluence
   labels:
     - issue194

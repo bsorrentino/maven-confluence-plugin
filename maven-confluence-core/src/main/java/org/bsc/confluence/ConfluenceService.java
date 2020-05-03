@@ -105,7 +105,7 @@ public interface ConfluenceService extends Closeable{
         
         
     }
-    public static class Credentials {
+    class Credentials {
     
         public final String username;
         public final String password;
@@ -226,13 +226,11 @@ public interface ConfluenceService extends Closeable{
                 .thenApply( parent -> 
                     parent.orElseThrow( () -> 
                         new RuntimeException( 
-                                String.format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
+                                format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
                 .thenCombine( getPage(spaceKey, title), Tuple2::of)
-                .thenCompose( tuple -> {
-                    return ( tuple.getValue2().isPresent() ) ?
-                        CompletableFuture.completedFuture(tuple.getValue2().get()) :
-                        createPage(tuple.getValue1(), title);
-                })
+                .thenCompose( tuple -> ( tuple.getValue2().isPresent() )
+                        ? CompletableFuture.completedFuture(tuple.getValue2().get())
+                        : createPage(tuple.getValue1(), title))
                 ;
         }
 
