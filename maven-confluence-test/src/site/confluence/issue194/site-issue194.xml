@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bsc:site
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns:bsc='https://github.com/bsorrentino/maven-confluence-plugin'
+        xsi:schemaLocation='https://github.com/bsorrentino/maven-confluence-plugin https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-6.0.xsd'>
+
+    <home name="Parent - Issue#194" uri="issue194.md" ignore-variables="true" >
+        <attachment  name="dashboard.png" uri="images/dashboard.png" comment="test1"  contentType="image/png" ></attachment>
+        <attachment  name="meal.png" uri="images/meal.png" comment="test2"  contentType="image/png" ></attachment>
+
+        <child name="Child1 - Issue#194" uri="issue194.confluence">
+        </child>
+
+    </home>
+
+    <label>issue194</label>
+    <label>test</label>
+    <label>markdown</label>
+    <label>image</label>
+</bsc:site>

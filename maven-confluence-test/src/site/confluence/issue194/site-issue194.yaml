@@ -1,6 +1,7 @@
 home:
   uri: issue194.md
   name: "Parent - Issue#194"
+  ignoreVariables: true
   attachments:
     - name: dashboard.png
       uri: images/dashboard.png

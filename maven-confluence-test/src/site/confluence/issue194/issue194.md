@@ -1,4 +1,4 @@
-# issue 194 - ALFA
+# issue 194 - alpha
 
 
 ## Option 1

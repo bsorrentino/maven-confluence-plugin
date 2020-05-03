@@ -123,7 +123,19 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
                                                   .add("value",storage.value)))
                   ;
       }
-     
+
+    /**
+     *
+     * @param spaceKey
+     * @param title
+     * @return
+     */
+      public final CompletableFuture<Model.Page> createPageByTitle( String spaceKey, String title ) {
+              final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, title);
+
+              return supplyAsync( () -> createPage( input.build() ).map( Page::new ).get() );
+      }
+
     /**
      * 
      * @return 
