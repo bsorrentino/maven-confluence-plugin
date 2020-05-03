@@ -314,7 +314,6 @@ public abstract class AbstractRESTConfluenceService {
                                     .addPathSegment(id)
                                     //.addQueryParameter("status", "")
                                     .build();
-
         fromUrlDELETE( url, "delete page" );
 
         return true;

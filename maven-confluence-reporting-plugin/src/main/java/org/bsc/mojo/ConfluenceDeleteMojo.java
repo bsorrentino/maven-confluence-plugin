@@ -110,7 +110,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
                                         });
                             });
         }).exceptionally( ex  -> {
-            getLog().error( ex.getMessage() );
+            getLog().warn( ex.getMessage() );
             return false;
         })
         .join();
