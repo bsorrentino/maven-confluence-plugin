@@ -18,8 +18,22 @@
     <xs:complexContent>
       <xs:extension base="bsc:page">
         <xs:sequence/>
-        <xs:attribute name="parent-page-id" type="xs:string"/>
-        <xs:attribute name="parent-page" type="xs:string"/>
+        <xs:attribute name="parentPageId" type="xs:string" />
+        <xs:attribute name="parent-page-id" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>
+              this attribute name containing dash is not supported in yaml format. use 'parentPageId' instead
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="parentPage" type="xs:string"/>
+        <xs:attribute name="parent-page" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>
+              this attribute name containing dash is not supported in yaml format. use 'parentPage' instead
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -39,7 +53,13 @@
           <xs:element maxOccurs="unbounded" minOccurs="0" name="label" type="xs:string"/>
         </xs:sequence>
         <xs:attribute name="ignoreVariables" type="xs:boolean"/>
-        <xs:attribute name="ignore-variables" type="xs:boolean"/>
+        <xs:attribute name="ignore-variables" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>
+              this attribute name containing dash is not supported in yaml format. use 'ignoreVariables' instead
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
