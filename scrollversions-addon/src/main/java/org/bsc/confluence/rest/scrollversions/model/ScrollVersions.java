@@ -5,17 +5,19 @@ import lombok.*;
 import org.bsc.confluence.ConfluenceService;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 public interface ScrollVersions {
 
     interface Model {
 
-        interface MasterPage {
+        interface Result {
 
             long getMasterPageId();
+
+            boolean isVersioned();
         }
 
         @Data
@@ -81,7 +83,7 @@ public interface ScrollVersions {
         }
 
         @Value(staticConstructor = "of")
-        class PageResult implements ConfluenceService.Model.Page, MasterPage {
+        class PageResult implements ConfluenceService.Model.Page, Result {
             ScrollVersions.Model.Page masterPage;
             List<Page> versionPages;
 
@@ -104,7 +106,10 @@ public interface ScrollVersions {
             public String getParentId() { { throw new UnsupportedOperationException("getParentId is not supported in scroll versions mode"); } }
 
             @Override
-            public int getVersion() { return 2; }
+            public int getVersion() { return 1; }
+
+            @Override
+            public boolean isVersioned() { return !versionPages.isEmpty(); }
 
             @Override
             public long getMasterPageId() { return masterPage.getConfluencePageId(); }
@@ -112,7 +117,7 @@ public interface ScrollVersions {
 
         @Data
         @JsonIgnoreProperties(ignoreUnknown = true)
-        class NewPageResult implements ConfluenceService.Model.Page, MasterPage {
+        class NewPageResult implements ConfluenceService.Model.Page, Result {
 
             private TargetVersion targetVersion;
 
@@ -145,12 +150,15 @@ public interface ScrollVersions {
             public String getParentId() { return String.valueOf(confluencePage.parentId); }
 
             @Override
-            public int getVersion() { return 2; }
+            public int getVersion() { return 1; }
 
             @Override
             public long getMasterPageId() {
                 return masterConfluencePage.getId();
             }
+
+            @Override
+            public boolean isVersioned() { return true; }
 
         }
 

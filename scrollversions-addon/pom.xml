@@ -44,7 +44,6 @@
             <id>utest</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-                <jdk>11</jdk>
             </activation>
             <build>
                 <plugins>
