@@ -165,7 +165,7 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
     
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title)  {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  {
 
         return supplyAsync( () ->
             childrenPages(parentPageId).stream()

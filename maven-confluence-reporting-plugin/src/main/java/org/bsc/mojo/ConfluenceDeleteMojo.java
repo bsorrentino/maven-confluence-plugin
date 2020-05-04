@@ -12,10 +12,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static java.lang.String.format;
 import static java.util.concurrent.CompletableFuture.completedFuture;
@@ -61,7 +58,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
 
                     getLog().debug(  String.format( "start deleting from page [%s]", startPageTitle));
 
-                    return confluence.findPageByTitle(parentPage.getId(), startPageTitle)
+                    return confluence.getPageByTitle(parentPage.getId(), startPageTitle)
                             .thenCompose( ( start ) -> {
 
                                 if (!start.isPresent()) {

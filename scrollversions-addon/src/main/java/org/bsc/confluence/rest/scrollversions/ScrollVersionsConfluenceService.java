@@ -565,7 +565,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title) {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title) {
         //debug( "findPageByTitle( parentPageId:[%s], title:[%s])", parentPageId, title );
 
         return delegate.getPage( parentPageId )

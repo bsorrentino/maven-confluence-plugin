@@ -153,7 +153,7 @@ public interface ConfluenceService extends Closeable{
     
     Credentials getCredentials();
 
-    CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle( String parentPageId, String title)  ;
+    CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  ;
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 

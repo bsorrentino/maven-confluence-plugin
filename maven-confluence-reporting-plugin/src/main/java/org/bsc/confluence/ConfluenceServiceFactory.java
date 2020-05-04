@@ -51,8 +51,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title)  {
-            return xmlrpcService.findPageByTitle(parentPageId, title);
+        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  {
+            return xmlrpcService.getPageByTitle(parentPageId, title);
         }
 
         @Override

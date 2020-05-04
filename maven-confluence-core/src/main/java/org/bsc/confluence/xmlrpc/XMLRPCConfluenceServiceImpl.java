@@ -8,7 +8,6 @@ package org.bsc.confluence.xmlrpc;
 import lombok.val;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.ssl.SSLCertificateInfo;
 
@@ -18,8 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -110,7 +107,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      * @throws Exception 
      */
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> findPageByTitle(String parentPageId, String title)  {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  {
         if( parentPageId == null ) {
             throw new IllegalArgumentException("parentPageId argument is null!");
         }
@@ -164,7 +161,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title)  {
         Objects.requireNonNull(parentPage, "parentPage is null!");
 
-        return findPageByTitle( parentPage.getId(), title)
+        return getPageByTitle( parentPage.getId(), title)
                 .thenCompose( page ->
                     ( page.isPresent() )
                         ? removePage( page.get().getId() )
