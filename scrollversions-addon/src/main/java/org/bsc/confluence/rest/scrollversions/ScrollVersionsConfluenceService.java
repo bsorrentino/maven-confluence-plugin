@@ -5,7 +5,7 @@ import lombok.val;
 import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
+import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.scrollversions.model.ScrollVersions;
 import org.bsc.ssl.SSLCertificateInfo;
 
@@ -46,7 +46,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     static final MediaType  JSON_MEDIA_TYPE     = MediaType.parse("application/json; charset=utf-8");
     static final String     REQUEST_BODY_FORMAT = "[{\"queryArg\": \"%s\", \"value\": \"%s\"}]";
 
-    final RESTConfluenceServiceImpl delegate;
+    final RESTConfluenceService delegate;
     final URL           scrollVersionsUrl;
     final String        versionName;
     final ObjectMapper objectMapper = new ObjectMapper();
@@ -71,7 +71,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
             throw new IllegalArgumentException("invalid Scroll Versions url", e);
         }
 
-        this.delegate = new RESTConfluenceServiceImpl(confluenceUrl, credentials, sslCertificateInfo);
+        this.delegate = new RESTConfluenceService(confluenceUrl, credentials, sslCertificateInfo);
 
     }
 
@@ -551,11 +551,11 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         return getPage(String.valueOf(pageId))
                 .thenCompose(page ->
                         cast(page.map( pp -> toResult(pp)
-                                    .thenCompose( result -> delegate.getDescendents( String.valueOf(result.getMasterPageId())))
+                                    .thenCompose( result -> delegate.getDescendents( result.getMasterPageId()))
                                     .thenApply( result -> {
                                         val list = result.stream()
                                                 .filter( p -> isVersion(p.getTitle(), currentVersion.get()))
-                                                .filter( p -> !p.getId().equals(pageId))
+                                                .filter( p -> pageId!=Long.valueOf(p.getId()))
                                                 .collect( toList() );
                                         //debug( "Descendents#: %d", list.size());
                                         return list;

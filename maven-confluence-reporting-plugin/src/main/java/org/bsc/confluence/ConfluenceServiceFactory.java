@@ -6,7 +6,7 @@
 package org.bsc.confluence;
 
 import org.bsc.confluence.ConfluenceService.Credentials;
-import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
+import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfluenceService;
@@ -31,7 +31,7 @@ public class ConfluenceServiceFactory {
 
     private static class MixedConfluenceService implements ConfluenceService {
         final XMLRPCConfluenceServiceImpl   xmlrpcService;
-        final RESTConfluenceServiceImpl     restService;
+        final RESTConfluenceService restService;
 
         public MixedConfluenceService(String endpoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
             
@@ -42,7 +42,7 @@ public class ConfluenceServiceFactory {
             		.append(ConfluenceService.Protocol.REST.path())
             		.toString();
             
-            this.restService = new RESTConfluenceServiceImpl(restEndpoint, credentials, sslInfo);
+            this.restService = new RESTConfluenceService(restEndpoint, credentials, sslInfo);
         }
         
         @Override
@@ -97,12 +97,12 @@ public class ConfluenceServiceFactory {
                 if( page.getId()==null ) { 
                     final JsonObjectBuilder inputData = 
                             restService.jsonForCreatingPage(page.getSpace(), 
-                                                            page.getParentId(),
+                                                            Long.valueOf(page.getParentId()),
                                                             page.getTitle());
                     restService.jsonAddBody(inputData, content);
                     
-                    return CompletableFuture.supplyAsync( () -> 
-                        restService.createPage(inputData.build()).map(Page::new).get() );
+                    return restService.createPage(inputData.build())
+                            .thenApply( p -> p.map(Page::new).get() );
                     
                 }
 
@@ -192,7 +192,7 @@ public class ConfluenceServiceFactory {
             }
             if( ConfluenceService.Protocol.REST.match(endpoint)) {
                 return sv.map( config -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
-                         .orElseGet( () -> new RESTConfluenceServiceImpl(endpoint, credentials /*, proxyInfo*/, sslInfo))
+                         .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo))
                          ;               
             }
             

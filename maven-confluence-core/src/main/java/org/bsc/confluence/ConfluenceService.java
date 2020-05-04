@@ -166,6 +166,7 @@ public interface ConfluenceService extends Closeable{
 
     @Deprecated
     default CompletableFuture<Boolean> removePage(String pageId ) {
+
         return removePage( Long.valueOf(pageId) );
     }
 
@@ -175,6 +176,7 @@ public interface ConfluenceService extends Closeable{
 
     @Deprecated
     default CompletableFuture<Optional<Model.Page>> getPage( String pageId ) {
+
         return getPage( Long.valueOf(pageId) );
     }
 
@@ -207,7 +209,7 @@ public interface ConfluenceService extends Closeable{
 
     @Deprecated
     default CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(String pageId) {
-        return getDescendents( String.valueOf(pageId) );
+        return getDescendents( Long.valueOf(pageId) );
     }
 
     void exportPage(    String url, 
@@ -231,7 +233,7 @@ public interface ConfluenceService extends Closeable{
 
     @Deprecated
     default CompletableFuture<Optional<Model.Attachment>> getAttachment( String pageId, String name, String version) {
-        return getAttachment( pageId, name, version);
+        return getAttachment( Long.valueOf(pageId), name, version);
     }
 
     CompletableFuture<Model.Attachment> addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) ;
