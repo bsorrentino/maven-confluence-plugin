@@ -546,9 +546,9 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
 
 
     @Override
-    public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId) {
+    public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId) {
         //debug( "getDescendents( pageId:[%s] )", pageId );
-        return getPage(pageId)
+        return getPage(String.valueOf(pageId))
                 .thenCompose(page ->
                         cast(page.map( pp -> toResult(pp)
                                     .thenCompose( result -> delegate.getDescendents( String.valueOf(result.getMasterPageId())))
@@ -565,7 +565,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title) {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title) {
         //debug( "findPageByTitle( parentPageId:[%s], title:[%s])", parentPageId, title );
 
         return delegate.getPage( parentPageId )
@@ -607,7 +607,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Boolean> removePage(String pageId) {
+    public CompletableFuture<Boolean> removePage(long pageId) {
         //debug( "removePage( pageId:[%s])", pageId );
 
         val getPage = getPage(pageId);
@@ -638,7 +638,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {
+    public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
         //debug( "getPage( pageId:[%s]", pageId );
 
         return delegate.getPage( pageId )
@@ -670,7 +670,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
         return delegate.getAttachment(pageId, name, version);
     }
 

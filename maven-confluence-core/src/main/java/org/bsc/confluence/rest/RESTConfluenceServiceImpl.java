@@ -165,10 +165,10 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
     
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
 
         return supplyAsync( () ->
-            childrenPages(parentPageId).stream()
+            childrenPages(String.valueOf(parentPageId)).stream()
                     .map( Page::new )
                     .filter( page -> page.getTitle().equals( title ))
                     .map( page -> (Model.PageSummary)page )
@@ -194,8 +194,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
      * @throws Exception 
      */
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {        
-        return CompletableFuture.completedFuture(findPageById(pageId).map( Page::new ));
+    public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
+        return CompletableFuture.completedFuture(findPageById( String.valueOf(pageId)).map( Page::new ));
     }
 
     @Override
@@ -205,9 +205,9 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     
     
     @Override
-    public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId)  {
+    public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId)  {
         return supplyAsync( () ->
-            descendantPages(pageId).stream()
+            descendantPages( String.valueOf(pageId)).stream()
                     .map( (page) -> new Page(page))
                     .collect( Collectors.toList() )
         );
@@ -270,9 +270,9 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
         return supplyAsync( () ->
-                getAttachment(pageId, name).stream()
+                getAttachment(String.valueOf(pageId), name).stream()
                         .findFirst()
                         .map( result -> (Model.Attachment)new Attachment(result) ) );
     }
@@ -300,8 +300,8 @@ public class RESTConfluenceServiceImpl extends AbstractRESTConfluenceService imp
 
     
     @Override
-    public CompletableFuture<Boolean> removePage(String pageId) {
-        return CompletableFuture.completedFuture( deletePageById(pageId) );
+    public CompletableFuture<Boolean> removePage(long pageId) {
+        return CompletableFuture.completedFuture( deletePageById(String.valueOf(pageId)) );
     }
 
     @Override

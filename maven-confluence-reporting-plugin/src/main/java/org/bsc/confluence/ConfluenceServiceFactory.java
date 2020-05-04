@@ -51,8 +51,28 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  {
+        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
             return xmlrpcService.getPageByTitle(parentPageId, title);
+        }
+
+        @Override
+        public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {
+            return xmlrpcService.getPage(spaceKey, pageTitle);
+        }
+
+        @Override
+        public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
+            return xmlrpcService.getPage(pageId);
+        }
+
+        @Override
+        public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId)  {
+            return xmlrpcService.getDescendents(pageId);
+        }
+
+        @Override
+        public CompletableFuture<Boolean> removePage(long pageId) {
+            return xmlrpcService.removePage(pageId);
         }
 
         @Override
@@ -64,12 +84,6 @@ public class ConfluenceServiceFactory {
         public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title)  {
             return xmlrpcService.createPage(parentPage, title);
         }
-
-        @Override
-        public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
-            return xmlrpcService.addAttachment(page, attachment, source);
-        }
-
         @Override
         public CompletableFuture<Model.Page> storePage(Model.Page page)  {
             return xmlrpcService.storePage(page);
@@ -108,38 +122,23 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
+        public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
             return xmlrpcService.getAttachment(pageId, name, version);
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {       
-            return xmlrpcService.getPage(spaceKey, pageTitle);
-        }
-
-        @Override
-        public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {
-            return xmlrpcService.getPage(pageId);
-        }
-
-        @Override
-        public String toString() {
-            return xmlrpcService.toString();
-        }
-
-        @Override
-        public CompletableFuture<List<Model.PageSummary>> getDescendents(String pageId)  {
-            return xmlrpcService.getDescendents(pageId);
-        }
-
-        @Override
-        public CompletableFuture<Boolean> removePage(String pageId) {
-            return xmlrpcService.removePage(pageId);
+        public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
+            return xmlrpcService.addAttachment(page, attachment, source);
         }
 
         @Override
         public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
             xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
+        }
+
+        @Override
+        public String toString() {
+            return xmlrpcService.toString();
         }
 
         /**

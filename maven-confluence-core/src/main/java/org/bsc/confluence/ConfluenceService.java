@@ -153,15 +153,30 @@ public interface ConfluenceService extends Closeable{
     
     Credentials getCredentials();
 
-    CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  ;
+    CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  ;
+
+    @Deprecated
+    default CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title) {
+        return getPageByTitle( Long.valueOf(parentPageId), title );
+    }
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 
-    CompletableFuture<Boolean> removePage(String pageId ) ;
-    
+    CompletableFuture<Boolean> removePage(long pageId ) ;
+
+    @Deprecated
+    default CompletableFuture<Boolean> removePage(String pageId ) {
+        return removePage( Long.valueOf(pageId) );
+    }
+
     CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
 
-    CompletableFuture<Optional<Model.Page>> getPage( String pageId ) ;
+    CompletableFuture<Optional<Model.Page>> getPage( long pageId ) ;
+
+    @Deprecated
+    default CompletableFuture<Optional<Model.Page>> getPage( String pageId ) {
+        return getPage( Long.valueOf(pageId) );
+    }
 
     CompletableFuture<Optional<Model.Page>> getPage( String spaceKey, String pageTitle ) ;
 
@@ -174,10 +189,12 @@ public interface ConfluenceService extends Closeable{
         return addLabelsByName( id, labels.toArray(labelArray) );
     }
 
+    @Deprecated
     default CompletableFuture<Void> addLabelsByName( String id, java.util.List<String> labels ) {
         return addLabelsByName( Long.valueOf(id), labels);
     }
 
+    @Deprecated
     default CompletableFuture<Void> addLabelsByName( String id, String[] labels  ) {
         return addLabelsByName( Long.valueOf(id), labels);
     }
@@ -186,9 +203,13 @@ public interface ConfluenceService extends Closeable{
     
     CompletableFuture<Model.Page> storePage( Model.Page page ) ;
 
-    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(String pageId) ;
+    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(long pageId) ;
 
-    
+    @Deprecated
+    default CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(String pageId) {
+        return getDescendents( String.valueOf(pageId) );
+    }
+
     void exportPage(    String url, 
                         String spaceKey, 
                         String pageTitle, 
@@ -206,8 +227,13 @@ public interface ConfluenceService extends Closeable{
      */
     Model.Attachment createAttachment(); 
     
-    CompletableFuture<Optional<Model.Attachment>> getAttachment( String pageId, String name, String version) ;
-    
+    CompletableFuture<Optional<Model.Attachment>> getAttachment( long pageId, String name, String version) ;
+
+    @Deprecated
+    default CompletableFuture<Optional<Model.Attachment>> getAttachment( String pageId, String name, String version) {
+        return getAttachment( pageId, name, version);
+    }
+
     CompletableFuture<Model.Attachment> addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) ;
 
     /**

@@ -107,10 +107,10 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      * @throws Exception 
      */
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title)  {
-        if( parentPageId == null ) {
-            throw new IllegalArgumentException("parentPageId argument is null!");
-        }
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
+//        if( parentPageId == null ) {
+//            throw new IllegalArgumentException("parentPageId argument is null!");
+//        }
         if( title == null ) {
             throw new IllegalArgumentException("title argument is null!");
         }
@@ -118,7 +118,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         final CompletableFuture<Optional<? extends Model.PageSummary>> result = new CompletableFuture<>();
 
         try {
-            final List<PageSummary> children = connection.getChildren(parentPageId);
+            final List<PageSummary> children = connection.getChildren(String.valueOf(parentPageId));
 
             final Optional<Model.PageSummary> value = children.stream()
                     .filter( pageSummary -> title.equals(pageSummary.getTitle()) )
@@ -296,12 +296,12 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version)  {     
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version)  {
 
         CompletableFuture<Optional<Model.Attachment>> result = new CompletableFuture<>();
         try {
             result.complete(
-                    ofNullable(connection.getAttachment(pageId, name, version)));
+                    ofNullable(connection.getAttachment(String.valueOf(pageId), name, version)));
         } catch (Exception e) {
             //result.completeExceptionally(e);
             result.complete(Optional.empty());
@@ -327,12 +327,12 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(String pageId)  {
+    public CompletableFuture<Optional<Model.Page>> getPage(long pageId)  {
         
         CompletableFuture<Optional<Model.Page>> result = new CompletableFuture<>();
         try {
             result.complete(
-                    ofNullable(connection.getPage(pageId)));
+                    ofNullable(connection.getPage(String.valueOf(pageId))));
         } catch (Exception e) {
             //result.completeExceptionally(e);
             result.complete(Optional.empty());
@@ -361,10 +361,10 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(String pageId) {
+    public CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(long pageId) {
         final CompletableFuture<java.util.List<Model.PageSummary>> result = new CompletableFuture<>();
         try {
-            result.complete(connection.getDescendents(pageId));
+            result.complete(connection.getDescendents(String.valueOf(pageId)));
         } catch (Exception e) {
             result.completeExceptionally(e);
         }
@@ -372,11 +372,11 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Boolean> removePage(String pageId) {
+    public CompletableFuture<Boolean> removePage(long pageId) {
         val future = new CompletableFuture<Boolean>();
         
         try {
-            connection.removePage(pageId);
+            connection.removePage(String.valueOf(pageId));
             future.complete(true);
         } catch (Exception e) {
             future.complete(false);
