@@ -27,6 +27,7 @@ Please donate whether you wish support us to give more time to plugin's growth |
 ### News
  Date  | Info   
 --- | ---
+ **May 05, 2020** | [Release 6.9-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-beta1) - improved support of  [Scroll Versions Addon](https://marketplace.atlassian.com/apps/1210818/scroll-versions-for-confluence?hosting=server&tab=overview) .
  **Apr 26, 2020** | [Release 6.8](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.8) - Added [markdown processor](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html) to support future removal of **deprecated** [Pegdown](https://github.com/sirthias/pegdown) implementation.
  **Mar 23, 2020** | [Release 6.7.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.3)
  **Mar 11, 2020** | [Release 6.7.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.2)
@@ -36,14 +37,14 @@ Please donate whether you wish support us to give more time to plugin's growth |
  **Oct 29, 2019** | [Release 6.5](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5)
  **Oct 21, 2019** | [Release 6.5-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta2)
  **Oct 14, 2019** | [Release 6.5-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta1) - Added support for [Scroll Versions for Confluence](https://marketplace.atlassian.com/apps/1210818/scroll-versions-for-confluence?hosting=server&tab=overview).
- **Oct 1, 2019** | [Release 6.4.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4.1)
- **Aug 2, 2019** | [Release 6.4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4)
+ **Oct 01, 2019** | [Release 6.4.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4.1)
+ **Aug 02, 2019** | [Release 6.4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4)
  **Jul 15, 2019** | [Release 6.3.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3.2)
  **Jun 12, 2019** | [Release 6.3.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3.1)
  **Mar 26, 2019** | [Release 6.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3)
- **Feb 7, 2019** | [Release 6.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.2)
+ **Feb 07, 2019** | [Release 6.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.2)
  **Jan 16, 2019**  |[Release 6.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.1)
  **Jan 14,2019**  | **[confluence-site](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli)** Has been moved to an independent repository [confluence-site-publisher](https://github.com/bsorrentino/confluence-site-publisher).
-**jan 8, 2019** | [Release 6.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0)
+ **jan 08, 2019** | [Release 6.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0)
 
 ### [Release History](HISTORY.md)
