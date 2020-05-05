@@ -3,6 +3,8 @@ package org.bsc.confluence;
 import java.net.MalformedURLException;
 import java.util.regex.Pattern;
 
+import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
+
 /**
  *
  * @author Sorrentino
@@ -14,29 +16,6 @@ public class ConfluenceUtils {
     private static final Pattern LABEL_BAD_CHARS_PATTERN = Pattern.compile(LABEL_BAD_CHARS);
     private static final String LABEL_REPLACEMENT = "-";
 
-    /**
-     *
-     * @param value
-     * @return
-     */
-    public static String decode(String value) {
-        if (null == value) {
-            return null;
-        }
-        final String result = value
-                .replaceAll("([{}\\[\\]\\+\\*_])", "\\\\$1") // escape every char that would mean something for confluence
-                .replaceAll("(?i)</?pre>", "{noformat}")
-                .replaceAll("(?i)<code>", "{{")
-                .replaceAll("(?i)</code>", "}}")
-                .replaceAll("(?i)</?(b|strong)>", "*")
-                .replaceAll("(?i)<br/?>", "\\\\")
-                .replaceAll("(?i)<hr/?>", "----")
-                .replaceAll("(?i)</?p>", "\n")
-                .replaceAll("(?i)</?u>", "+")
-                .replaceAll("(?i)</?(s|del)>", "-")
-                .replaceAll("(?i)</?(i|em)>", "_");
-        return ConfluenceHtmlListUtils.replaceHtmlList(result);
-    }
 
     /**
      *
@@ -49,7 +28,7 @@ public class ConfluenceUtils {
             return null;
         }
 
-        String v = decode(value);
+        String v = replaceHTML(value);
 
         try {
             new java.net.URL(v);

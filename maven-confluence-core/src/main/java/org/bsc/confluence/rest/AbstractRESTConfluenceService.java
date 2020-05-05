@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.confluence.rest.model.Attachment;
+import org.bsc.confluence.rest.model.IdHelper;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -32,16 +33,18 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 
 /**
  *
  * @author softphone
  */
-public abstract class AbstractRESTConfluenceService {
+public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     private static final String EXPAND = "space,version,container";
 
@@ -63,9 +66,8 @@ public abstract class AbstractRESTConfluenceService {
     }
 
     /**
-     * 
+     *
      * @param req
-     * @param description
      * @return
      */
     public CompletableFuture<Response> fromRequestAsync( final Request req ) {
@@ -102,26 +104,23 @@ public abstract class AbstractRESTConfluenceService {
 
     }
     
-    public Response fromRequest( final Request req, final String description ) {
+    public void fromRequest(final Request req, final String description, Consumer<Response> consumer) {
 
-        try {
-            final Response res = client.build().newCall(req).execute();
+        try(final Response res = client.build().newCall(req).execute()) {
 
             if( !res.isSuccessful() ) {
                 throw new ServiceException( 
                         format("error: %s\n%s\n%s", description, res.toString(),res.body().string()), res);
             }
-
-            return res;
+            consumer.accept(res);
 
         } catch (IOException ex) {
-
             throw new Error(ex);
         }
 
     }
 
-    protected Stream<Response> fromUrlGET( final HttpUrl url, final String description ) {
+    protected void fromUrlGET( final HttpUrl url, final String description, Consumer<Response> consumer ) {
         final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -131,10 +130,10 @@ public abstract class AbstractRESTConfluenceService {
                 .get()
                 .build();
 
-        return Stream.of(fromRequest(req, description));
+        fromRequest(req, description, consumer);
     }
 
-    protected Stream<Response> fromUrlDELETE( final HttpUrl url, final String description ) {
+    protected void fromUrlDELETE( final HttpUrl url, final String description, Consumer<Response> consumer ) {
         final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -144,10 +143,10 @@ public abstract class AbstractRESTConfluenceService {
                 .delete()
                 .build();
 
-        return Stream.of(fromRequest(req, description));
+        fromRequest(req, description, consumer);
     }
 
-    protected Stream<Response> fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description ) {
+    protected void fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description, Consumer<Response> consumer  ) {
         final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -158,10 +157,10 @@ public abstract class AbstractRESTConfluenceService {
                 .post( inputBody)
                 .build();
 
-        return Stream.of(fromRequest(req, description));
+        fromRequest(req, description, consumer);
     }
 
-    protected Stream<Response> fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description ) {
+    protected void fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description, Consumer<Response> consumer  ) {
         final String credential =
                 okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
 
@@ -172,7 +171,7 @@ public abstract class AbstractRESTConfluenceService {
                 .put( inputBody)
                 .build();
 
-        return Stream.of(fromRequest(req, description));
+        fromRequest(req, description, consumer);
     }
 
     protected void debugBody( Response res ) {
@@ -189,11 +188,10 @@ public abstract class AbstractRESTConfluenceService {
     
     protected Stream<JsonObject> mapToStream( Response res)  {
 
-        final ResponseBody body = res.body();
-
-        try (Reader r = body.charStream()) {
-
-            final JsonReader rdr = Json.createReader(r);
+        try (final ResponseBody body = res.body();
+             final Reader r = body.charStream();
+             final JsonReader rdr = Json.createReader(r) )
+        {
 
             final JsonObject root = rdr.readObject();
 
@@ -211,7 +209,6 @@ public abstract class AbstractRESTConfluenceService {
             else {
                 stream.add( root );
             }
-
 
             return stream.build();
 
@@ -239,61 +236,74 @@ public abstract class AbstractRESTConfluenceService {
     };
 
 
-    protected Optional<JsonObject> findPageById( final String id ) {
+    protected CompletableFuture<Optional<JsonObject>> findPageById( final String id ) {
 
+        final CompletableFuture<Optional<JsonObject>> result = new CompletableFuture<>();
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
                                     .addPathSegment(id)
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
 
-        return fromUrlGET( url, "find page" ).flatMap(this::mapToStream).findFirst();
+        fromUrlGET( url, "find page", res ->
+                result.complete(Stream.of(res).flatMap(this::mapToStream).findFirst())
+        );
+        return result;
+
     }
 
-    protected List<JsonObject> findPages( final String spaceKey, final String title ) {
+    protected CompletableFuture<List<JsonObject>> findPages( final String spaceKey, final String title ) {
 
+        final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
                                     .addQueryParameter("spaceKey", spaceKey)
                                     .addQueryParameter("title", title)
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "find pages" ).flatMap(this::mapToStream).collect( Collectors.toList() );
-
+        fromUrlGET( url, "find pages", res ->
+                result.complete( Stream.of(res).flatMap(this::mapToStream).collect( Collectors.toList())));
+        return result;
     }
 
-    protected List<JsonObject> descendantPages( final String id ) {
+    protected CompletableFuture<List<JsonObject>> descendantPages( final long id ) {
+
+        final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
-                                    .addPathSegment(id)
+                                    .addPathSegment(String.valueOf(id))
                                     //.addPathSegments("descendant/page")
                                     .addPathSegments("child/page")
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
 
-        return  fromUrlGET( url, "get descendant pages" )
-                .flatMap(this::mapToStream)
-                .flatMap( (JsonObject o) -> {
-                    final String childId = o.getString("id");
-                    return Stream.concat(Stream.of(o), descendantPages(childId).stream()) ;
-                })
-                .collect( Collectors.toList() )
-                ;
+        fromUrlGET( url, "get descendant pages", res ->
+                result.complete(
+                        Stream.of(res).flatMap(this::mapToStream)
+                        .flatMap( o -> {
+                            final long childId = IdHelper.getId( o );
+                            return Stream.concat(Stream.of(o), descendantPages(childId).join().stream()) ;
+                        })
+                .collect( Collectors.toList() )));
+        return result ;
+
 
     }
 
 
-    protected List<JsonObject> childrenPages( final String id ) {
-
+    protected CompletableFuture<List<JsonObject>> childrenPages( final String id ) {
+        final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
                                     .addPathSegment(id)
                                     .addPathSegments("child/page")
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
-        return fromUrlGET( url, "get children pages" ).flatMap(this::mapToStream).collect( Collectors.toList() );
+        fromUrlGET( url, "get children pages", res ->
+            result.complete(Stream.of(res).flatMap(this::mapToStream).collect( Collectors.toList() )));
 
+        return result;
     }
 
     /**
@@ -302,22 +312,22 @@ public abstract class AbstractRESTConfluenceService {
      * @param title
      * @return
      */
-    public Optional<JsonObject> findPage( final String spaceKey, final String title ) {
+    public CompletableFuture<Optional<JsonObject>> findPage( final String spaceKey, final String title ) {
 
-        return findPages(spaceKey, title).stream().findFirst();
+        return findPages(spaceKey, title).thenApply( list -> list.stream().findFirst() );
     }
 
-    protected boolean deletePageById( final String id ) {
+    protected CompletableFuture<Boolean> deletePageById( final String id ) {
 
+        final CompletableFuture<Boolean> result = new CompletableFuture<>();
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
                                     .addPathSegment(id)
                                     //.addQueryParameter("status", "")
                                     .build();
+        fromUrlDELETE( url, "delete page", res -> result.complete(true) );
 
-        fromUrlDELETE( url, "delete page" );
-
-        return true;
+        return result;
     }
 
     /**
@@ -325,7 +335,9 @@ public abstract class AbstractRESTConfluenceService {
      * @param inputData
      * @return
      */
-    public final Optional<JsonObject> createPage( final JsonObject inputData ) {
+    public final CompletableFuture<Optional<JsonObject>> createPage( final JsonObject inputData ) {
+        final CompletableFuture<Optional<JsonObject>> result = new CompletableFuture<>();
+
         final MediaType storageFormat = MediaType.parse("application/json");
 
         final RequestBody inputBody = RequestBody.create(storageFormat,
@@ -335,10 +347,15 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment("content")
                                 .build();
 
-        return fromUrlPOST(url, inputBody, "create page").map(this::mapToObject).findFirst();
+        fromUrlPOST(url, inputBody, "create page", res ->
+                result.complete(Stream.of(res).map(this::mapToObject).findFirst()));
+
+        return result;
     }
 
-    protected Optional<JsonObject> updatePage( final String pageId, final JsonObject inputData ) {
+    protected CompletableFuture<Optional<JsonObject>> updatePage( final String pageId, final JsonObject inputData ) {
+
+        final CompletableFuture<Optional<JsonObject>> result = new CompletableFuture<>();
 
         final MediaType storageFormat = MediaType.parse("application/json");
 
@@ -350,16 +367,20 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment(pageId)
                                 .build();
 
-        return fromUrlPUT(url, inputBody, "update page").map(this::mapToObject).findFirst();
+        fromUrlPUT(url, inputBody, "update page", res ->
+                result.complete(Stream.of(res).map(this::mapToObject).findFirst()));
+
+        return result;
     }
 
     /**
      *
-     * @param inputData
-     * @return
+     * @param id
+     * @param labels
      */
-    protected final void addLabels( String id,  String ...labels ) {
+    protected final CompletableFuture<Void> addLabels( String id,  String ...labels ) {
 
+        final CompletableFuture<Void> result = new CompletableFuture<>();
 
         final JsonArrayBuilder inputBuilder = Json.createArrayBuilder();
 
@@ -386,10 +407,14 @@ public abstract class AbstractRESTConfluenceService {
                                 .addPathSegment("label")
                                 .build();
 
-        fromUrlPOST(url, inputBody, "add label");
+        fromUrlPOST(url, inputBody, "add label", res -> result.complete(null));
+
+        return result;
     }
 
-    protected List<JsonObject> getAttachments( final String id ) {
+    protected CompletableFuture<List<JsonObject>> getAttachments( final String id ) {
+
+        final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
@@ -398,11 +423,15 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
 
-        return fromUrlGET( url, "get attachments" ).flatMap(this::mapToStream).collect(Collectors.toList());
+        fromUrlGET( url, "get attachments", res ->
+                result.complete( Stream.of(res).flatMap(this::mapToStream).collect(Collectors.toList())));
 
+        return result;
     }
 
-    protected List<JsonObject> getAttachment( final String id, final String fileName ) {
+    protected CompletableFuture<List<JsonObject>> getAttachment( final String id, final String fileName ) {
+
+        final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
         final HttpUrl url =  urlBuilder()
                                     .addPathSegment("content")
@@ -412,11 +441,15 @@ public abstract class AbstractRESTConfluenceService {
                                     .addQueryParameter("expand", EXPAND)
                                     .build();
 
-        return fromUrlGET( url, "get attachment" ).flatMap(this::mapToStream).collect(Collectors.toList());
+        fromUrlGET( url, "get attachment", res ->
+                result.complete(Stream.of(res).flatMap(this::mapToStream).collect(Collectors.toList())));
 
+        return result;
     }
 
-    protected List<JsonObject> addAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
+    protected CompletableFuture<List<JsonObject>> addAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
+
+        final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
         final RequestBody fileBody;
 
@@ -443,12 +476,14 @@ public abstract class AbstractRESTConfluenceService {
 
         }
 
-        return fromUrlPOST(builder.build(), inputBody, "create attachment")
-                .flatMap( post ->
-                    (att.getId() != null) ?
-                            Stream.of(mapToObject(post)) :
-                            mapToStream(post) )
-                .collect( Collectors.toList() );
+        fromUrlPOST(builder.build(), inputBody, "create attachment", res ->
+                result.complete( Stream.of(res).flatMap( post ->
+                        (att.getId() != null)
+                            ? Stream.of(mapToObject(post))
+                            : mapToStream(post))
+                        .collect( Collectors.toList() )));
+
+        return result;
 
     }
 }

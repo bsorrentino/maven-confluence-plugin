@@ -46,6 +46,10 @@
 
         </menu>
 
+        <menu name="Javadoc">
+            <item name="core" href="core/apidocs/index.html"/>
+        </menu>
+
 
         <!--
             <menu name="summary" ref="reports" />

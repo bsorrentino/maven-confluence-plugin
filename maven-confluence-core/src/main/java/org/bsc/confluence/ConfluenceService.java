@@ -10,6 +10,7 @@ import static java.lang.String.format;
 import java.io.Closeable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -104,7 +105,7 @@ public interface ConfluenceService extends Closeable{
         
         
     }
-    public static class Credentials {
+    class Credentials {
     
         public final String username;
         public final String password;
@@ -121,7 +122,7 @@ public interface ConfluenceService extends Closeable{
     
     public interface Model {
 
-        public interface Attachment {
+        interface Attachment {
                 void setFileName(String name);
                 String getFileName();
 
@@ -132,7 +133,7 @@ public interface ConfluenceService extends Closeable{
                 java.util.Date getCreated();
         }            
 
-        public interface PageSummary {
+        interface PageSummary {
             
             String getId();
             
@@ -143,7 +144,7 @@ public interface ConfluenceService extends Closeable{
             String getParentId();
         }
 
-        public interface Page extends PageSummary {
+        interface Page extends PageSummary {
 
             int getVersion();
         }
@@ -152,32 +153,65 @@ public interface ConfluenceService extends Closeable{
     
     Credentials getCredentials();
 
-    Model.PageSummary findPageByTitle( String parentPageId, String title) throws Exception ;
+    CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  ;
+
+    @Deprecated
+    default CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title) {
+        return getPageByTitle( Long.valueOf(parentPageId), title );
+    }
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 
-    CompletableFuture<Boolean> removePageAsync( String pageId ) ;
-    
+    CompletableFuture<Boolean> removePage(long pageId ) ;
+
     @Deprecated
-    default void removePage( String pageId ) throws Exception {
-        removePageAsync( pageId ).get();
+    default CompletableFuture<Boolean> removePage(String pageId ) {
+
+        return removePage( Long.valueOf(pageId) );
     }
 
     CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
 
-    CompletableFuture<Optional<Model.Page>> getPage( String pageId ) ;
+    CompletableFuture<Optional<Model.Page>> getPage( long pageId ) ;
+
+    @Deprecated
+    default CompletableFuture<Optional<Model.Page>> getPage( String pageId ) {
+
+        return getPage( Long.valueOf(pageId) );
+    }
 
     CompletableFuture<Optional<Model.Page>> getPage( String spaceKey, String pageTitle ) ;
 
-    boolean addLabelByName( String label, long id ) throws Exception;
-    
+    CompletableFuture<Void> addLabelsByName( long id, String[] labels ) ;
+
+    default CompletableFuture<Void> addLabelsByName( long id, java.util.List<String> labels ) {
+        if( labels == null || labels.isEmpty() ) return CompletableFuture.completedFuture(null);
+
+        final String[] labelArray = new String[ labels.size() ];
+        return addLabelsByName( id, labels.toArray(labelArray) );
+    }
+
+    @Deprecated
+    default CompletableFuture<Void> addLabelsByName( String id, java.util.List<String> labels ) {
+        return addLabelsByName( Long.valueOf(id), labels);
+    }
+
+    @Deprecated
+    default CompletableFuture<Void> addLabelsByName( String id, String[] labels  ) {
+        return addLabelsByName( Long.valueOf(id), labels);
+    }
+
     CompletableFuture<Model.Page> storePage( Model.Page page, Storage content ) ;
     
     CompletableFuture<Model.Page> storePage( Model.Page page ) ;
-    
-    java.util.List<Model.PageSummary> getDescendents(String pageId) throws Exception;
 
-    
+    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(long pageId) ;
+
+    @Deprecated
+    default CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(String pageId) {
+        return getDescendents( Long.valueOf(pageId) );
+    }
+
     void exportPage(    String url, 
                         String spaceKey, 
                         String pageTitle, 
@@ -195,8 +229,13 @@ public interface ConfluenceService extends Closeable{
      */
     Model.Attachment createAttachment(); 
     
-    CompletableFuture<Optional<Model.Attachment>> getAttachment( String pageId, String name, String version) ;
-    
+    CompletableFuture<Optional<Model.Attachment>> getAttachment( long pageId, String name, String version) ;
+
+    @Deprecated
+    default CompletableFuture<Optional<Model.Attachment>> getAttachment( String pageId, String name, String version) {
+        return getAttachment( Long.valueOf(pageId), name, version);
+    }
+
     CompletableFuture<Model.Attachment> addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) ;
 
     /**
@@ -215,13 +254,11 @@ public interface ConfluenceService extends Closeable{
                 .thenApply( parent -> 
                     parent.orElseThrow( () -> 
                         new RuntimeException( 
-                                String.format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
+                                format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
                 .thenCombine( getPage(spaceKey, title), Tuple2::of)
-                .thenCompose( tuple -> {
-                    return ( tuple.getValue2().isPresent() ) ?
-                        CompletableFuture.completedFuture(tuple.getValue2().get()) :
-                        createPage(tuple.getValue1(), title);
-                })
+                .thenCompose( tuple -> ( tuple.getValue2().isPresent() )
+                        ? CompletableFuture.completedFuture(tuple.getValue2().get())
+                        : createPage(tuple.getValue1(), title))
                 ;
         }
 
@@ -234,7 +271,7 @@ public interface ConfluenceService extends Closeable{
      * @param resultHandler
      * @param action
      * @return
-     * @see https://gist.github.com/gitplaneta/5065bbba980b2858a55f
+     * @see "https://gist.github.com/gitplaneta/5065bbba980b2858a55f"
      */
     default <T> CompletableFuture<T> retry( int times, 
                                             long delay, 
@@ -250,8 +287,8 @@ public interface ConfluenceService extends Closeable{
                     } else {
                             try {
                                 timeUnit.sleep(delay);
-                                retry( times - 1, delay, timeUnit, Optional.of(future), action);       
-                            } catch (InterruptedException e) {
+                                retry( times - 1, delay, timeUnit, Optional.of(future), action);
+                            } catch ( InterruptedException e) {
                                 future.completeExceptionally(e);
                             }
                     }

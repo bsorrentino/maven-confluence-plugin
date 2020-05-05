@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public class RESTConfluenceServiceIntegrationTest extends AbstractRestConfluence {
 
-    RESTConfluenceServiceImpl restConfluenceService = new RESTConfluenceServiceImpl(confluenceUrl, credentials, sslInfo);
+    RESTConfluenceService restConfluenceService = new RESTConfluenceService(confluenceUrl, credentials, sslInfo);
 
     @Test @Ignore
     public void dummy() {}

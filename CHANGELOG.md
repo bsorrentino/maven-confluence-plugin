@@ -5,6 +5,175 @@
 ## Next release
 ### Generic changes
 
+**refactor: update rest service implementation**
+
+
+[13d0167de918fe3](https://github.com/bsorrentino/maven-confluence-plugin/commit/13d0167de918fe3) bsorrentino *2020-05-04 23:24:04*
+
+**refactor: assume pageId as long**
+
+
+[b55cd5c8fcc9628](https://github.com/bsorrentino/maven-confluence-plugin/commit/b55cd5c8fcc9628) bsorrentino *2020-05-04 13:53:36*
+
+**rename ConfluenceService.findPageByTitle to ConfluenceService.getPageByTitle**
+
+
+[675a36a4ba8c006](https://github.com/bsorrentino/maven-confluence-plugin/commit/675a36a4ba8c006) bsorrentino *2020-05-04 12:55:34*
+
+**update development version**
+
+
+[a167e13da508072](https://github.com/bsorrentino/maven-confluence-plugin/commit/a167e13da508072) bartolomeo sorrentino *2020-05-03 21:13:07*
+
+**clean code**
+
+
+[3d85611c7432780](https://github.com/bsorrentino/maven-confluence-plugin/commit/3d85611c7432780) bartolomeo sorrentino *2020-05-03 18:45:38*
+
+**continue to move toward CompletableFuture**
+
+
+[a653c7da6171172](https://github.com/bsorrentino/maven-confluence-plugin/commit/a653c7da6171172) bartolomeo sorrentino *2020-04-30 08:38:31*
+
+**start creating a new scrollverions implememntation**
+
+
+[cba3a0d81d7249d](https://github.com/bsorrentino/maven-confluence-plugin/commit/cba3a0d81d7249d) bsorrentino *2020-04-29 22:25:21*
+
+**improve loadParentPage() integration**
+
+
+[82bbc2333e00dc1](https://github.com/bsorrentino/maven-confluence-plugin/commit/82bbc2333e00dc1) bsorrentino *2020-04-29 15:51:29*
+
+**update tests**
+
+
+[f342738f1e5e1c1](https://github.com/bsorrentino/maven-confluence-plugin/commit/f342738f1e5e1c1) bartolomeo sorrentino *2020-04-28 22:18:57*
+
+**methods compilance with CompletableFuture**
+
+
+[76e7bff7bd9df97](https://github.com/bsorrentino/maven-confluence-plugin/commit/76e7bff7bd9df97) bartolomeo sorrentino *2020-04-28 22:18:44*
+
+**all methods compliant with CompletableFuture**
+
+
+[5454c8f0a2ac014](https://github.com/bsorrentino/maven-confluence-plugin/commit/5454c8f0a2ac014) bartolomeo sorrentino *2020-04-28 22:17:29*
+
+**supplyed async on attachment management**
+
+
+[9ab5b5173483b84](https://github.com/bsorrentino/maven-confluence-plugin/commit/9ab5b5173483b84) bartolomeo sorrentino *2020-04-28 11:14:49*
+
+**clean code**
+
+
+[aa2d803694c7d0d](https://github.com/bsorrentino/maven-confluence-plugin/commit/aa2d803694c7d0d) bartolomeo sorrentino *2020-04-28 10:57:23*
+
+**bulk add labels using completable future**
+
+
+[15677e774d21876](https://github.com/bsorrentino/maven-confluence-plugin/commit/15677e774d21876) bartolomeo sorrentino *2020-04-28 10:52:12*
+
+**move to next developer version**
+
+
+[c2c27f0b6da500a](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2c27f0b6da500a) bartolomeo sorrentino *2020-04-28 07:12:57*
+
+**test new strategy for scrollversions pubblication**
+
+
+[c01829264a37ac4](https://github.com/bsorrentino/maven-confluence-plugin/commit/c01829264a37ac4) bartolomeo sorrentino *2020-04-28 07:01:56*
+
+**clean code**
+
+
+[bef77f72c8a7966](https://github.com/bsorrentino/maven-confluence-plugin/commit/bef77f72c8a7966) bartolomeo sorrentino *2020-04-27 14:05:38*
+
+**move SiteTest to kotlin**
+
+
+[f4b28b9d06b6d4f](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4b28b9d06b6d4f) bartolomeo sorrentino *2020-04-27 14:04:33*
+
+**update readme**
+
+
+[effaf9b82a77be5](https://github.com/bsorrentino/maven-confluence-plugin/commit/effaf9b82a77be5) bartolomeo sorrentino *2020-04-27 10:52:53*
+
+**clean code**
+
+
+[ddd0459f723389c](https://github.com/bsorrentino/maven-confluence-plugin/commit/ddd0459f723389c) bartolomeo sorrentino *2020-04-27 10:36:28*
+
+**update javadoc**
+
+
+[3bd03d67bdfa37b](https://github.com/bsorrentino/maven-confluence-plugin/commit/3bd03d67bdfa37b) bsorrentino *2020-04-26 18:23:38*
+
+**fix confluence encode of <br> tag**
+
+
+[f5ac9de43fe221d](https://github.com/bsorrentino/maven-confluence-plugin/commit/f5ac9de43fe221d) bsorrentino *2020-04-26 18:22:55*
+
+**move to next development version**
+
+
+[2fd87f8ce6581ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/2fd87f8ce6581ed) bsorrentino *2020-04-26 18:16:48*
+
+
+###  [#217](https://github.com/bsorrentino/maven-confluence-plugin/issues/217) try to improve the scroll-versions addon performance    *enhancement*  
+
+**issue #217 - update test**
+
+
+[42e1a3c2915aa77](https://github.com/bsorrentino/maven-confluence-plugin/commit/42e1a3c2915aa77) bartolomeo sorrentino *2020-05-03 18:45:21*
+
+**issue #217 - add remove page implementation**
+
+
+[2740f59c44924b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/2740f59c44924b0) bartolomeo sorrentino *2020-05-03 18:44:32*
+
+**issue #217 - update integration test**
+
+
+[14ecb6d0d3d67ca](https://github.com/bsorrentino/maven-confluence-plugin/commit/14ecb6d0d3d67ca) bartolomeo sorrentino *2020-05-03 11:45:31*
+
+**issue #217 - change ScrollVersions implementation**
+
+
+[7acdad3fb5ef3f6](https://github.com/bsorrentino/maven-confluence-plugin/commit/7acdad3fb5ef3f6) bartolomeo sorrentino *2020-05-03 11:44:53*
+
+**issue #217 - xml schema updated**
+
+
+[25049f9be6e69b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/25049f9be6e69b0) bartolomeo sorrentino *2020-05-03 11:43:37*
+
+**issue #217 - xml schema updated**
+
+ * - deprecated &#39;parent-page&#39; added &#39;parentPage&#39; instead
+ * - deprecated &#39;parent-page-id&#39; added &#39;parentPageId&#39; instead
+
+[e6bd05ea91bd7a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/e6bd05ea91bd7a5) bartolomeo sorrentino *2020-05-03 11:42:32*
+
+**issue #217 - xml schema updated - deprecated 'ignore-variables' added 'ignoreVariables' instead**
+
+
+[869d0973d9dd9d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/869d0973d9dd9d0) bartolomeo sorrentino *2020-05-03 11:27:36*
+
+**issue #217 refactor scrollversions addon implementation**
+
+
+[b42494b2b9a1c78](https://github.com/bsorrentino/maven-confluence-plugin/commit/b42494b2b9a1c78) bartolomeo sorrentino *2020-05-02 08:07:30*
+
+
+## v6.8
+### Generic changes
+
+**upgrade version, update documentation and changelog**
+
+
+[87c262cf37460f1](https://github.com/bsorrentino/maven-confluence-plugin/commit/87c262cf37460f1) bsorrentino *2020-04-26 09:59:56*
+
 **fix log message on Site deletion**
 
 
@@ -66,7 +235,7 @@
 [a497b04a907fdad](https://github.com/bsorrentino/maven-confluence-plugin/commit/a497b04a907fdad) bartolomeo sorrentino *2020-03-21 12:13:09*
 
 
-###  [#154](https://github.com/bsorrentino/maven-confluence-plugin/issues/154) Replace deprecated dependency Pegdown    *enhancement*  *under working*  
+###  [#154](https://github.com/bsorrentino/maven-confluence-plugin/issues/154) Replace deprecated dependency Pegdown    *enhancement*  
 
 **issue #154**
 
@@ -176,7 +345,7 @@
 [f747fa8f5b65c71](https://github.com/bsorrentino/maven-confluence-plugin/commit/f747fa8f5b65c71) bartolomeo sorrentino *2020-03-21 12:02:22*
 
 
-###  [#212](https://github.com/bsorrentino/maven-confluence-plugin/issues/212) link in markdown is not correctly resolved when using relative paths    *bug*  *under working*  
+###  [#212](https://github.com/bsorrentino/maven-confluence-plugin/issues/212) link in markdown is not correctly resolved when using relative paths    *bug*  
 
 **issue #215 #212 update unit tests**
 
@@ -220,7 +389,7 @@
 [0ac7916ca147756](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ac7916ca147756) bartolomeo sorrentino *2020-04-24 18:04:57*
 
 
-###  [#215](https://github.com/bsorrentino/maven-confluence-plugin/issues/215) seems that the parameter childrenTitlesPrefixed=false is ignored on links processing    *bug*  *under working*  
+###  [#215](https://github.com/bsorrentino/maven-confluence-plugin/issues/215) seems that the parameter childrenTitlesPrefixed=false is ignored on links processing    *bug*  
 
 **issue #215 #212 update unit tests**
 

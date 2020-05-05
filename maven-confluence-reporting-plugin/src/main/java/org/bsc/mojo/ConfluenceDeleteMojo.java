@@ -15,6 +15,7 @@ import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 import java.util.Optional;
 
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 /**
  *
@@ -48,56 +49,73 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
         
     }
     
-    private void deletePage(ConfluenceService confluence) throws Exception {
-        val parentPage = loadParentPage(confluence, Optional.empty());
+    private void deletePage(ConfluenceService confluence)  {
+        boolean result =
+                loadParentPage(confluence, Optional.empty())
+                .thenCompose( parentPage -> {
 
-        if( parentPage==null ) {
-            getLog().warn("Parent page not found!");                    
-            return;
-        }
+                    final String startPageTitle = getStartPageTitle();
 
-        final String startPageTitle = getStartPageTitle();
-        
-        getLog().debug(  String.format( "start deleting from page [%s]", startPageTitle));   
-        
-        val start = confluence.findPageByTitle(parentPage.getId(), startPageTitle);
-        
-        if( start==null ) {
-            getLog().warn(format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(), startPageTitle, parentPage.getSpace()));                    
-            return;
-        }
+                    getLog().debug(  String.format( "start deleting from page [%s]", startPageTitle));
 
-        if( recursive ) {
-            val descendents = confluence.getDescendents(start.getId());
+                    return confluence.getPageByTitle(parentPage.getId(), startPageTitle)
+                            .thenCompose( ( start ) -> {
 
-            if( descendents==null || descendents.isEmpty() ) {
-                getLog().warn(format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(),startPageTitle, parentPage.getSpace()));
-            }
-            else {
+                                if (!start.isPresent()) {
+                                    getLog().warn(format("Page [%s]/[%s] in [%s] not found!", parentPage.getTitle(), startPageTitle, parentPage.getSpace()));
+                                    return completedFuture(false);
+                                }
 
-                for( PageSummary descendent : descendents) {
+                                if (recursive) {
 
-                    getLog().info( format("Page [%s]/[%s]/[%s]  has been removed!", parentPage.getTitle(),startPageTitle, descendent.getTitle()) );
-                    confluence.removePageAsync( descendent.getId() ).join();
+                                    confluence.getDescendents(start.get().getId()).thenAccept(descendents -> {
+                                        if (descendents == null || descendents.isEmpty()) {
+                                            getLog().warn(format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(), startPageTitle, parentPage.getSpace()));
+                                        }
+                                        else {
+                                            for (PageSummary descendent : descendents) {
+                                                final boolean removed =
+                                                        confluence.removePage(descendent.getId())
+                                                        .exceptionally(ex -> {
+                                                            getLog().warn(format("cannot remove descendent %s", descendent.getTitle()), ex);
+                                                            return false;
 
-                }
-            }
-        }
+                                                        })
+                                                        .join();
+                                                if( removed ) {
+                                                    getLog().info(format("Page [%s]/[%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),startPageTitle, descendent.getTitle(), parentPage.getSpace()));
+                                                }
+                                                else {
+                                                    getLog().warn(format("Page [%s]/[%s]/[%s] in [%s] has not been removed!", parentPage.getTitle(),startPageTitle, descendent.getTitle(), parentPage.getSpace()));
+                                                }
+                                            }
+                                        }
 
-        confluence.removePageAsync(start.getId()).join();
+                                    }).join();
 
-        getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),startPageTitle, parentPage.getSpace()));
-        
+                                }
+
+                                return confluence.removePage(start.get().getId())
+                                        .thenApply( success -> {
+                                            if( success ) {
+                                                getLog().info(format("Page [%s]/[%s] in [%s] has been removed!", parentPage.getTitle(),startPageTitle, parentPage.getSpace()));
+                                            }
+                                            else {
+                                                getLog().warn(format("Page [%s]/[%s] in [%s] has not been removed!", parentPage.getTitle(),startPageTitle, parentPage.getSpace()));
+                                            }
+                                            return success;
+                                        });
+                            });
+        }).exceptionally( ex  -> {
+            getLog().warn( ex.getMessage() );
+            return false;
+        })
+        .join();
+
+
+
     }
-    
-    void tryDeletePage( ConfluenceService confluence ) {
-        try {
-            deletePage(confluence);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }       
-    }
-    
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
     	
@@ -106,7 +124,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
         
         super.loadUserInfoFromSettings();
         
-        super.confluenceExecute( this::tryDeletePage );
+        super.confluenceExecute( this::deletePage );
         
     }
  

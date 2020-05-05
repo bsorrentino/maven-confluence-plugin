@@ -12,6 +12,8 @@ import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
+
 /**
  *
  * @author bsorrentino
@@ -26,7 +28,7 @@ public class ParseTextTest {
         "false</ignore> // default true <hostnameVerifierClass>FQN</hostnameVerifierClass> //default null <trustManagerClass>FQN</trustManagerClass> // default null </sslCertificate> </Pre>";
     
         
-        String result = ConfluenceUtils.decode(text);
+        String result = replaceHTML(text);
         
         Assert.assertThat(result, IsNull.notNullValue());
         

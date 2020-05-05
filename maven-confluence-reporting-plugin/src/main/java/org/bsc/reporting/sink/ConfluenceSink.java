@@ -6,6 +6,8 @@ import org.apache.maven.doxia.sink.SinkEventAttributes;
 
 import org.bsc.confluence.ConfluenceUtils;
 
+import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
+
 
 /**
  * 
@@ -177,7 +179,7 @@ public class ConfluenceSink extends org.apache.maven.doxia.sink.AbstractSink {
 			// ignore text after title
 			if( Command.TITLE == c ) return;
 		}
-		_w.print( ConfluenceUtils.decode(text) );
+		_w.print( replaceHTML(text) );
     }
 
     @Override

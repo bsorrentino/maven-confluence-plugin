@@ -6,10 +6,10 @@
 package org.bsc.confluence;
 
 import org.bsc.confluence.ConfluenceService.Credentials;
-import org.bsc.confluence.rest.RESTConfluenceServiceImpl;
+import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
-import org.bsc.confluence.rest.scrollversions.ScrollVersionsRESTConfluenceService;
+import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfluenceService;
 import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
 import org.bsc.ssl.SSLCertificateInfo;
 
@@ -31,7 +31,7 @@ public class ConfluenceServiceFactory {
 
     private static class MixedConfluenceService implements ConfluenceService {
         final XMLRPCConfluenceServiceImpl   xmlrpcService;
-        final RESTConfluenceServiceImpl     restService;
+        final RESTConfluenceService restService;
 
         public MixedConfluenceService(String endpoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
             
@@ -42,7 +42,7 @@ public class ConfluenceServiceFactory {
             		.append(ConfluenceService.Protocol.REST.path())
             		.toString();
             
-            this.restService = new RESTConfluenceServiceImpl(restEndpoint, credentials, sslInfo);
+            this.restService = new RESTConfluenceService(restEndpoint, credentials, sslInfo);
         }
         
         @Override
@@ -51,8 +51,28 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.PageSummary findPageByTitle(String parentPageId, String title) throws Exception {
-            return xmlrpcService.findPageByTitle(parentPageId, title);
+        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
+            return xmlrpcService.getPageByTitle(parentPageId, title);
+        }
+
+        @Override
+        public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {
+            return xmlrpcService.getPage(spaceKey, pageTitle);
+        }
+
+        @Override
+        public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
+            return xmlrpcService.getPage(pageId);
+        }
+
+        @Override
+        public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId)  {
+            return xmlrpcService.getDescendents(pageId);
+        }
+
+        @Override
+        public CompletableFuture<Boolean> removePage(long pageId) {
+            return xmlrpcService.removePage(pageId);
         }
 
         @Override
@@ -64,12 +84,6 @@ public class ConfluenceServiceFactory {
         public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title)  {
             return xmlrpcService.createPage(parentPage, title);
         }
-
-        @Override
-        public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
-            return xmlrpcService.addAttachment(page, attachment, source);
-        }
-
         @Override
         public CompletableFuture<Model.Page> storePage(Model.Page page)  {
             return xmlrpcService.storePage(page);
@@ -83,12 +97,12 @@ public class ConfluenceServiceFactory {
                 if( page.getId()==null ) { 
                     final JsonObjectBuilder inputData = 
                             restService.jsonForCreatingPage(page.getSpace(), 
-                                                            page.getParentId(),
+                                                            Long.valueOf(page.getParentId()),
                                                             page.getTitle());
                     restService.jsonAddBody(inputData, content);
                     
-                    return CompletableFuture.supplyAsync( () -> 
-                        restService.createPage(inputData.build()).map(Page::new).get() );
+                    return restService.createPage(inputData.build())
+                            .thenApply( p -> p.map(Page::new).get() );
                     
                 }
 
@@ -98,8 +112,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public boolean addLabelByName(String label, long id) throws Exception {
-            return xmlrpcService.addLabelByName(ConfluenceUtils.sanitizeLabel(label), id);
+        public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+            return xmlrpcService.addLabelsByName(id, labels);
         }
 
         @Override
@@ -108,38 +122,23 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Attachment>> getAttachment(String pageId, String name, String version) {
+        public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
             return xmlrpcService.getAttachment(pageId, name, version);
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle) {       
-            return xmlrpcService.getPage(spaceKey, pageTitle);
-        }
-
-        @Override
-        public CompletableFuture<Optional<Model.Page>> getPage(String pageId) {
-            return xmlrpcService.getPage(pageId);
-        }
-
-        @Override
-        public String toString() {
-            return xmlrpcService.toString();
-        }
-
-        @Override
-        public List<Model.PageSummary> getDescendents(String pageId) throws Exception {
-            return xmlrpcService.getDescendents(pageId);
-        }
-
-        @Override
-        public CompletableFuture<Boolean> removePageAsync(String pageId) {
-            return xmlrpcService.removePageAsync(pageId);
+        public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
+            return xmlrpcService.addAttachment(page, attachment, source);
         }
 
         @Override
         public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
             xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
+        }
+
+        @Override
+        public String toString() {
+            return xmlrpcService.toString();
         }
 
         /**
@@ -192,8 +191,8 @@ public class ConfluenceServiceFactory {
                 return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);               
             }
             if( ConfluenceService.Protocol.REST.match(endpoint)) {
-                return sv.map( config -> (ConfluenceService)new ScrollVersionsRESTConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
-                         .orElseGet( () -> new RESTConfluenceServiceImpl(endpoint, credentials /*, proxyInfo*/, sslInfo))
+                return sv.map( config -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
+                         .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo))
                          ;               
             }
             

@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  * @author bsorrentino
  */
-public class ConfluenceHtmlListUtils {
+public class ConfluenceHtmlUtils {
     private static final String LIST_TAGS_PATTERN = "<ol>|<ul>|</ul>|</ol>";
     private static final String LI_TAG_PATTERN = "<li>(.+)</li>";
 
@@ -25,7 +25,34 @@ public class ConfluenceHtmlListUtils {
 
     }
 
-    protected ConfluenceHtmlListUtils() {
+    protected ConfluenceHtmlUtils() {
+    }
+
+    /**
+     *
+     * @param value
+     * @return
+     */
+    public static String replaceHTML(String value) {
+        if (null == value) {
+            return null;
+        }
+        final String result = value
+                .replaceAll("(?i)<br/?>", "\\\\\\\\")
+                .replaceAll("([{}_\\+\\*\\[\\]])", "\\\\$1") // escape every char that would mean something for confluence
+                .replaceAll("(?i)</?pre>", "{noformat}")
+                .replaceAll("(?i)<code>", "{{")
+                .replaceAll("(?i)</code>", "}}")
+                .replaceAll("(?i)</?(b|strong)>", "*")
+                .replaceAll("(?i)<hr/?>", "----")
+                .replaceAll("(?i)</?p>", "\n")
+                .replaceAll("(?i)</?u>", "+")
+                .replaceAll("(?i)</?(s|del)>", "-")
+                .replaceAll("(?i)</?(i|em)>", "_")
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
+                ;
+        return replaceHtmlList(result);
     }
 
     public static String replaceHtmlList( String line ) {

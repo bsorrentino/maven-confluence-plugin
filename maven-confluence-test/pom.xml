@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.8</version>
+        <version>6.9-beta1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -292,10 +292,10 @@
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue194/site-issue194.yaml</siteDescriptor>
                             <failOnError>true</failOnError>
-                            <spaceKey>TESTSV</spaceKey>
-                            <parentPageTitle>TESTSV Home</parentPageTitle>
+                            <spaceKey>SVTS</spaceKey>
+                            <parentPageTitle>Topic 1</parentPageTitle>
                             <scrollVersions>
-                                <version>BETA</version>
+                                <version>alpha</version>
                             </scrollVersions>
                         </configuration>
                     </execution>
@@ -400,9 +400,18 @@
                                 </goals>
                                 <configuration>
                                     <wikiFilesExt>.confluence</wikiFilesExt>
-                                    <siteDescriptor>${basedir}/src/site/confluence/issue154/site-pegdown.yaml
+                                    <siteDescriptor>
+                                        ${basedir}/src/site/confluence/issue154/site-pegdown.yaml
                                     </siteDescriptor>
                                     <failOnError>true</failOnError>
+
+                                    <!--
+                                    <spaceKey>SVTS</spaceKey>
+                                    <parentPageTitle>Topic 1</parentPageTitle>
+                                    <scrollVersions>
+                                        <version>alpha</version>
+                                    </scrollVersions>
+                                    -->
                                 </configuration>
                             </execution>
                             <!--

@@ -47,4 +47,3 @@ Next line in the list
 # Nbsp
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This will appear with six space characters in front of it.
-

@@ -24,8 +24,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.val;
-
 /**
  *
  * @author bsorrentino
@@ -291,11 +289,20 @@ public class Site {
 
         boolean ignoreVariables = false;
 
-        @XmlAttribute(name = "ignore-variables")
         public Boolean isIgnoreVariables() {
             return ignoreVariables;
         }
 
+        /**
+         * this attribute name containing dash is not supported in yaml format
+         */
+        @XmlAttribute(name = "ignore-variables")
+        @Deprecated
+        public void setIgnoreVariablesDeprecated(Boolean value) {
+            this.ignoreVariables = Optional.ofNullable(value).orElse( false );
+        }
+
+        @XmlAttribute(name = "ignoreVariables")
         public void setIgnoreVariables(Boolean value) {
             this.ignoreVariables = Optional.ofNullable(value).orElse( false );
         }
@@ -372,7 +379,7 @@ public class Site {
             
             for( Page child : getChildren() ) {
                 
-                val result = child.findPage(criteria);
+                final Optional<Page> result = child.findPage(criteria);
                 if( result.isPresent() ) {
                     return result;
                 }
@@ -389,9 +396,27 @@ public class Site {
         /**
          * @return the parentPageTitle
          */
-        @XmlAttribute( name="parent-page")
         public String getParentPageTitle() {
             return parentPageTitle;
+        }
+
+        /**
+         * this attribute name containing dash is not supported in yaml format
+         *
+         * @param parentPageTitle the parentPageTitle to set
+         */
+        @Deprecated
+        @XmlAttribute( name="parent-page")
+        public void setParentPageTitleDeperecated(String parentPageTitle) {
+            this.parentPageTitle = parentPageTitle;
+        }
+
+        /**
+         * @param parentPageTitle the parentPageTitle to set
+         */
+        @XmlAttribute( name="parentPage")
+        public void setParentPageTitle(String parentPageTitle) {
+            this.parentPageTitle = parentPageTitle;
         }
 
         /**
@@ -402,21 +427,30 @@ public class Site {
             return Optional.ofNullable(parentPageTitle);
         }
         
-        /**
-         * @param parentPageTitle the parentPageTitle to set
-         */
-        public void setParentPageTitle(String parentPageTitle) {
-            this.parentPageTitle = parentPageTitle;
-        }
-        
+
         private String parentPageId;
 
         /**
          * @return the parentPageTitle
          */
-        @XmlAttribute( name="parent-page-id")
         public String getParentPageId() {
             return parentPageId;
+        }
+        /**
+         * this attribute name containing dash is not supported in yaml format
+
+         * @param parentPageId the parentPageTitle to set
+         */
+        @XmlAttribute( name="parent-page-id")
+        public void setParentPageIdDeprecated(String parentPageId) {
+            this.parentPageId = parentPageId;
+        }
+        /**
+         * @param parentPageId the parentPageTitle to set
+         */
+        @XmlAttribute( name="parentPageId")
+        public void setParentPageId(String parentPageId) {
+            this.parentPageId = parentPageId;
         }
 
         /**
@@ -427,13 +461,7 @@ public class Site {
             return Optional.ofNullable(parentPageId);
         }
         
-        /**
-         * @param parentPageTitle the parentPageTitle to set
-         */
-        public void setParentPageId(String parentPageId) {
-            this.parentPageId = parentPageId;
-        }
-        
+
         
         
     }

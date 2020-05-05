@@ -226,8 +226,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     private String locale;
     /**
      * Markdown processor Info<br>
-     *
-     * set the name of processor to use (default is 'pegdown')
+     * <pre>
+     *   &lt;markdownProcessor>
+     *     &lt;name>processor name&lt;/name> &lt;git branch!-- default: pegdown -->
+     *   &lt;/markdownProcessor>
+     * </pre>
      *
      * @since 6.8
      */
@@ -629,44 +632,36 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             final Site site,
             final Locale locale ) 
     {
-
-        final Model.Page _parentPage = loadParentPage(confluence, Optional.of(site));
-
         //
         // Issue 32
         //
         final String _homePageTitle = getPageTitle();
 
         final Model.Page confluenceHomePage =
+            loadParentPage(confluence, Optional.of(site))
+            .thenCompose( _parentPage ->
                 removeSnaphot(confluence, _parentPage, _homePageTitle)
-                .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
-                .thenCompose( page -> {
-                    return ( page.isPresent() ) ?
-                        completedFuture(page.get()) :
-                        resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset -> confluence.createPage(_parentPage, _homePageTitle) );
-                })
-                .thenCompose( page ->
-                    canProceedToUpdateResource(site.getHome().getUri())
-                    .thenCompose( update ->  {
-                        if(update) return updateHomeContent(confluence, site, page, locale);
-                        else {
-                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
-                                    getPrintableStringForResource(site.getHome().getUri()) ));
-                            return /*confluence.storePage(page)*/ completedFuture(page);
-                        }})
+                    .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
+                    .thenCompose( page -> {
+                        return ( page.isPresent() ) ?
+                                completedFuture(page.get()) :
+                                resetUpdateStatusForResource(site.getHome().getUri())
+                                        .thenCompose( reset -> confluence.createPage(_parentPage, _homePageTitle) );
+                    })
+                    .thenCompose( page ->
+                            canProceedToUpdateResource(site.getHome().getUri())
+                                    .thenCompose( update ->  {
+                                        if(update) return updateHomeContent(confluence, site, page, locale);
+                                        else {
+                                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
+                                                    getPrintableStringForResource(site.getHome().getUri()) ));
+                                            return /*confluence.storePage(page)*/ completedFuture(page);
+                                        }})
                     )
-                .join()
-                ;
+                    .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
 
-        for( String label : site.getHome().getComputedLabels() ) {
+            ).join();
 
-            try {
-                confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
-            } catch (Exception e) {
-                getLog().warn( format("Error adding label [%s] :\n%s", label, e.getMessage()) );
-            }
-        }
 
         generateChildren(
                 confluence,
@@ -838,47 +833,42 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         // Generate the plugin's documentation
         super.confluenceExecute( confluence  -> {
 
-                
+            final Model.Page parentPage = loadParentPage(confluence, Optional.of(site))
+                                                .join();
 
-                    final Model.Page parentPage = loadParentPage(confluence, Optional.of(site));
+            outputDirectory.mkdirs();
 
-                    outputDirectory.mkdirs();
+            getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
 
-                    getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
+            final PluginGenerator generator = new PluginGenerator();
 
-                    final PluginGenerator generator = new PluginGenerator();
+            final PluginToolsRequest request =
+                    new DefaultPluginToolsRequest(project, pluginDescriptor);
 
-                    final PluginToolsRequest request =
-                            new DefaultPluginToolsRequest(project, pluginDescriptor);
+            try {
 
-                    try {
-                        
-                        final Model.Page confluenceHomePage = generator.processMojoDescriptors(
-                            request.getPluginDescriptor(),
-                            confluence,
-                            parentPage,
-                            site,
-                            locale );
+                final Model.Page confluenceHomePage = generator.processMojoDescriptors(
+                    request.getPluginDescriptor(),
+                    confluence,
+                    parentPage,
+                    site,
+                    locale );
 
-                        for( String label : site.getHome().getComputedLabels() ) {
-    
-                            confluence.addLabelByName(label, Long.parseLong(confluenceHomePage.getId()) );
-    
-                        }
+                confluence.addLabelsByName(confluenceHomePage.getId(), site.getHome().getComputedLabels() ).join();
 
-                        final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
+                final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
 
-                        generateChildren(   confluence,
-                                            site,
-                                            site.getHome(),
-                                            confluenceHomePage,
-                                            varsToParentPageMap);
+                generateChildren(   confluence,
+                                    site,
+                                    site.getHome(),
+                                    confluenceHomePage,
+                                    varsToParentPageMap);
 
-                        generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
-                        
-                    } catch( Throwable ex ) {
-                        throw new RuntimeException(ex);
-                    }
+                generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
+
+            } catch( Throwable ex ) {
+                throw new RuntimeException(ex);
+            }
 
         });
 
