@@ -49,8 +49,9 @@ labels:
 |-------------|----------------|--------------|
 | uri | Content's source | no |
 | name | Title of page | no (if uri is defined)|
-| parent-page-id | parent page id (if set overrides the equivalent pom configuration) | no |
-| parent-page | parent page name (if set overrides the equivalent pom configuration) | no |
+| parentPageId | parent page id (if set overrides the equivalent pom configuration) | no |
+| parentPage | parent page name (if set overrides the equivalent pom configuration) | no |
+| ignoreVariables | if it is `true` the variables `${...}` are not injected during page processing | no |
 
 ### child
 
@@ -58,13 +59,14 @@ labels:
 |-------------|----------------|--------------|
 | uri | Content's source | no |
 | name | Title of page | no (if uri is defined)|
+| ignoreVariables | if it is `true` the variables `${...}` are not injected during page processing | no |
 
 ### attachment
 
  Attribute| Description | mandatory
  ---- | ----- | ----
  uri | Content's source or a **directory** | no
- name | Name of attachment or a [glob pattern]( https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String) ) | no (if uri is defined)
+ name | Name of attachment or a [glob pattern][1] | no (if uri is defined)
  comment |  | no
  contentType |  | yes
  version | | no
@@ -184,3 +186,5 @@ home:
       version: 1
       comment: Generated UML class diagram</#if>
 ```
+
+[1]: https://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html#getPathMatcher(java.lang.String)
