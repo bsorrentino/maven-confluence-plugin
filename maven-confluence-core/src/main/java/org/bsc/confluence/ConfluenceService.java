@@ -5,26 +5,23 @@
  */
 package org.bsc.confluence;
 
-import static java.lang.String.format;
+import lombok.val;
 
 import java.io.Closeable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import org.bsc.functional.Tuple2;
-
-import lombok.val;
+import static java.lang.String.format;
 /**
  *
  * @author bsorrentino
  */
 public interface ConfluenceService extends Closeable{
 
-    public enum Protocol {
+    enum Protocol {
         
         XMLRPC ("rpc/xmlrpc"),
         REST ("rest/api");
@@ -255,10 +252,10 @@ public interface ConfluenceService extends Closeable{
                     parent.orElseThrow( () -> 
                         new RuntimeException( 
                                 format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
-                .thenCombine( getPage(spaceKey, title), Tuple2::of)
-                .thenCompose( tuple -> ( tuple.getValue2().isPresent() )
-                        ? CompletableFuture.completedFuture(tuple.getValue2().get())
-                        : createPage(tuple.getValue1(), title))
+                .thenCombine( getPage(spaceKey, title), ParentChildTuple::of)
+                .thenCompose( tuple -> ( tuple.getChild().isPresent() )
+                        ? CompletableFuture.completedFuture(tuple.getChild().get())
+                        : createPage(tuple.getParent(), title))
                 ;
         }
 

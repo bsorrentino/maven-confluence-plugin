@@ -37,8 +37,8 @@ import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
+import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
-import org.bsc.functional.Tuple2;
 import org.bsc.markdown.MarkdownProcessorInfo;
 import org.bsc.markdown.MarkdownProcessorProvider;
 import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
@@ -1057,12 +1057,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     throwRTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle(), ex ))
                 .thenApply( parent ->
                     parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
-                .thenCombine( confluence.getPage(parentPage.getSpace(), title), Tuple2::of)
+                .thenCombine( confluence.getPage(parentPage.getSpace(), title), ParentChildTuple::of)
                 .thenCompose( tuple -> {
-                    return ( tuple.getValue2().isPresent() ) ?
-                        completedFuture(tuple.getValue2().get()) :
+                    return ( tuple.getChild().isPresent() ) ?
+                        completedFuture(tuple.getChild().get()) :
                         resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset ->confluence.createPage(tuple.getValue1(), title));
+                        .thenCompose( reset ->confluence.createPage(tuple.getParent(), title));
                 })
                 .thenCompose( p ->
                     canProceedToUpdateResource( site.getHome().getUri())
