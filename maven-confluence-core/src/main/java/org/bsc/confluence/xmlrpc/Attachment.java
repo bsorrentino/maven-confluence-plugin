@@ -36,23 +36,23 @@ class Attachment extends MapObject implements Model.Attachment {
     /**
      * numeric id of the attachment
      */
-    public String getId() {
-        return getString("id");
+    public Model.ID getId() {
+        return Model.ID.of(getString("id"));
     }
 
-    public void setId(String id) {
-        setString("id", id);
+    public void setId(Model.ID id) {
+        setString("id", id.toString());
     }
 
     /**
      * page ID of the attachment
      */
-    public String getPageId() {
-        return getString("pageId");
+    public Model.ID getPageId() {
+        return Model.ID.of(getString("pageId"));
     }
 
-    public void setPageId(String pageId) {
-        setString("pageId", pageId);
+    public void setPageId(Model.ID pageId) {
+        setString("pageId", pageId.toString());
     }
 
     /**

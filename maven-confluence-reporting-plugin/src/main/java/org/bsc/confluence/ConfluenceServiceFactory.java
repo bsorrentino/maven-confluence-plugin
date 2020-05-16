@@ -51,7 +51,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
+        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  {
             return xmlrpcService.getPageByTitle(parentPageId, title);
         }
 
@@ -61,17 +61,17 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
+        public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId) {
             return xmlrpcService.getPage(pageId);
         }
 
         @Override
-        public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId)  {
+        public CompletableFuture<List<Model.PageSummary>> getDescendents(Model.ID pageId)  {
             return xmlrpcService.getDescendents(pageId);
         }
 
         @Override
-        public CompletableFuture<Boolean> removePage(long pageId) {
+        public CompletableFuture<Boolean> removePage(Model.ID pageId) {
             return xmlrpcService.removePage(pageId);
         }
 
@@ -97,7 +97,7 @@ public class ConfluenceServiceFactory {
                 if( page.getId()==null ) { 
                     final JsonObjectBuilder inputData = 
                             restService.jsonForCreatingPage(page.getSpace(), 
-                                                            Long.valueOf(page.getParentId()),
+                                                            page.getParentId().getValue(),
                                                             page.getTitle());
                     restService.jsonAddBody(inputData, content);
                     
@@ -112,7 +112,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+        public CompletableFuture<Void> addLabelsByName(Model.ID id, String[] labels) {
             return xmlrpcService.addLabelsByName(id, labels);
         }
 
@@ -122,7 +122,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
+        public CompletableFuture<Optional<Model.Attachment>> getAttachment(Model.ID pageId, String name, String version) {
             return xmlrpcService.getAttachment(pageId, name, version);
         }
 

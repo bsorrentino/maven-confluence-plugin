@@ -248,13 +248,13 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
         return supplyAsync( () -> {
 
             final String _spaceKey =  site.flatMap( s -> s.optSpaceKey() ).orElse(spaceKey);
-            final String _parentPageId = site.flatMap( s -> s.getHome().optParentPageId()).orElse(parentPageId);
+            final String _parentPageId = site.flatMap( s -> s.getHome().optParentPageId()).orElse( parentPageId );
             final String _parentPageTitle = site.flatMap( s -> s.getHome().optParentPageTitle()).orElse(parentPageTitle);
 
             Optional<Model.Page> result = Optional.empty();
 
             if( _parentPageId != null ) {
-                result = confluence.getPage( _parentPageId ).join();
+                result = confluence.getPage(  Model.ID.of(_parentPageId) ).join();
 
                 if( !result.isPresent() ) {
                     getLog().warn( format( "parentPageId [%s] not found! Try with parentPageTitle [%s] in space [%s]",

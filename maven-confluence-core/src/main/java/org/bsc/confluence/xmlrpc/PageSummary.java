@@ -35,12 +35,12 @@ class PageSummary extends MapObject implements Model.PageSummary{
     /**
      * the id of the page
      */
-    public String getId() {
-        return getString("id");
+    public Model.ID getId() {
+        return Model.ID.of(getString("id"));
     }
 
-    public void setId(String id) {
-        setString("id", id);
+    public void setId(Model.ID id) {
+        setString("id", id.toString());
     }
 
     /**
@@ -57,13 +57,11 @@ class PageSummary extends MapObject implements Model.PageSummary{
     /**
      * the id of the parent page
      */
-    public String getParentId() {
-        return getString("parentId");
+    public Model.ID getParentId() {
+        return Model.ID.of(getString("parentId"));
     }
 
-    public void setParentId(String parentId) {
-        setString("parentId", parentId);
-    }
+    public void setParentId(Model.ID parentId) { setString("parentId", parentId.toString()); }
 
     /**
      * the title of the page

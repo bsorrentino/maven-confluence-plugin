@@ -79,20 +79,33 @@ public class MapObject {
         fields.put(key,value);
     }
 
-    protected void setInt(String key, String value) {
-        fields.put(key, value);
-    }
-
     protected int getInt(String key) {
         Object o = fields.get(key);
 
-        if (o instanceof Integer) {
-            return ((Integer) o).intValue();
-        }
+        if (o instanceof Number) { return ((Number) o).intValue(); }
 
         if (o instanceof String) {
-            setInt(key, Integer.parseInt((String) o));
+            setLong(key, Integer.valueOf((String) o));
             return getInt(key);
+        }
+
+        if (o == null) return 0;
+
+        throw new IllegalStateException("Field '" + key + "' is of unknown type: " + o.getClass().getName());
+    }
+
+    protected void setLong(String key, long value) {
+        fields.put(key,value);
+    }
+
+    protected long getLong(String key) {
+        Object o = fields.get(key);
+
+        if (o instanceof Number) { return ((Number) o).longValue(); }
+
+        if (o instanceof String) {
+            setLong(key, Long.valueOf((String) o));
+            return getLong(key);
         }
 
         if (o == null) return 0;

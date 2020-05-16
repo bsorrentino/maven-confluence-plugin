@@ -227,7 +227,7 @@ class Confluence {
      * returns a single Page
      */
     public Page getPage(PageSummary summary) throws Exception {
-        return getPage(summary.getId());
+        return getPage(summary.getId().toString());
     }
 
     public Page getPage(String pageId) throws Exception {
@@ -338,7 +338,7 @@ class Confluence {
     }
 
     public String renderContent(PageSummary page) throws Exception {
-        return renderContent(page.getSpace(), page.getId());
+        return renderContent(page.getSpace(), page.getId().toString());
     }
 
     /**
@@ -903,7 +903,7 @@ class Confluence {
      * @param command
      * @param args
      * @return
-     * @throws SwizzleException 
+     * @throws Exception
      */
     private Object call(String servicePrefix , String command, Object[] args) throws Exception {
         for (int i = 0; i < args.length; i++) {

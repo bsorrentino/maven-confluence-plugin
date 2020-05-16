@@ -23,13 +23,13 @@ import java.util.regex.Pattern
 class SiteTest : SiteFactory.Model {
     internal data class TestPage(private val title: String, private val space: String ) : ConfluenceService.Model.Page {
 
-        override fun getId() = "id"
+        override fun getId() = ConfluenceService.Model.ID.of(1001)
 
         override fun getTitle(): String = title
 
         override fun getSpace(): String  = space
 
-        override fun getParentId() = "parent"
+        override fun getParentId() = ConfluenceService.Model.ID.of(1000)
 
         override fun getVersion(): Int = 0
     }

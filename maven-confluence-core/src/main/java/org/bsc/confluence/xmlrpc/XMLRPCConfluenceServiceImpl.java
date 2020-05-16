@@ -6,18 +6,20 @@
 package org.bsc.confluence.xmlrpc;
 
 import lombok.val;
+import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
@@ -107,7 +109,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      * @throws Exception 
      */
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  {
 //        if( parentPageId == null ) {
 //            throw new IllegalArgumentException("parentPageId argument is null!");
 //        }
@@ -171,7 +173,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     @Override
     public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
 
-            Page result = new Page(Collections.emptyMap());
+            final Page result = new Page(Collections.emptyMap());
             result.setSpace(parentPage.getSpace());
             result.setParentId(parentPage.getId());
             result.setTitle(title);
@@ -182,30 +184,17 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     @Override
     public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
         
-        if( page.getId() == null ) {
-            throw new IllegalStateException("PageId is null. Attachment cannot be added!");
-        }
+        if( page.getId() == null ) {  throw new IllegalStateException("PageId is null. Attachment cannot be added!"); }
         
         final Attachment a = cast(attachment);
         
         final CompletableFuture<Model.Attachment> result = new CompletableFuture<>();
-        
-        try(final BufferedInputStream fis = new BufferedInputStream(source, 4096 )) {
 
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream( );
+        try {
 
-            byte [] readbuf = new byte[4096];
+            final byte [] readbuf = IOUtils.toByteArray(source);
 
-            int len;
-
-            while( (len=fis.read(readbuf))==readbuf.length ) {
-                    baos.write(readbuf, 0, len);
-            }
-            if( len> 0 ) baos.write(readbuf, 0, len);
-
-            a.setPageId( page.getId() );
-
-            result.complete(connection.addAttachment( Long.parseLong(page.getId()), a, baos.toByteArray() ));     
+            result.complete(connection.addAttachment( page.getId().getValue(), a, readbuf ));
             
         } catch (Exception e) {
             result.completeExceptionally(e);
@@ -277,11 +266,11 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      * @return
      */
     @Override
-    public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+    public CompletableFuture<Void> addLabelsByName(Model.ID id, String[] labels) {
         return CompletableFuture.runAsync( () -> {
             asList(labels).forEach( label -> {
                 try {
-                    connection.addLabelByName(sanitizeLabel(label), id);
+                    connection.addLabelByName(sanitizeLabel(label), id.getValue());
                 } catch (Exception e) {
                     // Ignore exception
                 }
@@ -296,7 +285,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version)  {
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(Model.ID pageId, String name, String version)  {
 
         CompletableFuture<Optional<Model.Attachment>> result = new CompletableFuture<>();
         try {
@@ -327,12 +316,12 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(long pageId)  {
+    public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId)  {
         
         CompletableFuture<Optional<Model.Page>> result = new CompletableFuture<>();
         try {
             result.complete(
-                    ofNullable(connection.getPage(String.valueOf(pageId))));
+                    ofNullable(connection.getPage(pageId.toString())));
         } catch (Exception e) {
             //result.completeExceptionally(e);
             result.complete(Optional.empty());
@@ -361,10 +350,10 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(long pageId) {
+    public CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) {
         final CompletableFuture<java.util.List<Model.PageSummary>> result = new CompletableFuture<>();
         try {
-            result.complete(connection.getDescendents(String.valueOf(pageId)));
+            result.complete(connection.getDescendents(pageId.toString()));
         } catch (Exception e) {
             result.completeExceptionally(e);
         }
@@ -372,11 +361,11 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Boolean> removePage(long pageId) {
+    public CompletableFuture<Boolean> removePage(Model.ID pageId) {
         val future = new CompletableFuture<Boolean>();
         
         try {
-            connection.removePage(String.valueOf(pageId));
+            connection.removePage(pageId.toString());
             future.complete(true);
         } catch (Exception e) {
             future.complete(false);

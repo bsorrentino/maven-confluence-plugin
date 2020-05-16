@@ -2,7 +2,6 @@ package org.bsc.markdown.pegdown;
 
 import lombok.Data;
 import lombok.val;
-import lombok.var;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
@@ -44,12 +43,12 @@ public class SiteTest implements SiteFactory.Model {
 
 
         @Override
-        public String getId() {
+        public Model.ID getId() {
             return null;
         }
 
         @Override
-        public String getParentId() {
+        public Model.ID getParentId() {
             return null;
         }
 
