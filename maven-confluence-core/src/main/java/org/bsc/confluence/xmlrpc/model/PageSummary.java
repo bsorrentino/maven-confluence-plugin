@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.bsc.confluence.xmlrpc;
+package org.bsc.confluence.xmlrpc.model;
 
 import java.util.Map;
 import org.bsc.confluence.ConfluenceService.Model;
@@ -22,7 +22,7 @@ import org.bsc.confluence.ConfluenceService.Model;
 /**
  * @version $Revision$ $Date$
  */
-class PageSummary extends MapObject implements Model.PageSummary{
+public class PageSummary extends MapObject implements Model.PageSummary{
 
     public PageSummary() {
         super();

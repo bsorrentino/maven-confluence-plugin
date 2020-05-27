@@ -14,21 +14,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.bsc.confluence.xmlrpc;
+package org.bsc.confluence.xmlrpc.model;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class BlogEntrySummary extends MapObject {
+public class BlogEntry extends MapObject {
 
-    public BlogEntrySummary() {
+    public BlogEntry() {
         super();
     }
 
-    public BlogEntrySummary(Map<String,Object> data) {
+    public BlogEntry(Map<String,Object> data) {
         super(data);
     }
 
@@ -53,9 +52,20 @@ public class BlogEntrySummary extends MapObject {
     public void setSpace(String space) {
         setString("space", space);
     }
+    
+    /**
+     * username of the author
+     */
+    public String getAuthor() {
+        return getString("author");
+    }
+
+    public void setAuthor(String author) {
+        setString("author", author);
+    }
 
     /**
-     * the title of the blog entry
+     * the title of the page
      */
     public String getTitle() {
         return getString("title");
@@ -77,6 +87,28 @@ public class BlogEntrySummary extends MapObject {
     }
 
     /**
+     * the version number of this blog entry
+     */
+    public int getVersion() {
+        return getInt("version");
+    }
+
+    public void setVersion(int version) {
+        setInt("version", version);
+    }
+
+    /**
+     * the blog entry content
+     */
+    public String getContent() {
+        return getString("content");
+    }
+
+    public void setContent(String content) {
+        setString("content", content);
+    }
+
+    /**
      * the number of locks current on this page
      */
     public int getLocks() {
@@ -87,20 +119,9 @@ public class BlogEntrySummary extends MapObject {
         setInt("locks", locks);
     }
 
-    /**
-     * the date the blog post was published
-     */
-    public Date getPublishDate() {
-        return getDate("publishDate");
-    }
-
-    public void setPublishDate(Date publishDate) {
-        setDate("publishDate", publishDate);
-    }
-
     public Map<String,Object> toRawMap() {
         Map<String,Object> map = super.toRawMap();
-        map.put("publishDate", getPublishDate());
+        map.put("version", getVersion());
         map.put("locks", getLocks());
         return map;
     }

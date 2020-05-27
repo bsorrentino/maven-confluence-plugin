@@ -10,7 +10,7 @@ import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfluenceService;
-import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
+import org.bsc.confluence.xmlrpc.XMLRPCConfluenceService;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.json.JsonObjectBuilder;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
-import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
+import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceService.createInstanceDetectingVersion;
 /**
  *
  * @author bsorrentino
@@ -30,7 +30,7 @@ import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstan
 public class ConfluenceServiceFactory {
 
     private static class MixedConfluenceService implements ConfluenceService {
-        final XMLRPCConfluenceServiceImpl   xmlrpcService;
+        final XMLRPCConfluenceService xmlrpcService;
         final RESTConfluenceService restService;
 
         public MixedConfluenceService(String endpoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {

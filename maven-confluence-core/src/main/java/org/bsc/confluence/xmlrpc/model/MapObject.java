@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.bsc.confluence.xmlrpc;
+package org.bsc.confluence.xmlrpc.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -14,19 +14,45 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.bsc.confluence.xmlrpc;
+package org.bsc.confluence.xmlrpc.model;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import org.bsc.confluence.ConfluenceProxy;
+import org.bsc.confluence.xmlrpc.model.MapObject;
+
+import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class XWiki extends Confluence {
+public class RSSFeed extends MapObject {
 
-    public XWiki(String endpoint, ConfluenceProxy proxyInfo) throws MalformedURLException, URISyntaxException {
-        super(endpoint, proxyInfo);
-        super.sendRawData = true;
+    public RSSFeed() {
+        super();
     }
+
+    public RSSFeed(Map<String,Object> data) {
+        super(data);
+    }
+
+    /**
+     * the URL of the RSS feed
+     */
+    public String getUrl() {
+        return getString("url");
+    }
+
+    public void setUrl(String url) {
+        setString("url", url);
+    }
+
+    /**
+     * the feed's title
+     */
+    public String getTitle() {
+        return getString("title");
+    }
+
+    public void setTitle(String title) {
+        setString("title", title);
+    }
+
 }

@@ -14,25 +14,49 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.bsc.confluence.xmlrpc;
+package org.bsc.confluence.xmlrpc.model;
+
+import org.bsc.confluence.xmlrpc.model.MapObject;
 
 import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class RSSFeed extends MapObject {
+public class SpaceSummary extends MapObject {
 
-    public RSSFeed() {
+    public SpaceSummary() {
         super();
     }
 
-    public RSSFeed(Map<String,Object> data) {
+    public SpaceSummary(Map<String,Object> data) {
         super(data);
     }
 
     /**
-     * the URL of the RSS feed
+     * the space key
+     */
+    public String getKey() {
+        return getString("key");
+    }
+
+    public void setKey(String key) {
+        setString("key", key);
+    }
+
+    /**
+     * the name of the space
+     */
+    public String getName() {
+        return getString("name");
+    }
+
+    public void setName(String name) {
+        setString("name", name);
+    }
+
+    /**
+     * the url to view this space online
      */
     public String getUrl() {
         return getString("url");
@@ -40,17 +64,6 @@ public class RSSFeed extends MapObject {
 
     public void setUrl(String url) {
         setString("url", url);
-    }
-
-    /**
-     * the feed's title
-     */
-    public String getTitle() {
-        return getString("title");
-    }
-
-    public void setTitle(String title) {
-        setString("title", title);
     }
 
 }

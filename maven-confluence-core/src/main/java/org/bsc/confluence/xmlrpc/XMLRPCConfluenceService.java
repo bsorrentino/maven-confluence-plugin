@@ -5,11 +5,14 @@
  */
 package org.bsc.confluence.xmlrpc;
 
-import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
+import org.bsc.confluence.xmlrpc.model.Attachment;
+import org.bsc.confluence.xmlrpc.model.Page;
+import org.bsc.confluence.xmlrpc.model.PageSummary;
+import org.bsc.confluence.xmlrpc.model.ServerInfo;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -30,9 +34,19 @@ import static org.bsc.confluence.ConfluenceUtils.sanitizeLabel;
 
 /**
  *
+ * @param <T>
+ */
+@FunctionalInterface
+interface TrySupplier<T> {
+    T get() throws Exception;
+}
+
+
+/**
+ *
  * @author bsorrentino
  */
-public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
+public class XMLRPCConfluenceService implements ConfluenceService {
 
 
     public final Confluence connection;
@@ -47,7 +61,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      * @return
      * @throws Exception
      */
-    public static XMLRPCConfluenceServiceImpl createInstanceDetectingVersion( String url, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo ) throws Exception {
+    public static XMLRPCConfluenceService createInstanceDetectingVersion(String url, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo ) throws Exception {
         if( url == null ) {
             throw new IllegalArgumentException("url argument is null!");
         }
@@ -71,7 +85,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         
         final ServerInfo info = c.getServerInfo();
         
-        return new XMLRPCConfluenceServiceImpl( (info.getMajorVersion() < 4) ? c : new Confluence2(c), credentials );
+        return new XMLRPCConfluenceService( (info.getMajorVersion() < 4) ? c : new Confluence2(c), credentials );
         
     }
     
@@ -79,7 +93,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
      * 
      * @param confluence 
      */
-    protected XMLRPCConfluenceServiceImpl(Confluence confluence, Credentials credentials ) {
+    protected XMLRPCConfluenceService(Confluence confluence, Credentials credentials ) {
         if( confluence==null ) {
             throw new IllegalArgumentException("confluence argument is null!");
         } 
@@ -138,7 +152,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         return result;
     }
 
-    private Page cast( Model.Page page ) {
+    private Page cast(Model.Page page ) {
         if( page == null ) {
             throw new IllegalArgumentException("page argument is null!");
         }
@@ -148,7 +162,7 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         return (Page)page;
 
     }
-    private Attachment cast( Model.Attachment attachment ) {
+    private Attachment cast(Model.Attachment attachment ) {
         if( attachment == null ) {
             throw new IllegalArgumentException("attachment argument is null!");
         }
@@ -156,6 +170,32 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
             throw new IllegalArgumentException("page argument is not right type!");
         }
         return (Attachment)attachment;
+
+    }
+
+    private <T> CompletableFuture<T> toFuture( TrySupplier<T> s ) {
+
+        final CompletableFuture<T> result = new CompletableFuture<>();
+        try {
+            result.complete( s.get() );
+        } catch (Exception e) {
+            result.completeExceptionally(e);
+        }
+
+        return result;
+
+    }
+
+    private <T> CompletableFuture<T> toFuture(TrySupplier<T> s, Supplier<T> onExceptionReturn ) {
+
+        final CompletableFuture<T> result = new CompletableFuture<>();
+        try {
+            result.complete( s.get() );
+        } catch (Exception e) {
+            result.complete( onExceptionReturn.get() );
+        }
+
+        return result;
 
     }
 
@@ -185,37 +225,15 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
     public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
         
         if( page.getId() == null ) {  throw new IllegalStateException("PageId is null. Attachment cannot be added!"); }
-        
-        final Attachment a = cast(attachment);
-        
-        final CompletableFuture<Model.Attachment> result = new CompletableFuture<>();
 
-        try {
-
-            final byte [] readbuf = IOUtils.toByteArray(source);
-
-            result.complete(connection.addAttachment( page.getId().getValue(), a, readbuf ));
-            
-        } catch (Exception e) {
-            result.completeExceptionally(e);
-        }
-     
-        return result;
+        return toFuture( () ->
+            connection.addAttachment( page.getId().getValue(), cast(attachment), IOUtils.toByteArray(source) ));
     }
 
 
     @Override
     public CompletableFuture<Model.Page> storePage(Model.Page page)  {
-        final Page p = cast(page);
-        
-        final CompletableFuture<Model.Page> result = new CompletableFuture<>();
-        try {
-            result.complete(connection.storePage(p));
-        } catch (Exception e) {
-            result.completeExceptionally(e);
-        }
-        
-        return result;
+        return toFuture( () -> connection.storePage(cast(page)));
     }
 
    @Override
@@ -223,39 +241,11 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
         if( content == null ) {
             throw new IllegalArgumentException("content argument is null!");
         }
-        
-        final Page p = cast(page);
-        
-        p.setContent(content.value);
 
-        final CompletableFuture<Model.Page> result = new CompletableFuture<>();
-        try {
-            result.complete(connection.storePage(p));
-        } catch (Exception e) {
-            result.completeExceptionally(e);
-        }
-        
-        return result;
+       final Page p = cast(page);
+       p.setContent(content.value);
 
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean logout() {
-
-        try {
-            if (!connection.logout()) {
-                //log.error("connection logout has failed!", null);
-                return false;
-            }
-        } catch (Exception e) {
-            //log.error("connection logout has failed due exception ", e);
-            return false;
-        }
-    
-        return true;
+       return toFuture( () -> connection.storePage(p));
 
     }
 
@@ -277,7 +267,6 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
             });
         });
     }
-    
 
     @Override
     public Model.Attachment createAttachment() {
@@ -286,92 +275,51 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
 
     @Override
     public CompletableFuture<Optional<Model.Attachment>> getAttachment(Model.ID pageId, String name, String version)  {
-
-        CompletableFuture<Optional<Model.Attachment>> result = new CompletableFuture<>();
-        try {
-            result.complete(
-                    ofNullable(connection.getAttachment(String.valueOf(pageId), name, version)));
-        } catch (Exception e) {
-            //result.completeExceptionally(e);
-            result.complete(Optional.empty());
-
-        }
-        
-        return result;
+        return toFuture( () -> ofNullable(connection.getAttachment(String.valueOf(pageId), name, version)), () -> Optional.empty() );
     }
 
     @Override
     public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle)  {
-        
-        CompletableFuture<Optional<Model.Page>> result = new CompletableFuture<>();
-        try {
-            result.complete(
-                    ofNullable(connection.getPage(spaceKey, pageTitle) ));
-        } catch (Exception e) {
-            //result.completeExceptionally(e);
-            result.complete(Optional.empty());
-        }
-        
-        return result;
+        return toFuture( () -> ofNullable(connection.getPage(spaceKey, pageTitle) ), () -> Optional.empty());
     }
 
     @Override
     public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId)  {
-        
-        CompletableFuture<Optional<Model.Page>> result = new CompletableFuture<>();
-        try {
-            result.complete(
-                    ofNullable(connection.getPage(pageId.toString())));
-        } catch (Exception e) {
-            //result.completeExceptionally(e);
-            result.complete(Optional.empty());
-        }
-        
-        return result;
-
-    }
-
-    @Override
-    public String toString() {
-        try {
-            final ServerInfo si = connection.getServerInfo();
-            
-            return format("Confluence version [%d.%d.%d-%s] development version [%b]",  
-                            si.getMajorVersion(),                                                                                        
-                            si.getMinorVersion(), 
-                            si.getPatchLevel(), 
-                            si.getBuildId(), 
-                            si.isDevelopmentBuild());
-            
-        } catch (Exception ex) {
-            // TODO LOG
-            return ex.getMessage();
-        }
+        return toFuture( () -> ofNullable(connection.getPage(pageId.toString())), () -> Optional.empty());
     }
 
     @Override
     public CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) {
-        final CompletableFuture<java.util.List<Model.PageSummary>> result = new CompletableFuture<>();
-        try {
-            result.complete(connection.getDescendents(pageId.toString()));
-        } catch (Exception e) {
-            result.completeExceptionally(e);
-        }
-        return result;
+        return toFuture( () -> connection.getDescendents(pageId.toString()));
     }
 
     @Override
     public CompletableFuture<Boolean> removePage(Model.ID pageId) {
-        val future = new CompletableFuture<Boolean>();
-        
-        try {
+
+        return toFuture( () -> {
             connection.removePage(pageId.toString());
-            future.complete(true);
+            return true;
+        }, () -> false );
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean logout() {
+
+        try {
+            if (!connection.logout()) {
+                //log.error("connection logout has failed!", null);
+                return false;
+            }
         } catch (Exception e) {
-            future.complete(false);
-            //future.completeExceptionally(e);
+            //log.error("connection logout has failed due exception ", e);
+            return false;
         }
-        return future;
+
+        return true;
+
     }
 
     @Override
@@ -390,5 +338,24 @@ public class XMLRPCConfluenceServiceImpl implements ConfluenceService {
                                 outputFile);
 
     }
-    
+
+    @Override
+    public String toString() {
+        try {
+            final ServerInfo si = connection.getServerInfo();
+
+            return format("Confluence version [%d.%d.%d-%s] development version [%b]",
+                    si.getMajorVersion(),
+                    si.getMinorVersion(),
+                    si.getPatchLevel(),
+                    si.getBuildId(),
+                    si.isDevelopmentBuild());
+
+        } catch (Exception ex) {
+            // TODO LOG
+            return ex.getMessage();
+        }
+    }
+
+
 }

@@ -14,43 +14,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.bsc.confluence.xmlrpc;
+package org.bsc.confluence.xmlrpc.model;
 
 import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class Permission extends MapObject {
+public class Space extends SpaceSummary {
 
-    public Permission() {
+    public Space() {
         super();
     }
 
-    public Permission(Map<String,Object> data) {
+    public Space(Map<String,Object> data) {
         super(data);
     }
 
     /**
-     * The type of permission. One of 'View' or 'Edit'
+     * the id of the space homepage
      */
-    public String getLockType() {
-        return getString("lockType");
+    public String getHomepage() {
+        return getString("homepage");
     }
 
-    public void setLockType(String lockType) {
-        setString("lockType", lockType);
+    public void setHomepage(String homepage) {
+        setString("homepage", homepage);
     }
 
     /**
-     * The user or group name of the permission's owner
+     * the HTML rendered space description
      */
-    public String getLockedBy() {
-        return getString("lockedBy");
+    public String getDescription() {
+        return getString("description");
     }
 
-    public void setLockedBy(String lockedBy) {
-        setString("lockedBy", lockedBy);
+    public void setDescription(String description) {
+        setString("description", description);
     }
 
 }

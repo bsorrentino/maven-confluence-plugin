@@ -14,25 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.bsc.confluence.xmlrpc;
+package org.bsc.confluence.xmlrpc.model;
 
 import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class User extends MapObject {
+public class Label extends MapObject {
 
-    public User() {
+    public Label() {
         super();
     }
 
-    public User(Map<String,Object> data) {
+    public Label(Map<String,Object> data) {
         super(data);
     }
 
     /**
-     * the username of this user
+     * the nameof the label
      */
     public String getName() {
         return getString("name");
@@ -43,36 +43,36 @@ public class User extends MapObject {
     }
 
     /**
-     * the full name of this user
+     * the username of the owner
      */
-    public String getFullname() {
-        return getString("fullname");
+    public String getOwner() {
+        return getString("owner");
     }
 
-    public void setFullname(String fullname) {
-        setString("fullname", fullname);
+    public void setOwner(String owner) {
+        setString("owner", owner);
     }
 
     /**
-     * the email address of this user
+     * the namespace of the label
      */
-    public String getEmail() {
-        return getString("email");
+    public String getNamespace() {
+        return getString("namespace");
     }
 
-    public void setEmail(String email) {
-        setString("email", email);
+    public void setNamespace(String namespace) {
+        setString("namespace", namespace);
     }
 
     /**
-     * the url to view this user online
+     * the ID of the label
      */
-    public String getUrl() {
-        return getString("url");
+    public String getId() {
+        return getString("id");
     }
 
-    public void setUrl(String url) {
-        setString("url", url);
+    public void setId(String id) {
+        setString("id", id);
     }
 
 }
