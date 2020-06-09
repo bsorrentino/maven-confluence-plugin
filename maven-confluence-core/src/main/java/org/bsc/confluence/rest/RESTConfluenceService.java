@@ -38,7 +38,7 @@ import static java.util.concurrent.CompletableFuture.*;
  */
 public class RESTConfluenceService extends AbstractRESTConfluenceService implements ConfluenceService {
 
-    enum ContentType { page, blogpost }
+    public enum ContentType { page, blogpost }
 
     final Credentials credentials;
     
