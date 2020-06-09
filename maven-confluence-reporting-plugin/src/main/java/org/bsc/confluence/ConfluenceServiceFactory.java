@@ -96,7 +96,7 @@ public class ConfluenceServiceFactory {
                 
                 if( page.getId()==null ) { 
                     final JsonObjectBuilder inputData = 
-                            restService.jsonForCreatingPage(page.getSpace(), 
+                            restService.jsonForCreatingContent(page.getSpace(),
                                                             page.getParentId().getValue(),
                                                             page.getTitle());
                     restService.jsonAddBody(inputData, content);

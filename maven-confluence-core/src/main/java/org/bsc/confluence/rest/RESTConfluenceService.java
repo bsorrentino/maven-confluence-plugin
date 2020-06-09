@@ -37,7 +37,9 @@ import static java.util.concurrent.CompletableFuture.*;
  * @author bosrrentino
  */
 public class RESTConfluenceService extends AbstractRESTConfluenceService implements ConfluenceService {
-    
+
+    enum ContentType { page, blogpost }
+
     final Credentials credentials;
     
     final java.net.URL endpoint ;
@@ -97,9 +99,9 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 
     }
     
-    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final String title  ) {
+    public final JsonObjectBuilder jsonForCreatingContent( ContentType type, final String spaceKey, final String title  ) {
           return Json.createObjectBuilder()
-                  .add("type","page")
+                  .add("type",type.name())
                   .add("title",title)
                   .add("space",Json.createObjectBuilder().add("key", spaceKey))
                   ;
@@ -109,8 +111,8 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 //        return jsonForCreatingPage( spaceKey, Long.valueOf(parentPageId), title);
 //    }
 
-    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final long parentPageId, final String title  ) {
-          return jsonForCreatingPage( spaceKey, title )
+    public final JsonObjectBuilder jsonForCreatingContent(ContentType type, final String spaceKey, final long parentPageId, final String title  ) {
+          return jsonForCreatingContent( type, spaceKey, title )
                   .add("ancestors", Json.createArrayBuilder()
                                           .add(Json.createObjectBuilder().add("id", parentPageId )))
                   ;
@@ -132,7 +134,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
      * @return
      */
       public final CompletableFuture<Model.Page> createPageByTitle( String spaceKey, String title ) {
-              final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, title);
+              final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, title);
 
               return createPage( input.build() )
                       .thenApply( data -> data.map( Page::new ).get() );
@@ -181,7 +183,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
 
         final String spaceKey = parentPage.getSpace();
-        final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, parentPage.getId().getValue(), title);
+        final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, parentPage.getId().getValue(), title);
 
         return createPage( input.build() )
                     .thenApply( page -> page.map( Page::new ).get() );

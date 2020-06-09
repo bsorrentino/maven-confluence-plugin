@@ -5,10 +5,7 @@
  */
 package org.bsc.confluence;
 
-import lombok.val;
-
 import java.io.Closeable;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -258,7 +255,7 @@ public interface ConfluenceService extends Closeable{
                                             TimeUnit timeUnit,
                                             Optional<CompletableFuture<T>> resultHandler,
                                             Supplier<CompletableFuture<T>> action) {
-        val future = resultHandler.orElseGet( () -> new CompletableFuture<>() );
+        final CompletableFuture<T> future = resultHandler.orElseGet( () -> new CompletableFuture<>() );
         action.get()
                 .thenAccept(a -> future.complete(a))
                 .exceptionally(ex -> {
