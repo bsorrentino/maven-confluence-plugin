@@ -16,6 +16,8 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+
 /**
  *
  * @author bsorrentino
@@ -183,7 +185,7 @@ public interface ConfluenceService extends Closeable{
     CompletableFuture<Void> addLabelsByName( Model.ID id, String[] labels ) ;
 
     default CompletableFuture<Void> addLabelsByName( Model.ID id, java.util.List<String> labels ) {
-        if( labels == null || labels.isEmpty() ) return CompletableFuture.completedFuture(null);
+        if( labels == null || labels.isEmpty() ) return completedFuture(null);
 
         final String[] labelArray = new String[ labels.size() ];
         return addLabelsByName( id, labels.toArray(labelArray) );
@@ -235,7 +237,7 @@ public interface ConfluenceService extends Closeable{
                                 format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
                 .thenCombine( getPage(spaceKey, title), ParentChildTuple::of)
                 .thenCompose( tuple -> ( tuple.getChild().isPresent() )
-                        ? CompletableFuture.completedFuture(tuple.getChild().get())
+                        ? completedFuture(tuple.getChild().get())
                         : createPage(tuple.getParent(), title))
                 ;
         }
