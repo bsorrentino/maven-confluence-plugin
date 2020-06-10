@@ -306,20 +306,18 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin.version}</version>
                 <executions>
-                    <!--
-                        <execution>
-                            <id>compile</id>
-                            <goals>
-                                <goal>compile</goal>
-                            </goals>
-                            <configuration>
-                                <sourceDirs>
-                                    <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                                    <sourceDir>${project.basedir}/src/main/java</sourceDir>
-                                </sourceDirs>
-                            </configuration>
-                        </execution>
-                        -->
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>test-compile</id>
                         <goals>
