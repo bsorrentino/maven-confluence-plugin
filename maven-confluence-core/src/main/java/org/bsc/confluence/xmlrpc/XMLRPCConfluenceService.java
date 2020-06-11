@@ -300,9 +300,6 @@ public class XMLRPCConfluenceService implements ConfluenceService {
 
     @Override
     public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost )  {
-
-        if( blogpost.getId() == null ) {  throw new IllegalStateException("PageId is null. blogpost cannot be added!"); }
-
         return toFuture( () -> connection.storeBlogEntry( BlogEntry.class.cast(blogpost) ));
     }
 

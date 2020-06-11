@@ -137,9 +137,17 @@ public class ConfluenceServiceFactory {
             xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
         }
 
+        /**
+         * factory method
+         *
+         * @param space   space id
+         * @param title   post's title
+         * @param content post's content
+         * @return
+         */
         @Override
-        public Model.Blogpost createBlogpost() {
-            return xmlrpcService.createBlogpost();
+        public Model.Blogpost createBlogpost(String space, String title, Storage content) {
+            return xmlrpcService.createBlogpost(space, title, content);
         }
 
         @Override
