@@ -138,6 +138,16 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
+        public Model.Blogpost createBlogpost() {
+            return xmlrpcService.createBlogpost();
+        }
+
+        @Override
+        public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost )  {
+            return xmlrpcService.addBlogpost(blogpost);
+        }
+
+        @Override
         public String toString() {
             return xmlrpcService.toString();
         }

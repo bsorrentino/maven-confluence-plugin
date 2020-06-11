@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.confluence.rest.model.Attachment;
+import org.bsc.confluence.rest.model.Blogpost;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.xmlrpc.ConfluenceExportDecorator;
 import org.bsc.ssl.SSLCertificateInfo;
@@ -88,17 +89,10 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         
     }
 
-    private Attachment cast( Model.Attachment attachment ) {
-        if( attachment == null ) {
-            throw new IllegalArgumentException("attachment argument is null!");
-        }
-        if( !(attachment instanceof Attachment) ) {
-            throw new IllegalArgumentException("page argument is not right type!");
-        }
-        return (Attachment)attachment;
-
+    private <S,T> CompletableFuture<T> cast( CompletableFuture<S> s ) {
+        return (CompletableFuture<T>)s;
     }
-    
+
     public final JsonObjectBuilder jsonForCreatingContent( ContentType type, final String spaceKey, final String title  ) {
           return Json.createObjectBuilder()
                   .add("type",type.name())
@@ -206,13 +200,13 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         return findPage(spaceKey, pageTitle)
                     .thenApply( page -> page.map( Page::new ));
     }
-    
-    
+
+
     @Override
     public CompletableFuture<List<Model.PageSummary>> getDescendents(Model.ID pageId)  {
         return descendantPages( pageId.getValue() )
-                    .thenApply( descendant ->
-                            descendant.stream()
+                .thenApply( descendant ->
+                        descendant.stream()
                                 .map( (page) -> new Page(page))
                                 .collect( Collectors.toList() ));
     }
@@ -248,6 +242,26 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
 
     @Override
+    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
+
+        return childrenPages(parentPage.getId().toString())
+                .thenCompose( children ->
+                        children.stream()
+                                .map( page -> new Page(page))
+                                .filter( page -> page.getTitle().equals(title) )
+                                .map( page -> deletePageById(page.getId().toString()) )
+                                .findFirst()
+                                .orElse( completedFuture(false) ));
+
+    }
+
+
+    @Override
+    public CompletableFuture<Boolean> removePage(Model.ID pageId) {
+        return deletePageById(pageId.toString());
+    }
+
+    @Override
     public CompletableFuture<Void> addLabelsByName(Model.ID id, String[] labels ) {
         return runAsync( () -> addLabels(id.toString(), labels) );
     }
@@ -267,6 +281,21 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 		                    pageTitle, 
 		                    exfmt, 
 		                    outputFile);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // ATTACHMENT
+    ///////////////////////////////////////////////////////////////////////////////
+
+    private Attachment cast( Model.Attachment attachment ) {
+        if( attachment == null ) {
+            throw new IllegalArgumentException("attachment argument is null!");
+        }
+        if( !(attachment instanceof Attachment) ) {
+            throw new IllegalArgumentException("page argument is not right type!");
+        }
+        return (Attachment)attachment;
+
     }
 
     @Override
@@ -296,25 +325,31 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         return supplyAsync( () -> addAttchment.join() );
 
     }
-    
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // BLOG POST
+    ///////////////////////////////////////////////////////////////////////////////
+
     @Override
-    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
-        
-        return childrenPages(parentPage.getId().toString())
-                .thenCompose( children ->
-                        children.stream()
-                            .map( page -> new Page(page))
-                            .filter( page -> page.getTitle().equals(title) )
-                            .map( page -> deletePageById(page.getId().toString()) )
-                            .findFirst()
-                            .orElse( completedFuture(false) ));
-        
+    public Model.Blogpost createBlogpost( String space, String title, Storage content) {
+        final Blogpost result = new Blogpost();
+
+        result.setSpace(space);
+        result.setTitle(title);
+        result.setContent(content);
+        return result;
     }
 
-    
     @Override
-    public CompletableFuture<Boolean> removePage(Model.ID pageId) {
-        return deletePageById(pageId.toString());
+    public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost)  {
+
+        final Blogpost restBlogpost = Blogpost.class.cast(blogpost);
+        final JsonObjectBuilder builder =
+                jsonAddBody(
+                    jsonForCreatingContent( ContentType.blogpost, restBlogpost.getSpace(), restBlogpost.getTitle()),
+                    restBlogpost.getContent() );
+
+        return cast(createPage(builder.build()).thenApply( page -> page.map( Blogpost::new ).orElse(null)));
     }
 
     @Override

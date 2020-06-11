@@ -135,13 +135,11 @@
 
     <dependencies>
 
-
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-project-info-reports-plugin</artifactId>
             <version>${reports-plugin-version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.bsc.maven</groupId>
@@ -149,6 +147,15 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!--
+        =================================
+        KOTLIN
+        =================================
+        -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
         <!--
         =================================
         MARKDOWN PROCESSOR
@@ -224,6 +231,7 @@ NEEDS FOR PLUGIN DOCUMENTATION
         </dependency>
 
 
+
 <!--
 ================
 TEST
@@ -277,13 +285,6 @@ TEST
             <groupId>org.exparity</groupId>
             <artifactId>hamcrest-date</artifactId>
             <version>1.1.0</version>
-            <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -95,11 +95,14 @@ public interface ConfluenceService extends Closeable{
         public final String value;
         public final Representation rapresentation;
 
-        public Storage(String value, Representation rapresentation) {
+        private Storage(String value, Representation rapresentation) {
             this.value = value;
             this.rapresentation = rapresentation;
         }
-        
+
+        public static Storage of( String value, Representation rapresentation ) {
+            return new Storage(value,rapresentation);
+        }
         
     }
     class Credentials {
@@ -163,6 +166,16 @@ public interface ConfluenceService extends Closeable{
             int getVersion();
         }
 
+        interface Blogpost  {
+            ID getId();
+
+            String getTitle();
+
+            String getSpace();
+
+            int getVersion();
+        }
+
     }
     
     Credentials getCredentials();
@@ -200,20 +213,56 @@ public interface ConfluenceService extends Closeable{
                         ExportFormat exfmt, 
                         java.io.File outputFile) throws Exception;
     
-    //
+    ////////////////////////////////////////////////////////////////////////////////
     // ATTACHMENT
-    //
+    ///////////////////////////////////////////////////////////////////////////////
     
     /**
      * factory method
      * 
      * @return 
      */
-    Model.Attachment createAttachment(); 
-    
+    Model.Attachment createAttachment();
+
+    /**
+     *
+     * @param pageId
+     * @param name
+     * @param version
+     * @return
+     */
     CompletableFuture<Optional<Model.Attachment>> getAttachment( Model.ID pageId, String name, String version) ;
 
+    /**
+     *
+     * @param page
+     * @param attachment
+     * @param source
+     * @return
+     */
     CompletableFuture<Model.Attachment> addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) ;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // BLOG POST
+    ///////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * factory method
+     *
+     * @param space space id
+     * @param title post's title
+     * @param content post's content
+     *
+     * @return
+     */
+    Model.Blogpost createBlogpost( String space, String title, Storage content  );
+
+    /**
+     *
+     * @param blogpost
+     * @return
+     */
+    CompletableFuture<Model.Blogpost> addBlogpost( Model.Blogpost blogpost) ;
 
     /**
      * 

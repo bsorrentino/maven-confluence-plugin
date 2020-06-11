@@ -5,7 +5,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
@@ -20,7 +19,6 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;

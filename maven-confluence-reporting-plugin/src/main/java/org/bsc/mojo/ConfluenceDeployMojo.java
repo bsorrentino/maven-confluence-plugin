@@ -28,7 +28,6 @@ import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.bsc.confluence.ConfluenceService;
@@ -772,15 +771,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
             getLog().warn(format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
 
-        } catch (ExtractionException e) {
-            throw new MojoExecutionException(
-                    format("Error extracting plugin descriptor: %s",
-                    e.getLocalizedMessage()),
-                    e);
         }
 
-        final Model.Page parentPage = loadParentPage(confluence, Optional.of(site))
-                                            .join();
+        final Model.Page parentPage = loadParentPage(confluence, Optional.of(site)).join();
 
         outputDirectory.mkdirs();
 
@@ -997,12 +990,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                 .thenApply( parent ->
                     parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
                 .thenCombine( confluence.getPage(parentPage.getSpace(), title), ParentChildTuple::of)
-                .thenCompose( tuple -> {
-                    return ( tuple.getChild().isPresent() ) ?
-                        completedFuture(tuple.getChild().get()) :
-                        resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset ->confluence.createPage(tuple.getParent(), title));
-                })
+                .thenCompose( tuple -> ( tuple.getChild().isPresent() ) ?
+                    completedFuture(tuple.getChild().get()) :
+                    resetUpdateStatusForResource(site.getHome().getUri())
+                    .thenCompose( reset ->confluence.createPage(tuple.getParent(), title)))
                 .thenCompose( p ->
                     canProceedToUpdateResource( site.getHome().getUri())
                     .thenCompose( update -> {

@@ -6,6 +6,7 @@ import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.confluence.rest.RESTConfluenceService;
+import org.bsc.confluence.rest.model.Blogpost;
 import org.bsc.confluence.rest.scrollversions.model.ScrollVersions;
 import org.bsc.ssl.SSLCertificateInfo;
 
@@ -26,6 +27,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 
 public class ScrollVersionsConfluenceService implements ConfluenceService {
@@ -677,6 +679,20 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     @Override
     public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
         return delegate.addAttachment(page, attachment, source);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // BLOG POST
+    ///////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Model.Blogpost createBlogpost( String space, String title, Storage content) {
+        return delegate.createBlogpost(space, title, content);
+    }
+
+    @Override
+    public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost)  {
+        return delegate.addBlogpost(blogpost);
     }
 
     @Override

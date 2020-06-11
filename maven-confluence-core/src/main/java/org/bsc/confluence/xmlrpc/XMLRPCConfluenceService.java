@@ -9,10 +9,8 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.xmlrpc.model.Attachment;
-import org.bsc.confluence.xmlrpc.model.Page;
-import org.bsc.confluence.xmlrpc.model.PageSummary;
-import org.bsc.confluence.xmlrpc.model.ServerInfo;
+import org.bsc.confluence.rest.model.Blogpost;
+import org.bsc.confluence.xmlrpc.model.*;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -30,6 +28,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.bsc.confluence.ConfluenceUtils.sanitizeLabel;
 
 /**
@@ -113,8 +112,7 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     public Credentials getCredentials() {
         return credentials;
     }
- 
-    
+
     /**
      * 
      * @param parentPageId
@@ -152,27 +150,6 @@ public class XMLRPCConfluenceService implements ConfluenceService {
         return result;
     }
 
-    private Page cast(Model.Page page ) {
-        if( page == null ) {
-            throw new IllegalArgumentException("page argument is null!");
-        }
-        if( !(page instanceof Page) ) {
-            throw new IllegalArgumentException("page argument is not right type!");
-        }
-        return (Page)page;
-
-    }
-    private Attachment cast(Model.Attachment attachment ) {
-        if( attachment == null ) {
-            throw new IllegalArgumentException("attachment argument is null!");
-        }
-        if( !(attachment instanceof Attachment) ) {
-            throw new IllegalArgumentException("page argument is not right type!");
-        }
-        return (Attachment)attachment;
-
-    }
-
     private <T> CompletableFuture<T> toFuture( TrySupplier<T> s ) {
 
         final CompletableFuture<T> result = new CompletableFuture<>();
@@ -200,17 +177,6 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title)  {
-        Objects.requireNonNull(parentPage, "parentPage is null!");
-
-        return getPageByTitle( parentPage.getId(), title)
-                .thenCompose( page ->
-                    ( page.isPresent() )
-                        ? removePage( page.get().getId() )
-                        : completedFuture(false) );
-    }
-
-    @Override
     public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
 
             final Page result = new Page(Collections.emptyMap());
@@ -222,18 +188,8 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
-        
-        if( page.getId() == null ) {  throw new IllegalStateException("PageId is null. Attachment cannot be added!"); }
-
-        return toFuture( () ->
-            connection.addAttachment( page.getId().getValue(), cast(attachment), IOUtils.toByteArray(source) ));
-    }
-
-
-    @Override
     public CompletableFuture<Model.Page> storePage(Model.Page page)  {
-        return toFuture( () -> connection.storePage(cast(page)));
+        return toFuture( () -> connection.storePage( Page.class.cast(page)));
     }
 
    @Override
@@ -242,11 +198,47 @@ public class XMLRPCConfluenceService implements ConfluenceService {
             throw new IllegalArgumentException("content argument is null!");
         }
 
-       final Page p = cast(page);
+       final Page p = Page.class.cast(page);
+
        p.setContent(content.value);
 
        return toFuture( () -> connection.storePage(p));
 
+    }
+
+    @Override
+    public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle)  {
+        return toFuture( () -> ofNullable(connection.getPage(spaceKey, pageTitle) ), () -> Optional.empty());
+    }
+
+    @Override
+    public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId)  {
+        return toFuture( () -> ofNullable(connection.getPage(pageId.toString())), () -> Optional.empty());
+    }
+
+    @Override
+    public CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) {
+        return toFuture( () -> connection.getDescendents(pageId.toString()));
+    }
+
+    @Override
+    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title)  {
+        Objects.requireNonNull(parentPage, "parentPage is null!");
+
+        return getPageByTitle( parentPage.getId(), title)
+                .thenCompose( page ->
+                        ( page.isPresent() )
+                                ? removePage( page.get().getId() )
+                                : completedFuture(false) );
+    }
+
+    @Override
+    public CompletableFuture<Boolean> removePage(Model.ID pageId) {
+
+        return toFuture( () -> {
+            connection.removePage(pageId.toString());
+            return true;
+        }, () -> false );
     }
 
     /**
@@ -268,6 +260,9 @@ public class XMLRPCConfluenceService implements ConfluenceService {
         });
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // ATTACHMENT
+    ///////////////////////////////////////////////////////////////////////////////
     @Override
     public Model.Attachment createAttachment() {
         return new Attachment();
@@ -279,27 +274,36 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(String spaceKey, String pageTitle)  {
-        return toFuture( () -> ofNullable(connection.getPage(spaceKey, pageTitle) ), () -> Optional.empty());
+    public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
+
+        if( page.getId() == null ) {  throw new IllegalStateException("PageId is null. Attachment cannot be added!"); }
+
+        return toFuture( () ->
+                connection.addAttachment( page.getId().getValue(), Attachment.class.cast(attachment), IOUtils.toByteArray(source) ));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // BLOG POST
+    ///////////////////////////////////////////////////////////////////////////////
+    @Override
+    public Model.Blogpost createBlogpost( String space, String title, Storage content) {
+        final BlogEntry result = new BlogEntry();
+
+        result.setSpace(space);
+        result.setTitle(title);
+        result.setVersion(1);
+        result.setContent( content.value );
+
+        return result;
+
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId)  {
-        return toFuture( () -> ofNullable(connection.getPage(pageId.toString())), () -> Optional.empty());
-    }
+    public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost )  {
 
-    @Override
-    public CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) {
-        return toFuture( () -> connection.getDescendents(pageId.toString()));
-    }
+        if( blogpost.getId() == null ) {  throw new IllegalStateException("PageId is null. blogpost cannot be added!"); }
 
-    @Override
-    public CompletableFuture<Boolean> removePage(Model.ID pageId) {
-
-        return toFuture( () -> {
-            connection.removePage(pageId.toString());
-            return true;
-        }, () -> false );
+        return toFuture( () -> connection.storeBlogEntry( BlogEntry.class.cast(blogpost) ));
     }
 
     /**
