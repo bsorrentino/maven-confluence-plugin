@@ -285,7 +285,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     t.setVariableOpt("page.title", pageTitleToApply);
                 }
 
-                return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), content.get().getType()));
+                return confluence.storePage(pageToUpdate, Storage.of(t.generateOutput(), content.get().getType()));
 
             } catch (Exception ex) {
                 result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(), ex));

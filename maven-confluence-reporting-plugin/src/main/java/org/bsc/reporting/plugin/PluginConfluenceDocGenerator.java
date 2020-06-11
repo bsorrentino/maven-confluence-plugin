@@ -89,7 +89,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
     
                     writer.flush();
     
-                    return confluence.storePage(page, new Storage(writer.toString(), Representation.WIKI));
+                    return confluence.storePage(page, Storage.of(writer.toString(), Representation.WIKI));
                     
                 })
             ;

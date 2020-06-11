@@ -569,7 +569,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
                 generateProjectHomeTemplate( t, site, locale );
 
-                return confluence.storePage(homePage, new Storage(t.generateOutput(),content.get().getType()) );
+                return confluence.storePage(homePage, Storage.of(t.generateOutput(),content.get().getType()) );
 
             } catch (Exception ex) {
                 result.completeExceptionally(ex);
@@ -946,7 +946,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     page.setContent(wiki.toString());
                     */
 
-                    return confluence.storePage(homePage,new Storage(t.generateOutput(), Representation.WIKI));
+                    return confluence.storePage(homePage, Storage.of(t.generateOutput(), Representation.WIKI));
 
                 } catch (Exception ex) {
                     result.completeExceptionally(ex);
