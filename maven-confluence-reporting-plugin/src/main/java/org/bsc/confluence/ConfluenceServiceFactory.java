@@ -146,8 +146,8 @@ public class ConfluenceServiceFactory {
          * @return
          */
         @Override
-        public Model.Blogpost createBlogpost(String space, String title, Storage content) {
-            return xmlrpcService.createBlogpost(space, title, content);
+        public Model.Blogpost createBlogpost(String space, String title, Storage content, int version) {
+            return xmlrpcService.createBlogpost(space, title, content, version);
         }
 
         @Override

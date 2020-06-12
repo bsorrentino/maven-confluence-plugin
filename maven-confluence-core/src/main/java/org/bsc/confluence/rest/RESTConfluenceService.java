@@ -331,12 +331,13 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     ///////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Model.Blogpost createBlogpost( String space, String title, Storage content) {
+    public Model.Blogpost createBlogpost( String space, String title, Storage content, int version) {
         final Blogpost result = new Blogpost();
 
         result.setSpace(space);
         result.setTitle(title);
         result.setContent(content);
+        result.setVersion(version);
         return result;
     }
 

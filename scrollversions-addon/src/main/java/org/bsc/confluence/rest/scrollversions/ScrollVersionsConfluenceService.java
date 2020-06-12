@@ -686,8 +686,8 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     ///////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Model.Blogpost createBlogpost( String space, String title, Storage content) {
-        return delegate.createBlogpost(space, title, content);
+    public Model.Blogpost createBlogpost( String space, String title, Storage content, int version) {
+        return delegate.createBlogpost(space, title, content, version);
     }
 
     @Override

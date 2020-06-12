@@ -286,12 +286,12 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     // BLOG POST
     ///////////////////////////////////////////////////////////////////////////////
     @Override
-    public Model.Blogpost createBlogpost( String space, String title, Storage content) {
+    public Model.Blogpost createBlogpost( String space, String title, Storage content, int version) {
         final BlogEntry result = new BlogEntry();
 
         result.setSpace(space);
         result.setTitle(title);
-        result.setVersion(1);
+        result.setVersion(version);
         result.setContent( content.value );
 
         return result;

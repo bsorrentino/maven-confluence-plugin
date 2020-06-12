@@ -27,7 +27,7 @@ fun main(args : Array<String>) {
 
         val title = "BLOG REST - ${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)}"
 
-        var blogpost = createBlogpost( spaceKey, title, Storage.of( content, Representation.WIKI))
+        var blogpost = createBlogpost( spaceKey, title, Storage.of( content, Representation.WIKI), 0)
 
         blogpost =  addBlogpost( blogpost ).join()
 
@@ -44,7 +44,7 @@ fun main(args : Array<String>) {
 
         val title = "BLOG XMLRPC - ${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)}"
 
-        var blogpost = createBlogpost( spaceKey, title, Storage.of( content, Representation.WIKI))
+        var blogpost = createBlogpost( spaceKey, title, Storage.of( content, Representation.WIKI), 0)
 
         blogpost =  addBlogpost( blogpost ).join()
 

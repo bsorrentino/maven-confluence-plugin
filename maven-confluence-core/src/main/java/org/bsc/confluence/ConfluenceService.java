@@ -255,7 +255,7 @@ public interface ConfluenceService extends Closeable{
      *
      * @return
      */
-    Model.Blogpost createBlogpost( String space, String title, Storage content  );
+    Model.Blogpost createBlogpost( String space, String title, Storage content, int version );
 
     /**
      *
