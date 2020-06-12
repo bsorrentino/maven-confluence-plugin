@@ -176,9 +176,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     public AbstractBaseConfluenceMojo() {
     }
 
-    public final String getEndPoint() {
-        return endPoint;
-    }
+    public final String getEndPoint() { return endPoint; }
 
     public final String _getSpaceKey() {
         return spaceKey;
