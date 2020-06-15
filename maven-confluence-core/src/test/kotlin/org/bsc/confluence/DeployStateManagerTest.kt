@@ -15,7 +15,7 @@ class DeployStateManagerTest {
 
     @Test
     fun testLoadNullParams() = assertThrows(NullPointerException::class.java) {
-        val manager = DeployStateManager.load("endpoint", null)
+        DeployStateManager.load("endpoint", null)
     }
 
     @Test

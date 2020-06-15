@@ -28,10 +28,5 @@ public interface MarkdownProcessor {
      * @return processed (i.e. translated) content
      * @throws IOException
      */
-    String processMarkdown(
-            final Site siteModel,
-            final Site.Page pageModel,
-            final Optional<ConfluenceService.Model.Page> page,
-            final String content,
-            final Optional<String> pagePrefixToApply) throws IOException;
+    String processMarkdown( MarkdownParserContext context, String content ) throws IOException;
 }

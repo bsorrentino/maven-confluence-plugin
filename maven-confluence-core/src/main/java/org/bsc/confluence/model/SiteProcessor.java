@@ -6,6 +6,7 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.confluence.FileExtension;
+import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.MarkdownProcessorProvider;
 
 import java.io.IOException;
@@ -283,7 +284,30 @@ public class SiteProcessor {
             final String content,
             final Optional<String> pagePrefixToApply) throws IOException {
 
-        return MarkdownProcessorProvider.instance.Load().processMarkdown( site, child, page, content, pagePrefixToApply );
+        return MarkdownProcessorProvider.instance.Load().processMarkdown(new MarkdownParserContext() {
+            @Override
+            public Optional<Site> getSite() {
+                return Optional.of(site);
+            }
+
+            @Override
+            public Optional<Site.Page> getPage() {
+                return Optional.of(child);
+            }
+
+            @Override
+            public Optional<String> getPagePrefixToApply() {
+                return pagePrefixToApply;
+            }
+
+            @Override
+            public boolean isLinkPrefixEnabled() {
+                if( child.isIgnoreVariables() ) return false;
+
+                return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
+
+            }
+        }, content);
     }
 
 }

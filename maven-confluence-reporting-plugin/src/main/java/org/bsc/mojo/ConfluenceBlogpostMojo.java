@@ -1,7 +1,6 @@
 package org.bsc.mojo;
 
 import com.google.common.io.Files;
-import lombok.Data;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
@@ -11,7 +10,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
 import static java.lang.String.format;
-import static org.bsc.confluence.ConfluenceService.*;
+import static org.bsc.confluence.ConfluenceService.Model;
+import static org.bsc.confluence.ConfluenceService.Storage;
 
 
 /**
@@ -19,7 +19,7 @@ import static org.bsc.confluence.ConfluenceService.*;
  *
  * @since 6.9
  */
-@Mojo(name = "blogpost", threadSafe = true)
+@Mojo(name = "blogpost", requiresProject = false, threadSafe = true)
 public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
 
     /**
@@ -33,7 +33,7 @@ public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
      *
      * @return
      */
-    protected final Charset getCharset() {
+    private final Charset getCharset() {
 
         if (encoding == null) {
             getLog().debug("encoding is null! default charset will be used");
