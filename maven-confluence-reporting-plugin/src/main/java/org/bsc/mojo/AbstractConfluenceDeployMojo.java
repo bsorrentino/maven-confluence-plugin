@@ -107,7 +107,9 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @since 6.0.0
      */
     @Parameter
-    protected DeployStateManager.Parameters deployState = new DeployStateManager.Parameters();
+    protected DeployStateManager.Parameters deployState = new DeployStateManager.Parameters() {{
+        setActive(false);
+    }};
 
     /**
      * Use this property to disable processing of properties that are in the form of URI.
