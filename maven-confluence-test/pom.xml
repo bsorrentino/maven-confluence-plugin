@@ -343,10 +343,9 @@
                             <goal>blogpost</goal>
                         </goals>
                         <configuration>
-                            <blogInfo>
-                                <title>blog2.md</title>
-                                <content>${project.basedir}/src/site/confluence/issue219/blog.md</content>
-                            </blogInfo>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <title>${blog.title}</title>
+                            <content>${project.basedir}/src/site/confluence/issue219/blog.md</content>
                             <failOnError>true</failOnError>
                         </configuration>
                     </execution>
