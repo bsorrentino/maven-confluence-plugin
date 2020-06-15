@@ -135,7 +135,7 @@ public abstract class AbstractRestConfluence {
                             .append("*'wiki' \"wiki\"*")
                             .toString();
         
-        val p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI)).get();
+        val p1 = service.storePage(p, Storage.of(content, Storage.Representation.WIKI)).get();
 
         assertThat( p1, notNullValue());
         assertThat( p1.getSpace(), equalTo(spaceKey));
@@ -199,7 +199,7 @@ public abstract class AbstractRestConfluence {
                             .toString();
                     return CompletableFuture.completedFuture(p)
                             .thenCombine( 
-                                    service.storePage(p, new Storage(content, Storage.Representation.STORAGE)), 
+                                    service.storePage(p, Storage.of(content, Storage.Representation.STORAGE)),
                                     PageTuple2::of );
                 })
                 .join()

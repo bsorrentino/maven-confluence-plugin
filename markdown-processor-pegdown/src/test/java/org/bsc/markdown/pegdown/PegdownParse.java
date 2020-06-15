@@ -201,6 +201,10 @@ public abstract class PegdownParse {
         root.accept(newVisitor(0));
     }
 
+    private void notImplementedYet(Node node) {
+        throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. ", node.getClass().getSimpleName()) );
+    }
+
     /**
      * 
      * @return
@@ -212,20 +216,15 @@ public abstract class PegdownParse {
 
         final RootNode root = p.parseMarkdown(loadResource());
 
-        PegdownConfluenceWikiVisitor ser =  new PegdownConfluenceWikiVisitor(new MarkdownParserContext<Node>() {
+        PegdownConfluenceWikiVisitor ser =  new PegdownConfluenceWikiVisitor(new MarkdownParserContext() {
             @Override
             public Optional<Site> getSite() {
                 return Optional.empty();
             }
 
             @Override
-            public Site.Page getPage() {
-                return page;
-            }
-
-            @Override
-            public void notImplementedYet(Node node) {
-                throw new UnsupportedOperationException( String.format("Node [%s] not supported yet. ", node.getClass().getSimpleName()) );
+            public Optional<Site.Page> getPage() {
+                return Optional.of(page);
             }
 
             @Override
@@ -238,7 +237,7 @@ public abstract class PegdownParse {
                 return true;
             }
 
-        });
+        }, this::notImplementedYet);
 
         root.accept( ser );
 

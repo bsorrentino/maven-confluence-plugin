@@ -334,6 +334,23 @@
                         </configuration>
                     </execution>
 
+                    <!--
+                    mvn confluence-reporting:blogpost@issue219
+                    -->
+                    <execution>
+                        <id>issue219</id>
+                        <goals>
+                            <goal>blogpost</goal>
+                        </goals>
+                        <configuration>
+                            <blogInfo>
+                                <title>blog2.md</title>
+                                <content>${project.basedir}/src/site/confluence/issue219/blog.md</content>
+                            </blogInfo>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
         </plugins>

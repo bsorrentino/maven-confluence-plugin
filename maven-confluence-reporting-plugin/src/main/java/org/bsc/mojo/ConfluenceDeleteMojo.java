@@ -48,10 +48,15 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
         return result;
         
     }
-    
-    private void deletePage(ConfluenceService confluence)  {
-        boolean result =
-                loadParentPage(confluence, Optional.empty())
+
+    /**
+     *
+     * @param confluence
+     * @return
+     */
+    private boolean deletePage(ConfluenceService confluence)  {
+
+        return loadParentPage(confluence, Optional.empty())
                 .thenCompose( parentPage -> {
 
                     final String startPageTitle = getStartPageTitle();
@@ -112,19 +117,12 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo {
         })
         .join();
 
-
-
     }
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-    	
-    	if( getLog().isDebugEnabled())
-    		System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
-        
-        super.loadUserInfoFromSettings();
-        
-        super.confluenceExecute( this::deletePage );
+    public void execute( ConfluenceService confluence ) throws Exception {
+
+        deletePage(confluence);
         
     }
  

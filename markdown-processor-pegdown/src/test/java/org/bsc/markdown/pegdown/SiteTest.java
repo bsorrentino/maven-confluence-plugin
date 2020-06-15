@@ -7,10 +7,8 @@ import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 import org.bsc.markdown.MarkdownProcessorInfo;
-import org.bsc.markdown.MarkdownProcessorProvider;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -74,10 +72,8 @@ public class SiteTest implements SiteFactory.Model {
 
     Site site;
 
-    @BeforeClass
-    public static void setMarkdownPorcessorProvider() {
-        MarkdownProcessorProvider.instance.setInfo( new MarkdownProcessorInfo("pegdown") );
-    }
+    final MarkdownProcessorInfo md = new MarkdownProcessorInfo();
+
     @Before
     public void loadSite() {
         site = createSiteFromModel(Collections.emptyMap());

@@ -96,9 +96,10 @@ public class ConfluenceServiceFactory {
                 
                 if( page.getId()==null ) { 
                     final JsonObjectBuilder inputData = 
-                            restService.jsonForCreatingPage(page.getSpace(), 
-                                                            page.getParentId().getValue(),
-                                                            page.getTitle());
+                            restService.jsonForCreatingContent( RESTConfluenceService.ContentType.page,
+                                                                page.getSpace(),
+                                                                page.getParentId().getValue(),
+                                                                page.getTitle());
                     restService.jsonAddBody(inputData, content);
                     
                     return restService.createPage(inputData.build())
@@ -134,6 +135,24 @@ public class ConfluenceServiceFactory {
         @Override
         public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
             xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
+        }
+
+        /**
+         * factory method
+         *
+         * @param space   space id
+         * @param title   post's title
+         * @param content post's content
+         * @return
+         */
+        @Override
+        public Model.Blogpost createBlogpost(String space, String title, Storage content, int version) {
+            return xmlrpcService.createBlogpost(space, title, content, version);
+        }
+
+        @Override
+        public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost )  {
+            return xmlrpcService.addBlogpost(blogpost);
         }
 
         @Override

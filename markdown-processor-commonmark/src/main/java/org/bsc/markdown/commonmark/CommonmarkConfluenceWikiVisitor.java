@@ -41,8 +41,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
     private Stack<StringBuilder> bufferStack = new Stack<>();
 
-    private final MarkdownParserContext<Block> parseContext;
-
+    private final MarkdownParserContext parseContext;
 
 /*
     @Override
@@ -51,9 +50,8 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
     }
 */
 
-    public CommonmarkConfluenceWikiVisitor(MarkdownParserContext<Block> parseContext ) {
+    public CommonmarkConfluenceWikiVisitor(MarkdownParserContext parseContext ) {
         this.parseContext = parseContext;
-
         bufferStack.push(  new StringBuilder( 500 * 1024 ) ) ;
     }
 

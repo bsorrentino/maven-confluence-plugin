@@ -107,7 +107,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @since 6.0.0
      */
     @Parameter
-    protected DeployStateManager.Parameters deployState;
+    protected DeployStateManager.Parameters deployState = new DeployStateManager.Parameters();
 
     /**
      * Use this property to disable processing of properties that are in the form of URI.
@@ -285,7 +285,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     t.setVariableOpt("page.title", pageTitleToApply);
                 }
 
-                return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), content.get().getType()));
+                return confluence.storePage(pageToUpdate, Storage.of(t.generateOutput(), content.get().getType()));
 
             } catch (Exception ex) {
                 result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(), ex));

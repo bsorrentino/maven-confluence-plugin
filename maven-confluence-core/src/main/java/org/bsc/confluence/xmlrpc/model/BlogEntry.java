@@ -16,12 +16,14 @@
  */
 package org.bsc.confluence.xmlrpc.model;
 
+import org.bsc.confluence.ConfluenceService.Model;
+
 import java.util.Map;
 
 /**
  * @version $Revision$ $Date$
  */
-public class BlogEntry extends MapObject {
+public class BlogEntry extends MapObject implements Model.Blogpost {
 
     public BlogEntry() {
         super();
@@ -34,13 +36,14 @@ public class BlogEntry extends MapObject {
     /**
      * the id of the blog entry
      */
-    public String getId() {
-        return getString("id");
+    public Model.ID getId() {
+        return Model.ID.of(getString("id"));
     }
 
-    public void setId(String id) {
-        setString("id", id);
+    public void setId(Model.ID id) {
+        setString("id", id.toString());
     }
+
 
     /**
      * the key of the space that this blog entry belongs to

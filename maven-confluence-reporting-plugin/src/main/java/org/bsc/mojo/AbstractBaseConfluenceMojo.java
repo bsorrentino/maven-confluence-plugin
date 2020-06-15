@@ -2,9 +2,9 @@ package org.bsc.mojo;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
@@ -19,17 +19,23 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-
 
 /**
  *
  * @author bsorrentino
  */
 public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
+    /**
+     * Skip plugin execution
+     *
+     * @since 5.1
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean skip = false;
     /**
      * additional properties pass to template processor
      * Properties in the form of URI will be loaded and loaded value will be used instead, see processProperties
@@ -152,7 +158,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * @return
      */
     public Optional<ScrollVersionsConfiguration> getScrollVersions() {
-        return Optional.ofNullable(scrollVersions);
+        return ofNullable(scrollVersions);
     }
     /**
      * 
@@ -170,11 +176,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     public AbstractBaseConfluenceMojo() {
     }
 
-    public final String getEndPoint() {
-        return endPoint;
-    }
+    public final String getEndPoint() { return endPoint; }
 
-    public final String _getSpaceKey() {
+    public final String getSpaceKey() {
         return spaceKey;
     }
 
@@ -191,50 +195,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
             properties = new java.util.HashMap<>(5);
         }
         return properties;
-    }
-    
-    /**
-     *
-     * @param task
-     * @throws MojoExecutionException
-     */
-    protected <T extends Consumer<ConfluenceService>> void confluenceExecute(T task)  {
-
-        ConfluenceProxy proxyInfo = null;
-
-        final Proxy activeProxy = mavenSettings.getActiveProxy();
-
-        if (activeProxy != null) {
-
-            proxyInfo =
-                    new ConfluenceProxy(
-                            activeProxy.getHost(),
-                            activeProxy.getPort(),
-                            activeProxy.getUsername(),
-                            activeProxy.getPassword(),
-                            activeProxy.getNonProxyHosts()
-                    );
-        }
-
-        final ConfluenceService.Credentials credentials = 
-            new ConfluenceService.Credentials(getUsername(), getPassword());
-
-        try ( ConfluenceService confluence  = 
-                ConfluenceServiceFactory.createInstance(
-                        getEndPoint(), 
-                        credentials, 
-                        proxyInfo, 
-                        sslCertificate,
-                        getScrollVersions())) 
-        {
-
-                    task.accept(confluence);
-        
-        } 
-        catch( Throwable re ) {     
-            throw new RuntimeException(re);      
-        }
-               
     }
 
     /**
@@ -291,7 +251,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      *
      * @throws MojoExecutionException
      */
-    protected void loadUserInfoFromSettings() throws MojoExecutionException {
+    private void loadUserInfoFromSettings() throws MojoExecutionException {
 
         if ((getUsername() == null || getPassword() == null) && (mavenSettings != null)) {
             if (this.serverId == null)
@@ -341,4 +301,68 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     protected <T> T throwRTE( String message, Object...args   ) {
         throw RTE(message, args);
     }
+
+    /**
+     * Perform whatever build-process behavior this <code>Mojo</code> implements.
+     * <br/>
+     * This is the main trigger for the <code>Mojo</code> inside the <code>Maven</code> system, and allows
+     * the <code>Mojo</code> to communicate errors.
+     *
+     * @throws MojoExecutionException if an unexpected problem occurs.
+     *                                Throwing this exception causes a "BUILD ERROR" message to be displayed.
+     * @throws MojoFailureException   if an expected problem (such as a compilation failure) occurs.
+     *                                Throwing this exception causes a "BUILD FAILURE" message to be displayed.
+     */
+    @Override
+    public final void execute() throws MojoExecutionException, MojoFailureException {
+
+        if( getLog().isDebugEnabled())
+            System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
+
+        if( skip ) {
+            getLog().info("plugin execution skipped");
+            return;
+        }
+
+        loadUserInfoFromSettings();
+
+        final Optional<ConfluenceProxy> proxyInfo = ofNullable(mavenSettings.getActiveProxy()).map( activeProxy ->
+                ConfluenceProxy.of(
+                        activeProxy.getHost(),
+                        activeProxy.getPort(),
+                        activeProxy.getUsername(),
+                        activeProxy.getPassword(),
+                        activeProxy.getNonProxyHosts()
+                ));
+
+        final ConfluenceService.Credentials credentials =
+                new ConfluenceService.Credentials(getUsername(), getPassword());
+
+        try ( ConfluenceService confluence  =
+                      ConfluenceServiceFactory.createInstance(
+                              getEndPoint(),
+                              credentials,
+                              proxyInfo.orElse(null),
+                              sslCertificate,
+                              getScrollVersions()))
+        {
+
+            execute( confluence );
+
+        }
+        catch( Exception e ) {
+            final String msg = "error generating report";
+            final Throwable cause = e.getCause();
+            if( isFailOnError() ) {
+                throw new MojoExecutionException(msg, (cause!=null) ? cause : e);
+            }
+            else {
+                getLog().error( msg, (cause!=null) ? cause : e);
+            }
+
+        }
+
+    }
+
+    public abstract void execute( ConfluenceService confluenceService ) throws Exception ;
 }

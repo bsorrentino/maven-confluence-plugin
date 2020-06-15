@@ -11,7 +11,7 @@ class Issue213Test {
 
         assertThrows( NumberFormatException::class.java) {
             val pageId = "2182288832"
-            val result = Integer.valueOf(pageId)
+            Integer.valueOf(pageId)
         }
     }
 

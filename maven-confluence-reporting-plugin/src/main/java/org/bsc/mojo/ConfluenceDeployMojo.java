@@ -16,7 +16,6 @@ import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -29,7 +28,6 @@ import org.apache.maven.report.projectinfo.AbstractProjectInfoRenderer;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.tools.plugin.DefaultPluginToolsRequest;
 import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.extractor.ExtractionException;
 import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 import org.apache.maven.tools.plugin.scanner.MojoScanner;
 import org.bsc.confluence.ConfluenceService;
@@ -40,7 +38,6 @@ import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
 import org.bsc.markdown.MarkdownProcessorInfo;
-import org.bsc.markdown.MarkdownProcessorProvider;
 import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
 import org.bsc.reporting.renderer.*;
 import org.bsc.reporting.sink.ConfluenceSink;
@@ -49,14 +46,7 @@ import org.codehaus.plexus.i18n.I18N;
 
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
@@ -83,13 +73,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     public static final String PLUGIN_SUMMARY_VAR           = "plugin.summary";
     public static final String PLUGIN_GOALS_VAR             = "plugin.goals";
 
-    /**
-     * Skip plugin execution
-     *
-     * @since 5.1
-     */
-	@Parameter(defaultValue = "false")
-	protected boolean skip = false;
     /**
      * Local Repository.
      *
@@ -235,30 +218,18 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      * @since 6.8
      */
     @Parameter( alias="markdownProcessor" )
-    private MarkdownProcessorInfo markdownProcessorInfo;
+    private MarkdownProcessorInfo markdownProcessorInfo = new MarkdownProcessorInfo();
 
 
     /**
      *
      */
     private void initDeployStateManager() {
-        if( deployState == null ) return;
-
         if( !deployState.getOutdir().isPresent() ) {
             deployState.setOutdir( new java.io.File(getProject().getBuild().getDirectory()) );
         }
 
         deployStateManager = DeployStateManager.load( getEndPoint(), deployState );
-
-    }
-
-    /**
-     *
-     */
-    private void initMarkdownProcessorInfo() {
-        MarkdownProcessorProvider.instance.setInfo( ( markdownProcessorInfo != null )  ?
-                markdownProcessorInfo :
-                new MarkdownProcessorInfo("pegdown"));
 
     }
 
@@ -305,66 +276,35 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     /**
      *
-     * @throws MojoExecutionException
-     * @throws MojoFailureException
+     * @param confluence
+     * @throws Exception
      */
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-    	
-    	if( getLog().isDebugEnabled())
-    		System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
-    	
-		if( skip ) {
-	        getLog().info("plugin execution skipped");
-	        return;
-		}
+    public void execute( ConfluenceService confluence ) throws Exception {
 
         getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
 		initDeployStateManager();
-        initMarkdownProcessorInfo();
-
-        loadUserInfoFromSettings();
 
         final Site site = loadSite();
 
         initTemplateProperties( site );
 
-        try {
-            final Locale parsedLocale = !StringUtils.isEmpty(locale) ? new Locale(locale) : Locale.getDefault();
+        final Locale parsedLocale = !StringUtils.isEmpty(locale) ? new Locale(locale) : Locale.getDefault();
 
-            if ( project.getPackaging().equals( "maven-plugin" ) )
-           /////////////////////////////////////////////////////////////////
-           // PLUGIN
-           /////////////////////////////////////////////////////////////////
-            {
-                generatePluginReport(site, parsedLocale);
-            }
-            else
-           /////////////////////////////////////////////////////////////////
-           // PROJECT
-           /////////////////////////////////////////////////////////////////
-            {
-                generateProjectReport(site, parsedLocale);
-            }
-
-        } catch( MojoExecutionException e ) {
-            final String msg = "error generating report";
-            if( isFailOnError() ) {
-                throw e;
-            }
-            else {
-                getLog().error( msg, e);
-            }
-        } catch( Exception e ) {
-            final String msg = "error generating report";
-            final Throwable cause = e.getCause();
-            if( isFailOnError() ) {
-                throw new MojoExecutionException(msg, (cause!=null) ? cause : e);
-            }
-            else {
-                getLog().error( msg, (cause!=null) ? cause : e);
-            }
+        if ( project.getPackaging().equals( "maven-plugin" ) )
+       /////////////////////////////////////////////////////////////////
+       // PLUGIN
+       /////////////////////////////////////////////////////////////////
+        {
+            generatePluginReport(confluence, site, parsedLocale);
+        }
+        else
+       /////////////////////////////////////////////////////////////////
+       // PROJECT
+       /////////////////////////////////////////////////////////////////
+        {
+            generateProjectReport(confluence, site, parsedLocale);
         }
 
     }
@@ -615,7 +555,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
                 generateProjectHomeTemplate( t, site, locale );
 
-                return confluence.storePage(homePage, new Storage(t.generateOutput(),content.get().getType()) );
+                return confluence.storePage(homePage, Storage.of(t.generateOutput(),content.get().getType()) );
 
             } catch (Exception ex) {
                 result.completeExceptionally(ex);
@@ -670,11 +610,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                 confluenceHomePage,
                 new HashMap<>());
 
-    }
-
-    private void generateProjectReport( final Site site, final Locale locale ) 
-    {
-        super.confluenceExecute( confluence  -> generateProjectReport(confluence, site, locale) );
     }
 
    /**
@@ -789,7 +724,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      }
 
     @SuppressWarnings("unchecked")
-    private void generatePluginReport( final Site site, final Locale locale )  throws MojoExecutionException
+    private void generatePluginReport( ConfluenceService confluence, final Site site, final Locale locale )  throws Exception
     {
 
         final String goalPrefix = PluginDescriptor.getGoalPrefixFromArtifactId(project.getArtifactId());
@@ -822,55 +757,38 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             // this is OK, it happens to lifecycle plugins. Allow generation to proceed.
             getLog().warn(format("Plugin without mojos. %s\nMojoScanner:%s", e.getMessage(), mojoScanner.getClass()));
 
-        } catch (ExtractionException e) {
-            throw new MojoExecutionException(
-                    format("Error extracting plugin descriptor: %s",
-                    e.getLocalizedMessage()),
-                    e);
         }
 
+        final Model.Page parentPage = loadParentPage(confluence, Optional.of(site)).join();
 
-        // Generate the plugin's documentation
-        super.confluenceExecute( confluence  -> {
+        outputDirectory.mkdirs();
 
-            final Model.Page parentPage = loadParentPage(confluence, Optional.of(site))
-                                                .join();
+        getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
 
-            outputDirectory.mkdirs();
+        final PluginGenerator generator = new PluginGenerator();
 
-            getLog().info( format("speceKey=%s parentPageTitle=%s", parentPage.getSpace(), parentPage.getTitle()) );
+        final PluginToolsRequest request =
+                new DefaultPluginToolsRequest(project, pluginDescriptor);
 
-            final PluginGenerator generator = new PluginGenerator();
+        final Model.Page confluenceHomePage = generator.processMojoDescriptors(
+            request.getPluginDescriptor(),
+            confluence,
+            parentPage,
+            site,
+            locale );
 
-            final PluginToolsRequest request =
-                    new DefaultPluginToolsRequest(project, pluginDescriptor);
+        confluence.addLabelsByName(confluenceHomePage.getId(), site.getHome().getComputedLabels() ).join();
 
-            try {
+        final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
 
-                final Model.Page confluenceHomePage = generator.processMojoDescriptors(
-                    request.getPluginDescriptor(),
-                    confluence,
-                    parentPage,
-                    site,
-                    locale );
+        generateChildren(   confluence,
+                            site,
+                            site.getHome(),
+                            confluenceHomePage,
+                            varsToParentPageMap);
 
-                confluence.addLabelsByName(confluenceHomePage.getId(), site.getHome().getComputedLabels() ).join();
+        generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
 
-                final Map<String, Model.Page> varsToParentPageMap = new HashMap<>();
-
-                generateChildren(   confluence,
-                                    site,
-                                    site.getHome(),
-                                    confluenceHomePage,
-                                    varsToParentPageMap);
-
-                generator.generateGoalsPages(confluence, confluenceHomePage, varsToParentPageMap);
-
-            } catch( Throwable ex ) {
-                throw new RuntimeException(ex);
-            }
-
-        });
 
         //
         // Write the overview
@@ -1014,7 +932,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     page.setContent(wiki.toString());
                     */
 
-                    return confluence.storePage(homePage,new Storage(t.generateOutput(), Representation.WIKI));
+                    return confluence.storePage(homePage, Storage.of(t.generateOutput(), Representation.WIKI));
 
                 } catch (Exception ex) {
                     result.completeExceptionally(ex);
@@ -1058,12 +976,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                 .thenApply( parent ->
                     parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
                 .thenCombine( confluence.getPage(parentPage.getSpace(), title), ParentChildTuple::of)
-                .thenCompose( tuple -> {
-                    return ( tuple.getChild().isPresent() ) ?
-                        completedFuture(tuple.getChild().get()) :
-                        resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset ->confluence.createPage(tuple.getParent(), title));
-                })
+                .thenCompose( tuple -> ( tuple.getChild().isPresent() ) ?
+                    completedFuture(tuple.getChild().get()) :
+                    resetUpdateStatusForResource(site.getHome().getUri())
+                    .thenCompose( reset ->confluence.createPage(tuple.getParent(), title)))
                 .thenCompose( p ->
                     canProceedToUpdateResource( site.getHome().getUri())
                     .thenCompose( update -> {

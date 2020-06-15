@@ -1,10 +1,6 @@
 package org.bsc.markdown;
 
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.model.Site;
-
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Markdown Processor interface
@@ -20,18 +16,14 @@ public interface MarkdownProcessor {
 
     /**
      *
-     * @param siteModel - Site model instance
-     * @param pageModel - current processing Page Model instance
-     * @param page - current processing page instance. Valid only if we are updating content of existent page
-     * @param content - content to process
-     * @param pagePrefixToApply - prefix to apply. Valid only if 'childrenTitlesPrefixed' parameter is true
-     * @return processed (i.e. translated) content
+     * @param context
+     * @param content
+     * @return
      * @throws IOException
      */
-    String processMarkdown(
-            final Site siteModel,
-            final Site.Page pageModel,
-            final Optional<ConfluenceService.Model.Page> page,
-            final String content,
-            final Optional<String> pagePrefixToApply) throws IOException;
+    String processMarkdown( MarkdownParserContext context, String content ) throws IOException;
+
+    default String processMarkdown( String content ) throws IOException {
+        return processMarkdown(new MarkdownParserContext() {}, content);
+    }
 }

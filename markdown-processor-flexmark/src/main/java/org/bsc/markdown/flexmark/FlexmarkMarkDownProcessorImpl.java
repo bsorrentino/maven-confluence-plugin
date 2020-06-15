@@ -4,6 +4,7 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Document;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.model.Site;
+import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.MarkdownProcessor;
 import org.kohsuke.MetaInfServices;
 
@@ -24,13 +25,7 @@ public class FlexmarkMarkDownProcessorImpl implements MarkdownProcessor {
      * @return
      */
     @Override
-    public String processMarkdown(
-            final Site siteModel,
-            final Site.Page pageModel,
-            final Optional<ConfluenceService.Model.Page> page,
-            final String content,
-            final Optional<String> pagePrefixToApply) throws IOException {
-
+    public String processMarkdown( MarkdownParserContext context, final String content) throws IOException {
 
         final Parser parser = Parser.builder(FlexmarkConfluenceWikiVisitor.OPTIONS()).build();
 
