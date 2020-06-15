@@ -38,7 +38,6 @@ import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
 import org.bsc.markdown.MarkdownProcessorInfo;
-import org.bsc.markdown.MarkdownProcessorProvider;
 import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
 import org.bsc.reporting.renderer.*;
 import org.bsc.reporting.sink.ConfluenceSink;
@@ -219,30 +218,18 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      * @since 6.8
      */
     @Parameter( alias="markdownProcessor" )
-    private MarkdownProcessorInfo markdownProcessorInfo;
+    private MarkdownProcessorInfo markdownProcessorInfo = new MarkdownProcessorInfo();
 
 
     /**
      *
      */
     private void initDeployStateManager() {
-        if( deployState == null ) return;
-
         if( !deployState.getOutdir().isPresent() ) {
             deployState.setOutdir( new java.io.File(getProject().getBuild().getDirectory()) );
         }
 
         deployStateManager = DeployStateManager.load( getEndPoint(), deployState );
-
-    }
-
-    /**
-     *
-     */
-    private void initMarkdownProcessorInfo() {
-        MarkdownProcessorProvider.instance.setInfo( ( markdownProcessorInfo != null )  ?
-                markdownProcessorInfo :
-                new MarkdownProcessorInfo("pegdown"));
 
     }
 
@@ -298,7 +285,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
 		initDeployStateManager();
-        initMarkdownProcessorInfo();
 
         final Site site = loadSite();
 

@@ -5,9 +5,8 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.FileExtension;
 import org.bsc.markdown.MarkdownParserContext;
-import org.bsc.markdown.MarkdownProcessorProvider;
+import org.bsc.markdown.MarkdownProcessorInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,8 +128,8 @@ public class SiteProcessor {
 
        final String path = uri.getRawPath();
 
-       final boolean isMarkdown =  FileExtension.MARKDOWN.isExentionOf(path); //(path != null && path.endsWith(".md"));
-       final boolean isStorage = (path != null && (path.endsWith(".xml") || path.endsWith(".xhtml")));
+       final boolean isMarkdown =  MARKDOWN.isExentionOf(path);
+       final boolean isStorage = XML.isExentionOf(path) || XHTML.isExentionOf(path);
 
        final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE
                : Storage.Representation.WIKI;
@@ -284,7 +283,7 @@ public class SiteProcessor {
             final String content,
             final Optional<String> pagePrefixToApply) throws IOException {
 
-        return MarkdownProcessorProvider.instance.Load().processMarkdown(new MarkdownParserContext() {
+        return MarkdownProcessorInfo.LoadProcessor().processMarkdown(new MarkdownParserContext() {
             @Override
             public Optional<Site> getSite() {
                 return Optional.of(site);

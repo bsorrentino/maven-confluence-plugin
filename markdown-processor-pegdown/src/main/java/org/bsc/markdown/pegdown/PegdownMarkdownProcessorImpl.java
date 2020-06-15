@@ -1,7 +1,5 @@
 package org.bsc.markdown.pegdown;
 
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.model.Site;
 import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.MarkdownProcessor;
 import org.kohsuke.MetaInfServices;
@@ -10,7 +8,6 @@ import org.pegdown.ast.Node;
 import org.pegdown.ast.RootNode;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static java.lang.String.format;
 

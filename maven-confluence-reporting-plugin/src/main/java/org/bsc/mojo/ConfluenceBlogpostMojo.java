@@ -4,14 +4,17 @@ import com.google.common.io.Files;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.markdown.MarkdownProcessorInfo;
 
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.Path;
 
 import static java.lang.String.format;
 import static org.bsc.confluence.ConfluenceService.Model;
 import static org.bsc.confluence.ConfluenceService.Storage;
+import static org.bsc.confluence.FileExtension.*;
 
 
 /**
@@ -28,6 +31,19 @@ public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
      */
     @Parameter(property = "encoding", defaultValue = "${project.build.sourceEncoding}")
     private String encoding;
+
+    /**
+     * Markdown processor Info<br>
+     * <pre>
+     *   &lt;markdownProcessor>
+     *     &lt;name>processor name&lt;/name> &lt;git branch!-- default: pegdown -->
+     *   &lt;/markdownProcessor>
+     * </pre>
+     *
+     * @since 6.8
+     */
+    @Parameter( alias="markdownProcessor" )
+    private MarkdownProcessorInfo markdownProcessorInfo = new MarkdownProcessorInfo();
 
     /**
      *
@@ -58,7 +74,6 @@ public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
      * &lt;blogInfo>
      *  &lt;title>blog title</title>  &lt;!-- mandatory -->
      *  &lt;content>path of blog content</content>  &lt;!-- mandatory -->
-     *  &lt;representation>WIKI|STORAGE</representation>  &lt;!-- default WIKI -->
      *  &lt;version>version number</title>  &lt;!-- optional -->
      * &lt;/blogInfo>
      * </pre>
@@ -81,7 +96,21 @@ public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
 
         getLog().debug( String.valueOf(blogInfo) );
 
-        final Storage storage = Storage.of(Files.toString(content, getCharset()), blogInfo.getRepresentation());
+        final Path path = content.toPath();
+
+        final boolean isMarkdown =  MARKDOWN.isExentionOf(path);
+        final boolean isStorage = XML.isExentionOf(path) || XHTML.isExentionOf(path);
+
+        final Storage.Representation representation = ( isStorage ) ? Storage.Representation.STORAGE :  Storage.Representation.WIKI;
+        getLog().debug( format("Blog representation = %s", representation ));
+
+        final String contentData = Files.toString(content, getCharset());
+
+        final Storage storage = Storage.of(
+                                    ( isMarkdown )
+                                        ? MarkdownProcessorInfo.LoadProcessor().processMarkdown(contentData)
+                                        : contentData,
+                                    representation);
 
         final Model.Blogpost blogpost = confluenceService.createBlogpost( getSpaceKey(), blogInfo.getTitle(), storage, blogInfo.getVersion());
 

@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 public class DeployStateManager {
 
     public static class Parameters {
@@ -46,11 +48,7 @@ public class DeployStateManager {
          * @param outdir the basedir to set
          */
         public void setOutdir(java.io.File outdir) {
-            if( outdir == null ) {
-               this._outdir = Optional.empty();
-               return;
-            }
-            this._outdir = Optional.of(outdir.toPath());
+            this._outdir = ofNullable(outdir).map( v -> outdir.toPath() );
         }
 
         /**
@@ -69,7 +67,7 @@ public class DeployStateManager {
             return new StringBuilder()
                         .append("DeployStateManager").append("\n\t")
                         .append("active=").append(active).append("\n\t")
-                        .append("outdir=").append(_outdir).append("\n")
+                        .append("outdir=").append(_outdir.map( p -> p.toString()).orElse("<null>")).append("\n")
                         .toString();
         }
 

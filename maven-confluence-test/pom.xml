@@ -344,8 +344,8 @@
                         </goals>
                         <configuration>
                             <blogInfo>
-                                <title>blog.wiki</title>
-                                <content>${project.basedir}/src/site/confluence/issue219/blog.wiki</content>
+                                <title>blog2.md</title>
+                                <content>${project.basedir}/src/site/confluence/issue219/blog.md</content>
                             </blogInfo>
                             <failOnError>true</failOnError>
                         </configuration>
