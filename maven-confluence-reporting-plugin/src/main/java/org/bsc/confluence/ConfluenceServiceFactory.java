@@ -178,7 +178,7 @@ public class ConfluenceServiceFactory {
      * @param credentials
      * @param proxyInfo
      * @param sslInfo
-     * @param scrollVersionsVersion scroll versions versione
+     * @param svi scroll versions addon parameters
      * @return XMLRPC based Confluence services
      * @throws Exception
      */
