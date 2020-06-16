@@ -5,7 +5,7 @@ import org.bsc.confluence.ConfluenceService
 import org.bsc.confluence.model.Site
 import org.bsc.confluence.model.SiteFactory
 import org.bsc.confluence.model.SiteProcessor
-import org.bsc.markdown.MarkdownProcessorInfo
+import org.bsc.markdown.MarkdownProcessor
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
@@ -137,7 +137,7 @@ class SiteTest : SiteFactory.Model {
         @JvmStatic
         @BeforeClass
         fun setMarkdownPorcessorProvider() {
-            MarkdownProcessorInfo().apply { name = "commonmark" }
+            MarkdownProcessor.shared.name = "commonmark"
         }
     }
 }

@@ -6,7 +6,7 @@ import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
 import org.bsc.markdown.MarkdownParserContext;
-import org.bsc.markdown.MarkdownProcessorInfo;
+import org.bsc.markdown.MarkdownProcessor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -283,7 +283,7 @@ public class SiteProcessor {
             final String content,
             final Optional<String> pagePrefixToApply) throws IOException {
 
-        return MarkdownProcessorInfo.LoadProcessor().processMarkdown(new MarkdownParserContext() {
+        return MarkdownProcessor.shared.load().processMarkdown(new MarkdownParserContext() {
             @Override
             public Optional<Site> getSite() {
                 return Optional.of(site);

@@ -4,7 +4,8 @@ import com.google.common.io.Files;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.markdown.MarkdownProcessorInfo;
+import org.bsc.markdown.MarkdownProcessor;
+import org.bsc.mojo.configuration.MarkdownProcessorInfo;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -97,7 +98,7 @@ public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
 
         final Storage storage = Storage.of(
                                     ( isMarkdown )
-                                        ? MarkdownProcessorInfo.LoadProcessor().processMarkdown(contentData)
+                                        ? MarkdownProcessor.shared.load().processMarkdown(contentData)
                                         : contentData,
                                     representation);
 

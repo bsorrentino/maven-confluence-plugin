@@ -21,10 +21,9 @@ class DeployStateManagerTest {
     @Test
     fun testIsUpdatedForNewFile() {
 
-        val parameters = createParametersFromStateFilePath(stateFile)
         assertFalse(stateFile.toFile().exists())
         assertFalse(stateFile.toFile().isFile)
-        val dsm = DeployStateManager.load("http://localhost:8090/confluence", parameters)
+        val dsm = DeployStateManager.load("http://localhost:8090/confluence", stateFile)
         assertTrue(stateFile.toFile().exists())
         assertTrue(stateFile.toFile().isFile)
         assertTrue(dsm.isUpdated(Paths.get("pom.xml")))
@@ -34,10 +33,9 @@ class DeployStateManagerTest {
     fun testIsNotUpdatedForExistingFile() {
         val tmpDir = File(System.getProperty("java.io.tmpdir"))
         val stateFile = Paths.get(tmpDir.toString(), DeployStateManager.STORAGE_NAME)
-        val parameters = createParametersFromStateFilePath(stateFile)
-        val dsm = DeployStateManager.load("http://localhost:8090/confluence", parameters)
+        val dsm = DeployStateManager.load("http://localhost:8090/confluence", stateFile)
         assertTrue(dsm.isUpdated(Paths.get("pom.xml")))
-        val dsm2 = DeployStateManager.load("http://localhost:8090/confluence", parameters)
+        val dsm2 = DeployStateManager.load("http://localhost:8090/confluence", stateFile)
         assertFalse(dsm2.isUpdated(Paths.get("pom.xml")))
     }
 
@@ -45,12 +43,11 @@ class DeployStateManagerTest {
     fun testIsUpdatedForChangingContent() {
         val tmpDir = File(System.getProperty("java.io.tmpdir"))
         val stateFile = Paths.get(tmpDir.toString(), DeployStateManager.STORAGE_NAME)
-        val parameters = createParametersFromStateFilePath(stateFile)
         val tmpFile = File.createTempFile("test-confluence-plugin-", ".tmp")
 
         FileWriter(tmpFile).use {  it.write("My initial content") }
 
-        val dsm = DeployStateManager.load("http://localhost:8090/confluence", parameters)
+        val dsm = DeployStateManager.load("http://localhost:8090/confluence", stateFile)
 
         assertTrue(dsm.isUpdated(tmpFile.toPath()))
         assertFalse(dsm.isUpdated(tmpFile.toPath()))
@@ -67,22 +64,11 @@ class DeployStateManagerTest {
     fun resetState() {
         val tmpDir = File(System.getProperty("java.io.tmpdir"))
         val stateFile = Paths.get(tmpDir.toString(), DeployStateManager.STORAGE_NAME)
-        val parameters = createParametersFromStateFilePath(stateFile)
-        val dsm = DeployStateManager.load("http://localhost:8090/confluence", parameters)
+        val dsm = DeployStateManager.load("http://localhost:8090/confluence", stateFile)
         assertTrue(dsm.isUpdated(Paths.get("pom.xml")))
         assertFalse(dsm.isUpdated(Paths.get("pom.xml")))
         dsm.resetState(Paths.get("pom.xml"))
         assertTrue(dsm.isUpdated(Paths.get("pom.xml")))
         assertFalse(dsm.isUpdated(Paths.get("pom.xml")))
-    }
-
-    companion object {
-        @Throws(IOException::class)
-        fun createParametersFromStateFilePath(file: Path): DeployStateManager.Parameters {
-            val parameters = DeployStateManager.Parameters()
-            Files.deleteIfExists(file)
-            parameters.setOutdir(file.parent.toFile())
-            return parameters
-        }
     }
 }

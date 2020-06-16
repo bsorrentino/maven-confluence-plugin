@@ -37,7 +37,7 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
-import org.bsc.markdown.MarkdownProcessorInfo;
+import org.bsc.mojo.configuration.MarkdownProcessorInfo;
 import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
 import org.bsc.reporting.renderer.*;
 import org.bsc.reporting.sink.ConfluenceSink;
@@ -225,11 +225,16 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      *
      */
     private void initDeployStateManager() {
-        if( !deployState.getOutdir().isPresent() ) {
+
+        if( !deployState.isActive() ) {
+            return;
+        }
+
+        if( !deployState.optOutdir().isPresent() ) {
             deployState.setOutdir( new java.io.File(getProject().getBuild().getDirectory()) );
         }
 
-        deployStateManager = DeployStateManager.load( getEndPoint(), deployState );
+        deployStateManager = Optional.of( DeployStateManager.load( getEndPoint(), deployState.getOutdir() ) );
 
     }
 

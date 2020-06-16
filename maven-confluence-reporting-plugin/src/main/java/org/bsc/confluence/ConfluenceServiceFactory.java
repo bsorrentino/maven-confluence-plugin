@@ -8,9 +8,9 @@ package org.bsc.confluence;
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.model.Page;
-import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfluenceService;
 import org.bsc.confluence.xmlrpc.XMLRPCConfluenceService;
+import org.bsc.mojo.configuration.ScrollVersionsInfo;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.json.JsonObjectBuilder;
@@ -170,7 +170,7 @@ public class ConfluenceServiceFactory {
         }
         
     }
-    
+
     /**
      * return XMLRPC based Confluence services
      * 
@@ -178,25 +178,7 @@ public class ConfluenceServiceFactory {
      * @param credentials
      * @param proxyInfo
      * @param sslInfo
-     * @return XMLRPC based Confluence services
-     * @throws Exception
-     */
-    public static ConfluenceService createInstance(	String endpoint, 
-    													Credentials credentials, 
-    													ConfluenceProxy proxyInfo, 
-    													SSLCertificateInfo sslInfo) throws Exception 
-    {
-        return createInstance(endpoint, credentials, proxyInfo, sslInfo, Optional.empty());
-    }
-    
-    /**
-     * return XMLRPC based Confluence services
-     * 
-     * @param endpoint
-     * @param credentials
-     * @param proxyInfo
-     * @param sslInfo
-     * @param sv scroll versions addon configuration
+     * @param scrollVersionsVersion scroll versions versione
      * @return XMLRPC based Confluence services
      * @throws Exception
      */
@@ -204,14 +186,15 @@ public class ConfluenceServiceFactory {
                                                         Credentials credentials, 
                                                         ConfluenceProxy proxyInfo, 
                                                         SSLCertificateInfo sslInfo,
-                                                        Optional<ScrollVersionsConfiguration> sv ) throws Exception 
+                                                        ScrollVersionsInfo svi ) throws Exception
     {
             if( ConfluenceService.Protocol.XMLRPC.match(endpoint)) {
                 return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);               
             }
             if( ConfluenceService.Protocol.REST.match(endpoint)) {
-                return sv.map( config -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
-                         .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo))
+                return svi.optVersion()
+                        .map( version -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, version, credentials, sslInfo) )
+                        .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo))
                          ;               
             }
             
