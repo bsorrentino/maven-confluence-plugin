@@ -46,6 +46,7 @@ import org.codehaus.plexus.i18n.I18N;
 
 import java.io.StringWriter;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -231,7 +232,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         }
 
         if( !deployState.optOutdir().isPresent() ) {
-            deployState.setOutdir( new java.io.File(getProject().getBuild().getDirectory()) );
+            deployState.setOutdir( Paths.get(getProject().getBuild().getDirectory()).toFile() );
         }
 
         deployStateManager = Optional.of( DeployStateManager.load( getEndPoint(), deployState.getOutdir() ) );
