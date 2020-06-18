@@ -4,6 +4,6 @@ org.bsc.confluence.preprocessor
 org.bsc.confluence.rest
 org.bsc.confluence.rest.model
 org.bsc.confluence.xmlrpc
-org.bsc.functional
+org.bsc.confluence.xmlrpc.model
 org.bsc.markdown
 org.bsc.ssl
