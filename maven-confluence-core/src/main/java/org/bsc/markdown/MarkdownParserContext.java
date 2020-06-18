@@ -21,7 +21,7 @@ public interface MarkdownParserContext {
     /**
      * the current Page Model Object
      *
-     * @return
+     * @return  Page Model Object
      */
     default Optional<Site.Page> getPage() { return empty(); }
 
@@ -40,3 +40,4 @@ public interface MarkdownParserContext {
     default boolean isLinkPrefixEnabled() { return true; }
 
 }
+
