@@ -301,7 +301,7 @@
                 <plugin>
                     <groupId>se.bjurr.gitchangelog</groupId>
                     <artifactId>git-changelog-maven-plugin</artifactId>
-                    <version>1.60</version>
+                    <version>1.61</version>
                 </plugin>
 
             </plugins>
