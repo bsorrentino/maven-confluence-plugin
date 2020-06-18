@@ -25,7 +25,7 @@ import static java.util.Optional.ofNullable;
 
 public class DeployStateManager {
 
-    public static final String STORAGE_NAME = "confluence-reporting-maven-plugin-storage.json";
+    public static final String STORAGE_NAME = ".confluence-maven-plugin-storage.json";
 
     private Map<String, Map<String,JsonValue>> storage = new HashMap<>();
 

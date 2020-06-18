@@ -171,7 +171,7 @@ $\{varName\}
 
 Main idea is automated creating of release notes with list of resolved JIRA issues utilizing integration between JIRA and Confluence.
 
-#### Prerequrements:
+#### Prerequisites:
 
 * Include JIRA issue key in git commit message
 * Using git as SCM and using version tags in git
