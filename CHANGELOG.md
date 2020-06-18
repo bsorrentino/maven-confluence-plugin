@@ -5,6 +5,219 @@
 ## Next release
 ### Generic changes
 
+**update changelog plugin version**
+
+
+[46f0b8b3c033e64](https://github.com/bsorrentino/maven-confluence-plugin/commit/46f0b8b3c033e64) bartolomeo sorrentino *2020-06-18 16:18:29*
+
+**move to next releaase version**
+
+
+[86b63b44448ea36](https://github.com/bsorrentino/maven-confluence-plugin/commit/86b63b44448ea36) bartolomeo sorrentino *2020-06-18 16:13:44*
+
+**move to next release version, update okhttp version**
+
+
+[5056c4395960053](https://github.com/bsorrentino/maven-confluence-plugin/commit/5056c4395960053) bartolomeo sorrentino *2020-06-18 16:13:21*
+
+**remove deprecation**
+
+
+[1c494fada819e14](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c494fada819e14) bartolomeo sorrentino *2020-06-18 16:12:26*
+
+**fix test**
+
+
+[11b8ea03be319c3](https://github.com/bsorrentino/maven-confluence-plugin/commit/11b8ea03be319c3) bartolomeo sorrentino *2020-06-18 16:12:16*
+
+**fix test**
+
+
+[0d2bfb0d625e11d](https://github.com/bsorrentino/maven-confluence-plugin/commit/0d2bfb0d625e11d) bartolomeo sorrentino *2020-06-18 16:11:38*
+
+**remove deprecation**
+
+
+[9559d4271aef456](https://github.com/bsorrentino/maven-confluence-plugin/commit/9559d4271aef456) bartolomeo sorrentino *2020-06-18 16:10:35*
+
+**clean code**
+
+
+[b60fdbdfb1f8907](https://github.com/bsorrentino/maven-confluence-plugin/commit/b60fdbdfb1f8907) bartolomeo sorrentino *2020-06-18 14:44:33*
+
+**change the "deploy state manager" storage file name**
+
+
+[c6e813de4cae175](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6e813de4cae175) bartolomeo sorrentino *2020-06-18 12:56:31*
+
+**clean code**
+
+
+[d83dc164ec358d5](https://github.com/bsorrentino/maven-confluence-plugin/commit/d83dc164ec358d5) bartolomeo sorrentino *2020-06-18 12:22:40*
+
+**clean code**
+
+
+[e1f3ff759ce3c39](https://github.com/bsorrentino/maven-confluence-plugin/commit/e1f3ff759ce3c39) bartolomeo sorrentino *2020-06-16 17:40:48*
+
+**clean javadoc**
+
+
+[5cdaec707284ccb](https://github.com/bsorrentino/maven-confluence-plugin/commit/5cdaec707284ccb) bartolomeo sorrentino *2020-06-16 17:27:50*
+
+**update javadoc**
+
+
+[d14dec8672d7faa](https://github.com/bsorrentino/maven-confluence-plugin/commit/d14dec8672d7faa) bartolomeo sorrentino *2020-06-16 10:35:59*
+
+**refactory "Mojo Parameters Management"**
+
+
+[998e10987afa537](https://github.com/bsorrentino/maven-confluence-plugin/commit/998e10987afa537) bartolomeo sorrentino *2020-06-16 10:17:02*
+
+**clean code**
+
+
+[983eb1664c44eac](https://github.com/bsorrentino/maven-confluence-plugin/commit/983eb1664c44eac) bartolomeo sorrentino *2020-06-15 22:04:31*
+
+**enable kotlin compiler for source code**
+
+
+[7d2798f3dedef50](https://github.com/bsorrentino/maven-confluence-plugin/commit/7d2798f3dedef50) bartolomeo sorrentino *2020-06-10 07:43:59*
+
+**clean code**
+
+
+[3c7e72600033a3c](https://github.com/bsorrentino/maven-confluence-plugin/commit/3c7e72600033a3c) bartolomeo sorrentino *2020-06-09 18:58:56*
+
+**remove deprecated getSource() method**
+
+
+[651d8b9d03591fc](https://github.com/bsorrentino/maven-confluence-plugin/commit/651d8b9d03591fc) bartolomeo sorrentino *2020-06-09 12:25:53*
+
+**clean code**
+
+
+[1f5e3e0c21ffdbd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1f5e3e0c21ffdbd) bartolomeo sorrentino *2020-05-27 15:02:07*
+
+**Create FUNDING.yml**
+
+
+[92b8a96bf7df54b](https://github.com/bsorrentino/maven-confluence-plugin/commit/92b8a96bf7df54b) bsorrentino *2020-05-27 13:31:11*
+
+**move unit test to kotlin**
+
+
+[236ce3ab9e8c292](https://github.com/bsorrentino/maven-confluence-plugin/commit/236ce3ab9e8c292) bartolomeo sorrentino *2020-05-16 14:16:24*
+
+**define a new ID class to uniform confluence ID type**
+
+
+[5156acb7cd4646e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5156acb7cd4646e) bartolomeo sorrentino *2020-05-16 13:56:21*
+
+**unit test to kotlin**
+
+
+[b796cc29a8b0460](https://github.com/bsorrentino/maven-confluence-plugin/commit/b796cc29a8b0460) bartolomeo sorrentino *2020-05-16 10:46:41*
+
+**move unit test to kotlin**
+
+
+[50e5702eab2b6b7](https://github.com/bsorrentino/maven-confluence-plugin/commit/50e5702eab2b6b7) bartolomeo sorrentino *2020-05-11 18:51:38*
+
+**remove Tuple2 replaced by specific class**
+
+
+[4db4fe785464f14](https://github.com/bsorrentino/maven-confluence-plugin/commit/4db4fe785464f14) bartolomeo sorrentino *2020-05-11 18:51:01*
+
+**move unit test to kotlin**
+
+
+[2706da0d61d1b87](https://github.com/bsorrentino/maven-confluence-plugin/commit/2706da0d61d1b87) bsorrentino *2020-05-09 11:39:27*
+
+**update development version**
+
+
+[1172c2288c2e2a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/1172c2288c2e2a5) bartolomeo sorrentino *2020-05-05 16:29:47*
+
+
+###  [#219](https://github.com/bsorrentino/maven-confluence-plugin/issues/219) Can&#39;t create a blogpost    *enhancement*  *under working*  
+
+**issue #219 - allow blog pubblication from the maven cli**
+
+
+[d295ff7ce7d2d23](https://github.com/bsorrentino/maven-confluence-plugin/commit/d295ff7ce7d2d23) bartolomeo sorrentino *2020-06-15 21:48:10*
+
+**issue #219 - finalize implementation**
+
+
+[e17ff48049ec72e](https://github.com/bsorrentino/maven-confluence-plugin/commit/e17ff48049ec72e) bartolomeo sorrentino *2020-06-15 18:00:34*
+
+**issue #219 - update markdown processor interface**
+
+
+[d5d69ade231be5f](https://github.com/bsorrentino/maven-confluence-plugin/commit/d5d69ade231be5f) bartolomeo sorrentino *2020-06-15 15:47:58*
+
+**issue #219 - blog post implementation refinements**
+
+
+[615eb488a6eb074](https://github.com/bsorrentino/maven-confluence-plugin/commit/615eb488a6eb074) bartolomeo sorrentino *2020-06-12 22:20:43*
+
+**issue #219 - remove kotlin mojo implementation (for issues with doc gen) :-(**
+
+
+[6b22ae48eb29d6c](https://github.com/bsorrentino/maven-confluence-plugin/commit/6b22ae48eb29d6c) bartolomeo sorrentino *2020-06-12 16:16:54*
+
+**issue #219 - fix Storage constructor**
+
+
+[c1c13c222fd0e0b](https://github.com/bsorrentino/maven-confluence-plugin/commit/c1c13c222fd0e0b) bartolomeo sorrentino *2020-06-11 21:10:35*
+
+**issue #219 - fix XMLRPC implementation**
+
+
+[21444dd3c4b54d5](https://github.com/bsorrentino/maven-confluence-plugin/commit/21444dd3c4b54d5) bartolomeo sorrentino *2020-06-11 20:51:59*
+
+**issue #219 - Implements Blog post in REST and XMLRPC**
+
+
+[84eec6822531c06](https://github.com/bsorrentino/maven-confluence-plugin/commit/84eec6822531c06) bartolomeo sorrentino *2020-06-11 18:13:17*
+
+**issue #219 - add Blogpost mojo, refactor Mojo hierarchy**
+
+
+[7ac839d62972716](https://github.com/bsorrentino/maven-confluence-plugin/commit/7ac839d62972716) bartolomeo sorrentino *2020-06-10 14:20:49*
+
+**issue #219 - fix compiler error**
+
+
+[0cd911af25105e6](https://github.com/bsorrentino/maven-confluence-plugin/commit/0cd911af25105e6) bartolomeo sorrentino *2020-06-09 21:18:29*
+
+**issue #219 - add sample to create blog post**
+
+
+[ccd0ff1ef02dd80](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccd0ff1ef02dd80) bartolomeo sorrentino *2020-06-09 21:14:21*
+
+
+## v6.9-beta1
+### Generic changes
+
+**update documentation**
+
+
+[dd6f8543209f938](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd6f8543209f938) bartolomeo sorrentino *2020-05-05 16:28:23*
+
+**update documentation**
+
+
+[4c51db04e1d499c](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c51db04e1d499c) bartolomeo sorrentino *2020-05-05 16:27:46*
+
+**move to next version**
+
+ * update changelog
+
+[b7c86987054a14b](https://github.com/bsorrentino/maven-confluence-plugin/commit/b7c86987054a14b) bsorrentino *2020-05-05 09:20:43*
+
 **refactor: update rest service implementation**
 
 
