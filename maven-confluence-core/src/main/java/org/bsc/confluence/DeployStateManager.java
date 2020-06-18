@@ -2,14 +2,7 @@ package org.bsc.confluence;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
+import javax.json.*;
 import javax.json.stream.JsonGenerator;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,9 +12,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
 
 public class DeployStateManager {
 
