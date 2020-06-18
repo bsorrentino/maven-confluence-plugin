@@ -1,35 +1,6 @@
 ## Usage
 
 
-### Basic Declaration
-
-```xml
-
- <plugin>
-  <groupId>org.bsc.maven</groupId>
-  <artifactId>confluence-reporting-maven-plugin</artifactId>
-  <configuration>
-        <endPoint>${confluence.home}/rest/api</endPoint>
-        <spaceKey>TEST</spaceKey>
-        <parentPageTitle>Home</parentPageTitle>
-        <title>my-site-generation-test</title>
-        <labels>
-                <label>test</label>
-                <label>confluence</label>                                           
-        </labels>
-        <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
-        <wikiFilesExt>.confluence</wikiFilesExt>
-        <serverId>confluence-server-id</serverId>
-        <properties>
-                <prop>the_text_value</prop><!-- SIMPLE TEXT -->
-                <prop1>classpath:plugin-report.properties</prop1><!-- FROM CLASSPATH -->
-                <prop2>file://${basedir}/confluence.html</prop2><!-- FROM FILE SYSTEM -->
-        </properties>
-  </configuration>
- </plugin>
-
-```
-
 ### Add labels
 
 ```xml
@@ -214,7 +185,7 @@ Main idea is automated creating of release notes with list of resolved JIRA issu
 ![${childTitle}^gitlog-sample02.png](./images/gitlog-sample02.png "Sample Output")
 
 
-### Template example
+### Wiki Template example
 
 ```
 {info:title=Useful Information}
