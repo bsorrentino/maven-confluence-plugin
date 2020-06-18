@@ -380,7 +380,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
             } catch (ProcessUriException ex) {
                 getLog().warn(
-                        format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
+                        format("error processing value of property [%s] - %s", e.getKey(), ex.getMessage()));
                 if (ex.getCause() != null)
                     getLog().debug(ex.getCause());
 
