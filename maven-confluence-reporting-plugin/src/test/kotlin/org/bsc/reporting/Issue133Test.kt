@@ -5,11 +5,10 @@
  */
 package org.bsc.reporting
 
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
+
 import okhttp3.HttpUrl
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.net.MalformedURLException
@@ -30,7 +29,7 @@ class Issue133Test {
     fun htttpUrlBuilderWithoutPort() {
         assertThrows(IllegalArgumentException::class.java) {
             val endpoint = URL("http://localhost/confluence")
-            Assertions.assertEquals(-1, endpoint.port)
+            assertEquals(-1, endpoint.port)
             /*final HttpUrl.Builder builder = */HttpUrl.Builder()
                 .scheme(endpoint.protocol)
                 .host(endpoint.host)
@@ -56,7 +55,7 @@ class Issue133Test {
         val url = builder
                 .addPathSegments(path) //.addPathSegments("rest/api")
                 .build()
-        assertEquals(endpoint, url.url())
+        assertEquals(endpoint, URL(url.toString()))
     }
 
     @Test
@@ -76,6 +75,6 @@ class Issue133Test {
         val url = builder
                 .addPathSegments(path) //.addPathSegments("rest/api")
                 .build()
-        assertEquals(endpoint, url.url())
+        assertEquals(endpoint, URL(url.toString()))
     }
 }
