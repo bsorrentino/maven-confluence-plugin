@@ -16,19 +16,14 @@ fun parseContent( site:Site, content:String, linkPrefixEnabled: Boolean = true )
 
     val root = CommonmarkConfluenceWikiVisitor.parser().parse(content)
 
-    val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext<Block?> {
+    val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext {
 
-        override fun getSite() = Optional.of(site);
+        override fun getSite() = Optional.of(site)
 
-        override fun getPage(): Site.Page  = site.home
-
-        override fun getPagePrefixToApply() = Optional.empty<String>()
+        override fun getPage():Optional<Site.Page> = Optional.of(site.home)
 
         override fun isLinkPrefixEnabled() = linkPrefixEnabled
 
-        override fun notImplementedYet(node: Block?) {
-            TODO("Not yet implemented")
-        }
     })
 
     root.accept(visitor)

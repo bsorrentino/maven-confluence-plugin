@@ -85,26 +85,17 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
                                 outputFile);
         
     }
-    
+
     /**
-     * 
-     * @throws MojoExecutionException
-     * @throws MojoFailureException 
+     *
+     * @param confluence
+     * @throws Exception
      */
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-       super.loadUserInfoFromSettings();
-        
-        super.confluenceExecute( (ConfluenceService confluence) -> {
-                
-                try {
-                    exportPage(confluence);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-  
-        });
-        
+    public void execute( ConfluenceService confluence) throws Exception {
+
+        exportPage(confluence);
+
     }
     
 }

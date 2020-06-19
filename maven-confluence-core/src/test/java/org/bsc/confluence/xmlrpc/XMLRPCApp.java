@@ -55,8 +55,8 @@ public class XMLRPCApp {
         final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials(app.username,app.password);
         final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
         
-        final XMLRPCConfluenceServiceImpl confluence = 
-            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
+        final XMLRPCConfluenceService confluence =
+            XMLRPCConfluenceService.createInstanceDetectingVersion(
                     ConfluenceService.Protocol.XMLRPC.addTo(app.url),
                     credentials,
                     proxyInfo, sslInfo);
@@ -84,8 +84,8 @@ public class XMLRPCApp {
 
         final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
 
-        final XMLRPCConfluenceServiceImpl confluence = 
-            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(
+        final XMLRPCConfluenceService confluence =
+            XMLRPCConfluenceService.createInstanceDetectingVersion(
                         ConfluenceService.Protocol.XMLRPC.addTo(url), //args[0],
                         credentials,
                         proxyInfo, sslInfo); 

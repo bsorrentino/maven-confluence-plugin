@@ -5,31 +5,35 @@
  */
 package org.bsc.confluence.rest;
 
+import lombok.Value;
+import lombok.val;
+import lombok.var;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.ssl.SSLCertificateInfo;
+import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsNull;
+import org.junit.FixMethodOrder;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.functional.Tuple2;
-import org.bsc.ssl.SSLCertificateInfo;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
-import lombok.val;
-import lombok.var;
+@Value(staticConstructor="of")
+class PageTuple2 {
+    ConfluenceService.Model.Page page1;
+    ConfluenceService.Model.Page page2;
+}
 
 /**
  *
@@ -131,7 +135,7 @@ public abstract class AbstractRestConfluence {
                             .append("*'wiki' \"wiki\"*")
                             .toString();
         
-        val p1 = service.storePage(p, new Storage(content, Storage.Representation.WIKI)).get();
+        val p1 = service.storePage(p, Storage.of(content, Storage.Representation.WIKI)).get();
 
         assertThat( p1, notNullValue());
         assertThat( p1.getSpace(), equalTo(spaceKey));
@@ -181,7 +185,7 @@ public abstract class AbstractRestConfluence {
 
         val title           = Pages.MyPage3.name();
 
-        final Tuple2<Model.Page,Model.Page> result =
+        final PageTuple2 result =
                 service.getOrCreatePage(spaceKey, getParentPageTitle(), title)
                        .thenCompose(p -> {
     
@@ -195,23 +199,20 @@ public abstract class AbstractRestConfluence {
                             .toString();
                     return CompletableFuture.completedFuture(p)
                             .thenCombine( 
-                                    service.storePage(p, new Storage(content, Storage.Representation.STORAGE)), 
-                                    Tuple2::of );
+                                    service.storePage(p, Storage.of(content, Storage.Representation.STORAGE)),
+                                    PageTuple2::of );
                 })
-                .get()
+                .join()
                 ;
-        
-        final Model.Page p = result.getValue1();
-        final Model.Page p1 = result.getValue2();
-        
-        int version = p.getVersion();
-        assertThat( p, notNullValue());
-        assertThat(p.getSpace(), equalTo(spaceKey));
+
+        int version = result.getPage1().getVersion();
+        assertThat( result.getPage1(), notNullValue());
+        assertThat( result.getPage1().getSpace(), equalTo(spaceKey));
         assertThat( version > 0, is(true));
 
-        assertThat( p1, notNullValue());
-        assertThat(p1.getSpace(), equalTo(spaceKey));
-        assertThat( p1.getVersion(), equalTo(version+1));
+        assertThat( result.getPage2(), notNullValue());
+        assertThat( result.getPage2().getSpace(), equalTo(spaceKey));
+        assertThat( result.getPage2().getVersion(), equalTo(version+1));
         
     }
 

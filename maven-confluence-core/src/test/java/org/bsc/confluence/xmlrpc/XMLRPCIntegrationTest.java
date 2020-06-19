@@ -14,6 +14,8 @@ import java.util.Optional;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.xmlrpc.model.Attachment;
+import org.bsc.confluence.xmlrpc.model.ServerInfo;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsInstanceOf;
@@ -33,7 +35,7 @@ public class XMLRPCIntegrationTest {
     public static final String USER = "admin";
     public static final String URL = "http://localhost:8090/";
 
-    XMLRPCConfluenceServiceImpl confluence = null;
+    XMLRPCConfluenceService confluence = null;
 
     @Before
     public void connect() throws Exception  {
@@ -46,7 +48,7 @@ public class XMLRPCIntegrationTest {
         final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
 
         confluence = 
-            XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion(URL, credentials,proxyInfo, sslInfo);
+            XMLRPCConfluenceService.createInstanceDetectingVersion(URL, credentials,proxyInfo, sslInfo);
         
 
     }
@@ -65,7 +67,7 @@ public class XMLRPCIntegrationTest {
     @Test
     public void showInfo() throws Exception {
         
-        ServerInfo  si = confluence.connection.getServerInfo();
+        ServerInfo si = confluence.connection.getServerInfo();
         
         System.out.printf( "majorVersion=[%s]\n", si.getMajorVersion());
         

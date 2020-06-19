@@ -16,7 +16,7 @@ public enum ExportFormat {
 
         public String url;
 
-        private ExportFormat(String url) {
+        ExportFormat(String url) {
             this.url = url;
         }
     

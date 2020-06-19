@@ -8,9 +8,9 @@ package org.bsc.confluence;
 import org.bsc.confluence.ConfluenceService.Credentials;
 import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.model.Page;
-import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfiguration;
 import org.bsc.confluence.rest.scrollversions.ScrollVersionsConfluenceService;
-import org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl;
+import org.bsc.confluence.xmlrpc.XMLRPCConfluenceService;
+import org.bsc.mojo.configuration.ScrollVersionsInfo;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.json.JsonObjectBuilder;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static java.lang.String.format;
-import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstanceDetectingVersion;
+import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceService.createInstanceDetectingVersion;
 /**
  *
  * @author bsorrentino
@@ -30,7 +30,7 @@ import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceServiceImpl.createInstan
 public class ConfluenceServiceFactory {
 
     private static class MixedConfluenceService implements ConfluenceService {
-        final XMLRPCConfluenceServiceImpl   xmlrpcService;
+        final XMLRPCConfluenceService xmlrpcService;
         final RESTConfluenceService restService;
 
         public MixedConfluenceService(String endpoint, Credentials credentials, ConfluenceProxy proxyInfo, SSLCertificateInfo sslInfo) throws Exception {
@@ -51,7 +51,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
+        public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  {
             return xmlrpcService.getPageByTitle(parentPageId, title);
         }
 
@@ -61,17 +61,17 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
+        public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId) {
             return xmlrpcService.getPage(pageId);
         }
 
         @Override
-        public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId)  {
+        public CompletableFuture<List<Model.PageSummary>> getDescendents(Model.ID pageId)  {
             return xmlrpcService.getDescendents(pageId);
         }
 
         @Override
-        public CompletableFuture<Boolean> removePage(long pageId) {
+        public CompletableFuture<Boolean> removePage(Model.ID pageId) {
             return xmlrpcService.removePage(pageId);
         }
 
@@ -96,9 +96,10 @@ public class ConfluenceServiceFactory {
                 
                 if( page.getId()==null ) { 
                     final JsonObjectBuilder inputData = 
-                            restService.jsonForCreatingPage(page.getSpace(), 
-                                                            Long.valueOf(page.getParentId()),
-                                                            page.getTitle());
+                            restService.jsonForCreatingContent( RESTConfluenceService.ContentType.page,
+                                                                page.getSpace(),
+                                                                page.getParentId().getValue(),
+                                                                page.getTitle());
                     restService.jsonAddBody(inputData, content);
                     
                     return restService.createPage(inputData.build())
@@ -112,7 +113,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+        public CompletableFuture<Void> addLabelsByName(Model.ID id, String[] labels) {
             return xmlrpcService.addLabelsByName(id, labels);
         }
 
@@ -122,7 +123,7 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
+        public CompletableFuture<Optional<Model.Attachment>> getAttachment(Model.ID pageId, String name, String version) {
             return xmlrpcService.getAttachment(pageId, name, version);
         }
 
@@ -134,6 +135,24 @@ public class ConfluenceServiceFactory {
         @Override
         public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
             xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
+        }
+
+        /**
+         * factory method
+         *
+         * @param space   space id
+         * @param title   post's title
+         * @param content post's content
+         * @return
+         */
+        @Override
+        public Model.Blogpost createBlogpost(String space, String title, Storage content, int version) {
+            return xmlrpcService.createBlogpost(space, title, content, version);
+        }
+
+        @Override
+        public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost )  {
+            return xmlrpcService.addBlogpost(blogpost);
         }
 
         @Override
@@ -151,7 +170,7 @@ public class ConfluenceServiceFactory {
         }
         
     }
-    
+
     /**
      * return XMLRPC based Confluence services
      * 
@@ -159,25 +178,7 @@ public class ConfluenceServiceFactory {
      * @param credentials
      * @param proxyInfo
      * @param sslInfo
-     * @return XMLRPC based Confluence services
-     * @throws Exception
-     */
-    public static ConfluenceService createInstance(	String endpoint, 
-    													Credentials credentials, 
-    													ConfluenceProxy proxyInfo, 
-    													SSLCertificateInfo sslInfo) throws Exception 
-    {
-        return createInstance(endpoint, credentials, proxyInfo, sslInfo, Optional.empty());
-    }
-    
-    /**
-     * return XMLRPC based Confluence services
-     * 
-     * @param endpoint
-     * @param credentials
-     * @param proxyInfo
-     * @param sslInfo
-     * @param sv scroll versions addon configuration
+     * @param svi scroll versions addon parameters
      * @return XMLRPC based Confluence services
      * @throws Exception
      */
@@ -185,14 +186,15 @@ public class ConfluenceServiceFactory {
                                                         Credentials credentials, 
                                                         ConfluenceProxy proxyInfo, 
                                                         SSLCertificateInfo sslInfo,
-                                                        Optional<ScrollVersionsConfiguration> sv ) throws Exception 
+                                                        ScrollVersionsInfo svi ) throws Exception
     {
             if( ConfluenceService.Protocol.XMLRPC.match(endpoint)) {
                 return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);               
             }
             if( ConfluenceService.Protocol.REST.match(endpoint)) {
-                return sv.map( config -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, config.getVersion(), credentials, sslInfo) )
-                         .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo))
+                return svi.optVersion()
+                        .map( version -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, version, credentials, sslInfo) )
+                        .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo))
                          ;               
             }
             

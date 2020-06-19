@@ -68,7 +68,7 @@ public class MarkdownVisitorHelper {
      * @param url
      * @return
      */
-    public static  String processImageUrl( String url, MarkdownParserContext<?> context ) {
+    public static  String processImageUrl( String url, MarkdownParserContext context ) {
 
         if( isURL(url) ) {
             return url;
@@ -91,32 +91,31 @@ public class MarkdownVisitorHelper {
 
     }
 
-    public static String processLinkUrl( String url, MarkdownParserContext<?> parseContext ) {
+    public static String processLinkUrl( String url, MarkdownParserContext parseContext ) {
 
-        if( !isURL(url) && FileExtension.MARKDOWN.isExentionOf(url)) {
+        // GUARD CONDITION
+        if( !parseContext.getPage().isPresent() || isURL(url) || !FileExtension.MARKDOWN.isExentionOf(url) )
+            return url;
 
-            final Predicate<Site.Page> comparePath = ( p ) -> {
+        final Predicate<Site.Page> comparePath = ( p ) -> {
 
-                final Path parentPath = Paths.get(parseContext.getPage().getUri()).getParent();
+            final Path parentPath = Paths.get(parseContext.getPage().get().getUri()).getParent();
 
-                final Path relativePath = parentPath.relativize( Paths.get(p.getUri()));
+            final Path relativePath = parentPath.relativize( Paths.get(p.getUri()));
 
-                final boolean result =  relativePath.equals( Paths.get(url) );
+            final boolean result =  relativePath.equals( Paths.get(url) );
 
-                return result;
-            };
+            return result;
+        };
 
-            return parseContext.getSite()
-                    .flatMap( site -> site.getHome().findPage( comparePath ) )
-                    .map( page -> parseContext.getPagePrefixToApply()
-                            .filter( prefixToApply -> !url.startsWith(prefixToApply) )
-                            .map( prefixToApply -> format( "%s - %s", prefixToApply, page.getName() ) )
-                            .orElse( page.getName() ) )
-                    .orElse(url)
-                    ;
-        }
-
-        return url;
+        return parseContext.getSite()
+                .flatMap( site -> site.getHome().findPage( comparePath ) )
+                .map( page -> parseContext.getPagePrefixToApply()
+                        .filter( prefixToApply -> !url.startsWith(prefixToApply) )
+                        .map( prefixToApply -> format( "%s - %s", prefixToApply, page.getName() ) )
+                        .orElse( page.getName() ) )
+                .orElse(url)
+                ;
 
     }
 }

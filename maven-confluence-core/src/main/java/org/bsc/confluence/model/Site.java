@@ -187,20 +187,20 @@ public class Site {
 
         java.util.List<Attachment> attachments;
 
-        @Deprecated
-        public File getSource() {
-
-            final java.net.URI _uri = super.getUri();
-            if (null == _uri) {
-                throw new IllegalStateException("uri is null");
-            }
-
-            if (!_uri.isAbsolute() && !"file".equals(_uri.getScheme())) {
-                throw new IllegalArgumentException("uri not represent a file");
-            }
-
-            return new java.io.File(_uri);
-        }
+//        @Deprecated
+//        public File getSource() {
+//
+//            final java.net.URI _uri = super.getUri();
+//            if (null == _uri) {
+//                throw new IllegalStateException("uri is null");
+//            }
+//
+//            if (!_uri.isAbsolute() && !"file".equals(_uri.getScheme())) {
+//                throw new IllegalArgumentException("uri not represent a file");
+//            }
+//
+//            return new java.io.File(_uri);
+//        }
 
         private java.util.List<String> labels;
 

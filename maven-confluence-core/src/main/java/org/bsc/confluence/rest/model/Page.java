@@ -26,7 +26,7 @@ public class Page implements Model.Page {
     
     
     @Override
-    public String getId() { return data.getString("id"); }
+    public Model.ID getId() { return Model.ID.of(data.getString("id")); }
 
     @Override
     public String getTitle() {
@@ -44,8 +44,8 @@ public class Page implements Model.Page {
     }
 
     @Override
-    public String getParentId() {
-        return String.valueOf(data.getJsonObject("container").getInt("id"));
+    public Model.ID getParentId() {
+        return Model.ID.of( IdHelper.getId(data.getJsonObject("container")) );
     }
 
     @Override

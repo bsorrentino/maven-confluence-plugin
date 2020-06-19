@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.confluence.rest.model.Attachment;
+import org.bsc.confluence.rest.model.Blogpost;
 import org.bsc.confluence.rest.model.Page;
 import org.bsc.confluence.xmlrpc.ConfluenceExportDecorator;
 import org.bsc.ssl.SSLCertificateInfo;
@@ -37,7 +38,9 @@ import static java.util.concurrent.CompletableFuture.*;
  * @author bosrrentino
  */
 public class RESTConfluenceService extends AbstractRESTConfluenceService implements ConfluenceService {
-    
+
+    public enum ContentType { page, blogpost }
+
     final Credentials credentials;
     
     final java.net.URL endpoint ;
@@ -86,20 +89,13 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         
     }
 
-    private Attachment cast( Model.Attachment attachment ) {
-        if( attachment == null ) {
-            throw new IllegalArgumentException("attachment argument is null!");
-        }
-        if( !(attachment instanceof Attachment) ) {
-            throw new IllegalArgumentException("page argument is not right type!");
-        }
-        return (Attachment)attachment;
-
+    private <S,T> CompletableFuture<T> cast( CompletableFuture<S> s ) {
+        return (CompletableFuture<T>)s;
     }
-    
-    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final String title  ) {
+
+    public final JsonObjectBuilder jsonForCreatingContent( ContentType type, final String spaceKey, final String title  ) {
           return Json.createObjectBuilder()
-                  .add("type","page")
+                  .add("type",type.name())
                   .add("title",title)
                   .add("space",Json.createObjectBuilder().add("key", spaceKey))
                   ;
@@ -109,8 +105,8 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 //        return jsonForCreatingPage( spaceKey, Long.valueOf(parentPageId), title);
 //    }
 
-    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final long parentPageId, final String title  ) {
-          return jsonForCreatingPage( spaceKey, title )
+    public final JsonObjectBuilder jsonForCreatingContent(ContentType type, final String spaceKey, final long parentPageId, final String title  ) {
+          return jsonForCreatingContent( type, spaceKey, title )
                   .add("ancestors", Json.createArrayBuilder()
                                           .add(Json.createObjectBuilder().add("id", parentPageId )))
                   ;
@@ -132,7 +128,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
      * @return
      */
       public final CompletableFuture<Model.Page> createPageByTitle( String spaceKey, String title ) {
-              final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, title);
+              final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, title);
 
               return createPage( input.build() )
                       .thenApply( data -> data.map( Page::new ).get() );
@@ -167,7 +163,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
     
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  {
 
         return childrenPages(String.valueOf(parentPageId))
                 .thenApply( children ->
@@ -181,8 +177,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
 
         final String spaceKey = parentPage.getSpace();
-        final String id = parentPage.getId();
-        final JsonObjectBuilder input = jsonForCreatingPage(spaceKey, Integer.valueOf(id), title);
+        final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, parentPage.getId().getValue(), title);
 
         return createPage( input.build() )
                     .thenApply( page -> page.map( Page::new ).get() );
@@ -195,8 +190,8 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
      * @throws Exception 
      */
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
-        return findPageById( String.valueOf(pageId))
+    public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId) {
+        return findPageById( pageId.toString() )
                     .thenApply( page -> page.map( Page::new ));
     }
 
@@ -205,13 +200,13 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         return findPage(spaceKey, pageTitle)
                     .thenApply( page -> page.map( Page::new ));
     }
-    
-    
+
+
     @Override
-    public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId)  {
-        return descendantPages( pageId )
-                    .thenApply( descendant ->
-                            descendant.stream()
+    public CompletableFuture<List<Model.PageSummary>> getDescendents(Model.ID pageId)  {
+        return descendantPages( pageId.getValue() )
+                .thenApply( descendant ->
+                        descendant.stream()
                                 .map( (page) -> new Page(page))
                                 .collect( Collectors.toList() ));
     }
@@ -224,7 +219,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         
         final JsonObject input = Json.createObjectBuilder()
                 .add("version", Json.createObjectBuilder().add("number", ++previousVersion))
-                .add("id",page.getId())
+                .add("id",page.getId().getValue())
                 .add("type","page")
                 .add("title",page.getTitle())
                 .add("space",Json.createObjectBuilder().add("key", page.getSpace()))
@@ -235,7 +230,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
                 .build();
 
         final CompletableFuture<Model.Page> updatePage =
-            updatePage(page.getId(),input)
+            updatePage(page.getId().toString(),input)
                     .thenApply( p -> p.map( Page::new ).get());
 
         return supplyAsync( () -> updatePage.join() );
@@ -247,8 +242,28 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
 
     @Override
-    public CompletableFuture<Void> addLabelsByName(long id, String[] labels ) {
-        return runAsync( () -> addLabels(String.valueOf(id), labels) );
+    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
+
+        return childrenPages(parentPage.getId().toString())
+                .thenCompose( children ->
+                        children.stream()
+                                .map( page -> new Page(page))
+                                .filter( page -> page.getTitle().equals(title) )
+                                .map( page -> deletePageById(page.getId().toString()) )
+                                .findFirst()
+                                .orElse( completedFuture(false) ));
+
+    }
+
+
+    @Override
+    public CompletableFuture<Boolean> removePage(Model.ID pageId) {
+        return deletePageById(pageId.toString());
+    }
+
+    @Override
+    public CompletableFuture<Void> addLabelsByName(Model.ID id, String[] labels ) {
+        return runAsync( () -> addLabels(id.toString(), labels) );
     }
 
     @Override
@@ -268,14 +283,29 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 		                    outputFile);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // ATTACHMENT
+    ///////////////////////////////////////////////////////////////////////////////
+
+    private Attachment cast( Model.Attachment attachment ) {
+        if( attachment == null ) {
+            throw new IllegalArgumentException("attachment argument is null!");
+        }
+        if( !(attachment instanceof Attachment) ) {
+            throw new IllegalArgumentException("page argument is not right type!");
+        }
+        return (Attachment)attachment;
+
+    }
+
     @Override
     public Model.Attachment createAttachment() {    
         return new Attachment();
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
-        return getAttachment(String.valueOf(pageId), name)
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(Model.ID pageId, String name, String version) {
+        return getAttachment(pageId.toString(), name)
                     .thenApply( attachments ->
                                 attachments.stream()
                                     .findFirst()
@@ -285,7 +315,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     @Override
     public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source)  {
         final CompletableFuture<Model.Attachment> addAttchment =
-            addAttachment(page.getId(), cast(attachment), source)
+            addAttachment(page.getId().toString(), cast(attachment), source)
                     .thenApply( attachments ->
                             attachments.stream()
                                 .findFirst()
@@ -295,25 +325,32 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         return supplyAsync( () -> addAttchment.join() );
 
     }
-    
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // BLOG POST
+    ///////////////////////////////////////////////////////////////////////////////
+
     @Override
-    public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
-        
-        return childrenPages(parentPage.getId())
-                .thenCompose( children ->
-                        children.stream()
-                            .map( page -> new Page(page))
-                            .filter( page -> page.getTitle().equals(title) )
-                            .map( page -> deletePageById(page.getId()) )
-                            .findFirst()
-                            .orElse( completedFuture(false) ));
-        
+    public Model.Blogpost createBlogpost( String space, String title, Storage content, int version) {
+        final Blogpost result = new Blogpost();
+
+        result.setSpace(space);
+        result.setTitle(title);
+        result.setContent(content);
+        result.setVersion(version);
+        return result;
     }
 
-    
     @Override
-    public CompletableFuture<Boolean> removePage(long pageId) {
-        return deletePageById(String.valueOf(pageId));
+    public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost)  {
+
+        final Blogpost restBlogpost = Blogpost.class.cast(blogpost);
+        final JsonObjectBuilder builder =
+                jsonAddBody(
+                    jsonForCreatingContent( ContentType.blogpost, restBlogpost.getSpace(), restBlogpost.getTitle()),
+                    restBlogpost.getContent() );
+
+        return cast(createPage(builder.build()).thenApply( page -> page.map( Blogpost::new ).orElse(null)));
     }
 
     @Override

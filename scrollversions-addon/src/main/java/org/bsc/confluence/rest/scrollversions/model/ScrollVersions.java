@@ -1,11 +1,11 @@
 package org.bsc.confluence.rest.scrollversions.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.Data;
+import lombok.Value;
 import org.bsc.confluence.ConfluenceService;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static java.util.Optional.ofNullable;
 
@@ -15,7 +15,7 @@ public interface ScrollVersions {
 
         interface Result {
 
-            long getMasterPageId();
+            ConfluenceService.Model.ID getMasterPageId();
         }
 
         @Data
@@ -92,7 +92,9 @@ public interface ScrollVersions {
             }
 
             @Override
-            public String getId() { return String.valueOf(resolvePage().getConfluencePageId()); }
+            public  ConfluenceService.Model.ID getId() {
+                return ConfluenceService.Model.ID.of(resolvePage().getConfluencePageId());
+            }
 
             @Override
             public String getTitle() { return masterPage.getConfluencePageTitle(); }
@@ -101,13 +103,17 @@ public interface ScrollVersions {
             public String getSpace() { return masterPage.getSpaceKey(); }
 
             @Override
-            public String getParentId() { { throw new UnsupportedOperationException("getParentId is not supported in scroll versions mode"); } }
+            public ConfluenceService.Model.ID getParentId() {
+                throw new UnsupportedOperationException("getParentId is not supported in scroll versions mode");
+            }
 
             @Override
             public int getVersion() { return 1; }
 
             @Override
-            public long getMasterPageId() { return masterPage.getConfluencePageId(); }
+            public ConfluenceService.Model.ID getMasterPageId() {
+                return ConfluenceService.Model.ID.of(masterPage.getConfluencePageId());
+            }
         }
 
         @Data
@@ -133,7 +139,7 @@ public interface ScrollVersions {
             private ConfluencePage masterConfluencePage;
 
             @Override
-            public String getId() { return String.valueOf(confluencePage.id); }
+            public ConfluenceService.Model.ID getId() { return ConfluenceService.Model.ID.of(confluencePage.id);  }
 
             @Override
             public String getTitle() { return scrollPageTitle; }
@@ -142,14 +148,16 @@ public interface ScrollVersions {
             public String getSpace() { return spaceKey; }
 
             @Override
-            public String getParentId() { return String.valueOf(confluencePage.parentId); }
+            public ConfluenceService.Model.ID getParentId() {
+                return ConfluenceService.Model.ID.of(confluencePage.parentId);
+            }
 
             @Override
             public int getVersion() { return 1; }
 
             @Override
-            public long getMasterPageId() {
-                return masterConfluencePage.getId();
+            public ConfluenceService.Model.ID getMasterPageId() {
+                return ConfluenceService.Model.ID.of(masterConfluencePage.getId());
             }
 
         }

@@ -19,16 +19,10 @@ class Confluence2 extends Confluence {
     protected Confluence2(Confluence c) {
         super(c);
     }
-/*
-    protected Confluence2(String endpoint) throws MalformedURLException {
-        super(endpoint);
-    }
-*/
+
     protected Confluence2(String endpoint, ConfluenceProxy proxyInfo) throws MalformedURLException, URISyntaxException {
         super(endpoint, proxyInfo);
     }
-    
-    
 
     @Override
     protected String getServicePrefix() {

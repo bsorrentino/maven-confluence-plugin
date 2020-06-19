@@ -5,26 +5,23 @@
  */
 package org.bsc.confluence;
 
-import static java.lang.String.format;
-
 import java.io.Closeable;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import org.bsc.functional.Tuple2;
+import static java.lang.String.format;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
-import lombok.val;
 /**
  *
  * @author bsorrentino
  */
 public interface ConfluenceService extends Closeable{
 
-    public enum Protocol {
+    enum Protocol {
         
         XMLRPC ("rpc/xmlrpc"),
         REST ("rest/api");
@@ -83,7 +80,7 @@ public interface ConfluenceService extends Closeable{
     }
         
         
-    public static class Storage {
+    class Storage {
         
         public enum Representation {
             STORAGE,
@@ -98,11 +95,14 @@ public interface ConfluenceService extends Closeable{
         public final String value;
         public final Representation rapresentation;
 
-        public Storage(String value, Representation rapresentation) {
+        private Storage(String value, Representation rapresentation) {
             this.value = value;
             this.rapresentation = rapresentation;
         }
-        
+
+        public static Storage of( String value, Representation rapresentation ) {
+            return new Storage(value,rapresentation);
+        }
         
     }
     class Credentials {
@@ -120,8 +120,25 @@ public interface ConfluenceService extends Closeable{
         
     }   
     
-    public interface Model {
+    interface Model {
 
+        class ID implements Comparable<ID> {
+            final long value;
+
+            private ID(long value) { this.value = value; }
+
+            public long getValue() { return value; }
+
+            public String toString() { return String.valueOf(value); }
+
+            public static ID of(long value ) { return new ID(value); }
+            public static ID of( String value ) { return new ID(Long.valueOf(value)); }
+
+            @Override
+            public int compareTo(Model.ID o) {
+                return (int) (value - o.value);
+            }
+        }
         interface Attachment {
                 void setFileName(String name);
                 String getFileName();
@@ -135,16 +152,26 @@ public interface ConfluenceService extends Closeable{
 
         interface PageSummary {
             
-            String getId();
+            ID getId();
             
             String getTitle();
             
             String getSpace();
             
-            String getParentId();
+            ID getParentId();
         }
 
         interface Page extends PageSummary {
+
+            int getVersion();
+        }
+
+        interface Blogpost  {
+            ID getId();
+
+            String getTitle();
+
+            String getSpace();
 
             int getVersion();
         }
@@ -153,64 +180,32 @@ public interface ConfluenceService extends Closeable{
     
     Credentials getCredentials();
 
-    CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title)  ;
-
-    @Deprecated
-    default CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(String parentPageId, String title) {
-        return getPageByTitle( Long.valueOf(parentPageId), title );
-    }
+    CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  ;
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
 
-    CompletableFuture<Boolean> removePage(long pageId ) ;
-
-    @Deprecated
-    default CompletableFuture<Boolean> removePage(String pageId ) {
-
-        return removePage( Long.valueOf(pageId) );
-    }
+    CompletableFuture<Boolean> removePage(Model.ID pageId ) ;
 
     CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
 
-    CompletableFuture<Optional<Model.Page>> getPage( long pageId ) ;
-
-    @Deprecated
-    default CompletableFuture<Optional<Model.Page>> getPage( String pageId ) {
-
-        return getPage( Long.valueOf(pageId) );
-    }
+    CompletableFuture<Optional<Model.Page>> getPage( Model.ID pageId ) ;
 
     CompletableFuture<Optional<Model.Page>> getPage( String spaceKey, String pageTitle ) ;
 
-    CompletableFuture<Void> addLabelsByName( long id, String[] labels ) ;
+    CompletableFuture<Void> addLabelsByName( Model.ID id, String[] labels ) ;
 
-    default CompletableFuture<Void> addLabelsByName( long id, java.util.List<String> labels ) {
-        if( labels == null || labels.isEmpty() ) return CompletableFuture.completedFuture(null);
+    default CompletableFuture<Void> addLabelsByName( Model.ID id, java.util.List<String> labels ) {
+        if( labels == null || labels.isEmpty() ) return completedFuture(null);
 
         final String[] labelArray = new String[ labels.size() ];
         return addLabelsByName( id, labels.toArray(labelArray) );
-    }
-
-    @Deprecated
-    default CompletableFuture<Void> addLabelsByName( String id, java.util.List<String> labels ) {
-        return addLabelsByName( Long.valueOf(id), labels);
-    }
-
-    @Deprecated
-    default CompletableFuture<Void> addLabelsByName( String id, String[] labels  ) {
-        return addLabelsByName( Long.valueOf(id), labels);
     }
 
     CompletableFuture<Model.Page> storePage( Model.Page page, Storage content ) ;
     
     CompletableFuture<Model.Page> storePage( Model.Page page ) ;
 
-    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(long pageId) ;
-
-    @Deprecated
-    default CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(String pageId) {
-        return getDescendents( Long.valueOf(pageId) );
-    }
+    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) ;
 
     void exportPage(    String url, 
                         String spaceKey, 
@@ -218,25 +213,56 @@ public interface ConfluenceService extends Closeable{
                         ExportFormat exfmt, 
                         java.io.File outputFile) throws Exception;
     
-    //
+    ////////////////////////////////////////////////////////////////////////////////
     // ATTACHMENT
-    //
+    ///////////////////////////////////////////////////////////////////////////////
     
     /**
      * factory method
      * 
      * @return 
      */
-    Model.Attachment createAttachment(); 
-    
-    CompletableFuture<Optional<Model.Attachment>> getAttachment( long pageId, String name, String version) ;
+    Model.Attachment createAttachment();
 
-    @Deprecated
-    default CompletableFuture<Optional<Model.Attachment>> getAttachment( String pageId, String name, String version) {
-        return getAttachment( Long.valueOf(pageId), name, version);
-    }
+    /**
+     *
+     * @param pageId
+     * @param name
+     * @param version
+     * @return
+     */
+    CompletableFuture<Optional<Model.Attachment>> getAttachment( Model.ID pageId, String name, String version) ;
 
+    /**
+     *
+     * @param page
+     * @param attachment
+     * @param source
+     * @return
+     */
     CompletableFuture<Model.Attachment> addAttachment( Model.Page page, Model.Attachment attachment, java.io.InputStream source ) ;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // BLOG POST
+    ///////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * factory method
+     *
+     * @param space space id
+     * @param title post's title
+     * @param content post's content
+     *
+     * @return
+     */
+    Model.Blogpost createBlogpost( String space, String title, Storage content, int version );
+
+    /**
+     *
+     * @param blogpost
+     * @return
+     */
+    CompletableFuture<Model.Blogpost> addBlogpost( Model.Blogpost blogpost) ;
 
     /**
      * 
@@ -255,10 +281,10 @@ public interface ConfluenceService extends Closeable{
                     parent.orElseThrow( () -> 
                         new RuntimeException( 
                                 format("cannot find parent page [%s] in space [%s]", parentPageTitle, spaceKey))) )
-                .thenCombine( getPage(spaceKey, title), Tuple2::of)
-                .thenCompose( tuple -> ( tuple.getValue2().isPresent() )
-                        ? CompletableFuture.completedFuture(tuple.getValue2().get())
-                        : createPage(tuple.getValue1(), title))
+                .thenCombine( getPage(spaceKey, title), ParentChildTuple::of)
+                .thenCompose( tuple -> ( tuple.getChild().isPresent() )
+                        ? completedFuture(tuple.getChild().get())
+                        : createPage(tuple.getParent(), title))
                 ;
         }
 
@@ -278,7 +304,7 @@ public interface ConfluenceService extends Closeable{
                                             TimeUnit timeUnit,
                                             Optional<CompletableFuture<T>> resultHandler,
                                             Supplier<CompletableFuture<T>> action) {
-        val future = resultHandler.orElseGet( () -> new CompletableFuture<>() );
+        final CompletableFuture<T> future = resultHandler.orElseGet( () -> new CompletableFuture<>() );
         action.get()
                 .thenAccept(a -> future.complete(a))
                 .exceptionally(ex -> {

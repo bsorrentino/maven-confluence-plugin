@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
@@ -29,7 +30,9 @@ import static org.bsc.markdown.MarkdownVisitorHelper.processImageUrl;
  */
 public class PegdownConfluenceWikiVisitor implements Visitor {
 
-    private final MarkdownParserContext<org.pegdown.ast.Node> parseContext;
+    private final MarkdownParserContext parseContext;
+
+    private final Consumer<org.pegdown.ast.Node> notImplementedYet;
 
     //list level
     private int listLevel = 0;
@@ -99,8 +102,9 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
         return new int[] {line,col};
     }
 
-    public PegdownConfluenceWikiVisitor(MarkdownParserContext<Node> parseContext) {
+    public PegdownConfluenceWikiVisitor(MarkdownParserContext parseContext, Consumer<org.pegdown.ast.Node> notImplementedYet) {
         this.parseContext = parseContext;
+        this.notImplementedYet = notImplementedYet;
     }
 
     @Override
@@ -591,7 +595,7 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
 
     @Override
     public void visit(TableCaptionNode tcn) {
-        parseContext.notImplementedYet(tcn);
+        notImplementedYet.accept(tcn);
     }
 
     @Override
@@ -610,7 +614,7 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
 
     @Override
     public void visit(TableColumnNode tcn) {
-        parseContext.notImplementedYet(tcn);
+        notImplementedYet.accept(tcn);
     }
 
     @Override
@@ -631,34 +635,34 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
 
     @Override
     public void visit(AbbreviationNode an) {
-        parseContext.notImplementedYet(an);
+        notImplementedYet.accept(an);
     }
 
 
     @Override
     public void visit(AutoLinkNode aln) {
-        parseContext.notImplementedYet(aln);
+        notImplementedYet.accept(aln);
     }
 
 
     @Override
     public void visit(DefinitionListNode dln) {
-        parseContext.notImplementedYet(dln);
+        notImplementedYet.accept(dln);
     }
 
     @Override
     public void visit(DefinitionNode dn) {
-        parseContext.notImplementedYet(dn);
+        notImplementedYet.accept(dn);
     }
 
     @Override
     public void visit(DefinitionTermNode dtn) {
-        parseContext.notImplementedYet(dtn);
+        notImplementedYet.accept(dtn);
     }
 
     @Override
     public void visit(MailLinkNode mln) {
-        parseContext.notImplementedYet(mln);
+        notImplementedYet.accept(mln);
     }
 
     @Override
@@ -699,7 +703,7 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
 
     @Override
     public void visit(QuotedNode qn) {
-        parseContext.notImplementedYet(qn);
+        notImplementedYet.accept(qn);
     }
 
     @Override
@@ -729,18 +733,16 @@ public class PegdownConfluenceWikiVisitor implements Visitor {
                 _buffer.append("&hellip;");
                 break;
             default:
-                parseContext.notImplementedYet(sn);
+                notImplementedYet.accept(sn);
         }
     }
 
     @Override
-    public void visit(WikiLinkNode wln) {
-        parseContext.notImplementedYet(wln);
-    }
+    public void visit(WikiLinkNode wln) { notImplementedYet.accept(wln); }
 
     @Override
     public void visit(Node node) {
-        parseContext.notImplementedYet(node);
+        notImplementedYet.accept(node);
     }
 
 }

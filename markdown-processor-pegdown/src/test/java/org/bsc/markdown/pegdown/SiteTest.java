@@ -2,16 +2,13 @@ package org.bsc.markdown.pegdown;
 
 import lombok.Data;
 import lombok.val;
-import lombok.var;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
-import org.bsc.markdown.MarkdownProcessorInfo;
-import org.bsc.markdown.MarkdownProcessorProvider;
+import org.bsc.markdown.MarkdownProcessor;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -44,12 +41,12 @@ public class SiteTest implements SiteFactory.Model {
 
 
         @Override
-        public String getId() {
+        public Model.ID getId() {
             return null;
         }
 
         @Override
-        public String getParentId() {
+        public Model.ID getParentId() {
             return null;
         }
 
@@ -75,10 +72,6 @@ public class SiteTest implements SiteFactory.Model {
 
     Site site;
 
-    @BeforeClass
-    public static void setMarkdownPorcessorProvider() {
-        MarkdownProcessorProvider.instance.setInfo( new MarkdownProcessorInfo("pegdown") );
-    }
     @Before
     public void loadSite() {
         site = createSiteFromModel(Collections.emptyMap());

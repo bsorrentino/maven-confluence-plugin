@@ -17,6 +17,7 @@ import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 import org.bsc.confluence.model.SiteProcessor;
+import org.bsc.mojo.configuration.DeployStateInfo;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -36,6 +37,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static java.lang.String.format;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.bsc.confluence.model.SiteProcessor.processPageUri;
@@ -107,7 +109,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @since 6.0.0
      */
     @Parameter
-    protected DeployStateManager.Parameters deployState;
+    protected DeployStateInfo deployState = new DeployStateInfo( false ) ;
 
     /**
      * Use this property to disable processing of properties that are in the form of URI.
@@ -121,7 +123,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     /**
      *
      */
-    protected DeployStateManager deployStateManager;
+    protected Optional<DeployStateManager> deployStateManager = empty();
 
     /**
      *
@@ -255,7 +257,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             final T child,
             final String pageTitleToApply)
     {
-        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : Optional.empty();
+        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : empty();
 
         return processPageUri(site, child, pageToUpdate, source, pagePrefixToApply, (err, content) -> {
 
@@ -285,7 +287,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     t.setVariableOpt("page.title", pageTitleToApply);
                 }
 
-                return confluence.storePage(pageToUpdate, new Storage(t.generateOutput(), content.get().getType()));
+                return confluence.storePage(pageToUpdate, Storage.of(t.generateOutput(), content.get().getType()));
 
             } catch (Exception ex) {
                 result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(), ex));
@@ -378,7 +380,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
             } catch (ProcessUriException ex) {
                 getLog().warn(
-                        format("error processing value of property [%s]\n%s", e.getKey(), ex.getMessage()));
+                        format("error processing value of property [%s] - %s", e.getKey(), ex.getMessage()));
                 if (ex.getCause() != null)
                     getLog().debug(ex.getCause());
 
@@ -391,10 +393,8 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
     }
 
-    protected CompletableFuture<Void> resetUpdateStatusForResource(java.net.URI uri) {
-        if (uri != null && deployStateManager != null)
-            deployStateManager.resetState(uri);
-        return CompletableFuture.completedFuture(null);
+    protected CompletableFuture<Boolean> resetUpdateStatusForResource(java.net.URI uri) {
+        return completedFuture( deployStateManager.map( dsm -> dsm.resetState(uri) ).orElse(false) );
     }
 
     /**
@@ -403,12 +403,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @return
      */
     protected CompletableFuture<Boolean> canProceedToUpdateResource(java.net.URI uri) {
-        if (uri == null)
-            return CompletableFuture.completedFuture(false);
-        if (deployStateManager == null)
-            return CompletableFuture.completedFuture(true);
-
-        return CompletableFuture.completedFuture(deployStateManager.isUpdated(uri));
+        return completedFuture( deployStateManager.map( dsm -> dsm.isUpdated(uri) ).orElse(true) );
     }
 
     /**
@@ -422,7 +417,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      */
     private String processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset) throws ProcessUriException {
 
-        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : Optional.empty();
+        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : empty();
 
         try {
             return SiteProcessor.processUriContent(site, child, uri, pagePrefixToApply, content -> content.getContent(charset) );
@@ -569,7 +564,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                 .exceptionally(e -> {
                     getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(),
                             e.getMessage()));
-                    return Optional.empty();
+                    return empty();
                 }).thenCompose(att -> {
 
                     if (!att.isPresent()) {

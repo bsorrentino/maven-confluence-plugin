@@ -2,14 +2,7 @@ package org.bsc.confluence;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
+import javax.json.*;
 import javax.json.stream.JsonGenerator;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,89 +12,33 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DeployStateManager {
 
-    public static class Parameters {
-        private Optional<Path> _outdir = Optional.empty() ;
-        private boolean active = true;
-
-        /**
-         * @return the active
-         */
-        public boolean isActive() {
-            return active;
-        }
-
-
-        /**
-         * @param active the active to set
-         */
-        public void setActive(boolean active) {
-            this.active = active;
-        }
-
-        /**
-         * @param outdir the basedir to set
-         */
-        public void setOutdir(java.io.File outdir) {
-            if( outdir == null ) {
-               this._outdir = Optional.empty();
-               return;
-            }
-            this._outdir = Optional.of(outdir.toPath());
-        }
-
-        /**
-         * @return the _outdir
-         */
-        public Optional<Path> getOutdir() {
-            return _outdir;
-        }
-
-
-        /**
-         *
-         */
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                        .append("DeployStateManager").append("\n\t")
-                        .append("active=").append(active).append("\n\t")
-                        .append("outdir=").append(_outdir).append("\n")
-                        .toString();
-        }
-
-    }
-
-    public static final String STORAGE_NAME = "confluence-reporting-maven-plugin-storage.json";
+    public static final String STORAGE_NAME = ".confluence-maven-plugin-storage.json";
 
     private Map<String, Map<String,JsonValue>> storage = new HashMap<>();
 
-    private final Parameters _info;
-    private final String _endpoint;
-
+    private final String endpoint;
+    private final Path outdir;
     private final JsonWriterFactory writerFactory;
 
-    private DeployStateManager( String endpoint, Parameters info) {
+    private DeployStateManager( String endpoint, Path outdir ) {
         Objects.requireNonNull(endpoint, "endpoint is null!");
-        Objects.requireNonNull(info, "info is null!");
+        Objects.requireNonNull(outdir, "outdir is null!");
 
-        this._endpoint = endpoint;
-        this._info = info;
-
-        this._info._outdir.ifPresent( p -> {
-            if( !Files.exists(p)) {
-                try {
-                    Files.createDirectories(p);
-                } catch (IOException e) {
-                    throw new IllegalArgumentException( String.format("Impossible create path [%s]", p));
-                }
+        if( !Files.exists(outdir)) {
+            try {
+                Files.createDirectories(outdir);
+            } catch (IOException e) {
+                throw new IllegalArgumentException( String.format("Impossible create path [%s]", outdir));
             }
-            else if( !Files.isDirectory(p))
-                throw new IllegalArgumentException( String.format("Path [%s] is not a directory", p));
-        });
+        }
+        else if( !Files.isDirectory(outdir))
+            throw new IllegalArgumentException( String.format("Path [%s] is not a directory", outdir));
+
+        this.endpoint = endpoint;
+        this.outdir = outdir;
 
         // Create JsonWriterFactory with PRETTY_PRINTING = true
         Map<String, Boolean> config = new HashMap<>();
@@ -110,27 +47,22 @@ public class DeployStateManager {
     }
 
     /**
+     * factory method
      *
      * @param endpoint
      */
-    public static DeployStateManager load( String endpoint, Parameters info ) {
-        DeployStateManager result = new DeployStateManager( endpoint, info );
-        result._load();
+    public static DeployStateManager load( String endpoint, Path outdir ) {
+        DeployStateManager result = new DeployStateManager( endpoint, outdir );
+        result.load();
         return result;
-    }
-
-    private boolean isValid() {
-        return _info.active && _info._outdir.isPresent();
     }
 
     /**
      *
      */
-    private void _load() {
+    private void load() {
 
-        if( !isValid() ) return;
-
-        final Path file = Paths.get(_info._outdir.get().toString(), STORAGE_NAME);
+        final Path file = Paths.get(outdir.toString(), STORAGE_NAME);
 
         if( !Files.exists(file)) {
             try {
@@ -154,8 +86,8 @@ public class DeployStateManager {
                 ex.printStackTrace();
             }
         }
-        if( !storage.containsKey(_endpoint) ) {
-            storage.put(_endpoint, new HashMap<String,JsonValue>() );
+        if( !storage.containsKey(endpoint) ) {
+            storage.put(endpoint, new HashMap<String,JsonValue>() );
             save();
         }
 
@@ -163,9 +95,7 @@ public class DeployStateManager {
     }
 
     private void save() {
-        if( !isValid() ) return;
-
-        final Path file = Paths.get(_info._outdir.get().toString(), STORAGE_NAME);
+        final Path file = Paths.get(outdir.toString(), STORAGE_NAME);
 
         if( !Files.exists(file)) return;
 
@@ -201,18 +131,14 @@ public class DeployStateManager {
      * @return
      */
     public boolean isUpdated( java.net.URI uri ) {
-        Objects.requireNonNull(uri, "uri is null!");
+        //Objects.requireNonNull(uri, "uri is null!");
+        if (uri == null) return false;
 
         final String scheme = uri.getScheme();
 
-        if ( Objects.nonNull(scheme) && "file".equalsIgnoreCase(scheme) ) {
-
-            return isUpdated( Paths.get(uri) );
-
-        }
-
-        return true;
-
+        return (Objects.nonNull(scheme) && "file".equalsIgnoreCase(scheme))
+                ? isUpdated(Paths.get(uri))
+                : true;
     }
 
     /**
@@ -221,17 +147,16 @@ public class DeployStateManager {
      * @return
      */
     public boolean isUpdated(Path file) {
-        Objects.requireNonNull(file, "file is null!");
-
-        if( !isValid() ) return true;
+        //Objects.requireNonNull(file, "file is null!");
+        if( file == null ) return false;
 
         final Path b = file.toAbsolutePath();
 
-        final Map<String,JsonValue> s =  storage.get(_endpoint);
+        final Map<String,JsonValue> s =  storage.get(endpoint);
 
         if( s==null ) return true;
 
-        final String key = _info._outdir.get().relativize( b ).toString();
+        final String key = outdir.relativize( b ).toString();
 
         JsonString value = s.containsKey(key) ?
                                 (JsonString) s.get(key) :
@@ -263,41 +188,44 @@ public class DeployStateManager {
      *
      * @param uri
      */
-    public void resetState( java.net.URI uri ) {
-        Objects.requireNonNull(uri, "uri is null!");
+    public boolean resetState( java.net.URI uri ) {
+        //Objects.requireNonNull(uri, "uri is null!");
+        if( uri == null ) return false;
 
         final String scheme = uri.getScheme();
 
-        if ( Objects.nonNull(scheme) && "file".equalsIgnoreCase(scheme) ) {
-
-            resetState( Paths.get(uri) );
-
-        }
+        return ( Objects.nonNull(scheme) && "file".equalsIgnoreCase(scheme) )
+                ? resetState( Paths.get(uri) )
+                : false;
     }
 
     /**
      *
      * @param file
      */
-    public void resetState( Path file ) {
-        Objects.requireNonNull(file, "file is null!");
-
-        if( !isValid() ) return;
+    public boolean resetState( Path file ) {
+        //Objects.requireNonNull(file, "file is null!");
+        if( file == null ) return false;
 
         final Path b = file.toAbsolutePath();
 
-        final Map<String,JsonValue> s =  storage.get(_endpoint);
+        final Map<String,JsonValue> s =  storage.get(endpoint);
 
-        final String key = _info._outdir.get().relativize( b ).toString();
+        final String key = outdir.relativize( b ).toString();
 
         s.put(key, createValue("0"));
         save();
 
+        return true;
     }
 
     @Override
     public String toString() {
-        return _info.toString();
+        return new StringBuilder()
+                .append("DeployStateManager").append("\n\t")
+                .append("endopint=").append(endpoint).append("\n\t")
+                .append("outdir=").append(outdir).append("\n")
+                .toString();
     }
 
 }

@@ -63,7 +63,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
                 .thenAccept(p -> {
                     p.forEach(u -> {
                             debug("unversioned [%s]", u.getConfluencePageTitle());
-                            service.delegate.removePage(String.valueOf(u.getConfluencePageId()))
+                            service.delegate.removePage( ConfluenceService.Model.ID.of(u.getConfluencePageId()) )
                                     .thenCompose( r -> sleep( TimeUnit.SECONDS, 1))
                                     .join();
                     });
@@ -72,7 +72,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
                 .thenAccept(p -> {
                     p.forEach(u -> {
                         debug("versioned [%s]", u.getConfluencePageTitle());
-                        service.delegate.removePage(String.valueOf(u.getConfluencePageId()))
+                        service.delegate.removePage(ConfluenceService.Model.ID.of(u.getConfluencePageId()))
                                 .thenCompose( r -> sleep( TimeUnit.SECONDS, 1))
                                 .join();
 
@@ -82,14 +82,13 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
                 .thenAccept(p -> {
                     p.forEach(u -> {
                         debug("master [%s]", u.getConfluencePageTitle());
-                        service.delegate.removePage(String.valueOf(u.getConfluencePageId()))
+                        service.delegate.removePage(ConfluenceService.Model.ID.of(u.getConfluencePageId()))
                                 .thenCompose( r -> sleep( TimeUnit.SECONDS, 1))
                                 .join();
                     });
                 });
 
         val page = "Topic 1";
-
 
         CompletableFuture<Void> createFirstPage =
                 service.getScrollVersions(space)
@@ -98,7 +97,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
                                 service.delegate.createPageByTitle(space, page)
                                     .thenAccept(res ->
                                             versions.stream().forEach( v ->
-                                                    service.manageVersionPage(Long.valueOf(res.getId()), page, v, ScrollVersionsConfluenceService.ChangeType.ADD_VERSION).join())
+                                                    service.manageVersionPage(res.getId(), page, v, ScrollVersionsConfluenceService.ChangeType.ADD_VERSION).join())
                                     )));
 
 

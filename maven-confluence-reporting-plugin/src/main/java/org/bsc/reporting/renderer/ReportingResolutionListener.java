@@ -24,13 +24,14 @@ public class ReportingResolutionListener implements ResolutionListener {
 
     private Node rootNode;
 
-    @Override
-    public void testArtifact( Artifact artifact )
-    {
-        // intentionally blank
+    public Collection<Node> getArtifacts() {
+        return artifacts.values();
     }
 
-    
+    public Node getRootNode() {
+        return rootNode;
+    }
+
     @Override
     public void startProcessChildren( Artifact artifact )
     {
@@ -69,12 +70,6 @@ public class ReportingResolutionListener implements ResolutionListener {
     }
 
     @Override
-    public void omitForCycle( Artifact artifact )
-    {
-        // intentionally blank
-    }
-
-    @Override
     public void includeArtifact( Artifact artifact )
     {
         if ( artifacts.containsKey( artifact.getDependencyConflictId() ) )
@@ -91,7 +86,7 @@ public class ReportingResolutionListener implements ResolutionListener {
         node.artifact = artifact;
         if ( !parents.isEmpty() )
         {
-            node.parent = (Node) parents.peek();
+            node.parent = parents.peek();
             node.parent.children.add( node );
         }
         artifacts.put( artifact.getDependencyConflictId(), node );
@@ -124,6 +119,18 @@ public class ReportingResolutionListener implements ResolutionListener {
     }
 
     @Override
+    public void omitForCycle( Artifact artifact )
+    {
+        // intentionally blank
+    }
+
+    @Override
+    public void testArtifact( Artifact artifact )
+    {
+        // intentionally blank
+    }
+
+    @Override
     public void updateScopeCurrentPom( Artifact artifact, String key )
     {
         // intentionally blank
@@ -139,11 +146,6 @@ public class ReportingResolutionListener implements ResolutionListener {
     public void restrictRange( Artifact artifact, Artifact artifact1, VersionRange versionRange )
     {
         // intentionally blank
-    }
-
-    public Collection<Node> getArtifacts()
-    {
-        return artifacts.values();
     }
 
     static public class Node
@@ -163,11 +165,6 @@ public class ReportingResolutionListener implements ResolutionListener {
         {
             return artifact;
         }
-    }
-
-    public Node getRootNode()
-    {
-        return rootNode;
     }
 
 }

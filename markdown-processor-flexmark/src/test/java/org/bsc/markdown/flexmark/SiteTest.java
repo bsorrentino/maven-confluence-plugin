@@ -40,12 +40,12 @@ public class SiteTest implements SiteFactory.Model {
 
 
         @Override
-        public String getId() {
+        public Model.ID getId() {
             return null;
         }
 
         @Override
-        public String getParentId() {
+        public Model.ID getParentId() {
             return null;
         }
 

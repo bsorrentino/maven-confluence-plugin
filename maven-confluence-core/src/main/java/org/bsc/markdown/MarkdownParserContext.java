@@ -4,45 +4,40 @@ import org.bsc.confluence.model.Site;
 
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+
 /**
  *
- * @param <N> specific parser node
  */
-public interface MarkdownParserContext<N> {
+public interface MarkdownParserContext {
 
     /**
      * The Site Model Object
      *
      * @return site object. nullable
      */
-    Optional<Site> getSite();
+    default Optional<Site> getSite() { return empty(); }
 
     /**
      * the current Page Model Object
      *
-     * @return
+     * @return  Page Model Object
      */
-    Site.Page getPage();
-
-    /**
-     * Strategy to publish 'not yet implemented' condition
-     *
-     * @param node
-     */
-    void notImplementedYet(N node);
+    default Optional<Site.Page> getPage() { return empty(); }
 
     /**
      * the page prefix to apply
      *
      * @return page prefix to apply. nullable
      */
-    Optional<String> getPagePrefixToApply();
+    default Optional<String> getPagePrefixToApply() { return empty(); }
 
     /**
      * indicates whether the prefix ${page.title} should be added or not
      *
      * @return use the prefix
      */
-    boolean isLinkPrefixEnabled();
+    default boolean isLinkPrefixEnabled() { return true; }
 
 }
+

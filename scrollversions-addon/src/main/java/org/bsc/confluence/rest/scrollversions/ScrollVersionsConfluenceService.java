@@ -181,7 +181,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                         .addPathSegment(spaceKey)
                         .build();
 
-        val body = RequestBody.create(JSON_MEDIA_TYPE, format(REQUEST_BODY_FORMAT, queryArg, value) );
+        val body = RequestBody.create(format(REQUEST_BODY_FORMAT, queryArg, value), JSON_MEDIA_TYPE );
 
         val request = requestBuilder()
                 .url(httpUrl)
@@ -229,7 +229,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                         .addPathSegment(spaceKey)
                         .build();
 
-        val body = RequestBody.create(JSON_MEDIA_TYPE, format(REQUEST_BODY_FORMAT, "scrollPageTitle", title) );
+        val body = RequestBody.create(format(REQUEST_BODY_FORMAT, "scrollPageTitle", title), JSON_MEDIA_TYPE );
 
         val request = requestBuilder()
                 .url(httpUrl)
@@ -310,7 +310,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      * @param version
      * @return
      */
-    CompletableFuture<ScrollVersions.Model.NewPageResult> createVersionPage(String spaceKey, long masterPageId, String title, ScrollVersions.Model.Version version) {
+    CompletableFuture<ScrollVersions.Model.NewPageResult> createVersionPage(String spaceKey, Model.ID masterPageId, String title, ScrollVersions.Model.Version version) {
 
         val httpUrl =
                 urlBuilder()
@@ -320,7 +320,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                         .build();
 
         val body = new FormBody.Builder()
-                .add("parentConfluenceId", String.valueOf(masterPageId) )
+                .add("parentConfluenceId", masterPageId.toString() )
                 .add( "versionId", version.getId() )
                 .add( "pageTitle", title )
                 .build();
@@ -364,7 +364,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      * @param changeType
      * @return
      */
-    CompletableFuture<ScrollVersions.Model.NewPageResult> manageVersionPage(long masterPageId, String title, ScrollVersions.Model.Version version, ChangeType changeType ) {
+    CompletableFuture<ScrollVersions.Model.NewPageResult> manageVersionPage(Model.ID masterPageId, String title, ScrollVersions.Model.Version version, ChangeType changeType ) {
 
         val httpUrl =
                 urlBuilder()
@@ -373,7 +373,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                         .build();
 
         val body = new FormBody.Builder()
-                .add("masterPageId", String.valueOf(masterPageId) )
+                .add("masterPageId", masterPageId.toString() )
                 .add( "pageTitle", title)
                 .add( "versionId", version.getId() )
                 .add( "changeType", changeType.typeName )
@@ -494,7 +494,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
 
         return getCurrentVersion( parentPage.getSpace() )
                 .thenCombine( delegate.getPage( parentPage.getSpace(), title ), (version, page) ->
-                    page.map( p -> manageVersionPage( Long.valueOf(p.getId()), title, version, ChangeType.ADD_VERSION) )
+                    page.map( p -> manageVersionPage( p.getId(), title, version, ChangeType.ADD_VERSION) )
                             .orElseGet( () ->
                                     toResult( parentPage )
                                             .thenCompose( p -> createVersionPage( parentPage.getSpace(), p.getMasterPageId(), title, version))
@@ -546,16 +546,16 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
 
 
     @Override
-    public CompletableFuture<List<Model.PageSummary>> getDescendents(long pageId) {
+    public CompletableFuture<List<Model.PageSummary>> getDescendents(Model.ID pageId) {
         //debug( "getDescendents( pageId:[%s] )", pageId );
-        return getPage(String.valueOf(pageId))
+        return getPage(pageId)
                 .thenCompose(page ->
                         cast(page.map( pp -> toResult(pp)
                                     .thenCompose( result -> delegate.getDescendents( result.getMasterPageId()))
                                     .thenApply( result -> {
                                         val list = result.stream()
                                                 .filter( p -> isVersion(p.getTitle(), currentVersion.get()))
-                                                .filter( p -> pageId!=Long.valueOf(p.getId()))
+                                                .filter( p -> pageId.compareTo(p.getId())!=0)
                                                 .collect( toList() );
                                         //debug( "Descendents#: %d", list.size());
                                         return list;
@@ -565,7 +565,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(long parentPageId, String title) {
+    public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title) {
         //debug( "findPageByTitle( parentPageId:[%s], title:[%s])", parentPageId, title );
 
         return delegate.getPage( parentPageId )
@@ -607,7 +607,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Boolean> removePage(long pageId) {
+    public CompletableFuture<Boolean> removePage(Model.ID pageId) {
         //debug( "removePage( pageId:[%s])", pageId );
 
         val getPage = getPage(pageId);
@@ -638,7 +638,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Page>> getPage(long pageId) {
+    public CompletableFuture<Optional<Model.Page>> getPage(Model.ID pageId) {
         //debug( "getPage( pageId:[%s]", pageId );
 
         return delegate.getPage( pageId )
@@ -655,7 +655,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Void> addLabelsByName(long id, String[] labels) {
+    public CompletableFuture<Void> addLabelsByName(Model.ID id, String[] labels) {
         return delegate.addLabelsByName(id, labels);
     }
 
@@ -670,13 +670,27 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Optional<Model.Attachment>> getAttachment(long pageId, String name, String version) {
+    public CompletableFuture<Optional<Model.Attachment>> getAttachment(Model.ID pageId, String name, String version) {
         return delegate.getAttachment(pageId, name, version);
     }
 
     @Override
     public CompletableFuture<Model.Attachment> addAttachment(Model.Page page, Model.Attachment attachment, InputStream source) {
         return delegate.addAttachment(page, attachment, source);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // BLOG POST
+    ///////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Model.Blogpost createBlogpost( String space, String title, Storage content, int version) {
+        return delegate.createBlogpost(space, title, content, version);
+    }
+
+    @Override
+    public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost)  {
+        return delegate.addBlogpost(blogpost);
     }
 
     @Override

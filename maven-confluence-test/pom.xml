@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.9-beta1</version>
+        <version>6.9-rc1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -331,6 +331,22 @@
                             <wikiFilesExt>.confluence</wikiFilesExt>
                             <failOnError>true</failOnError>
                             <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
+                        </configuration>
+                    </execution>
+
+                    <!--
+                    mvn confluence-reporting:blogpost@issue219
+                    -->
+                    <execution>
+                        <id>issue219</id>
+                        <goals>
+                            <goal>blogpost</goal>
+                        </goals>
+                        <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <title>${blog.title}</title>
+                            <content>${project.basedir}/src/site/confluence/issue219/blog.md</content>
+                            <failOnError>true</failOnError>
                         </configuration>
                     </execution>
 
