@@ -5,6 +5,36 @@
 ## Next release
 ### Generic changes
 
+**update javadoc**
+
+
+[9a193df5b33a77a](https://github.com/bsorrentino/maven-confluence-plugin/commit/9a193df5b33a77a) bartolomeo sorrentino *2020-06-19 15:28:38*
+
+**update readme**
+
+
+[02b4ee720ef291b](https://github.com/bsorrentino/maven-confluence-plugin/commit/02b4ee720ef291b) bartolomeo sorrentino *2020-06-19 15:28:21*
+
+**update site-maven-plugin version**
+
+
+[d12befe23f8454d](https://github.com/bsorrentino/maven-confluence-plugin/commit/d12befe23f8454d) bartolomeo sorrentino *2020-06-19 15:28:07*
+
+**update site documentation**
+
+
+[e06c7540c024cf5](https://github.com/bsorrentino/maven-confluence-plugin/commit/e06c7540c024cf5) bartolomeo sorrentino *2020-06-18 18:30:21*
+
+**update javadoc**
+
+
+[d198ca68ddabd72](https://github.com/bsorrentino/maven-confluence-plugin/commit/d198ca68ddabd72) bartolomeo sorrentino *2020-06-18 18:30:11*
+
+**update changelog**
+
+
+[56df47542b90423](https://github.com/bsorrentino/maven-confluence-plugin/commit/56df47542b90423) bartolomeo sorrentino *2020-06-18 16:18:51*
+
 **update changelog plugin version**
 
 
