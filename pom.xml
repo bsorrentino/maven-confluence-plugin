@@ -5,7 +5,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>6.9-SNAPSHOT</version>
+    <version>6.9-rc1</version>
     <name>CONFLUENCE-REPORTING::Parent</name>
     <description>Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the
         same time, to keep in-sync both project &amp; documentation
@@ -172,6 +172,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>4.7.2</version>
+            </dependency>
+
+            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>1.4</version>
@@ -295,7 +301,7 @@
                 <plugin>
                     <groupId>se.bjurr.gitchangelog</groupId>
                     <artifactId>git-changelog-maven-plugin</artifactId>
-                    <version>1.60</version>
+                    <version>1.61</version>
                 </plugin>
 
             </plugins>
@@ -352,6 +358,12 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg>
+                        <arg>-Xlint:deprecation</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

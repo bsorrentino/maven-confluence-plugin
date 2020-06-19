@@ -60,6 +60,7 @@ Create a simple java library project maven compliant
 
 ### 3. Implement the interface `org.bsc.markdown.MarkdownProcessor`       
 
+**MarkdownProcessor.java**
 ```java
 /**
  * Markdown Processor interface
@@ -74,24 +75,51 @@ public interface MarkdownProcessor {
     String getName();
 
     /**
+     * translate a markdown source in the confluence wiki counterpart
      *
-     * @param siteModel - Site model instance
-     * @param pageModel - current processing Page Model instance
-     * @param page - current processing page instance. Valid only if we are updating content of existent page
-     * @param content - content to process
-     * @param pagePrefixToApply - prefix to apply. Valid only if 'childrenTitlesPrefixed' parameter is true
-     * @return processed (i.e. translated) content
+     * @param context parse context 
+     * @param content content to parse
+     * @return translated confluence wiki format
      * @throws IOException
      */
-    String processMarkdown(
-            final Site siteModel,
-            final Site.Page pageModel,
-            final Optional<ConfluenceService.Model.Page> page,
-            final String content,
-            final Optional<String> pagePrefixToApply) throws IOException;
+    String processMarkdown( MarkdownParserContext context, String content ) throws IOException;
 }
 ```
 
+**MarkdownParserContext.java**
+```java
+public interface MarkdownParserContext {
+
+    /**
+     * The Site Model Object
+     *
+     * @return site object. nullable
+     */
+    default Optional<Site> getSite() { return empty(); }
+
+    /**
+     * the current Page Model Object
+     *
+     * @return  Page Model Object
+     */
+    default Optional<Site.Page> getPage() { return empty(); }
+
+    /**
+     * the page prefix to apply
+     *
+     * @return page prefix to apply. nullable
+     */
+    default Optional<String> getPagePrefixToApply() { return empty(); }
+
+    /**
+     * indicates whether the prefix ${page.title} should be added or not
+     *
+     * @return use the prefix
+     */
+    default boolean isLinkPrefixEnabled() { return true; }
+
+}
+```
 ### 4. Publish implementation following [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html) specification
 
 The [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html) specification **publish a service creating a mapping file a mapping file in a specially named directory `META-INF/services`**. The name of the file is the name of the SPI class being subclassed, and the file contains the names of the new subclasses of that SPI abstract class (see documentation for more details).

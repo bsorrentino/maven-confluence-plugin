@@ -5,7 +5,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.9-SNAPSHOT</version>
+        <version>6.9-rc1</version>
     </parent>
 
     <prerequisites>
@@ -320,7 +320,7 @@
                     <plugin>
                         <groupId>com.github.github</groupId>
                         <artifactId>site-maven-plugin</artifactId>
-                        <version>0.10</version>
+                        <version>0.12</version>
                         <configuration>
                             <message>Creating site for ${project.version}</message>
                             <server>github</server>

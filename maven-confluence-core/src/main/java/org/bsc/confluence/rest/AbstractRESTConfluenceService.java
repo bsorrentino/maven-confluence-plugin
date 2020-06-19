@@ -326,8 +326,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final MediaType storageFormat = MediaType.parse("application/json");
 
-        final RequestBody inputBody = RequestBody.create(storageFormat,
-                inputData.toString());
+        final RequestBody inputBody = RequestBody.create(inputData.toString(), storageFormat);
 
         final HttpUrl url =  urlBuilder()
                                 .addPathSegment("content")
@@ -345,8 +344,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final MediaType storageFormat = MediaType.parse("application/json");
 
-        final RequestBody inputBody = RequestBody.create(storageFormat,
-                inputData.toString());
+        final RequestBody inputBody = RequestBody.create(inputData.toString(), storageFormat);
 
         final HttpUrl url =  urlBuilder()
                                 .addPathSegment("content")
@@ -385,7 +383,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
         final MediaType storageFormat = MediaType.parse("application/json");
 
         final RequestBody inputBody =
-                RequestBody.create(storageFormat, inputData.toString());
+                RequestBody.create(inputData.toString(), storageFormat);
 
         final HttpUrl url =  urlBuilder()
                                 .addPathSegment("content")
@@ -440,7 +438,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
         final RequestBody fileBody;
 
         try {
-            fileBody = RequestBody.create( MediaType.parse(att.getContentType()), IOUtils.toByteArray(data));
+            fileBody = RequestBody.create( IOUtils.toByteArray(data), MediaType.parse(att.getContentType()) );
         } catch (IOException ex) {
             throw new Error( ex );
         }

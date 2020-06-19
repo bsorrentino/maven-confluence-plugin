@@ -181,7 +181,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                         .addPathSegment(spaceKey)
                         .build();
 
-        val body = RequestBody.create(JSON_MEDIA_TYPE, format(REQUEST_BODY_FORMAT, queryArg, value) );
+        val body = RequestBody.create(format(REQUEST_BODY_FORMAT, queryArg, value), JSON_MEDIA_TYPE );
 
         val request = requestBuilder()
                 .url(httpUrl)
@@ -229,7 +229,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                         .addPathSegment(spaceKey)
                         .build();
 
-        val body = RequestBody.create(JSON_MEDIA_TYPE, format(REQUEST_BODY_FORMAT, "scrollPageTitle", title) );
+        val body = RequestBody.create(format(REQUEST_BODY_FORMAT, "scrollPageTitle", title), JSON_MEDIA_TYPE );
 
         val request = requestBuilder()
                 .url(httpUrl)

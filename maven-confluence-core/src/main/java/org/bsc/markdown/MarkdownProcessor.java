@@ -21,10 +21,11 @@ public interface MarkdownProcessor {
     String getName();
 
     /**
+     * translate a markdown source in the confluence wiki counterpart
      *
-     * @param context
-     * @param content
-     * @return
+     * @param context parse context
+     * @param content content to parse
+     * @return translated confluence wiki format
      * @throws IOException
      */
     String processMarkdown( MarkdownParserContext context, String content ) throws IOException;
