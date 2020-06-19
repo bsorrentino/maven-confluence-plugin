@@ -19,9 +19,9 @@ import static org.bsc.confluence.FileExtension.*;
 
 
 /**
- * Publish a blog post
+ * Publish a an article to the blog
  *
- * @since 6.9
+ * @since 6.9-rc1
  */
 @Mojo(name = "blogpost", requiresProject = false, threadSafe = true)
 public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
