@@ -34,15 +34,15 @@ public interface SiteFactory {
 	@CommonsLog
 	final class LogHolder {}
 	
-    public interface Folder {
+    interface Folder {
 
-        public Site createSiteFromFolder();
+        Site createSiteFromFolder();
         
     }
     
-    public interface Model {
+    interface Model {
         
-        public Site createSiteFromModel(Map<String, Object> variables);
+        Site createSiteFromModel(Map<String, Object> variables);
         
         /**
          * 
