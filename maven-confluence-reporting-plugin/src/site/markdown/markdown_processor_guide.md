@@ -23,7 +23,7 @@ To plug a **markdown processor** you have to declare library **as plugin's depen
     <version>${confluence.plugin.version}</version>
     <dependencies>
         <dependency>
-            <groupIdorg.bsc.maven</groupId>
+            <groupId>org.bsc.maven</groupId>
             <artifactId>confluence-markdown-processor-commonmark</artifactId>
             <version>${confluence.plugin.version}</version>
             <scope>runtime</scope>
