@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
 import static org.bsc.markdown.MarkdownVisitorHelper.processImageUrl;
 import static org.bsc.markdown.MarkdownVisitorHelper.processLinkUrl;
 
-public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
+public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ implements Visitor  {
 
     public static class Parser  {
 
@@ -75,15 +75,15 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
         final ChildrenProcessor p =
                     processChildren(node)
-                    //.pre("<<PRGH>>")
                     ;
         if( isParentRoot(node) ) {
             p.post("\n");
         }
+        else if( node.getParent() instanceof ListBlock ) {
+            p.pre("\n");
+        }
 
-        p
-        //.post( "<</PRGH>>")
-        .process();
+        p.process();
     }
 
     /**
@@ -112,8 +112,10 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
     @Override
     public void visit(Text node) {
-        buffer().append( node.getLiteral() );
-        visitChildren(node);
+        //buffer().append( node.getLiteral() );
+        processChildren(node)
+                .pre( node.getLiteral() )
+                .process(false);
     }
 
     @Override
@@ -126,17 +128,32 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
     }
 
     @Override
+    public void visit(ListItem node) {
+        processChildren(node).process(false);
+    }
+
+    @Override
     public void visit(OrderedList node) {
         final Node parent = node.getParent();
 
-        final Function<Node,String> f ;
-        if( parent instanceof ListItem ) {
-            f =  ( parent.getParent() instanceof OrderedList )  ? n -> "## " : n -> "*# ";
-        }
-        else {
-            f = n -> "# ";
-        }
-        processChildren(node).map(f).process(false);;
+        final ChildrenProcessor<OrderedList> p =
+            ( parent instanceof ListItem ) ?
+                    processChildren(node)
+                        .map( n -> ( parent.getParent() instanceof OrderedList ) ? "## " : "*# " ) :
+                    processChildren(node).map( n -> "# " );
+        p.process(false);
+
+    }
+
+    @Override
+    public void visit(BulletList node) {
+        final Node parent = node.getParent();
+
+        final ChildrenProcessor<BulletList> p =
+            ( parent instanceof ListItem ) ?
+                processChildren(node).map( n -> (parent.getParent() instanceof OrderedList )  ? "#* " : "** " ) :
+                processChildren(node).map(n -> "* ");
+        p.process(false);
     }
 
     @Override
@@ -149,24 +166,15 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
     }
 
     @Override
-    public void visit(BulletList node) {
-        final Node parent = node.getParent();
-
-        final Function<Node,String> f ;
-        if( parent instanceof ListItem ) {
-            f =  ( parent.getParent() instanceof OrderedList )  ? n -> "#* " : n -> "** ";
-        }
-        else {
-            f = n -> "* ";
-        }
-        processChildren(node).map(f).process(false);;
-    }
-
-    @Override
     public void visit(Code node) {
         processChildren(node)
                 .pre( "{{%s}}", node.getLiteral() )
                 .process(false);
+    }
+
+    @Override
+    public void visit(Document node) {
+        processChildren(node).process(false);
     }
 
     @Override
@@ -185,11 +193,6 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
     }
 
-
-    @Override
-    public void visit(ListItem node) {
-        processChildren(node).process(false);
-    }
 
     @Override
     public void visit(StrongEmphasis node) {
@@ -352,6 +355,8 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
 
     class ChildrenProcessor<T extends Node> {
+        private final boolean debug;
+
         Optional<String> pre = Optional.empty();
         Optional<String> post = Optional.empty();
         Optional<Consumer<Node>> forEach = Optional.empty();;
@@ -360,8 +365,12 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
         final T parent;
 
-        public ChildrenProcessor(T parent) {
+        public ChildrenProcessor(T parent, boolean debug ) {
             this.parent = parent;
+            this.debug = debug;
+        }
+        public ChildrenProcessor(T parent) {
+            this( parent, false);
         }
 
         ChildrenProcessor captureOutput(Consumer<String> v) {
@@ -369,17 +378,17 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
             return this;
         }
         ChildrenProcessor pre(String v, Object ...args) {
-            pre = ofNullable(format( v, (Object[])args));
+            pre = ofNullable(format( v, args));
             return this;
         }
         ChildrenProcessor post(String v, Object ...args) {
-            post = ofNullable(format( v, (Object[])args));
+            post = ofNullable(format( v, args));
             return this;
         }
-        ChildrenProcessor forEach(Consumer<Node> v ) {
-            forEach = ofNullable(v);
-            return this;
-        }
+//        ChildrenProcessor forEach(Consumer<Node> v ) {
+//            forEach = ofNullable(v);
+//            return this;
+//        }
         <A extends Node> ChildrenProcessor map(Function<Node,String> v ) {
             map = ofNullable(v);
             return this;
@@ -389,6 +398,7 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
 
         void process( boolean writeln  ) {
 
+            if(debug) buffer().append( format( "<%s>", parent.getClass().getSimpleName()) );
             pre.ifPresent( v -> buffer().append(v) );
 
             captureOutput.ifPresent(
@@ -397,27 +407,24 @@ public class CommonmarkConfluenceWikiVisitor extends AbstractVisitor  {
             Node next;
             for(Node node = parent.getFirstChild(); node != null; node = next) {
                 next = node.getNext();
-                if( forEach.isPresent() ) {
-                   forEach.get().accept(node);
+                if( map.isPresent() ) {
+                    buffer().append( map.get().apply( node ) );
                 }
-                else {
-                    if( map.isPresent() ) {
-                        buffer().append( map.get().apply( node ) );
-                    }
-                    node.accept(CommonmarkConfluenceWikiVisitor.this);
-                }
+                node.accept(CommonmarkConfluenceWikiVisitor.this);
             }
 
             captureOutput.ifPresent( consumer ->
                     consumer.accept(bufferStack.pop().toString()) );
 
             post.ifPresent( v -> buffer().append(v) );
+            if( debug ) buffer().append( format( "</%s>", parent.getClass().getSimpleName()) );
+
             if( writeln ) buffer().append('\n');
 
         }
     }
 
     protected <T extends Node> ChildrenProcessor processChildren(T parent ) {
-        return new ChildrenProcessor( parent );
+        return new ChildrenProcessor( parent, false );
     }
 }

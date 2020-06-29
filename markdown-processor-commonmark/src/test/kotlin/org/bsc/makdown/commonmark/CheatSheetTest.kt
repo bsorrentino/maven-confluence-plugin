@@ -4,11 +4,9 @@ import org.apache.commons.io.IOUtils
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.MarkdownParserContext
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
-import org.commonmark.node.Block
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.net.URI
-import java.net.URISyntaxException
 import java.nio.file.Paths
 import java.util.*
 
@@ -96,6 +94,7 @@ class CheatSheetTest {
     * Unordered list can use asterisks
     * Or minuses
     * Or pluses
+    h1. Test break after ListBlock
     """.trimIndent(), parse( "lists") )
 
     @Test
