@@ -49,6 +49,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -527,10 +529,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     }
 
-    private CompletableFuture<Model.Page> updateHomeContent(
-                final ConfluenceService confluence,
+    private CompletableFuture<Storage> getHomeContent(
                 final Site site,
-                final Model.Page homePage,
+                final Optional<Model.Page> homePage,
                 final Locale locale )
     {
 
@@ -540,36 +541,26 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     ? ofNullable(this.getPageTitle())
                     : Optional.empty();
 
-        return processPageUri( site, home, homePage, uri, pagePrefixToApply, (err, content) -> {
-            final CompletableFuture<Model.Page> result = new CompletableFuture<>();
+        return processPageUri( site, home, homePage, uri, pagePrefixToApply)
+                .thenCompose( content -> {
 
-            try {
+                    try {
+                        final MiniTemplator t = new MiniTemplator.Builder()
+                                .setSkipUndefinedVars(true)
+                                .build( content.getInputStream(), getCharset() );
 
-                if( err.isPresent() ) {
-                    result.completeExceptionally(err.get());
-                    return result;
-                }
+                        generateProjectHomeTemplate( t, site, locale );
 
-                if( !content.isPresent()) {
-                    result.complete( homePage );
-                    return result; // SKIPPED
-                }   
+                        return completedFuture( Storage.of(t.generateOutput(),content.getType()) );
 
-                final MiniTemplator t = new MiniTemplator.Builder()
-                    .setSkipUndefinedVars(true)
-                    .build( content.get().getInputStream(), getCharset() );
+                    } catch (Exception ex) {
+                        CompletableFuture<Storage> result = new CompletableFuture<>();
+                        result.completeExceptionally(ex);
+                        return result;
+                    }
 
-                generateProjectHomeTemplate( t, site, locale );
+                });
 
-                return confluence.storePage(homePage, Storage.of(t.generateOutput(),content.get().getType()) );
-
-            } catch (Exception ex) {
-                result.completeExceptionally(ex);
-                return result;
-            }
-
-
-        }) ;
 
     }
 
@@ -583,6 +574,25 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         //
         final String _homePageTitle = getPageTitle();
 
+        final Function<Model.Page, CompletableFuture<Model.Page>> updateHomePage = (p) ->
+            canProceedToUpdateResource(site.getHome().getUri())
+                    .thenCompose( update ->  {
+                        if(update)
+                            return getHomeContent(site, Optional.of(p), locale)
+                                    .thenCompose( content -> confluence.storePage(p, content ) );
+                        else {
+                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
+                                    getPrintableStringForResource(site.getHome().getUri()) ));
+                            return /*confluence.storePage(page)*/ completedFuture(p);
+                        }});
+
+
+        final Function<Model.Page, CompletableFuture<Model.Page>> createHomePage = (_parentPage) ->
+                resetUpdateStatusForResource(site.getHome().getUri())
+                        .thenCompose( reset -> getHomeContent(  site, Optional.empty(), locale ) )
+                        .thenCompose( content -> confluence.createPage(_parentPage, _homePageTitle,content) );
+
+
         final Model.Page confluenceHomePage =
             loadParentPage(confluence, Optional.of(site))
             .thenCompose( _parentPage ->
@@ -590,20 +600,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
                     .thenCompose( page -> {
                         return ( page.isPresent() ) ?
-                                completedFuture(page.get()) :
-                                resetUpdateStatusForResource(site.getHome().getUri())
-                                        .thenCompose( reset -> confluence.createPage(_parentPage, _homePageTitle) );
+                                updateHomePage.apply(page.get()) :
+                                createHomePage.apply(_parentPage);
                     })
-                    .thenCompose( page ->
-                            canProceedToUpdateResource(site.getHome().getUri())
-                                    .thenCompose( update ->  {
-                                        if(update) return updateHomeContent(confluence, site, page, locale);
-                                        else {
-                                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
-                                                    getPrintableStringForResource(site.getHome().getUri()) ));
-                                            return /*confluence.storePage(page)*/ completedFuture(page);
-                                        }})
-                    )
                     .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
 
             ).join();
@@ -834,6 +833,115 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         }
 
+        /**
+         *
+         * @param site
+         * @param homePage
+         * @param pluginDescriptor
+         * @param locale
+         * @return
+         */
+        private CompletableFuture<Storage> getHomeContent(
+            final Site site,
+            final Optional<Model.Page> homePage,
+            final PluginDescriptor pluginDescriptor,
+            final Locale locale)
+        {
+            final List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
+
+            if (mojos == null) {
+                getLog().warn("no mojos found [pluginDescriptor.getMojos()]");
+            } else if (getLog().isDebugEnabled()) {
+                getLog().debug("Found the following Mojos:");
+                for (MojoDescriptor mojo : mojos) {
+                    getLog().debug(format("  - %s : %s", mojo.getFullGoalName(), mojo.getDescription()));
+                }
+            }
+
+            final String title = getPageTitle();
+            final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed())
+                    ? ofNullable(getPageTitle())
+                    : Optional.empty();
+
+            return processPageUri(site, site.getHome(), homePage, site.getHome().getUri(), pagePrefixToApply )
+                    .thenCompose( content -> {
+
+                        try {
+
+                            final MiniTemplator t = new MiniTemplator.Builder()
+                                    .setSkipUndefinedVars(true)
+                                    .build( content.getInputStream(), getCharset() );
+
+                            /////////////////////////////////////////////////////////////////
+                            // SUMMARY
+                            /////////////////////////////////////////////////////////////////
+
+                            {
+                                final StringWriter writer = new StringWriter(100 * 1024);
+
+                                writeSummary(writer, pluginDescriptor);
+
+                                writer.flush();
+
+                                try {
+                                    final String summary = writer.toString();
+
+                                    getProperties().put( PLUGIN_SUMMARY_VAR, summary );
+
+                                    t.setVariable(PLUGIN_SUMMARY_VAR, summary);
+
+                                } catch (VariableNotDefinedException e) {
+                                    getLog().debug(format("variable %s or %s not defined in template", PLUGIN_SUMMARY_VAR, PROJECT_SUMMARY_VAR));
+                                }
+
+                            }
+
+                            generateProjectHomeTemplate(t, site, locale);
+
+                            /////////////////////////////////////////////////////////////////
+                            // GOALS
+                            /////////////////////////////////////////////////////////////////
+
+                            {
+                                final StringWriter writer = new StringWriter(100 * 1024);
+
+                                //writeGoals(writer, mojos);
+                                goals.addAll(writeGoalsAsChildren(writer, title, mojos));
+
+                                writer.flush();
+
+                                try {
+                                    final String plugin_goals = writer.toString();
+
+                                    getProperties().put( PLUGIN_GOALS_VAR, plugin_goals );
+
+                                    t.setVariable(PLUGIN_GOALS_VAR, plugin_goals );
+
+                                } catch (VariableNotDefinedException e) {
+                                    getLog().debug(String.format("variable %s not defined in template", "plugin.goals"));
+                                }
+
+                            }
+
+                            /*
+                            // issue#102
+                            final StringBuilder wiki = new StringBuilder()
+                            .append(ConfluenceUtils.getBannerWiki())
+                            .append(t.generateOutput());
+                            page.setContent(wiki.toString());
+                            */
+
+                            return completedFuture(Storage.of(t.generateOutput(), Representation.WIKI));
+
+                        } catch (Exception ex) {
+                            final CompletableFuture<Storage> result = new CompletableFuture<>();
+                            result.completeExceptionally(ex);
+                            return result;
+                        }
+                    }) ;
+
+        }
+
         private CompletableFuture<Model.Page> updateHomeContent(
                     final ConfluenceService confluence,
                     final Site site,
@@ -858,93 +966,82 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     ? ofNullable(getPageTitle())
                     : Optional.empty();
 
-            return processPageUri(site, site.getHome(), homePage, site.getHome().getUri(), pagePrefixToApply, ( err, content ) -> {
+            return processPageUri(site, site.getHome(), Optional.of(homePage), site.getHome().getUri(), pagePrefixToApply )
+                    .thenCompose( content -> {
 
-                final CompletableFuture<Model.Page> result =
-                        new CompletableFuture<>();
+                    try {
 
-                try {
+                        final MiniTemplator t = new MiniTemplator.Builder()
+                                .setSkipUndefinedVars(true)
+                                .build( content.getInputStream(), getCharset() );
 
-                    if( err.isPresent() ) {
-                        result.completeExceptionally(err.get());
-                        return result;
-                    }
+                        /////////////////////////////////////////////////////////////////
+                        // SUMMARY
+                        /////////////////////////////////////////////////////////////////
 
-                    if( !content.isPresent()) {
-                        result.complete(homePage);
-                        return result;
-                    } // SKIPPED
+                        {
+                            final StringWriter writer = new StringWriter(100 * 1024);
 
-                    final MiniTemplator t = new MiniTemplator.Builder()
-                            .setSkipUndefinedVars(true)
-                            .build( content.get().getInputStream(), getCharset() );
+                            writeSummary(writer, pluginDescriptor);
 
-                    /////////////////////////////////////////////////////////////////
-                    // SUMMARY
-                    /////////////////////////////////////////////////////////////////
+                            writer.flush();
 
-                    {
-                        final StringWriter writer = new StringWriter(100 * 1024);
+                            try {
+                                final String summary = writer.toString();
 
-                        writeSummary(writer, pluginDescriptor);
+                                getProperties().put( PLUGIN_SUMMARY_VAR, summary );
 
-                        writer.flush();
+                                t.setVariable(PLUGIN_SUMMARY_VAR, summary);
 
-                        try {
-                            final String summary = writer.toString();
+                            } catch (VariableNotDefinedException e) {
+                                getLog().debug(format("variable %s or %s not defined in template", PLUGIN_SUMMARY_VAR, PROJECT_SUMMARY_VAR));
+                            }
 
-                            getProperties().put( PLUGIN_SUMMARY_VAR, summary );
-
-                            t.setVariable(PLUGIN_SUMMARY_VAR, summary);
-
-                        } catch (VariableNotDefinedException e) {
-                            getLog().debug(format("variable %s or %s not defined in template", PLUGIN_SUMMARY_VAR, PROJECT_SUMMARY_VAR));
                         }
 
-                    }
+                        generateProjectHomeTemplate(t, site, locale);
 
-                    generateProjectHomeTemplate(t, site, locale);
+                        /////////////////////////////////////////////////////////////////
+                        // GOALS
+                        /////////////////////////////////////////////////////////////////
 
-                    /////////////////////////////////////////////////////////////////
-                    // GOALS
-                    /////////////////////////////////////////////////////////////////
+                        {
+                            final StringWriter writer = new StringWriter(100 * 1024);
 
-                    {
-                        final StringWriter writer = new StringWriter(100 * 1024);
+                            //writeGoals(writer, mojos);
+                            goals.addAll(writeGoalsAsChildren(writer, title, mojos));
 
-                        //writeGoals(writer, mojos);
-                        goals.addAll(writeGoalsAsChildren(writer, title, mojos));
+                            writer.flush();
 
-                        writer.flush();
+                            try {
+                                final String plugin_goals = writer.toString();
 
-                        try {
-                            final String plugin_goals = writer.toString();
+                                getProperties().put( PLUGIN_GOALS_VAR, plugin_goals );
 
-                            getProperties().put( PLUGIN_GOALS_VAR, plugin_goals );
+                                t.setVariable(PLUGIN_GOALS_VAR, plugin_goals );
 
-                            t.setVariable(PLUGIN_GOALS_VAR, plugin_goals );
+                            } catch (VariableNotDefinedException e) {
+                                getLog().debug(String.format("variable %s not defined in template", "plugin.goals"));
+                            }
 
-                        } catch (VariableNotDefinedException e) {
-                            getLog().debug(String.format("variable %s not defined in template", "plugin.goals"));
                         }
 
+                        /*
+                        // issue#102
+                        final StringBuilder wiki = new StringBuilder()
+                        .append(ConfluenceUtils.getBannerWiki())
+                        .append(t.generateOutput());
+                        page.setContent(wiki.toString());
+                        */
+
+                        return confluence.storePage(homePage, Storage.of(t.generateOutput(), Representation.WIKI));
+
+                    } catch (Exception ex) {
+                        final CompletableFuture<Model.Page> result = new CompletableFuture<>();
+                        result.completeExceptionally(ex);
+                        return result;
                     }
-
-                    /*
-                    // issue#102
-                    final StringBuilder wiki = new StringBuilder()
-                    .append(ConfluenceUtils.getBannerWiki())
-                    .append(t.generateOutput());
-                    page.setContent(wiki.toString());
-                    */
-
-                    return confluence.storePage(homePage, Storage.of(t.generateOutput(), Representation.WIKI));
-
-                } catch (Exception ex) {
-                    result.completeExceptionally(ex);
-                    return result;
-                }
-            }) ;
+                }) ;
 
         }
 
@@ -974,28 +1071,36 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             getProperties().put("artifactId",   getProject().getArtifactId());
             getProperties().put("version",      getProject().getVersion());
 
-            return
-                removeSnaphot(confluence, parentPage, title)
-                .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )
-                .exceptionally( ex ->
-                    throwRTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle(), ex ))
-                .thenApply( parent ->
-                    parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
-                .thenCombine( confluence.getPage(parentPage.getSpace(), title), ParentChildTuple::of)
-                .thenCompose( tuple -> ( tuple.getChild().isPresent() ) ?
-                    completedFuture(tuple.getChild().get()) :
+            Function<Model.Page, CompletableFuture<Model.Page>> updatePage = (p) ->
+                canProceedToUpdateResource( site.getHome().getUri())
+                        .thenCompose( update -> {
+                            if(update) {
+                                return getHomeContent( site, Optional.of(p), pluginDescriptor, locale)
+                                        .thenCompose( content -> confluence.storePage(p, content));
+                            } else {
+                                getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
+                                        getPrintableStringForResource(site.getHome().getUri()) ));
+                                return confluence.storePage(p);
+                            }});
+
+                Function<Model.Page, CompletableFuture<Model.Page>> createPage = (parent) ->
                     resetUpdateStatusForResource(site.getHome().getUri())
-                    .thenCompose( reset ->confluence.createPage(tuple.getParent(), title)))
-                .thenCompose( p ->
-                    canProceedToUpdateResource( site.getHome().getUri())
-                    .thenCompose( update -> {
-                        if(update) return updateHomeContent(confluence, site, p, pluginDescriptor, locale) ;
-                        else {
-                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
-                                    getPrintableStringForResource(site.getHome().getUri()) ));
-                            return confluence.storePage(p);
-                        }}))
-                .join();
+                        .thenCompose( reset -> getHomeContent(site, Optional.empty(), pluginDescriptor, locale)
+                        .thenCompose( content ->confluence.createPage(parent, title, content)));
+
+
+
+            return removeSnaphot(confluence, parentPage, title)
+                    .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )
+                    .exceptionally( ex ->
+                        throwRTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle(), ex ))
+                    .thenApply( parent ->
+                        parent.orElseThrow( () -> RTE( "cannot find parent page [%s] in space [%s]", parentPage.getTitle())) )
+                    .thenCombine( confluence.getPage(parentPage.getSpace(), title), ParentChildTuple::of)
+                    .thenCompose( tuple -> ( tuple.getChild().isPresent() )
+                            ? updatePage.apply(tuple.getChild().get())
+                            : createPage.apply(tuple.getParent()) )
+                    .join();
 
         }
     }

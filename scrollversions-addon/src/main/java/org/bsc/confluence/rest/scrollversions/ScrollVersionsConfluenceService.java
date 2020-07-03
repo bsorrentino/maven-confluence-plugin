@@ -489,7 +489,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
+    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title, Storage content ) {
         //debug( "createPage(): parent.id=[%s] title=[%s]", parentPage.getId(), title );
 
         return getCurrentVersion( parentPage.getSpace() )
