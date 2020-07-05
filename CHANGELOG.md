@@ -5,6 +5,78 @@
 ## Next release
 ### Generic changes
 
+**fix unit test**
+
+
+[6b754fd2b45f948](https://github.com/bsorrentino/maven-confluence-plugin/commit/6b754fd2b45f948) bartolomeo sorrentino *2020-07-05 13:56:43*
+
+**update test**
+
+
+[07363c26ab17e21](https://github.com/bsorrentino/maven-confluence-plugin/commit/07363c26ab17e21) bartolomeo sorrentino *2020-07-05 13:49:54*
+
+**add content to createPage method**
+
+
+[fa953f4bcea7485](https://github.com/bsorrentino/maven-confluence-plugin/commit/fa953f4bcea7485) bartolomeo sorrentino *2020-07-05 13:49:08*
+
+**add skip parameter  for scrollversions addon configuration**
+
+
+[3991e70e4910f85](https://github.com/bsorrentino/maven-confluence-plugin/commit/3991e70e4910f85) bartolomeo sorrentino *2020-07-05 13:47:54*
+
+**add content to createPage method**
+
+
+[35fb9497486d555](https://github.com/bsorrentino/maven-confluence-plugin/commit/35fb9497486d555) bartolomeo sorrentino *2020-07-03 19:40:33*
+
+**add content to createPage method**
+
+
+[065591fde6deebb](https://github.com/bsorrentino/maven-confluence-plugin/commit/065591fde6deebb) bartolomeo sorrentino *2020-07-03 17:19:09*
+
+**Commonmark parser: fix break after ListBlock**
+
+
+[42482138af885b8](https://github.com/bsorrentino/maven-confluence-plugin/commit/42482138af885b8) bartolomeo sorrentino *2020-06-29 22:31:54*
+
+**Update markdown_processor_guide.md**
+
+ * fix plugin example formatting
+
+[f1c7b9b7c39f80d](https://github.com/bsorrentino/maven-confluence-plugin/commit/f1c7b9b7c39f80d) Busygin Andrey *2020-06-25 16:20:53*
+
+**move to next development version**
+
+
+[e38c8ab321aa08c](https://github.com/bsorrentino/maven-confluence-plugin/commit/e38c8ab321aa08c) bartolomeo sorrentino *2020-06-19 17:01:18*
+
+**Bump jackson-databind in /maven-confluence-core**
+
+ * Bumps [jackson-databind](https://github.com/FasterXML/jackson) from 2.9.10.4 to 2.10.0.pr1.
+ * - [Release notes](https://github.com/FasterXML/jackson/releases)
+ * - [Commits](https://github.com/FasterXML/jackson/commits)
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[bcb35dfd3a3fdd1](https://github.com/bsorrentino/maven-confluence-plugin/commit/bcb35dfd3a3fdd1) dependabot[bot] *2020-06-19 15:31:08*
+
+
+###  [#220](https://github.com/bsorrentino/maven-confluence-plugin/pull/220) Bump jackson-databind from 2.9.10.4 to 2.10.0.pr1 in /maven-confluence-core    *dependencies*  
+
+**merge PR #220**
+
+
+[f3d59e9e042ee9c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f3d59e9e042ee9c) bartolomeo sorrentino *2020-06-21 11:30:19*
+
+
+## v6.9-rc1
+### Generic changes
+
+**update changelog**
+
+
+[99b747d9de0d1a0](https://github.com/bsorrentino/maven-confluence-plugin/commit/99b747d9de0d1a0) bartolomeo sorrentino *2020-06-19 15:29:07*
+
 **update javadoc**
 
 
@@ -171,7 +243,7 @@
 [1172c2288c2e2a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/1172c2288c2e2a5) bartolomeo sorrentino *2020-05-05 16:29:47*
 
 
-###  [#219](https://github.com/bsorrentino/maven-confluence-plugin/issues/219) Can&#39;t create a blogpost    *enhancement*  *under working*  
+###  [#219](https://github.com/bsorrentino/maven-confluence-plugin/issues/219) Can&#39;t create a blogpost    *enhancement*  
 
 **issue #219 - allow blog pubblication from the maven cli**
 
