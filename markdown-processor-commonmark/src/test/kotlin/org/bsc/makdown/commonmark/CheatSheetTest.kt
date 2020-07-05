@@ -57,7 +57,7 @@ class CheatSheetTest {
 
     @Test
     //@Ignore
-    fun parseHeaders()  = Assertions.assertEquals( parse( "headers"), """
+    fun `parse headers`()  = Assertions.assertEquals( parse( "headers"), """
         h1. H1
         h2. H2
         h3. H3
@@ -70,7 +70,7 @@ class CheatSheetTest {
 
     @Test
     //@Ignore
-    fun parseEmphasis()  = Assertions.assertEquals( parse( "emphasis"), """
+    fun `parse emphasis`()  = Assertions.assertEquals( parse( "emphasis"), """
         Emphasis, aka italics, with _asterisks_ or _underscores_.
         
         Strong emphasis, aka bold, with *asterisks* or *underscores*.
@@ -82,7 +82,7 @@ class CheatSheetTest {
 
     @Test
     //@Ignore
-    fun parseLists() = Assertions.assertEquals(  """
+    fun `parse lists`() = Assertions.assertEquals(  """
     # First ordered list item
     # Another item
     #* Unordered sub-list.
@@ -94,12 +94,15 @@ class CheatSheetTest {
     * Unordered list can use asterisks
     * Or minuses
     * Or pluses
+    {quote}
+    {quote}
+
     h1. Test break after ListBlock
     """.trimIndent(), parse( "lists") )
 
     @Test
     //@Ignore
-    fun parseImages() = Assertions.assertEquals( parse( "images"), """
+    fun `parse images`() = Assertions.assertEquals( parse( "images"), """
         Here's our logo (hover to see the title text):
 
         Inline-style:!https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png|alt text!
@@ -123,7 +126,7 @@ class CheatSheetTest {
 
     @Test
     //@Ignore
-    fun parseLinks() = Assertions.assertEquals( parse( "links"), """
+    fun `parse links`() = Assertions.assertEquals( parse( "links"), """
         [I'm an inline-style link|https://www.google.com]
 
         [I'm an inline-style link with title|https://www.google.com|Google's Homepage]
@@ -178,7 +181,7 @@ class CheatSheetTest {
 
     @Test
     //@Ignore
-    fun parseTables() = Assertions.assertEquals( parse( "tables"), """
+    fun `parse tables`() = Assertions.assertEquals( parse( "tables"), """
         Colons can be used to align columns.
         
         ||Tables||Are||Cool||
