@@ -19,7 +19,7 @@
         <api.rpc>rpc/xmlrpc</api.rpc>
         <api.rest>rest/api</api.rest>
 
-
+        <scrollversions.skip>false</scrollversions.skip>
     </properties>
 
     <contributors>
@@ -296,6 +296,7 @@
                             <parentPageTitle>Topic 1</parentPageTitle>
                             <scrollVersions>
                                 <version>alpha</version>
+                                <skip>${scrollversions.skip}</skip>
                             </scrollVersions>
                         </configuration>
                     </execution>
