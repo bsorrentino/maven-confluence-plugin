@@ -146,6 +146,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      * <pre>
      * &lt;scrollVersions>
      *  &lt;version>version name</version>  &lt;!-- mandatory -->
+     *  &lt;skip>version name</skip>  &lt;!-- optional, default false (since 6.9-rc2) -->*
      * &lt;/scrollVersions>
      * </pre>
      * 
