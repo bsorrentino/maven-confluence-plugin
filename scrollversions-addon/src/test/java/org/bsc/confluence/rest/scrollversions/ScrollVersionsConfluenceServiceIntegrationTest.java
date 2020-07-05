@@ -94,7 +94,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
                 service.getScrollVersions(space)
                         .thenCompose(versions ->
                             sleep( TimeUnit.SECONDS, 5 ).thenCompose( none ->
-                                service.delegate.createPageByTitle(space, page)
+                                service.delegate.createPageByTitle(space, page, ConfluenceService.Storage.of( "", ConfluenceService.Storage.Representation.WIKI))
                                     .thenAccept(res ->
                                             versions.stream().forEach( v ->
                                                     service.manageVersionPage(res.getId(), page, v, ScrollVersionsConfluenceService.ChangeType.ADD_VERSION).join())

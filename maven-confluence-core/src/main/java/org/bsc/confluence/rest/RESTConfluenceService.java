@@ -93,20 +93,21 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         return (CompletableFuture<T>)s;
     }
 
-    public final JsonObjectBuilder jsonForCreatingContent( ContentType type, final String spaceKey, final String title  ) {
+    public final JsonObjectBuilder jsonForCreatingContent( ContentType type, final String spaceKey, final String title, Storage content  ) {
           return Json.createObjectBuilder()
                   .add("type",type.name())
                   .add("title",title)
                   .add("space",Json.createObjectBuilder().add("key", spaceKey))
+                  .add("body", Json.createObjectBuilder()
+                          .add("storage", Json.createObjectBuilder()
+                                  .add("representation",content.rapresentation.toString())
+                                  .add("value",content.value)))
+
                   ;
       }
 
-//    public final JsonObjectBuilder jsonForCreatingPage( final String spaceKey, final String parentPageId, final String title  ) {
-//        return jsonForCreatingPage( spaceKey, Long.valueOf(parentPageId), title);
-//    }
-
-    public final JsonObjectBuilder jsonForCreatingContent(ContentType type, final String spaceKey, final long parentPageId, final String title  ) {
-          return jsonForCreatingContent( type, spaceKey, title )
+    public final JsonObjectBuilder jsonForCreatingContent(ContentType type, final String spaceKey, final long parentPageId, final String title, Storage content  ) {
+          return jsonForCreatingContent( type, spaceKey, title, content )
                   .add("ancestors", Json.createArrayBuilder()
                                           .add(Json.createObjectBuilder().add("id", parentPageId )))
                   ;
@@ -127,8 +128,8 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
      * @param title
      * @return
      */
-      public final CompletableFuture<Model.Page> createPageByTitle( String spaceKey, String title ) {
-              final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, title);
+      public final CompletableFuture<Model.Page> createPageByTitle( String spaceKey, String title, Storage content ) {
+              final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, title, content);
 
               return createPage( input.build() )
                       .thenApply( data -> data.map( Page::new ).get() );
@@ -172,17 +173,6 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
                     .filter( page -> page.getTitle().equals( title ))
                     .findFirst() );
     }
-
-    @Override
-    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
-
-        final String spaceKey = parentPage.getSpace();
-        final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, parentPage.getId().getValue(), title);
-
-        return createPage( input.build() )
-                    .thenApply( page -> page.map( Page::new ).get() );
-    }
-
     /**
      * 
      * @param pageId
@@ -209,6 +199,17 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
                         descendant.stream()
                                 .map( (page) -> new Page(page))
                                 .collect( Collectors.toList() ));
+    }
+
+
+    @Override
+    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title, Storage content) {
+
+        final String spaceKey = parentPage.getSpace();
+        final JsonObjectBuilder input = jsonForCreatingContent( ContentType.page, spaceKey, parentPage.getId().getValue(), title, content);
+
+        return createPage( input.build() )
+                .thenApply( page -> page.map( Page::new ).get() );
     }
 
 
@@ -345,10 +346,12 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     public CompletableFuture<Model.Blogpost> addBlogpost(Model.Blogpost blogpost)  {
 
         final Blogpost restBlogpost = Blogpost.class.cast(blogpost);
+
         final JsonObjectBuilder builder =
-                jsonAddBody(
-                    jsonForCreatingContent( ContentType.blogpost, restBlogpost.getSpace(), restBlogpost.getTitle()),
-                    restBlogpost.getContent() );
+                        jsonForCreatingContent( ContentType.blogpost,
+                                                restBlogpost.getSpace(),
+                                                restBlogpost.getTitle(),
+                                                restBlogpost.getContent() );
 
         return cast(createPage(builder.build()).thenApply( page -> page.map( Blogpost::new ).orElse(null)));
     }

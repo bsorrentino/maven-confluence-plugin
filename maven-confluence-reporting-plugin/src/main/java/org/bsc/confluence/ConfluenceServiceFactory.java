@@ -81,8 +81,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title)  {
-            return xmlrpcService.createPage(parentPage, title);
+        public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title, Storage content)  {
+            return xmlrpcService.createPage(parentPage, title, content);
         }
         @Override
         public CompletableFuture<Model.Page> storePage(Model.Page page)  {
@@ -99,9 +99,8 @@ public class ConfluenceServiceFactory {
                             restService.jsonForCreatingContent( RESTConfluenceService.ContentType.page,
                                                                 page.getSpace(),
                                                                 page.getParentId().getValue(),
-                                                                page.getTitle());
-                    restService.jsonAddBody(inputData, content);
-                    
+                                                                page.getTitle(),
+                                                                content);
                     return restService.createPage(inputData.build())
                             .thenApply( p -> p.map(Page::new).get() );
                     

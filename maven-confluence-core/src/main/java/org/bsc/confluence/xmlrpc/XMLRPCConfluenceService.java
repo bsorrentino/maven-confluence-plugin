@@ -177,14 +177,15 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title) {
+    public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title, Storage content) {
 
             final Page result = new Page(Collections.emptyMap());
             result.setSpace(parentPage.getSpace());
             result.setParentId(parentPage.getId());
             result.setTitle(title);
+            result.setContent( content.value );
 
-            return completedFuture(result);
+            return storePage( result );
     }
 
     @Override

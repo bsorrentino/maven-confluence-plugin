@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.util.Optional.empty;
@@ -239,9 +241,8 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     }
 
     /**
-     * 
+     *
      * @param <T>
-     * @param confluence
      * @param pageToUpdate
      * @param site
      * @param source
@@ -249,52 +250,40 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param pageTitleToApply
      * @return
      */
-    private <T extends Site.Page> CompletableFuture<Model.Page> updatePageContent(
-            final ConfluenceService confluence,
-            final Model.Page pageToUpdate, 
-            final Site site, 
-            final java.net.URI source, 
+    private <T extends Site.Page> CompletableFuture<Storage> getPageContent(
+            final Optional<Model.Page> pageToUpdate,
+            final Site site,
+            final java.net.URI source,
             final T child,
             final String pageTitleToApply)
     {
         final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : empty();
 
-        return processPageUri(site, child, pageToUpdate, source, pagePrefixToApply, (err, content) -> {
+        return processPageUri(site, child, pageToUpdate, source, pagePrefixToApply)
+                .thenCompose( content -> {
 
-            final CompletableFuture<Model.Page> result = new CompletableFuture<>();
+                    try {
 
-            if (err.isPresent()) {
-                result.completeExceptionally(RTE("error processing uri [%s]", source, err.get()));
-                return result;
-            }
+                        final MiniTemplator t = new MiniTemplator.Builder()
+                                .setSkipUndefinedVars(true)
+                                .build(content.getInputStream(), getCharset());
 
-            if (!content.isPresent()) {
-                result.completeExceptionally(RTE("error content not present processing uri [%s]", source));
-                return result;
-            }
+                        if (!child.isIgnoreVariables()) {
 
-            try {
+                            addStdProperties(t);
 
-                final MiniTemplator t = new MiniTemplator.Builder()
-                            .setSkipUndefinedVars(true)
-                            .build(content.get().getInputStream(), getCharset());
+                            t.setVariableOpt("childTitle", pageTitleToApply); // DEPRECATED USE page.title
+                            t.setVariableOpt("page.title", pageTitleToApply);
+                        }
 
-                if (!child.isIgnoreVariables()) {
+                        return completedFuture(Storage.of(t.generateOutput(), content.getType()));
 
-                    addStdProperties(t);
-
-                    t.setVariableOpt("childTitle", pageTitleToApply); // DEPRECATED USE page.title
-                    t.setVariableOpt("page.title", pageTitleToApply);
-                }
-
-                return confluence.storePage(pageToUpdate, Storage.of(t.generateOutput(), content.get().getType()));
-
-            } catch (Exception ex) {
-                result.completeExceptionally(RTE("error storing page [%s]", pageToUpdate.getTitle(), ex));
-            }
-
-            return result;
-        });
+                    } catch (Exception ex) {
+                        final CompletableFuture<Storage> result = new CompletableFuture<>();
+                        result.completeExceptionally(ex);
+                        return result;
+                    }
+                });
 
     }
 
@@ -306,8 +295,11 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param parentPage
      * @return
      */
-    protected <T extends Site.Page> Model.Page generateChild(final ConfluenceService confluence, final Site site,
-            final T child, final Model.Page parentPage) {
+    protected <T extends Site.Page> Model.Page generateChild(final ConfluenceService confluence,
+                                                             final Site site,
+                                                             final T child,
+                                                             final Model.Page parentPage)
+    {
 
         final String homeTitle = site.getHome().getName();
 
@@ -329,22 +321,30 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     .exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
         }
 
-        final Model.Page result = confluence.getPage(parentPage.getSpace(), pageTitleToApply)
+        final Function<Model.Page, CompletableFuture<Model.Page>> updatePage = p ->
+                canProceedToUpdateResource(source)
+                    .thenCompose(update -> {
+                        if (update)
+                            return getPageContent( ofNullable(p), site, source, child, pageTitleToApply )
+                                    .thenCompose( storage -> confluence.storePage(p, storage));
+                        else {
+                            getLog().info(format("page [%s] has not been updated (deploy skipped)",
+                                    getPrintableStringForResource(source)));
+                            return /* confluence.storePage(p) */ completedFuture(p);
+                    }});
+
+        final Supplier<CompletableFuture<Model.Page>> createPage = () ->
+                    resetUpdateStatusForResource(source)
+                        .thenCompose( reset -> getPageContent( Optional.empty(), site, source, child, pageTitleToApply ) )
+                        .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
+                ;
+
+        final Model.Page result =
+                confluence.getPage(parentPage.getSpace(), pageTitleToApply)
                 .thenCompose(page ->
                         (page.isPresent())
-                                ? completedFuture(page.get())
-                                : resetUpdateStatusForResource(source)
-                                    .thenCompose(reset -> confluence.createPage(parentPage, pageTitleToApply)) )
-
-                .thenCompose(p -> canProceedToUpdateResource(source)
-                                    .thenCompose(update -> {
-                                        if (update)
-                                            return updatePageContent(confluence, p, site, source, child, pageTitleToApply);
-                                        else {
-                                            getLog().info(format("page [%s] has not been updated (deploy skipped)",
-                                                    getPrintableStringForResource(source)));
-                                            return /* confluence.storePage(p) */ completedFuture(p);
-                                        }}))
+                                ? updatePage.apply(page.get())
+                                : createPage.get())
                 .thenCompose( p -> confluence.addLabelsByName( p.getId(), child.getComputedLabels() ).thenApply( (v) -> p) )
                 .join();
 
