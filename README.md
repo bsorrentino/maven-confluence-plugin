@@ -21,9 +21,6 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > * [Site Processor Usage](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html)
 > * [Markdown Processor usage](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html)
 
-
-Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
-
 ### News
  Date  | Info   
 --- | ---
