@@ -498,6 +498,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                             .orElseGet( () ->
                                     toResult( parentPage )
                                             .thenCompose( p -> createVersionPage( parentPage.getSpace(), p.getMasterPageId(), title, version))
+                                            .thenCompose( p -> cast(delegate.storePage(p, content)) )
                             )
                 )
                 .thenCompose( future -> cast(future) )
