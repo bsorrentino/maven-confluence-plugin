@@ -186,7 +186,11 @@ public interface ConfluenceService extends Closeable{
 
     CompletableFuture<Boolean> removePage(Model.ID pageId ) ;
 
-    CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title ) ;
+    CompletableFuture<Model.Page> createPage( Model.Page parentPage, String title, Storage content ) ;
+
+    CompletableFuture<Model.Page> storePage( Model.Page page, Storage content ) ;
+
+    CompletableFuture<Model.Page> storePage( Model.Page page ) ;
 
     CompletableFuture<Optional<Model.Page>> getPage( Model.ID pageId ) ;
 
@@ -200,10 +204,6 @@ public interface ConfluenceService extends Closeable{
         final String[] labelArray = new String[ labels.size() ];
         return addLabelsByName( id, labels.toArray(labelArray) );
     }
-
-    CompletableFuture<Model.Page> storePage( Model.Page page, Storage content ) ;
-    
-    CompletableFuture<Model.Page> storePage( Model.Page page ) ;
 
     CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) ;
 
@@ -284,7 +284,7 @@ public interface ConfluenceService extends Closeable{
                 .thenCombine( getPage(spaceKey, title), ParentChildTuple::of)
                 .thenCompose( tuple -> ( tuple.getChild().isPresent() )
                         ? completedFuture(tuple.getChild().get())
-                        : createPage(tuple.getParent(), title))
+                        : createPage(tuple.getParent(), title, Storage.of( "", Storage.Representation.WIKI)))
                 ;
         }
 

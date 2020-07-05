@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -105,24 +106,23 @@ public class SiteProcessor {
      * @param page
      * @param uri
      * @param pagePrefixToApply
-     * @param callback
-     * @param <T>
      * @param <P>
      * @return
      */
-   public static <T,P extends Site.Page> T processPageUri(
+   public static <P extends Site.Page> CompletableFuture<PageContent> processPageUri(
            final Site site,
            final P child,
-           final Model.Page page,
+           final Optional<Model.Page> page,
            final java.net.URI uri, 
-           final Optional<String> pagePrefixToApply,
-           final BiFunction<Optional<Exception>, Optional<PageContent>, T> callback)
+           final Optional<String> pagePrefixToApply)
    {
        Objects.requireNonNull(uri, "uri is null!");
 
        String scheme = uri.getScheme();
 
        Objects.requireNonNull(scheme, format("uri [%s] is invalid!", String.valueOf(uri)));
+
+       final CompletableFuture<PageContent> result = new CompletableFuture<>();
 
        final String source = uri.getRawSchemeSpecificPart();
 
@@ -136,10 +136,6 @@ public class SiteProcessor {
 
        String content = null;
 
-       final Function<String, T> throwException = msg -> {
-           final Exception ex = new Exception(msg);
-           return callback.apply( Optional.of(ex), Optional.empty() );
-       };
 
        if ("classpath".equalsIgnoreCase(scheme)) {
            ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -153,16 +149,18 @@ public class SiteProcessor {
                is = cl.getResourceAsStream(source);
 
                if (is == null) {
-                   return throwException.apply( format("page [%s] doesn't exist in classloader", source) );
+                   result.completeExceptionally( new Exception( format("page [%s] doesn't exist in classloader", source)));
+                   return result;
                }
 
                try {
                    final String candidateContent = IOUtils.toString(is);
 
-                   content = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), candidateContent, pagePrefixToApply) : candidateContent;
+                   content = (isMarkdown) ? processMarkdown( site, child, page, candidateContent, pagePrefixToApply) : candidateContent;
 
                } catch (IOException e) {
-                   return throwException.apply( format("error processing markdown for page [%s] ", source) );
+                   result.completeExceptionally( new Exception( format("error processing markdown for page [%s] ", source)));
+                   return result;
                }
 
 
@@ -178,15 +176,17 @@ public class SiteProcessor {
 
                final String candidateContent = IOUtils.toString(is);
 
-               content = (isMarkdown) ? processMarkdown( site, child, ofNullable(page), candidateContent, pagePrefixToApply) : candidateContent;
+               content = (isMarkdown) ? processMarkdown( site, child, page, candidateContent, pagePrefixToApply) : candidateContent;
 
            } catch (IOException e) {
-               final Exception ex = new Exception(format("error opening/processing page [%s]!", source), e);
-               return callback.apply( Optional.of(ex), Optional.empty() );
+               result.completeExceptionally( new Exception(format("error opening/processing page [%s]!", source), e));
+               return result;
+
            }
        }
 
-       return callback.apply( Optional.empty(), Optional.of(PageContent.of(content, representation)) );
+       result.complete(PageContent.of(content, representation) );
+       return result;
    }
 
     
