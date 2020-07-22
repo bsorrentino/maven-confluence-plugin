@@ -648,7 +648,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                                 .thenCompose( version ->
                                             ( isVersion(pp.getTitle(), version) )
                                                 ? this.getPage( pp.getSpace(), decodeTitle(pp.getTitle()) )
-                                                : completedFuture(Optional.empty())
+                                                : completedFuture(page)
                                             )
                                 ).orElse( completedFuture(Optional.<Model.Page>empty()))
                             )
