@@ -1,6 +1,7 @@
 package org.bsc.confluence.rest.scrollversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.apachecommons.CommonsLog;
 import lombok.val;
 import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
@@ -28,6 +29,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 
+@CommonsLog( topic = "confluence-maven-plugin" )
 public class ScrollVersionsConfluenceService implements ConfluenceService {
 
 
@@ -412,12 +414,15 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     private void debug(String message, Object...args ) {
-        System.out.printf( message, (Object[])args );
-        System.out.println();
+        if( !log.isDebugEnabled() ) return;
+
+        log.debug( format( message, (Object[])args ) );
     }
+
     private void trace(String message, Object...args ) {
-        System.out.printf( message, (Object[])args );
-        System.out.println();
+        if( !log.isTraceEnabled() ) return;
+
+        log.trace( format( message, (Object[])args ) );
     }
 
     private CompletableFuture<ScrollVersions.Model.Result> toResult(Model.Page page ) {
@@ -427,14 +432,17 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         }
 
         throw new IllegalArgumentException(format("page [%s] is not a result type! %s", page.getTitle(), page,getClass().getName() ));
-
-//        final Pattern versionsTitlePattern = Pattern.compile( "^[\\.](.+)\\sv(.+)$" );
-//        val m =  versionsTitlePattern.matcher(page.getTitle());
-//        if( !m.matches() ) {
-//            throw new IllegalArgumentException("title doesn't match");
-//        }
-//        return getVersionPage(page.getSpace(),m.group(1)).thenApply( p -> p.get() );
-
+//        debug( "page [%s] is not a result type! %s", page.getTitle(), page,getClass().getName() );
+//
+//        val result = new ScrollVersions.Model.Result() {
+//
+//            @Override
+//            public Model.ID getMasterPageId() {
+//                return page.getId();
+//            }
+//        };
+//
+//        return completedFuture(result);
     }
 
 
