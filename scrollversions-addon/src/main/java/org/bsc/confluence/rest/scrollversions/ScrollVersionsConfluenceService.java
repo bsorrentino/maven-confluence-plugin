@@ -479,6 +479,13 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         return result;
     }
 
+    private String encodeTitle( String title, ScrollVersions.Model.Version version ) {
+
+        if( isVersion(title, version )) return title;
+
+        return format( ".%s v%s", title, version.getName());
+    }
+
     private boolean isVersion( String title, ScrollVersions.Model.Version version ) {
         val m = vesrsionsTitlePattern.matcher(title);
 
@@ -496,6 +503,22 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         return delegate.getCredentials();
     }
 
+    /**
+     * fix issue 223
+     *
+     * @param newPage
+     * @param content
+     * @param version
+     * @return
+     */
+    private CompletableFuture<ScrollVersions.Model.NewPageResult> storeVersionedPage(ScrollVersions.Model.NewPageResult newPage, Storage content, ScrollVersions.Model.Version version ) {
+        val title = newPage.getScrollPageTitle();
+
+        newPage.setScrollPageTitle( encodeTitle(title, version ) ); // update title if it is not versioned
+
+        return delegate.storePage(newPage, content).thenApply( storedPage -> newPage );
+    }
+
     @Override
     public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title, Storage content ) {
         //debug( "createPage(): parent.id=[%s] title=[%s]", parentPage.getId(), title );
@@ -506,7 +529,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                             .orElseGet( () ->
                                     toResult( parentPage )
                                             .thenCompose( p -> createVersionPage( parentPage.getSpace(), p.getMasterPageId(), title, version))
-                                            .thenCompose( p -> cast(delegate.storePage(p, content)) )
+                                            .thenCompose( p -> storeVersionedPage(p, content, version ) )
                             )
                 )
                 .thenCompose( future -> cast(future) )

@@ -350,9 +350,33 @@
                             <failOnError>true</failOnError>
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue223
+                    mvn confluence-reporting:delete@issue223
+                    -->
+                    <execution>
+                        <id>issue223</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue223/site.yml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                            <spaceKey>SVTS</spaceKey>
+                            <parentPageTitle>Topic 1</parentPageTitle>
+                            <scrollVersions>
+                                <version>beta</version>
+                                <skip>${scrollversions.skip}</skip>
+                            </scrollVersions>
+                        </configuration>
+                    </execution>
 
                 </executions>
             </plugin>
+
+
         </plugins>
 
     </build>
