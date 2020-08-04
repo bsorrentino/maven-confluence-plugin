@@ -232,9 +232,9 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                                     .build();
 
         fromUrlGET( url, "find page", res ->
-                result.complete(Stream.of(res).flatMap(this::mapToStream).findFirst())
-        );
-        return result;
+                result.complete(Stream.of(res).flatMap(this::mapToStream).findFirst()) );
+
+         return result;
 
     }
 
