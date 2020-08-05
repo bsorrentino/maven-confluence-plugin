@@ -22,9 +22,9 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > * [Markdown Processor usage](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html)
 
 ### News
+
  Date  | Info   
 --- | ---
-
  **Aug 5, 2020** | [Release 6.9](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9) - Fix issue [#223](https://github.com/bsorrentino/maven-confluence-plugin/issues/223) .
  **Jul 5, 2020** | [Release 6.9-rc2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-rc2) - publication performance improvements.
  **Jun 18, 2020** | [Release 6.9-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-rc1) - add support for [blogbost goal](http://bsorrentino.github.io/maven-confluence-plugin/blogpost-mojo.html).
