@@ -1,23 +1,46 @@
 ## Usage
 
+### Maven Repository
 
-### Add labels
+From Release 3.0.1 this plugin is available from [MAVEN CENTRAL REPO](http://repo2.maven.org/maven2/)
+If you want stay tune over modification, includes the following repository declaration in your POM
 
 ```xml
- <configuration>
+
+<pluginRepositories>
+
+    <!-- IF YOU WANT STAY TUNED ON UPDATE REMOVE COMMENT -->
+    <pluginRepository>
+        <id>sonatype-repo</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </pluginRepository>
+
+</pluginRepositories>
+
+```
+
+
+### Use Site Descriptor
+
+```xml
+
+<configuration>
     <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
     <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-    <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName}) - SINCE 3.1.3 -->
+    <wikiFilesExt>.confluence</wikiFilesExt>
+    <siteDescriptor>${basedir}/src/site/confluence/site.yaml</siteDescriptor>
+    <failOnError>true</failOnError>
+</configuration>
 
-    <labels>
-        <label>label_value_1</label>
-        <label>label_value_2</label>                                           
-    </labels>
- </configuration>
 ```
-
 ###  Inject custom properties within template
 
 ```xml
@@ -42,20 +65,51 @@
  </configuration>
 ```
 
-###  Change wiki files extension
+### Maven tip : Use multiple executions
 
 ```xml
+<!-- shared configuration -->
  <configuration>
     <endPoint>${confluence.home}/rest/api</endPoint>
     <spaceKey>DOCS</spaceKey>
     <serverId>server_id_configured_in_settings_xml</serverId>
-    <parentPageTitle>Home</parentPageTitle><!-- PARENT PAGE IN THE GIVEN SPACE -->
-    <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName} )- SINCE 3.1.3 -->
-
-    <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+    <title>custom_title</title><!-- PAGE TITLE (default ${project.build.finalName})  - SINCE 3.1.3 -->
     <wikiFilesExt>.confluence</wikiFilesExt>
+    <failOnError>true</failOnError>
+</configuration>
+<executions>
+    <!--
+    mvn confluence-reporting:deploy@topic1
+    mvn confluence-reporting:delete@topic1
+    -->
+   <execution>
+        <id>topic1</id>
+        <goals>
+            <goal>deploy</goal>
+            <goal>delete</goal>
+        </goals>
+        <configuration>
+            <parentPageTitle>Home1</parentPageTitle>
+            <siteDescriptor>${basedir}/src/site/confluence/topic1.yaml</siteDescriptor>
+        </configuration>
+    </execution>    
+    <!--
+    mvn confluence-reporting:deploy@topic2
+    mvn confluence-reporting:delete@topic2
+    -->
+   <execution>
+        <id>topic2</id>
+        <goals>
+            <goal>deploy</goal>
+            <goal>delete</goal>
+        </goals>
+        <configuration>
+            <parentPageTitle>Home2</parentPageTitle>
+            <siteDescriptor>${basedir}/src/site/confluence/topic2.yaml</siteDescriptor>
+        </configuration>
+    </execution>    
+</executions>
 
- </configuration>
 ```
 
 ### Change output Locale
@@ -219,27 +273,3 @@ ${project.dependencies}
 
 ```
 
-## Maven Repository
-
-From Release 3.0.1 this plugin is available from [MAVEN CENTRAL REPO](http://repo2.maven.org/maven2/)
-If you want stay tune over modification, includes the following repository declaration in your POM
-
-```xml
-
-<pluginRepositories>
-
-    <!-- IF YOU WANT STAY TUNED ON UPDATE REMOVE COMMENT -->
-    <pluginRepository>
-        <id>sonatype-repo</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        <releases>
-            <enabled>false</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </pluginRepository>
-
-</pluginRepositories>
-
-```

@@ -89,7 +89,7 @@ _Italic text_
 [conf-icon-none]: conf-icon-64.png
 ```
 
-#### confluence specific (DEPRECATED)
+#### Confluence specific (DEPRECATED)
 ```
 ![](${page.title}^image-name.png)
 ```
@@ -151,7 +151,26 @@ Markdown | Less | Pretty
 1 | 2 | 3
 ```
 
-## Notice Block Syntax 
+
+### oneline blockquote
+
+<pre><![CDATA[
+> test a simple
+> blockquote
+
+]]></pre>
+
+### blockquote block
+
+<pre><![CDATA[
+> test a 2 paragraph block
+>
+> this is my second part
+
+]]></pre>
+
+
+### Notice Block Syntax (Confluence specific)
 
 ### Info
 
@@ -201,20 +220,3 @@ Markdown | Less | Pretty
 
 ]]></pre>
 
-
-### oneline blockquote
-
-<pre><![CDATA[
-> test a simple
-> blockquote
-
-]]></pre>
-
-### blockquote block
-
-<pre><![CDATA[
-> test a 2 paragraph block
->
-> this is my second part
-
-]]></pre>
