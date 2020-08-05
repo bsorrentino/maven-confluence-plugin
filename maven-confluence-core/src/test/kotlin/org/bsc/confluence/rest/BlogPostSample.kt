@@ -9,7 +9,7 @@ import org.bsc.ssl.SSLCertificateInfo
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-fun main(args : Array<String>) {
+fun main() {
 
     val confluenceUrl = "http://localhost:8090"
     val credentials  = ConfluenceService.Credentials("admin", "admin")

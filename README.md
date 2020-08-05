@@ -21,12 +21,11 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > * [Site Processor Usage](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html)
 > * [Markdown Processor usage](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html)
 
-
-Please donate whether you wish support us to give more time to plugin's growth | [![](https://www.paypal.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=H44UTN3G6DAX6)
-
 ### News
  Date  | Info   
 --- | ---
+
+ **Aug 5, 2020** | [Release 6.9](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9) - Fix issue [#223](https://github.com/bsorrentino/maven-confluence-plugin/issues/223) .
  **Jul 5, 2020** | [Release 6.9-rc2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-rc2) - publication performance improvements.
  **Jun 18, 2020** | [Release 6.9-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-rc1) - add support for [blogbost goal](http://bsorrentino.github.io/maven-confluence-plugin/blogpost-mojo.html).
  **May 05, 2020** | [Release 6.9-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-beta1) - improved support of  [Scroll Versions Addon](https://marketplace.atlassian.com/apps/1210818/scroll-versions-for-confluence?hosting=server&tab=overview) .

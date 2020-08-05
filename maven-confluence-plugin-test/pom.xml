@@ -6,7 +6,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.9-rc2</version>
+        <version>6.9</version>
     </parent>
 
     <artifactId>maven-confluence-plugin-test</artifactId>
@@ -75,7 +75,7 @@
                     <dependency>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-plugin-plugin</artifactId>
-                        <version>3.4</version>
+                        <version>${pluginToolsVersion}</version>
                     </dependency>
                 </dependencies>
                 

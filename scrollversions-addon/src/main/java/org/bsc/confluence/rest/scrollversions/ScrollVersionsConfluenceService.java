@@ -1,6 +1,7 @@
 package org.bsc.confluence.rest.scrollversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.apachecommons.CommonsLog;
 import lombok.val;
 import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
@@ -28,6 +29,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 
+@CommonsLog( topic = "confluence-maven-plugin" )
 public class ScrollVersionsConfluenceService implements ConfluenceService {
 
 
@@ -412,12 +414,15 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     private void debug(String message, Object...args ) {
-        System.out.printf( message, (Object[])args );
-        System.out.println();
+        if( !log.isDebugEnabled() ) return;
+
+        log.debug( format( message, (Object[])args ) );
     }
+
     private void trace(String message, Object...args ) {
-        System.out.printf( message, (Object[])args );
-        System.out.println();
+        if( !log.isTraceEnabled() ) return;
+
+        log.trace( format( message, (Object[])args ) );
     }
 
     private CompletableFuture<ScrollVersions.Model.Result> toResult(Model.Page page ) {
@@ -427,14 +432,17 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         }
 
         throw new IllegalArgumentException(format("page [%s] is not a result type! %s", page.getTitle(), page,getClass().getName() ));
-
-//        final Pattern versionsTitlePattern = Pattern.compile( "^[\\.](.+)\\sv(.+)$" );
-//        val m =  versionsTitlePattern.matcher(page.getTitle());
-//        if( !m.matches() ) {
-//            throw new IllegalArgumentException("title doesn't match");
-//        }
-//        return getVersionPage(page.getSpace(),m.group(1)).thenApply( p -> p.get() );
-
+//        debug( "page [%s] is not a result type! %s", page.getTitle(), page,getClass().getName() );
+//
+//        val result = new ScrollVersions.Model.Result() {
+//
+//            @Override
+//            public Model.ID getMasterPageId() {
+//                return page.getId();
+//            }
+//        };
+//
+//        return completedFuture(result);
     }
 
 
@@ -471,6 +479,13 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         return result;
     }
 
+    private String encodeTitle( String title, ScrollVersions.Model.Version version ) {
+
+        if( isVersion(title, version )) return title;
+
+        return format( ".%s v%s", title, version.getName());
+    }
+
     private boolean isVersion( String title, ScrollVersions.Model.Version version ) {
         val m = vesrsionsTitlePattern.matcher(title);
 
@@ -488,6 +503,22 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         return delegate.getCredentials();
     }
 
+    /**
+     * fix issue 223
+     *
+     * @param newPage
+     * @param content
+     * @param version
+     * @return
+     */
+    private CompletableFuture<ScrollVersions.Model.NewPageResult> storeVersionedPage(ScrollVersions.Model.NewPageResult newPage, Storage content, ScrollVersions.Model.Version version ) {
+        val title = newPage.getScrollPageTitle();
+
+        newPage.setScrollPageTitle( encodeTitle(title, version ) ); // update title if it is not versioned
+
+        return delegate.storePage(newPage, content).thenApply( storedPage -> newPage );
+    }
+
     @Override
     public CompletableFuture<Model.Page> createPage(Model.Page parentPage, String title, Storage content ) {
         //debug( "createPage(): parent.id=[%s] title=[%s]", parentPage.getId(), title );
@@ -498,7 +529,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                             .orElseGet( () ->
                                     toResult( parentPage )
                                             .thenCompose( p -> createVersionPage( parentPage.getSpace(), p.getMasterPageId(), title, version))
-                                            .thenCompose( p -> cast(delegate.storePage(p, content)) )
+                                            .thenCompose( p -> storeVersionedPage(p, content, version ) )
                             )
                 )
                 .thenCompose( future -> cast(future) )
@@ -648,7 +679,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                                 .thenCompose( version ->
                                             ( isVersion(pp.getTitle(), version) )
                                                 ? this.getPage( pp.getSpace(), decodeTitle(pp.getTitle()) )
-                                                : completedFuture(Optional.empty())
+                                                : completedFuture(page)
                                             )
                                 ).orElse( completedFuture(Optional.<Model.Page>empty()))
                             )
