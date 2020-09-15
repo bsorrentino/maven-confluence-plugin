@@ -6,7 +6,6 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.net.URI
 import java.nio.file.Paths
-import java.util.regex.Pattern
 
 class Issue226Test {
 
