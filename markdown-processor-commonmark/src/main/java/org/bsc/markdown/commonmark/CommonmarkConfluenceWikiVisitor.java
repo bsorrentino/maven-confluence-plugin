@@ -1,6 +1,7 @@
 package org.bsc.markdown.commonmark;
 
 import org.bsc.markdown.MarkdownParserContext;
+import org.bsc.markdown.MarkdownVisitorHelper;
 import org.bsc.markdown.commonmark.extension.NoticeBlock;
 import org.bsc.markdown.commonmark.extension.NoticeBlockExtension;
 import org.commonmark.Extension;
@@ -113,8 +114,9 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     @Override
     public void visit(Text node) {
         //buffer().append( node.getLiteral() );
+        final String literal = MarkdownVisitorHelper.escapeMarkdownText( node.getLiteral() );
         processChildren(node)
-                .pre( node.getLiteral() )
+                .pre( literal )
                 .process(false);
     }
 

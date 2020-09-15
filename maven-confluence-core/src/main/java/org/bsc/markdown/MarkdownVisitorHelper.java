@@ -8,6 +8,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +19,42 @@ import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
 public class MarkdownVisitorHelper {
+
+
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public static String escapeMarkdownText(String text ) {
+        // GUARD
+        if( text == null || text.isEmpty() ) return text;
+
+        final BiFunction<String,String,String> replaceAll = ( pattern, value ) -> {
+            final Matcher m = Pattern.compile(pattern).matcher(value);
+
+            boolean result = m.find();
+            if (result) {
+                final StringBuffer sb = new StringBuffer();
+                do {
+                    m.appendReplacement(sb, " $2");
+                    sb.setCharAt( sb.length() - 2, '\\');
+                    result = m.find();
+                } while (result);
+                m.appendTail(sb);
+                return sb.toString();
+            }
+            return value;
+        };
+
+        final String leftS = "(\\\\)?(\\[)";
+        final String rightS = "(\\\\)?(])";
+
+        return replaceAll
+                .andThen( result -> replaceAll.apply( rightS, result ) )
+                .apply( leftS, text );
+
+    }
 
     /**
      *
