@@ -476,6 +476,25 @@
                                     </markdownProcessor>
                                 </configuration>
                             </execution>
+                            <!--
+                            mvn confluence-reporting:deploy@issue226
+                            mvn confluence-reporting:delete@issue226
+                            -->
+                            <execution>
+                                <id>issue226</id>
+                                <goals>
+                                    <goal>deploy</goal>
+                                    <goal>delete</goal>
+                                </goals>
+                                <configuration>
+                                    <wikiFilesExt>.confluence</wikiFilesExt>
+                                    <failOnError>true</failOnError>
+                                    <siteDescriptor>${basedir}/src/site/confluence/issue226/site.yml</siteDescriptor>
+                                    <markdownProcessor>
+                                        <name>commonmark</name>
+                                    </markdownProcessor>
+                                </configuration>
+                            </execution>
 
                         </executions>
                     </plugin>
