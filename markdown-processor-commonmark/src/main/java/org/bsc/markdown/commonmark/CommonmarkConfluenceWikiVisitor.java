@@ -14,8 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -62,6 +65,45 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     private boolean isParentRoot(Node node) {
         return (node.getParent() instanceof Document);
+    }
+
+    /**
+     *
+     * @param node
+     * @param text
+     * @return
+     */
+    public static String escapeMarkdownText( Node node, String text ) {
+        // GUARD
+        if( text == null || text.isEmpty() ) return text;
+        if( node!=null && node.getParent() instanceof TableCell) return text;
+
+        final BiFunction<String,String,String> replaceAll = (pattern, value ) -> {
+            final Matcher m = Pattern.compile(pattern).matcher(value);
+
+            boolean result = m.find();
+            if (result) {
+                final StringBuffer sb = new StringBuffer();
+                do {
+                    m.appendReplacement(sb, " $2");
+                    sb.setCharAt( sb.length() - 2, '\\');
+                    result = m.find();
+                } while (result);
+                m.appendTail(sb);
+                return sb.toString();
+            }
+            return value;
+        };
+
+        final String leftS[] = { "(\\\\)?(\\[)", "(\\\\)?(\\{)" };
+        final String rightS[] = { "(\\\\)?(])", "(\\\\)?(\\})" };
+
+        return replaceAll
+                .andThen( result -> replaceAll.apply( rightS[0], result ) )
+                .andThen( result -> replaceAll.apply( rightS[1], result ) )
+                .andThen( result -> replaceAll.apply( leftS[0], result ) )
+                .apply( leftS[1], text );
+
     }
 
     /**
@@ -113,8 +155,8 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(Text node) {
-        //buffer().append( node.getLiteral() );
-        final String literal = MarkdownVisitorHelper.escapeMarkdownText( node.getLiteral() );
+
+        final String literal = escapeMarkdownText( node, node.getLiteral() );
         processChildren(node)
                 .pre( literal )
                 .process(false);
@@ -169,8 +211,10 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(Code node) {
+        final String literal = escapeMarkdownText( node, node.getLiteral());
+
         processChildren(node)
-                .pre( "{{%s}}", node.getLiteral() )
+                .pre( "{{%s}}", literal )
                 .process(false);
     }
 
