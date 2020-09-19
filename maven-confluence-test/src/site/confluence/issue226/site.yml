@@ -1,0 +1,6 @@
+home:
+  uri: check.md
+  name: "TEST PAGE ISSUE 226"
+  children:
+    - name: "WIKI"
+      uri: check.confluence
