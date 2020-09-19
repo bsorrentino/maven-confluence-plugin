@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>6.9</version>
+        <version>6.9.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -471,6 +471,25 @@
                                     <wikiFilesExt>.confluence</wikiFilesExt>
                                     <failOnError>true</failOnError>
                                     <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
+                                    <markdownProcessor>
+                                        <name>commonmark</name>
+                                    </markdownProcessor>
+                                </configuration>
+                            </execution>
+                            <!--
+                            mvn confluence-reporting:deploy@issue226
+                            mvn confluence-reporting:delete@issue226
+                            -->
+                            <execution>
+                                <id>issue226</id>
+                                <goals>
+                                    <goal>deploy</goal>
+                                    <goal>delete</goal>
+                                </goals>
+                                <configuration>
+                                    <wikiFilesExt>.confluence</wikiFilesExt>
+                                    <failOnError>true</failOnError>
+                                    <siteDescriptor>${basedir}/src/site/confluence/issue226/site.yml</siteDescriptor>
                                     <markdownProcessor>
                                         <name>commonmark</name>
                                     </markdownProcessor>
