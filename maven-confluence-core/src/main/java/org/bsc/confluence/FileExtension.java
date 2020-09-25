@@ -8,7 +8,7 @@ public enum FileExtension {
 
     MARKDOWN(".md"),
     XML(".xml"),
-    XHTML(".xhml") 
+    XHTML(".xhtml")
    ;
     
     private String pattern;
