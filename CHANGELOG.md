@@ -2,6 +2,43 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## v6.10
+### Generic changes
+
+**update readme**
+
+
+[c4f7c407a6c8846](https://github.com/bsorrentino/maven-confluence-plugin/commit/c4f7c407a6c8846) bartolomeo sorrentino *2020-09-25 17:17:34*
+
+**set new release version**
+
+
+[8b7996a20f3367d](https://github.com/bsorrentino/maven-confluence-plugin/commit/8b7996a20f3367d) bartolomeo sorrentino *2020-09-25 17:16:01*
+
+**move to next development version**
+
+
+[0dfd70e94e8d08c](https://github.com/bsorrentino/maven-confluence-plugin/commit/0dfd70e94e8d08c) bsorrentino *2020-09-23 09:33:24*
+
+**update changelog**
+
+
+[925ba432a77c557](https://github.com/bsorrentino/maven-confluence-plugin/commit/925ba432a77c557) bsorrentino *2020-09-19 20:13:38*
+
+**move to next development version**
+
+
+[c464f8c0d626aac](https://github.com/bsorrentino/maven-confluence-plugin/commit/c464f8c0d626aac) bsorrentino *2020-08-20 08:42:46*
+
+
+###  [#229](https://github.com/bsorrentino/maven-confluence-plugin/issues/229) Storage format (.xhtml) are not correctly rendered     *bug*  *under working*  
+
+**#229 - fix storage format extension name**
+
+
+[ed270f5de9afe15](https://github.com/bsorrentino/maven-confluence-plugin/commit/ed270f5de9afe15) bartolomeo sorrentino *2020-09-25 17:12:58*
+
+
 ## v6.9.1
 ### Generic changes
 
