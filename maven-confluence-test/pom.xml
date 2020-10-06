@@ -70,6 +70,13 @@
                         <version>${project.version}</version>
                         <scope>runtime</scope>
                     </dependency>
+
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>confluence-markdown-processor-commonmark</artifactId>
+                        <version>${project.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
                 </dependencies>
 
                 <configuration>
@@ -317,25 +324,6 @@
                         </configuration>
                     </execution>
                     <!--
-                    mvn confluence-reporting:deploy@issue215 -Dconfluence.childrenTitlesPrefixed=false
-                    mvn confluence-reporting:delete@issue215 -Dconfluence.childrenTitlesPrefixed=false
-
-                    <childrenTitlesPrefixed>false</childrenTitlesPrefixed>
-                    -->
-                    <execution>
-                        <id>issue215</id>
-                        <goals>
-                            <goal>deploy</goal>
-                            <goal>delete</goal>
-                        </goals>
-                        <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
-                            <failOnError>true</failOnError>
-                            <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
-                        </configuration>
-                    </execution>
-
-                    <!--
                     mvn confluence-reporting:blogpost@issue219
                     -->
                     <execution>
@@ -372,6 +360,111 @@
                             </scrollVersions>
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@commonmark
+                    mvn confluence-reporting:delete@commonmark
+                    -->
+                    <execution>
+                        <id>commonmark</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml
+                            </siteDescriptor>
+                            <failOnError>true</failOnError>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@pegdown
+                    mvn confluence-reporting:delete@pegdown
+                    -->
+                    <execution>
+                        <id>pegdown</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>
+                                ${basedir}/src/site/confluence/issue154/site-pegdown.yaml
+                            </siteDescriptor>
+                            <failOnError>true</failOnError>
+
+                            <!--
+                            <spaceKey>SVTS</spaceKey>
+                            <parentPageTitle>Topic 1</parentPageTitle>
+                            <scrollVersions>
+                                <version>alpha</version>
+                            </scrollVersions>
+                            -->
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue215 -Dconfluence.childrenTitlesPrefixed=false
+                    mvn confluence-reporting:delete@issue215 -Dconfluence.childrenTitlesPrefixed=false
+
+                    <childrenTitlesPrefixed>false</childrenTitlesPrefixed>
+                    -->
+                    <execution>
+                        <id>issue215</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue226
+                    mvn confluence-reporting:delete@issue226
+                    -->
+                    <execution>
+                        <id>issue226</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue226/site.yml</siteDescriptor>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue227
+                    mvn confluence-reporting:delete@issue227
+                    -->
+                    <execution>
+                        <id>issue227</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue227/site.yaml</siteDescriptor>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
 
                 </executions>
             </plugin>
@@ -389,117 +482,6 @@
             </activation>
 
 
-        </profile>
-
-        <profile>
-            <id>markdown</id>
-
-            <build>
-
-                <plugins>
-                    <plugin>
-                        <groupId>org.bsc.maven</groupId>
-                        <artifactId>confluence-reporting-maven-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>${project.groupId}</groupId>
-                                <artifactId>confluence-markdown-processor-commonmark</artifactId>
-                                <version>${project.version}</version>
-                                <scope>runtime</scope>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <!--
-                            mvn confluence-reporting:deploy@commonmark -Pmarkdown
-                            mvn confluence-reporting:delete@commonmark -Pmarkdown
-                            -->
-                            <execution>
-                                <id>commonmark</id>
-                                <goals>
-                                    <goal>deploy</goal>
-                                    <goal>delete</goal>
-                                </goals>
-                                <configuration>
-                                    <wikiFilesExt>.confluence</wikiFilesExt>
-                                    <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml
-                                    </siteDescriptor>
-                                    <failOnError>true</failOnError>
-                                    <markdownProcessor>
-                                        <name>commonmark</name>
-                                    </markdownProcessor>
-                                </configuration>
-                            </execution>
-                            <!--
-                            mvn confluence-reporting:deploy@pegdown -Pmarkdown
-                            mvn confluence-reporting:delete@pegdown -Pmarkdown
-                            -->
-                            <execution>
-                                <id>pegdown</id>
-                                <goals>
-                                    <goal>deploy</goal>
-                                    <goal>delete</goal>
-                                </goals>
-                                <configuration>
-                                    <wikiFilesExt>.confluence</wikiFilesExt>
-                                    <siteDescriptor>
-                                        ${basedir}/src/site/confluence/issue154/site-pegdown.yaml
-                                    </siteDescriptor>
-                                    <failOnError>true</failOnError>
-
-                                    <!--
-                                    <spaceKey>SVTS</spaceKey>
-                                    <parentPageTitle>Topic 1</parentPageTitle>
-                                    <scrollVersions>
-                                        <version>alpha</version>
-                                    </scrollVersions>
-                                    -->
-                                </configuration>
-                            </execution>
-                            <!--
-                            mvn confluence-reporting:deploy@issue215 -Dconfluence.childrenTitlesPrefixed=false
-                            mvn confluence-reporting:delete@issue215 -Dconfluence.childrenTitlesPrefixed=false
-
-                            <childrenTitlesPrefixed>false</childrenTitlesPrefixed>
-                            -->
-                            <execution>
-                                <id>issue215</id>
-                                <goals>
-                                    <goal>deploy</goal>
-                                    <goal>delete</goal>
-                                </goals>
-                                <configuration>
-                                    <wikiFilesExt>.confluence</wikiFilesExt>
-                                    <failOnError>true</failOnError>
-                                    <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
-                                    <markdownProcessor>
-                                        <name>commonmark</name>
-                                    </markdownProcessor>
-                                </configuration>
-                            </execution>
-                            <!--
-                            mvn confluence-reporting:deploy@issue226
-                            mvn confluence-reporting:delete@issue226
-                            -->
-                            <execution>
-                                <id>issue226</id>
-                                <goals>
-                                    <goal>deploy</goal>
-                                    <goal>delete</goal>
-                                </goals>
-                                <configuration>
-                                    <wikiFilesExt>.confluence</wikiFilesExt>
-                                    <failOnError>true</failOnError>
-                                    <siteDescriptor>${basedir}/src/site/confluence/issue226/site.yml</siteDescriptor>
-                                    <markdownProcessor>
-                                        <name>commonmark</name>
-                                    </markdownProcessor>
-                                </configuration>
-                            </execution>
-
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>

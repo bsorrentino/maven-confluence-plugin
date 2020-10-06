@@ -1,0 +1,18 @@
+home:
+  uri: README.md
+  parentPageTitle: "All my projects"
+  name: "Demo project"
+  attachments:
+    - name: "process.png"
+      uri: images
+      comment: image
+      contentType: "image/png"
+      version: 1
+    - name: "payload.json"
+      uri: examples
+      comment: payload
+      contentType: "application/json"
+      version: 1
+  children:
+    - name: "How to get help"
+      uri: help/HELP.md
