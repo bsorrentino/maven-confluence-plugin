@@ -1,4 +1,4 @@
-package com.github.qwazer.mavenplugins.gitlog;
+package org.bsc.reporting.renderer;
 
 /**
  * Calculate rule for since tag name

@@ -1,4 +1,4 @@
-package com.github.qwazer.mavenplugins.gitlog
+package org.bsc.reporting.renderer
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

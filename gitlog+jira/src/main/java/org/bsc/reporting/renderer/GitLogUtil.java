@@ -1,4 +1,4 @@
-package com.github.qwazer.mavenplugins.gitlog;
+package org.bsc.reporting.renderer;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -20,17 +20,21 @@ import java.util.regex.Pattern;
 public class GitLogUtil {
 
 
-    public static Repository openRepository() throws NoGitRepositoryException, IOException {
-        Repository repository = null;
-        try {
-            repository = new RepositoryBuilder().findGitDir().build();
-        } catch (IllegalArgumentException iae) {
-            throw new NoGitRepositoryException();
-        }
-        return repository;
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
+    public static Repository openRepository() throws Exception {
+        return new RepositoryBuilder().findGitDir().build();
     }
 
-
+    /**
+     *
+     * @param repository
+     * @param versionTagNamePattern
+     * @return
+     */
     public static Set<String> loadVersionTagList(Repository repository, String versionTagNamePattern) {
         Set<String> versionTagList = new HashSet<String>();
         if (versionTagNamePattern != null) {
@@ -46,6 +50,14 @@ public class GitLogUtil {
         return versionTagList;
     }
 
+    /**
+     *
+     * @param repository
+     * @param tagName
+     * @return
+     * @throws IOException
+     * @throws GitAPIException
+     */
     protected static RevCommit resolveCommitIdByTagName(Repository repository, String tagName) throws IOException, GitAPIException {
         if (tagName == null || tagName.isEmpty()) return null;
         

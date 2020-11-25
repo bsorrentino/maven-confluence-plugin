@@ -1,7 +1,5 @@
-package com.github.qwazer.mavenplugins.gitlog;
+package org.bsc.reporting.renderer;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -11,6 +9,7 @@ import org.codehaus.plexus.util.StringUtils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author ar
@@ -177,22 +176,14 @@ public class VersionUtil {
 
         }
 
-        LinkedList<String> linkedList = new LinkedList<String>();
-
         Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
 
         for (String versionTag : versionNameList) {
             map.put(parseArtifactVersion(versionTag), versionTag);
         }
 
+        return map.keySet().stream().filter( current -> {
 
-        List<ArtifactVersion> artifactVersionSet = new ArrayList<ArtifactVersion>(map.keySet());
-
-
-        CollectionUtils.filter(artifactVersionSet, new Predicate() {
-            @Override
-            public boolean evaluate(Object o) {
-                ArtifactVersion current = (ArtifactVersion) o;
                 if (endVersion != null) {
                     if (startVersion.compareTo(current) <= 0
                             &&
@@ -206,14 +197,11 @@ public class VersionUtil {
                 }
 
                 return false;
-            }
-        });
+        })
+        .sorted()
+        .map( artifactVersion -> map.get(artifactVersion) )
+        .collect( Collectors.toCollection( () -> new LinkedList<String>()));
 
-        Collections.sort(artifactVersionSet);
-        for (ArtifactVersion artifactVersion : artifactVersionSet) {
-            linkedList.add(map.get(artifactVersion));
-        }
-        return linkedList;
 
     }
 

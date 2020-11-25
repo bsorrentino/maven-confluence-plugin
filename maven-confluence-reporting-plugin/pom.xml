@@ -145,6 +145,12 @@
 
         <dependency>
             <groupId>org.bsc.maven</groupId>
+            <artifactId>gitlog-jira-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -256,22 +262,6 @@
             <artifactId>jaxb-impl</artifactId>
             <version>2.2.7-b41</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit</artifactId>
-            <version>4.0.1.201506240215-r</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.jcraft</groupId>
-                    <artifactId>jsch</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- to prevent "SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder" messages -->

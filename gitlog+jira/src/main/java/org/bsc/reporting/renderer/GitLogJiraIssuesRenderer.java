@@ -1,8 +1,5 @@
 package org.bsc.reporting.renderer;
 
-import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
-import com.github.qwazer.mavenplugins.gitlog.GitLogUtil;
-import com.github.qwazer.mavenplugins.gitlog.VersionUtil;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;

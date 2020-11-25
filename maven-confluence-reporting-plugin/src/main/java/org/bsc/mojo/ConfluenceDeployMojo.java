@@ -2,7 +2,6 @@ package org.bsc.mojo;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import com.github.qwazer.mavenplugins.gitlog.CalculateRuleForSinceTagName;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -50,7 +49,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
