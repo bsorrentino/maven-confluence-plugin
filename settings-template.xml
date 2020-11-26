@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+    <!--
+        enabled Whether to use this repository for downloading this type
+        of artifact. updatePolicy The frequency for downloading updates - can be
+        "always", "daily" (default), "interval:XXX" (in minutes) or "never" (only
+        if it doesn't exist locally). checksumPolicy What to do when verification
+        of an artifact checksum fails - warn, fail, etc. Valid values are "fail"
+        or "warn".
+    -->
+    <servers>
+
+        <server>
+            <id>sonatype-server</id>
+            <username>bsorrentino</username>
+            <password>${env.OSS_SONATYPE_PASSWORD}</password>
+        </server>
+
+    </servers>
+
+    <profiles>
+
+        <profile>
+            <id>sonatype</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <repo.id>sonatype-server</repo.id>
+                <release.repo.url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</release.repo.url>
+                <!--release.repo.url>http://oss.sonatype.org/content/repositories/releases</release.repo.url-->
+                <snapshot.repo.url>http://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
+                <group.repo.url>http://oss.sonatype.org/content/groups/public/</group.repo.url>
+            </properties>
+
+            <repositories>
+
+                <repository>
+                    <id>${repo.id}</id>
+                    <name>bitbucket snapshots</name>
+                    <url>${snapshot.repo.url}</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+            </repositories>
+
+            <pluginRepositories>
+
+                <pluginRepository>
+                    <id>${repo.id}</id>
+                    <name>bitbucket snapshots</name>
+                    <url>${snapshot.repo.url}</url>
+
+                    <snapshots>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>ignore</checksumPolicy>
+                    </snapshots>
+
+                </pluginRepository>
+
+            </pluginRepositories>
+        </profile>
+
+    </profiles>
+
+    <proxies>
+    </proxies>
+
+</settings>
