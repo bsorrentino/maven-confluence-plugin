@@ -26,12 +26,12 @@
     </developers>
     <modules>
         <module>core</module>
-        <module>reporting-plugin</module>
+        <module>plugin-reporting</module>
         <module>test-publishing</module>
         <module>test-plugin</module>
         <module>test-integration</module>
         <module>processor-freemarker</module>
-        <module>scrollversions-addon</module>
+        <module>addon-scrollversions</module>
         <module>processor-pegdown</module>
         <module>processor-flexmark</module>
         <module>processor-commonmark</module>
