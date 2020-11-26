@@ -27,22 +27,26 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <repo.id>sonatype-server</repo.id>
+                <snapshot.repo.id>sonatype-server</snapshot.repo.id>
+                <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots/</snapshot.repo.url>
+                <release.repo.id>sonatype-server</release.repo.id>
                 <release.repo.url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</release.repo.url>
                 <!--release.repo.url>http://oss.sonatype.org/content/repositories/releases</release.repo.url-->
-                <snapshot.repo.url>http://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
                 <group.repo.url>http://oss.sonatype.org/content/groups/public/</group.repo.url>
             </properties>
 
             <repositories>
 
                 <repository>
-                    <id>${repo.id}</id>
-                    <name>bitbucket snapshots</name>
+                    <id>sonatype-server</id>
+                    <name>sonatype snapshots</name>
                     <url>${snapshot.repo.url}</url>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
                 </repository>
 
             </repositories>
@@ -50,8 +54,8 @@
             <pluginRepositories>
 
                 <pluginRepository>
-                    <id>${repo.id}</id>
-                    <name>bitbucket snapshots</name>
+                    <id>sonatype-server</id>
+                    <name>sonatype snapshots</name>
                     <url>${snapshot.repo.url}</url>
 
                     <snapshots>
@@ -65,8 +69,5 @@
         </profile>
 
     </profiles>
-
-    <proxies>
-    </proxies>
 
 </settings>

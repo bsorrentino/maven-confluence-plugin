@@ -21,6 +21,6 @@ jobs:
           java-version: 1.8
 
       - name: Build with Maven
-        run: mvn -B deploy --file pom.xml -s settings-template.xml
         env:
           OSS_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: mvn -B deploy --file pom.xml -s settings-template.xml
