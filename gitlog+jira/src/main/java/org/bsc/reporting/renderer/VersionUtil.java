@@ -6,10 +6,17 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static java.util.Collections.binarySearch;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
 
 /**
  * @author ar
@@ -23,7 +30,7 @@ public class VersionUtil {
         if (calculateRuleForSinceTagName.equals(CalculateRuleForSinceTagName.NO_RULE)) {
             return null;
         }
-        ArtifactVersion artifactVersion = parseArtifactVersion(version);
+        final ArtifactVersion artifactVersion = parseArtifactVersion(version);
         int major = artifactVersion.getMajorVersion();
         int minor = artifactVersion.getMinorVersion();
         int patch = artifactVersion.getIncrementalVersion();
@@ -71,16 +78,16 @@ public class VersionUtil {
         if (version.contains("-")) return version;
         int i = 0;
         for (; i < version.length(); i++) {
-            if (!Character.isDigit(version.charAt(i)) &&
-                    version.charAt(i) != '.') {
+            if (!Character.isDigit(version.charAt(i)) &&version.charAt(i) != '.') {
                 break;
             }
         }
         if (i > 0) {
+            final String endVer = version.substring(i, version.length());
             if (version.charAt(i - 1) == '.') {
-                return version.substring(0, i - 1) + "-" + version.substring(i, version.length());
+                return version.substring(0, i - 1) + "-" + endVer;
             } else {
-                return version.substring(0, i) + "-" + version.substring(i, version.length());
+                return version.substring(0, i) + "-" + endVer;
             }
         } else
             return version;
@@ -102,92 +109,94 @@ public class VersionUtil {
         return version;
     }
 
+    /**
+     *
+     * @param tagNames
+     * @param versionTagNamePart
+     * @return
+     */
     public static Collection<String> filterTagNamesByTagNamePart(Collection<String> tagNames, String versionTagNamePart) {
-        List<String> list = new ArrayList<String>();
-        for (String tagName : tagNames) {
-            if (tagName.contains(versionTagNamePart)) {
-                list.add(tagName);
-            }
-        }
-        return list;
+        return tagNames.stream().filter( tagName -> tagName.contains(versionTagNamePart) ).collect(toList());
     }
 
-    @SuppressWarnings("unchecked")
+
+    /**
+     *
+     * @param versionTagList
+     * @param versionTagNamePart
+     * @return
+     */
     public static String findNearestVersionTagsBefore(Collection<String> versionTagList, String versionTagNamePart) {
 
-        Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
+        final Map<ArtifactVersion, String> map =
+                versionTagList.stream().collect( toMap( VersionUtil::parseArtifactVersion, identity() ));
 
-        for (String versionTag : versionTagList) {
-            map.put(parseArtifactVersion(versionTag), versionTag);
-        }
+        final ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
 
-        ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
-
-        List<ArtifactVersion> sortedList = new ArrayList<>(map.keySet());
-
-        Collections.sort(sortedList);
+        final List<ArtifactVersion> sortedList = map.keySet().stream().sorted().collect(toList());
 
         //the index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1).
-        int index = Collections.binarySearch(sortedList, currentVersion, null);
+        int index = binarySearch(sortedList, currentVersion, null);
 
         if (index >= 0) {
             return map.get(sortedList.get(index));
         }
+
         if (sortedList.size() > 0) {
-            if (-index-2>=0) {
-                return map.get(sortedList.get(-index - 2));
-            }
-            else {
-                return null;
-            }
-        } else {
-            return null;
+            int i = -index-2;
+            return (i>=0) ? map.get(sortedList.get(i)) : null ;
         }
+
+        return null;
     }
 
+    /**
+     *
+     * @param versionTagList
+     * @param versionTagNamePart
+     * @return
+     */
     public static Collection<String>  removeTagWithVersion(Collection<String> versionTagList, String versionTagNamePart){
-        Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
-        for (String versionTag : versionTagList) {
-            map.put(parseArtifactVersion(versionTag), versionTag);
-        }
-        ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
+
+        final Map<ArtifactVersion, String> map =
+                versionTagList.stream().collect( toMap( VersionUtil::parseArtifactVersion, identity() ));
+
+        final ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
+
         map.remove(currentVersion);
+
         return map.values();
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     *
+     * @param versionNameList
+     * @param start
+     * @param end
+     * @return
+     */
     public static LinkedList<String> sortAndFilter(Collection<String> versionNameList,
                                                    String start,
-                                                   String end) {
+                                                   String end)
+    {
 
         final ArtifactVersion startVersion = parseArtifactVersion(start);
-        final ArtifactVersion endVersion;
-        if (end != null && !end.isEmpty()) {
-            endVersion = parseArtifactVersion(end);
-        } else {
-            endVersion = null;
-        }
-
+        final ArtifactVersion endVersion = (end != null && !end.isEmpty()) ? parseArtifactVersion(end) : null;
 
         if (endVersion!=null && startVersion.compareTo(endVersion) > 0) {
             throw new IllegalArgumentException(
-                    String.format("startVersion %s must be less or equals to endVersion %s",
+                    format("startVersion %s must be less or equals to endVersion %s",
                             startVersion, endVersion));
 
         }
 
-        Map<ArtifactVersion, String> map = new HashMap<ArtifactVersion, String>();
-
-        for (String versionTag : versionNameList) {
-            map.put(parseArtifactVersion(versionTag), versionTag);
-        }
+        final Map<ArtifactVersion, String> map =
+                versionNameList.stream().collect( toMap( VersionUtil::parseArtifactVersion, identity() ));
 
         return map.keySet().stream().filter( current -> {
 
                 if (endVersion != null) {
-                    if (startVersion.compareTo(current) <= 0
-                            &&
-                            endVersion.compareTo(current) >= 0) {
+                    if (startVersion.compareTo(current) <= 0 && endVersion.compareTo(current) >= 0) {
                         return true;
                     }
                 } else {
@@ -200,7 +209,7 @@ public class VersionUtil {
         })
         .sorted()
         .map( artifactVersion -> map.get(artifactVersion) )
-        .collect( Collectors.toCollection( () -> new LinkedList<String>()));
+        .collect( toCollection( () -> new LinkedList<String>()));
 
 
     }

@@ -25,11 +25,11 @@
         </developer>
     </developers>
     <modules>
-        <module>maven-confluence-core</module>
-        <module>maven-confluence-reporting-plugin</module>
-        <module>maven-confluence-test</module>
-        <module>maven-confluence-plugin-test</module>
-        <module>maven-confluence-itest</module>
+        <module>core</module>
+        <module>reporting-plugin</module>
+        <module>test</module>
+        <module>plugin-test</module>
+        <module>integration-test</module>
         <module>site-processor-freemarker</module>
         <module>scrollversions-addon</module>
         <module>markdown-processor-pegdown</module>
