@@ -2,13 +2,13 @@ package org.bsc.mojo;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
 
 /**

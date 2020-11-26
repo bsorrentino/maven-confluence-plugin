@@ -23,6 +23,7 @@
             <groupId>org.codehaus.swizzle</groupId>
             <artifactId>swizzle-confluence</artifactId>
             <version>1.6.1</version>
+            <scope>test</scope>
 
             <exclusions>
                 <exclusion>
@@ -36,31 +37,41 @@
             </exclusions>
 
         </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-verifier</artifactId>
             <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+
         <dependency>
             <groupId>xmlrpc</groupId>
             <artifactId>xmlrpc</artifactId>
             <version>2.0.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.10.19</version>
+            <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

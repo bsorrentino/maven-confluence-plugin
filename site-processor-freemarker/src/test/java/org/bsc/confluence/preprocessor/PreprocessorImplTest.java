@@ -1,8 +1,7 @@
 package org.bsc.confluence.preprocessor;
 
 import static java.util.Collections.singletonMap;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,9 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import org.junit.Test;
-
 import lombok.val;
+import org.junit.jupiter.api.Test;
 
 public class PreprocessorImplTest {
 
@@ -42,7 +40,7 @@ public class PreprocessorImplTest {
         val readInput = read(resourceName + ".input");
         final Map<String,Object> varInput = singletonMap("key", singletonMap("innerKey", "value1"));
         val readOutput = read(resourceName + ".output");
-        assertThat(p.process(readInput, varInput).join(), is(readOutput));
+        assertEquals(readOutput, p.process(readInput, varInput).join() );
     }
 
     private String read(String inputName) throws IOException, URISyntaxException {

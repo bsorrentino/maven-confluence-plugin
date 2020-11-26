@@ -1,30 +1,19 @@
 package org.bsc.markdown.pegdown;
 
+import org.bsc.confluence.model.Site;
+import org.bsc.markdown.MarkdownParserContext;
+import org.junit.jupiter.api.Test;
+import org.pegdown.PegDownProcessor;
+import org.pegdown.ast.*;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.Consumer;
-
-
-import lombok.Data;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.model.Site;
-import org.bsc.markdown.MarkdownParserContext;
-import org.junit.Test;
-import org.pegdown.PegDownProcessor;
-import org.pegdown.ast.AnchorLinkNode;
-import org.pegdown.ast.ExpLinkNode;
-import org.pegdown.ast.Node;
-import org.pegdown.ast.RefLinkNode;
-import org.pegdown.ast.RootNode;
-import org.pegdown.ast.StrongEmphSuperNode;
-import org.pegdown.ast.VerbatimNode;
-import org.pegdown.ast.Visitor;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

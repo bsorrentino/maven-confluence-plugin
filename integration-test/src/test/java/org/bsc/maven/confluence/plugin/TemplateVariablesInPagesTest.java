@@ -7,11 +7,8 @@ import static org.apache.maven.it.util.FileUtils.fileRead;
 import static org.apache.maven.it.util.FileUtils.fileWrite;
 import static org.apache.maven.it.util.FileUtils.mkdir;
 import static org.apache.maven.it.util.ResourceExtractor.simpleExtractResources;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -32,12 +29,11 @@ import org.apache.maven.it.Verifier;
 import org.apache.maven.it.util.ResourceExtractor;
 import org.apache.xmlrpc.WebServer;
 import org.codehaus.swizzle.confluence.Page;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("unchecked")
 public class TemplateVariablesInPagesTest {
 
     private static final String HOME_PAGE_NAME = "Hello Plugin";
@@ -54,18 +50,18 @@ public class TemplateVariablesInPagesTest {
     private static WebServer ws;
     private Handler handler;
 
-    @BeforeClass
+    @BeforeAll
     public static void createWebServer() {
         ws = new WebServer( 19005 );
         ws.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void shutTheWebServerDown() {
         ws.shutdown();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ws.removeHandler( "confluence1" );
         handler = mock( Handler.class );
@@ -155,7 +151,8 @@ public class TemplateVariablesInPagesTest {
 
 
 
-        when(handler.storePage(anyString(), any(Hashtable.class))).then( ( invocationOnMock ) -> {
+        when(handler.storePage(anyString(), any(Hashtable.class))).then( invocationOnMock -> {
+
                 Map<String, String> hashtable = new Hashtable<>();
                 Map<String, String> pageMap = (Map<String, String>)invocationOnMock.getArguments()[1];
                 hashtable.putAll(pageMap);
@@ -226,12 +223,12 @@ public class TemplateVariablesInPagesTest {
 
         String pluginGoalsPath = testDir.getAbsolutePath() + "/results/Hello Plugin==Hello Plugin - Goals";
         assertTrue(fileExists(pluginGoalsPath));
-        assertThat(fileRead(pluginGoalsPath), not(containsString("${plugin.goals}")));
+        assertFalse(fileRead(pluginGoalsPath).contains("${plugin.goals}"));
 
         String pluginsSummaryPath = testDir.getAbsolutePath() + "/results/Hello Plugin==Hello Plugin - PluginsSummary";
         assertTrue(fileExists(pluginsSummaryPath));
         String pluginsSummary = fileRead(pluginsSummaryPath);
-        assertThat(pluginsSummary, not(containsString("${plugin.summary}")));
+        assertFalse(pluginsSummary.contains("${plugin.summary}"));
     }
 
     @Test
@@ -243,13 +240,13 @@ public class TemplateVariablesInPagesTest {
         assertTrue(fileExists(pluginGoalsPath));
 
         String pluginGoalhelpPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals==Hello Plugin - help";
-        assertTrue("help goal should be a subpage of Goals", fileExists(pluginGoalhelpPath));
+        assertTrue(fileExists(pluginGoalhelpPath), "help goal should be a subpage of Goals" );
         String pluginGoaltouchPath = testDir.getAbsolutePath() + "/results/Hello Plugin - Goals==Hello Plugin - touch";
-        assertTrue("touch goal should be a subpage of Goals", fileExists(pluginGoaltouchPath));
+        assertTrue(fileExists(pluginGoaltouchPath), "touch goal should be a subpage of Goals" );
 
-        assertFalse("help goal should not be under the home page",
-                fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin==Hello Plugin - help"));
-        assertFalse("touch goal should not be under the home page",
-                fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin==Hello Plugin - touch"));
+        assertFalse( fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin==Hello Plugin - help"),
+                "help goal should not be under the home page");
+        assertFalse( fileExists(testDir.getAbsolutePath() + "/results/Hello Plugin==Hello Plugin - touch"),
+                "touch goal should not be under the home page");
     }
 }

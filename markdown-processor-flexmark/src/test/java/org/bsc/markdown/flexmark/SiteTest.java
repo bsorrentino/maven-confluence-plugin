@@ -6,7 +6,6 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
-import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,11 +19,7 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static org.bsc.confluence.model.SiteProcessor.processMarkdown;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * 
@@ -81,33 +76,33 @@ public class SiteTest implements SiteFactory.Model {
     public void validateName() {
         
         final Pattern p = Pattern.compile("^(.*)\\s+$|^\\s+(.*)");
-        assertThat( p.matcher("name").matches(), is(false));
-        assertThat( p.matcher("name ").matches(), is(true));
-        assertThat( p.matcher("name  ").matches(), is(true));
-        assertThat( p.matcher(" name").matches(), is(true));
-        assertThat( p.matcher("  name").matches(), is(true));
-        assertThat( p.matcher(" name ").matches(), is(true));
-        assertThat( p.matcher(" name  ").matches(), is(true));
+        assertFalse( p.matcher("name").matches());
+        assertTrue( p.matcher("name ").matches());
+        assertTrue( p.matcher("name  ").matches());
+        assertTrue( p.matcher(" name").matches());
+        assertTrue( p.matcher("  name").matches());
+        assertTrue( p.matcher(" name ").matches());
+        assertTrue( p.matcher(" name  ").matches());
     }
     
     @Test
     public void shouldSupportRefLink() throws IOException {
         val parentPageTitle = Optional.of("Test");
         val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
-        assertThat( stream, IsNull.notNullValue());
+        assertNull( stream );
         val content = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
-        assertThat( content, IsNull.notNullValue());
+        assertNull( content );
         val converted = content.split("\n+");
         int i = 2;
 
 
-        assertThat(converted[i++], equalTo(format("* This is a relative link to another page [SECOND PAGE|%s - page 2|].", parentPageTitle)) );
-        assertThat(converted[i++], equalTo("* This one is [inline|http://google.com|Google].") );
-        assertThat(converted[i++], equalTo("* This one is [inline *wo* title|http://google.com|].") );
-        assertThat(converted[i++], containsString("[google|http://google.com]"));
-        assertThat(converted[i++], containsString("[more complex google|http://google.com|Other google]"));
-        assertThat(converted[i++], equalTo("* This is my [relative|relativepage|] link defined after.") );
-        assertThat(converted[i++], containsString("[rel|Test - relativeagain]"));
+        assertEquals( format("* This is a relative link to another page [SECOND PAGE|%s - page 2|].", parentPageTitle), converted[i++] );
+        assertEquals(converted[i++], "* This one is [inline|http://google.com|Google]." );
+        assertEquals(converted[i++], "* This one is [inline *wo* title|http://google.com|]." );
+        assertTrue( converted[i++].contains("[google|http://google.com]"));
+        assertTrue(converted[i++].contains("[more complex google|http://google.com|Other google]"));
+        assertEquals( "* This is my [relative|relativepage|] link defined after.", converted[i++] );
+        assertTrue(converted[i++].contains("[rel|Test - relativeagain]"));
     }
 
     @Test
@@ -118,19 +113,19 @@ public class SiteTest implements SiteFactory.Model {
         val parentPageTitle = Optional.of("Test IMG");
 
         val stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
-        assertThat( stream, IsNull.notNullValue());
+        assertNull( stream );
         val content = processMarkdown(site, site.getHome(), Optional.of(page), IOUtils.toString(stream), parentPageTitle);
-        assertThat( content, IsNull.notNullValue());
+        assertNull( content );
        val converted = content.split("\n+");
 
         int i = 2;
-        assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
-        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon!"));
-        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon!"));
-        assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y!"));
-        assertThat(converted[i++], containsString("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y1!"));
-        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon-y2!"));
-        assertThat(converted[i++], containsString("!${page.title}^conf-icon-64.png|conf-icon-none!"));
+        assertTrue(converted[i++].contains("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
+        assertTrue(converted[i++].contains("!${page.title}^conf-icon-64.png|conf-icon!"));
+        assertTrue(converted[i++].contains("!${page.title}^conf-icon-64.png|conf-icon!"));
+        assertTrue(converted[i++].contains("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y!"));
+        assertTrue(converted[i++].contains("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y1!"));
+        assertTrue(converted[i++].contains("!${page.title}^conf-icon-64.png|conf-icon-y2!"));
+        assertTrue(converted[i++].contains("!${page.title}^conf-icon-64.png|conf-icon-none!"));
     }
 
     @Test
@@ -138,18 +133,18 @@ public class SiteTest implements SiteFactory.Model {
        val parentPageTitle = Optional.of("Test");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
-        assertThat( stream, IsNull.notNullValue());
+        assertNull( stream );
         val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
-        assertThat( converted, IsNull.notNullValue());
+        assertNull( converted );
 
-        assertThat("All forms of HRules should be supported", converted, containsString("----\n1\n----\n2\n----\n3\n----\n4\n----"));
+        assertTrue("All forms of HRules should be supported", converted.contains("----\n1\n----\n2\n----\n3\n----\n4\n----"));
         /* only when Extensions.SMARTS is activated
-        assertThat(converted, containsString("&hellip;"));
-        assertThat(converted, containsString("&ndash;"));
-        assertThat(converted, containsString("&mdash;"));
+        assertTrue(converted.contains("&hellip;"));
+        assertTrue(converted.contains("&ndash;"));
+        assertTrue(converted.contains("&mdash;"));
         */
-        assertThat(converted, containsString("Forcing a line-break\nNext line in the list"));
-        assertThat(converted, containsString("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+        assertTrue(converted.contains("Forcing a line-break\nNext line in the list"));
+        assertTrue(converted.contains("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
     }
 
     @Test
@@ -157,17 +152,17 @@ public class SiteTest implements SiteFactory.Model {
        val parentPageTitle = Optional.of("Test Macro");
 
         val stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
-        assertThat( stream, IsNull.notNullValue());
+        assertNotNull( stream );
         val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
-        assertThat( converted, IsNull.notNullValue());
+        assertNotNull( converted );
 
-        assertThat(converted, containsString("{info:title=About me}\n"));
-        assertThat("Should not generate unneeded param 'title'", converted, not(containsString("{note:title=}\n")));
-        assertThat(converted, containsString("{tip:title=About you}\n"));
-        assertThat(converted, containsString("bq. test a simple blockquote"));
-        assertThat(converted, containsString("{quote}\n"));
-        assertThat(converted, containsString("* one\n* two"));
-        assertThat(converted, containsString("a *strong* and _pure_ feeling"));
+        assertTrue(converted.contains("{info:title=About me}\n") );
+        assertFalse("Should not generate unneeded param 'title'", converted.contains("{note:title=}\n"));
+        assertTrue(converted.contains("{tip:title=About you}\n"));
+        assertTrue(converted.contains("bq. test a simple blockquote"));
+        assertTrue(converted.contains("{quote}\n"));
+        assertTrue(converted.contains("* one\n* two"));
+        assertTrue(converted.contains("a *strong* and _pure_ feeling"));
 
     }
 

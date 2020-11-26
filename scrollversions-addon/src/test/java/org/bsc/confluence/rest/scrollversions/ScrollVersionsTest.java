@@ -1,12 +1,12 @@
 package org.bsc.confluence.rest.scrollversions;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
 import lombok.val;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 
@@ -23,21 +23,21 @@ public class ScrollVersionsTest {
         val confluenceUrl       = "http://localhost:8090/rest/api";     
         val scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
         
-        assertThat( scrollVersionsUrl, equalTo("http://localhost:8090/rest/scroll-versions/1.0"));
+        assertEquals( "http://localhost:8090/rest/scroll-versions/1.0", scrollVersionsUrl );
         }
         
         {
         val confluenceUrl       = "http://localhost:8090/rest/api/";     
         val scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
-        
-        assertThat( scrollVersionsUrl, equalTo("http://localhost:8090/rest/scroll-versions/1.0"));
+
+        assertEquals( "http://localhost:8090/rest/scroll-versions/1.0", scrollVersionsUrl );
         }
         
         {
         val confluenceUrl       = "http://localhost:8090/rest/api/xxx/rest/api";     
         val scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
 
-        assertThat( scrollVersionsUrl, equalTo("http://localhost:8090/rest/api/xxx/rest/scroll-versions/1.0"));
+            assertEquals( "http://localhost:8090/rest/api/xxx/rest/scroll-versions/1.0", scrollVersionsUrl );
         }
         
     }

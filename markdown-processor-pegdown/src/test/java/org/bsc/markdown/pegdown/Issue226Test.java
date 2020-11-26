@@ -1,11 +1,11 @@
 package org.bsc.markdown.pegdown;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Issue226Test extends PegdownParse {
 
