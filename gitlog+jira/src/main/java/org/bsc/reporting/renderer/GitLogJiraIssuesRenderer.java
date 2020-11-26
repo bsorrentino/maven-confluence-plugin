@@ -27,9 +27,17 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
      *
      * @param sink the sink to use.
      */
-    public GitLogJiraIssuesRenderer(Sink sink, String gitLogSinceTagName, String gitLogUntilTagName, List<String> jiraProjectKeyList,
-                                    String currentVersion, CalculateRuleForSinceTagName calculateRuleForSinceTagName,
-                                    String gitLogTagNamesPattern, Boolean gitLogGroupByVersions, Log log) {
+    public GitLogJiraIssuesRenderer(
+            Sink sink,
+            String gitLogSinceTagName,
+            String gitLogUntilTagName,
+            List<String> jiraProjectKeyList,
+            String currentVersion,
+            CalculateRuleForSinceTagName calculateRuleForSinceTagName,
+            String gitLogTagNamesPattern,
+            Boolean gitLogGroupByVersions,
+            Log log)
+    {
         super(sink);
         this.gitLogSinceTagName = gitLogSinceTagName;
         this.gitLogUntilTagName = gitLogUntilTagName;
