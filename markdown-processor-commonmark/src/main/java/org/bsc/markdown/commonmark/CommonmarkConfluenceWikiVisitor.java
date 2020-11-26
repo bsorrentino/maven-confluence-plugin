@@ -1,7 +1,6 @@
 package org.bsc.markdown.commonmark;
 
 import org.bsc.markdown.MarkdownParserContext;
-import org.bsc.markdown.MarkdownVisitorHelper;
 import org.bsc.markdown.commonmark.extension.NoticeBlock;
 import org.bsc.markdown.commonmark.extension.NoticeBlockExtension;
 import org.commonmark.Extension;
@@ -419,15 +418,15 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             this( parent, false);
         }
 
-        ChildrenProcessor captureOutput(Consumer<String> v) {
+        ChildrenProcessor<T> captureOutput(Consumer<String> v) {
             captureOutput = ofNullable(v);
             return this;
         }
-        ChildrenProcessor pre(String v, Object ...args) {
+        ChildrenProcessor<T> pre(String v, Object ...args) {
             pre = ofNullable(format( v, args));
             return this;
         }
-        ChildrenProcessor post(String v, Object ...args) {
+        ChildrenProcessor<T> post(String v, Object ...args) {
             post = ofNullable(format( v, args));
             return this;
         }
@@ -435,7 +434,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 //            forEach = ofNullable(v);
 //            return this;
 //        }
-        <A extends Node> ChildrenProcessor map(Function<Node,String> v ) {
+        <A extends Node> ChildrenProcessor<T> map(Function<Node,String> v ) {
             map = ofNullable(v);
             return this;
         }
@@ -470,7 +469,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         }
     }
 
-    protected <T extends Node> ChildrenProcessor processChildren(T parent ) {
-        return new ChildrenProcessor( parent, false );
+    protected <T extends Node> ChildrenProcessor<T> processChildren(T parent ) {
+        return new ChildrenProcessor<T>( parent, false );
     }
 }

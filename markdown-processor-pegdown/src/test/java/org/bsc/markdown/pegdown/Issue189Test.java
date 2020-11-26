@@ -1,9 +1,7 @@
 package org.bsc.markdown.pegdown;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -45,15 +43,15 @@ public class Issue189Test extends PegdownParse {
         final String [] lines = serializeToString( createPage("Page1", "./Page1.md") ).split( "\n" );
         
         int i=0;
-        assertThat( lines[i++], equalTo("!${page.title}^img.png|alt text!"));
-        assertThat( lines[i++], equalTo("!${page.title}^img.png|!"));
-        assertThat( lines[i++], equalTo("!${page.title}^img.png|!"));
-        assertThat( lines[i++], equalTo("!${page.title}^img.png|!"));
-        assertThat( lines[i++], equalTo("!${pageTitle}^img.png|alt text!"));
-        assertThat( lines[i++], equalTo("!${page.title}^img.png|alt text!"));
-        assertThat( lines[i++], equalTo("!${page.title}^meal.png|thumbnail!"));
-        assertThat( lines[i++], equalTo("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
-        assertThat( lines[i++], equalTo("!${page.title}^cb-integration-components.png|cb-integration-components.png!"));
+        assertEquals( "!${page.title}^img.png|alt text!", lines[i++] );
+        assertEquals( "!${page.title}^img.png|!", lines[i++] );
+        assertEquals( "!${page.title}^img.png|!", lines[i++] );
+        assertEquals( "!${page.title}^img.png|!", lines[i++] );
+        assertEquals( "!${pageTitle}^img.png|alt text!", lines[i++] );
+        assertEquals( "!${page.title}^img.png|alt text!", lines[i++] );
+        assertEquals( "!${page.title}^meal.png|thumbnail!", lines[i++] );
+        assertEquals( "!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!", lines[i++] );
+        assertEquals( "!${page.title}^cb-integration-components.png|cb-integration-components.png!", lines[i++] );
     }
 
     /**
@@ -90,24 +88,24 @@ public class Issue189Test extends PegdownParse {
         final String url = "${page.title}^image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), equalTo("${page.title}") );
-        assertThat( m.group(2), equalTo("image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertEquals( "${page.title}", m.group(1) );
+        assertEquals( "image-name.png", m.group(2) );
         }
         
         {
         final String url = "${page.title}^./images/image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), equalTo("${page.title}") );
-        assertThat( m.group(2), equalTo("./images/image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertEquals( "${page.title}", m.group(1) );
+        assertEquals( "./images/image-name.png", m.group(2) );
         
         getFileName(m.group(2))
         .exceptionally( ex -> { fail( ex.getMessage()); return null ;} )
-        .thenAccept( fileName -> assertThat( fileName, equalTo("image-name.png")))
+        .thenAccept( fileName -> assertEquals( "image-name.png", fileName))
         .join()
         ;
 
@@ -117,14 +115,14 @@ public class Issue189Test extends PegdownParse {
         final String url = "image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), nullValue() );
-        assertThat( m.group(2), equalTo("image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertNull( m.group(1) );
+        assertEquals( "image-name.png", m.group(2) );
         
         getFileName(m.group(2))
             .exceptionally( ex -> { fail( ex.getMessage()); return null ;} )
-            .thenAccept( fileName -> assertThat( fileName, equalTo("image-name.png")))
+            .thenAccept( fileName -> assertEquals( "image-name.png", fileName))
             .join()
             ;
         }
@@ -133,14 +131,14 @@ public class Issue189Test extends PegdownParse {
         final String url = "./images/image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), nullValue() );
-        assertThat( m.group(2), equalTo("./images/image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertNull( m.group(1) );
+        assertEquals( "./images/image-name.png", m.group(2) );
         
         getFileName(m.group(2))
             .exceptionally( ex -> { fail( ex.getMessage()); return null ;} )
-            .thenAccept( fileName -> assertThat( fileName, equalTo("image-name.png")))
+            .thenAccept( fileName -> assertEquals( "image-name.png", fileName))
             .join()
             ;
         }
@@ -149,14 +147,14 @@ public class Issue189Test extends PegdownParse {
         final String url = "file:///image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), nullValue() );
-        assertThat( m.group(2), equalTo("file:///image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertNull( m.group(1) );
+        assertEquals( "file:///image-name.png", m.group(2) );
         
         getFileName(m.group(2))
             .exceptionally( ex -> { fail( ex.getMessage()); return null ;} )
-            .thenAccept( fileName -> assertThat( fileName, equalTo("image-name.png")))
+            .thenAccept( fileName -> assertEquals( "image-name.png", fileName))
             .join()
             ;
         }
@@ -165,14 +163,14 @@ public class Issue189Test extends PegdownParse {
         final String url = "http://localhost:8080/image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), nullValue() );
-        assertThat( m.group(2), equalTo("http://localhost:8080/image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertNull( m.group(1) );
+        assertEquals( "http://localhost:8080/image-name.png", m.group(2) );
         
         getFileName(m.group(2))
             .exceptionally( ex -> { fail( ex.getMessage()); return null ;} )
-            .thenAccept( fileName -> assertThat( fileName, equalTo("image-name.png")))
+            .thenAccept( fileName -> assertEquals( "image-name.png", fileName))
             .join()
             ;
         }
@@ -181,14 +179,14 @@ public class Issue189Test extends PegdownParse {
         final String url = "classpath:/image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), nullValue() );
-        assertThat( m.group(2), equalTo("classpath:/image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertNull( m.group(1) );
+        assertEquals( "classpath:/image-name.png", m.group(2) );
         
         getFileName(m.group(2))
             .exceptionally( ex -> { return null ;} )
-            .thenAccept( fileName -> assertThat( fileName, nullValue()) )
+            .thenAccept( fileName -> assertNull( fileName ) )
             .join()
             ;
         }
@@ -197,15 +195,15 @@ public class Issue189Test extends PegdownParse {
         final String url = "/image-name.png";
         final Matcher m = patternUrl.matcher(url);
         
-        assertThat( m.matches(), equalTo(true) );
-        assertThat( m.groupCount(), equalTo(2) );
-        assertThat( m.group(1), nullValue() );
-        assertThat( m.group(2), equalTo("/image-name.png") );
+        assertTrue( m.matches() );
+        assertEquals( 2, m.groupCount() );
+        assertNull( m.group(1) );
+        assertEquals( "/image-name.png", m.group(2) );
         
         getFileName(m.group(2))
             .exceptionally( ex -> { fail( ex.getMessage()); return null ;} )
             .thenApply( fileName -> "${page.title}^".concat(fileName) )
-            .thenAccept( fileName -> assertThat( fileName, equalTo("${page.title}^image-name.png")))
+            .thenAccept( fileName -> assertEquals( "${page.title}^image-name.png", fileName ))
             .join()
             ;
         }

@@ -8,16 +8,13 @@ package org.bsc.confluence.rest.scrollversions;
 import lombok.val;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.ssl.SSLCertificateInfo;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ScrollVersionsConfluenceServiceIntegrationTest {
 
 
@@ -30,7 +27,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
         System.out.println();
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void clearSpace() {
         val ssl = new SSLCertificateInfo();
 
@@ -108,7 +105,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
 
     ScrollVersionsConfluenceService service;
 
-    @Before
+    @BeforeEach
     public void createService() {
         val ssl = new SSLCertificateInfo();
 
