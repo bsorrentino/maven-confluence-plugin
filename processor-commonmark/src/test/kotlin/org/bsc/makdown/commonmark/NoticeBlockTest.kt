@@ -42,12 +42,13 @@ class NoticeBlockTest {
 
     @Test
     //@Ignore
-    fun `parse notice blocks`()  = assertEquals( parse(), """
+    fun `parse notice blocks`()  = assertEquals( """
         h1. Notice Block Syntax
         h2. info
         {info:title=About me}
         {quote}
-        tposidufsqdf qsfpqs dfopqsdijf qmldjkflqsdif sqj
+        tposidufsqdf qsfpqs dfopqsdijf q
+        mldjkflqsdif sqj
         {quote}
         {info}
         
@@ -58,16 +59,18 @@ class NoticeBlockTest {
         
         h2. Tip with title
         {tip:title=About you}
-        tposidufsqdf qsfpqs dfopqsdijf qmldjkflqsdif sqj
+        tposidufsqdf qsfpqs dfopqsdijf q
+        mldjkflqsdif sqj
         {tip}
         
         h2. Warning with complex content
         {warning:title=About him}
-        tposidufsqdf qsfpqs dfopqsdijf qmldjkflqsdif sqj
+        tposidufsqdf qsfpqs dfopqsdijf q
+        mldjkflqsdif sqj
         * one
         * two
         have a *strong* and _pure_ feeling
         {warning}
-    """.trimIndent() )
+    """.trimIndent(), parse() )
 
 }
