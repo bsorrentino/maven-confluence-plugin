@@ -1,5 +1,6 @@
 package org.bsc.markdown.commonmark;
 
+import lombok.NonNull;
 import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.MarkdownVisitorHelper;
 import org.bsc.markdown.commonmark.extension.NoticeBlock;
@@ -14,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -22,9 +22,14 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static org.bsc.markdown.MarkdownVisitorHelper.processImageUrl;
-import static org.bsc.markdown.MarkdownVisitorHelper.processLinkUrl;
+import static org.bsc.markdown.MarkdownVisitorHelper.*;
 
+/**
+ * CommonmarkConfluenceWikiVisitor
+ *
+ * class that implements the Commonmark Visitor for translating to Confluence Wiki
+ *
+ */
 public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ implements Visitor  {
 
     public static class Parser  {
@@ -78,6 +83,27 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         return MarkdownVisitorHelper.escapeMarkdownText(text);
     }
 
+    private final static Pattern isHTMLCommentPattern = Pattern.compile( "^<!--(?:[\\s]*)(.+)-->$", Pattern.DOTALL );
+
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public static Matcher parseHTMLComment( @NonNull String text ) {
+        return isHTMLCommentPattern.matcher(text);
+    }
+
+    /**
+     * Visit document node
+     *
+     * @param node
+     */
+    @Override
+    public void visit(Document node) {
+        processChildren(node).process(false);
+    }
+
     /**
      * A sequence of non-blank lines that cannot be interpreted as other kinds of blocks forms a paragraph.
      * The contents of the paragraph are the result of parsing the paragraph’s raw content as inlines.
@@ -88,9 +114,8 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     @Override
     public void visit(Paragraph node) {
 
-        final ChildrenProcessor p =
-                    processChildren(node)
-                    ;
+        final ChildrenProcessor p = processChildren(node);
+
         if( isParentRoot(node) ) {
             p.post("\n");
         }
@@ -127,7 +152,6 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(Text node) {
-
         final String literal = escapeMarkdownText( node, node.getLiteral() );
         processChildren(node)
                 .pre( literal )
@@ -136,11 +160,9 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(Heading node) {
-
         processChildren(node)
                 .pre( format( "h%s. ", node.getLevel()) )
                 .process();
-
     }
 
     @Override
@@ -191,11 +213,6 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     }
 
     @Override
-    public void visit(Document node) {
-        processChildren(node).process(false);
-    }
-
-    @Override
     public void visit(FencedCodeBlock node) {
         final Function<String,String> info = (v) -> (v==null || v.length()==0 ) ? "" : ":"+v ;
 
@@ -210,7 +227,6 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         processChildren(node).pre("_").post("_").process( false);
 
     }
-
 
     @Override
     public void visit(StrongEmphasis node) {
@@ -291,7 +307,23 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(HtmlBlock node) {
-        processChildren(node).pre("{html}\n%s\n", node.getLiteral()).post("{html}").process();
+        final String literal = node.getLiteral();
+
+        final Matcher m = parseHTMLComment(literal);
+        if( m.matches() && isConfluenceMacro( m.group(1) ) ) {
+            processChildren(node)
+                    .post(m.group(1)).process();
+        }
+        else {
+            processChildren(node)
+                    .pre("{html}\n%s\n", literal)
+                    .post("{html}").process();
+        }
+    }
+
+    @Override
+    public void visit(HtmlInline node) {
+        processChildren(node).pre("<<HTMI>>").post("<</HTMI>>").process();
     }
 
     //@Custom
@@ -353,12 +385,6 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             return;
         }
         processChildren(node).pre("<<CSTB type=\"%s\">>", node.getClass().getSimpleName()).post("<</CSTB>>").process();
-    }
-
-
-    @Override
-    public void visit(HtmlInline node) {
-        processChildren(node).pre("<<HTMI>>").post("<</HTMI>>").process();
     }
 
     @Override
