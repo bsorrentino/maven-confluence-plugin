@@ -25,6 +25,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
  Date  | Release | Info   
 --- | --- | ---
+ **Nov 02, 2020** | [Release 6.11](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v11) | Bump junit from 4.12 to 4.13.1 
  **Sep 25, 2020** | [Release 6.10](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v10) | Fix issue [#229](https://github.com/bsorrentino/maven-confluence-plugin/issues/229) .
  **Sep 18, 2020** | [Release 6.9.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9.1) | Fix issue [#226](https://github.com/bsorrentino/maven-confluence-plugin/issues/226) .
  **Aug 5, 2020** | [Release 6.9](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9) | Fix issue [#223](https://github.com/bsorrentino/maven-confluence-plugin/issues/223) .
