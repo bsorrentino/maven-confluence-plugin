@@ -17,8 +17,9 @@ class MacroTest {
     //@Ignore
     fun `parse macros`()  = Assertions.assertEquals(
             """
-            h1. This is table of content
             {toc} 
+            
+            h1. This is table of content
             {toc:minLevel=2} 
             {toc:type=flat|separator=pipe:minLevel=2}
             """.trimIndent(),

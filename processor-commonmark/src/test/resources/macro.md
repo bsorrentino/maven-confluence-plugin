@@ -1,6 +1,7 @@
-# This is table of content  
-
-<!-- {toc} -->
+<!-- 
+{toc} 
+-->
+# This is table of content
 
 <!-- {toc:minLevel=2} -->
 
