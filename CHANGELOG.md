@@ -2,6 +2,130 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**updated changelog**
+
+ * updated readme
+
+[2ca1d0dcfb98fa8](https://github.com/bsorrentino/maven-confluence-plugin/commit/2ca1d0dcfb98fa8) bsorrentino *2020-12-11 14:08:01*
+
+**add confluence {chidren} macro support**
+
+
+[9ad656017ed97af](https://github.com/bsorrentino/maven-confluence-plugin/commit/9ad656017ed97af) bsorrentino *2020-12-09 11:48:45*
+
+**move to next development version**
+
+
+[ec8800fe3714a7e](https://github.com/bsorrentino/maven-confluence-plugin/commit/ec8800fe3714a7e) bsorrentino *2020-11-27 17:34:17*
+
+**add newline when detect markdown softlinebreak**
+
+
+[2c7c9d2b5848ae4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2c7c9d2b5848ae4) bsorrentino *2020-11-27 17:02:03*
+
+**skip escape markdown text for {toc} tests**
+
+
+[4c8884165a91489](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c8884165a91489) bsorrentino *2020-11-27 17:01:17*
+
+**skip escape markdown text for {toc}**
+
+
+[dad3f5903e43c26](https://github.com/bsorrentino/maven-confluence-plugin/commit/dad3f5903e43c26) bsorrentino *2020-11-27 17:00:04*
+
+**clean code**
+
+
+[83c16155a4561bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/83c16155a4561bb) bsorrentino *2020-11-26 18:01:38*
+
+**rename folder**
+
+
+[6d4605bac69474c](https://github.com/bsorrentino/maven-confluence-plugin/commit/6d4605bac69474c) bsorrentino *2020-11-26 17:45:27*
+
+**rename folder**
+
+
+[4cf552f7db81f7b](https://github.com/bsorrentino/maven-confluence-plugin/commit/4cf552f7db81f7b) bsorrentino *2020-11-26 17:42:20*
+
+**fix junit5 usage**
+
+
+[fe17dcc3f304022](https://github.com/bsorrentino/maven-confluence-plugin/commit/fe17dcc3f304022) bsorrentino *2020-11-26 17:27:38*
+
+**add junit platfrom runner**
+
+
+[ccaa5f0d0c61e4b](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccaa5f0d0c61e4b) bsorrentino *2020-11-26 17:15:49*
+
+**update pipeline**
+
+
+[85a8b170bbadf96](https://github.com/bsorrentino/maven-confluence-plugin/commit/85a8b170bbadf96) bsorrentino *2020-11-26 16:59:38*
+
+**update pipeline**
+
+
+[a49d60c813e582e](https://github.com/bsorrentino/maven-confluence-plugin/commit/a49d60c813e582e) bsorrentino *2020-11-26 16:34:17*
+
+**add pipeline for deploy snapshot**
+
+
+[6d1a522cf2c5321](https://github.com/bsorrentino/maven-confluence-plugin/commit/6d1a522cf2c5321) bsorrentino *2020-11-26 16:32:09*
+
+**refine project layout**
+
+ * clean code
+
+[97904fa1ac854c1](https://github.com/bsorrentino/maven-confluence-plugin/commit/97904fa1ac854c1) bsorrentino *2020-11-26 16:31:35*
+
+**remove forge submodule**
+
+
+[a6e856d2fe97ea5](https://github.com/bsorrentino/maven-confluence-plugin/commit/a6e856d2fe97ea5) bsorrentino *2020-11-26 14:04:23*
+
+**rename folders**
+
+
+[e4dc78f6f58dd8e](https://github.com/bsorrentino/maven-confluence-plugin/commit/e4dc78f6f58dd8e) bsorrentino *2020-11-26 13:56:19*
+
+**extract a new gitlog+jira module**
+
+
+[96b39de7984c982](https://github.com/bsorrentino/maven-confluence-plugin/commit/96b39de7984c982) bsorrentino *2020-11-25 22:34:29*
+
+**move to nex developer version**
+
+
+[ae08d17763354d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/ae08d17763354d3) bsorrentino *2020-11-03 10:06:33*
+
+
+###  [#235](https://github.com/bsorrentino/maven-confluence-plugin/issues/235) Find a consistent way to add &quot;confluence macro&quot; to markdown     *enhancement*  *under working*  
+
+**issue #235 - update site documentation**
+
+
+[67c687bc064425d](https://github.com/bsorrentino/maven-confluence-plugin/commit/67c687bc064425d) bsorrentino *2020-12-11 18:40:44*
+
+**issue #235 - fix problem with indented macro**
+
+
+[d4f9253a5aafe7f](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4f9253a5aafe7f) bsorrentino *2020-12-11 17:19:14*
+
+**issue #235 - unit test refinements**
+
+
+[4381bc94014cb86](https://github.com/bsorrentino/maven-confluence-plugin/commit/4381bc94014cb86) bsorrentino *2020-12-11 16:31:59*
+
+**issue #235 - added support of declaring confluence macro inside html comment. Removed confluence macro detection skipping the escaping of markdown text**
+
+
+[957a048c046c94b](https://github.com/bsorrentino/maven-confluence-plugin/commit/957a048c046c94b) bsorrentino *2020-12-11 14:01:55*
+
+
 ## v6.11
 ### Generic changes
 

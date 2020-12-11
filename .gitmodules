@@ -1,3 +1,0 @@
-[submodule "maven-confluence-plugin.forge"]
-	path = maven-confluence-plugin.forge
-	url = https://github.com/bsorrentino/maven-confluence-plugin.forge.git

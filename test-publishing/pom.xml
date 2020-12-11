@@ -1,0 +1,557 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>maven-confluence-parent</artifactId>
+        <groupId>org.bsc.maven</groupId>
+        <version>6.20</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>maven-confluence-test</artifactId>
+    <name>CONFLUENCE-REPORTING::Test</name>
+    <description>description</description>
+
+
+    <properties>
+        <scmUrl>https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</scmUrl>
+        <siteUrl>https://github.com/bsorrentino/maven-confluence-plugin</siteUrl>
+
+        <api.rpc>rpc/xmlrpc</api.rpc>
+        <api.rest>rest/api</api.rest>
+
+        <scrollversions.skip>false</scrollversions.skip>
+    </properties>
+
+    <contributors>
+        <contributor>
+            <name>Noelle</name>
+            <email>some.name@gmail.com</email>
+            <url>http://noellemarie.com</url>
+            <organization>Noelle Marie</organization>
+            <organizationUrl>http://noellemarie.com</organizationUrl>
+            <roles>
+                <role>tester</role>
+            </roles>
+            <timezone>America/Vancouver</timezone>
+            <properties>
+                <gtalk>some.name@gmail.com</gtalk>
+            </properties>
+        </contributor>
+    </contributors>
+
+    <scm>
+        <connection>scm:git:${scmUrl}</connection>
+        <developerConnection>scm:git:${scmUrl}</developerConnection>
+        <url>${siteUrl}</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <build>
+        <finalName>site-generation-test</finalName>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.bsc.maven</groupId>
+                    <artifactId>confluence-reporting-maven-plugin</artifactId>
+                    <version>${project.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>confluence-reporting-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>confluence-markdown-processor-commonmark</artifactId>
+                        <version>${project.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <labels>
+                        <label>maven</label>
+                    </labels>
+                    <properties>
+                        <evaluation>(y)</evaluation>
+                        <page>classpath:plugin-report.properties</page>
+                        <page1>file://${basedir}/src/main/resources/confluence.html</page1>
+                    </properties>
+                    <sslCertificate/>
+                    <!--
+                    <sslCertificate>
+                        <ignore>true</ignore>
+                    </sslCertificate>
+                    -->
+
+                </configuration>
+                <executions>
+                    <!--
+                    mvn confluence-reporting:export@issue148
+                    -->
+                    <execution>
+                        <id>issue148</id>
+                        <goals>
+                            <goal>export</goal>
+                        </goals>
+                        <configuration>
+                            <pageTitle>GIT EXPERIENCE</pageTitle>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@test1
+                    mvn confluence-reporting:delete@test1
+                    -->
+                    <execution>
+                        <id>test1</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <!-- TEST ISSUE 40 -->
+                            <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/site4confluence.xml</siteDescriptor>
+                            <!-- TEST ISSUE 39 -->
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@test2
+                    mvn confluence-reporting:delete@test2
+                    -->
+                    <execution>
+                        <id>test2</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+
+                            <!-- TEST ISSUE 147 -->
+                            <skip>false</skip>
+                            <!-- TEST ISSUE 107
+                            <parentPageId>18677788</parentPageId>
+                            -->
+                            <!-- TEST ISSUE 40 -->
+                            <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <!--siteDescriptor>${basedir}/src/site/confluence/site5.xml</siteDescriptor-->
+                            <siteDescriptor>${basedir}/src/site/confluence/site5-issue108.xml</siteDescriptor>
+                            <!-- TEST ISSUE 39 -->
+
+                            <deployState/>
+
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue158
+                    mvn confluence-reporting:delete@issue158
+                    -->
+                    <execution>
+                        <id>issue158</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <!-- TEST ISSUE 40 -->
+                            <siteDescriptor>${basedir}/src/site/confluence/issue158/site-issue158.xml</siteDescriptor>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <!-- TEST ISSUE 39 -->
+
+                            <deployState>
+                                <active>true</active>
+                            </deployState>
+
+                            <properties>
+                                <my_prop>my_prop_value</my_prop>
+                            </properties>
+
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue150
+                    mvn confluence-reporting:delete@issue150
+                    -->
+                    <execution>
+                        <id>issue150</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <!-- TEST ISSUE 40 -->
+                            <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <!-- TEST ISSUE 39 -->
+
+                            <deployState>
+                                <active>true</active>
+                            </deployState>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue129
+                    mvn confluence-reporting:delete@issue129
+                    -->
+                    <execution>
+                        <id>issue129</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <!-- TEST ISSUE 40 -->
+                            <templateWiki>${basedir}/src/site/confluence/issue129/template.confluence</templateWiki>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <!-- TEST ISSUE 39 -->
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue110
+                    mvn confluence-reporting:delete@issue110
+                    -->
+                    <execution>
+                        <id>issue110</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/site-issue110.xml</siteDescriptor>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </execution>
+
+                    <!--
+                    mvn confluence-reporting:deploy@issue187
+                    mvn confluence-reporting:delete@issue187
+                    -->
+                    <execution>
+                        <id>issue187</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue187/site-issue187.xml</siteDescriptor>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue189
+                    mvn confluence-reporting:delete@issue189
+                    -->
+                    <execution>
+                        <id>issue189</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue189/site-issue189.yaml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue191
+                    mvn confluence-reporting:delete@issue191
+                    -->
+                    <execution>
+                        <id>issue191</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue191/site-issue191.yaml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue194
+                    mvn confluence-reporting:delete@issue194
+                    -->
+                    <execution>
+                        <id>issue194</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue194/site-issue194.yaml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                            <spaceKey>SVTS</spaceKey>
+                            <parentPageTitle>Topic 1</parentPageTitle>
+                            <scrollVersions>
+                                <version>alpha</version>
+                                <skip>${scrollversions.skip}</skip>
+                            </scrollVersions>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue208
+                    mvn confluence-reporting:delete@issue208
+                    -->
+                    <execution>
+                        <id>issue208</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue208/site-issue208.xml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:blogpost@issue219
+                    -->
+                    <execution>
+                        <id>issue219</id>
+                        <goals>
+                            <goal>blogpost</goal>
+                        </goals>
+                        <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <title>${blog.title}</title>
+                            <content>${project.basedir}/src/site/confluence/issue219/blog.md</content>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue223
+                    mvn confluence-reporting:delete@issue223
+                    -->
+                    <execution>
+                        <id>issue223</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue223/site.yml</siteDescriptor>
+                            <failOnError>true</failOnError>
+                            <spaceKey>SVTS</spaceKey>
+                            <parentPageTitle>Topic 1</parentPageTitle>
+                            <scrollVersions>
+                                <version>beta</version>
+                                <skip>${scrollversions.skip}</skip>
+                            </scrollVersions>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@commonmark
+                    mvn confluence-reporting:delete@commonmark
+                    -->
+                    <execution>
+                        <id>commonmark</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml
+                            </siteDescriptor>
+                            <failOnError>true</failOnError>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@pegdown
+                    mvn confluence-reporting:delete@pegdown
+                    -->
+                    <execution>
+                        <id>pegdown</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <siteDescriptor>
+                                ${basedir}/src/site/confluence/issue154/site-pegdown.yaml
+                            </siteDescriptor>
+                            <failOnError>true</failOnError>
+
+                            <!--
+                            <spaceKey>SVTS</spaceKey>
+                            <parentPageTitle>Topic 1</parentPageTitle>
+                            <scrollVersions>
+                                <version>alpha</version>
+                            </scrollVersions>
+                            -->
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue215 -Dconfluence.childrenTitlesPrefixed=false
+                    mvn confluence-reporting:delete@issue215 -Dconfluence.childrenTitlesPrefixed=false
+
+                    <childrenTitlesPrefixed>false</childrenTitlesPrefixed>
+                    -->
+                    <execution>
+                        <id>issue215</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue226
+                    mvn confluence-reporting:delete@issue226
+                    -->
+                    <execution>
+                        <id>issue226</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue226/site.yml</siteDescriptor>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue227
+                    mvn confluence-reporting:delete@issue227
+                    -->
+                    <execution>
+                        <id>issue227</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <wikiFilesExt>.confluence</wikiFilesExt>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue227/site.yaml</siteDescriptor>
+                            <markdownProcessor>
+                                <name>commonmark</name>
+                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+
+        </plugins>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+
+        </profile>
+
+        <profile>
+            <id>freemaker</id>
+
+            <build>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.bsc.maven</groupId>
+                        <artifactId>confluence-reporting-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>maven-confluence-processor-freemarker</artifactId>
+                                <version>${project.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <!--
+                            mvn confluence-reporting:deploy@issue202 -Pfreemaker
+                            mvn confluence-reporting:delete@issue202 -Pfreemaker
+                            -->
+                            <execution>
+                                <id>issue202</id>
+                                <goals>
+                                    <goal>deploy</goal>
+                                    <goal>delete</goal>
+                                </goals>
+                                <configuration>
+                                    <wikiFilesExt>.confluence</wikiFilesExt>
+                                    <siteDescriptor>${basedir}/src/site/confluence/issue202/site-issue202.yml
+                                    </siteDescriptor>
+                                    <failOnError>true</failOnError>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+
+                <confluence.parentPage>Home</confluence.parentPage>
+                <confluence.serverId>confluence-local</confluence.serverId>
+                <confluence.spaceKey>TEST</confluence.spaceKey>
+                <confluence.endPoint>http://localhost:8090/${api.rest}</confluence.endPoint>
+
+            </properties>
+        </profile>
+
+        <profile>
+            <id>softphone</id>
+            <properties>
+
+                <confluence.parentPage>Home</confluence.parentPage>
+                <confluence.serverId>softphone-server</confluence.serverId>
+                <confluence.spaceKey>~bsorrentino</confluence.spaceKey>
+                <confluence.endPoint>http://softwarefactory.softphone.it/confluence/${api.rpc}</confluence.endPoint>
+
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
