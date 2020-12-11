@@ -292,7 +292,7 @@
                         <artifactId>site-maven-plugin</artifactId>
                         <version>0.12</version>
                         <configuration>
-                            <message>Creating site for ${project.version}</message>
+                            <message>Creating site for ${project.artifactId} ${project.version}</message>
                             <server>github</server>
                             <repositoryName>maven-confluence-plugin</repositoryName>
                             <repositoryOwner>bsorrentino</repositoryOwner>
