@@ -83,7 +83,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         return MarkdownVisitorHelper.escapeMarkdownText(text);
     }
 
-    private final static Pattern isHTMLCommentPattern = Pattern.compile( "^<!--(?:[\\s]*)(.+)-->$", Pattern.DOTALL );
+    private final static Pattern isHTMLCommentPattern = Pattern.compile( "^([\\s]*)<!--(?:[\\s]*)(.+)-->$", Pattern.DOTALL );
 
     /**
      *
@@ -310,14 +310,17 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final String literal = node.getLiteral();
 
         final Matcher m = parseHTMLComment(literal);
-        if( m.matches() && isConfluenceMacro( m.group(1) ) ) {
+        if( m.matches() && isConfluenceMacro( m.group(2) ) ) {
             processChildren(node)
-                    .post(m.group(1)).process();
+                    .pre(m.group(1))
+                    .post(m.group(2))
+                    .process();
         }
         else {
             processChildren(node)
                     .pre("{html}\n%s\n", literal)
-                    .post("{html}").process();
+                    .post("{html}")
+                    .process();
         }
     }
 

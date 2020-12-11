@@ -3,6 +3,7 @@ package org.bsc.makdown.commonmark
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor.parseHTMLComment
 import org.junit.Test
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import java.nio.file.Paths
@@ -20,8 +21,15 @@ class Issue235Test {
         val singleLineMatcher = parseHTMLComment("<!-- {xxxxxxx:yyyyyy}   -->")
 
         assertTrue( singleLineMatcher.matches() )
-        assertEquals( 1, singleLineMatcher.groupCount() )
-        assertEquals( "{xxxxxxx:yyyyyy}", singleLineMatcher.group(1).trimEnd() )
+        assertEquals( 2, singleLineMatcher.groupCount() )
+        assertEquals( "{xxxxxxx:yyyyyy}", singleLineMatcher.group(2).trimEnd() )
+
+        val singleLineMatcherWithPrefixSpaces = parseHTMLComment("  <!-- {xxxxxxx:yyyyyy}   -->")
+
+        assertTrue( singleLineMatcherWithPrefixSpaces.matches() )
+        assertEquals( 2, singleLineMatcherWithPrefixSpaces.groupCount() )
+        assertEquals( "  ", singleLineMatcherWithPrefixSpaces.group(1) )
+        assertEquals( "{xxxxxxx:yyyyyy}", singleLineMatcherWithPrefixSpaces.group(2).trimEnd() )
 
         val multiLineMatcher = parseHTMLComment("""<!-- 
             
@@ -31,13 +39,13 @@ class Issue235Test {
             """.trimIndent())
 
         assertTrue( multiLineMatcher.matches() )
-        assertEquals( 1, multiLineMatcher.groupCount() )
-        assertEquals( "{xxxxxxx:yyyyyy}", multiLineMatcher.group(1).trimEnd() )
+        assertEquals( 2, multiLineMatcher.groupCount() )
+        assertEquals( "{xxxxxxx:yyyyyy}", multiLineMatcher.group(2).trimEnd() )
 
     }
 
     @Test
-    fun parseMacros() {
+    fun `parse generic macros`() {
         val content = parseResource( this.javaClass, "issue235", this.site )
 
         assertEquals("""
@@ -53,4 +61,20 @@ class Issue235Test {
         """.trimIndent(), content )
     }
 
+    @Test
+    fun `parse specific macros`() {
+        val content =  parseResource( this.javaClass, "macro", this.site )
+        assertEquals("""
+            {toc} 
+            
+            h1. This is table of content
+            {toc:minLevel=2} 
+            {toc:type=flat|separator=pipe:minLevel=2} 
+            * Menu
+            ** Menu item1
+            ** Menu item2
+            * Related pages
+              {children:depth=1}
+            """.trimIndent(), content )
+    }
 }
