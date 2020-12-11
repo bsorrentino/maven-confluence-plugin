@@ -1,5 +1,6 @@
 package org.bsc.markdown;
 
+import lombok.NonNull;
 import org.bsc.confluence.FileExtension;
 import org.bsc.confluence.model.Site;
 
@@ -121,22 +122,38 @@ public class MarkdownVisitorHelper {
 
     }
 
-    public enum SkipEscapeMarkdownText {
+//    public enum SkipEscapeMarkdownText {
+//
+//        TOC( "^\\{[Tt][Oo][Cc](([:]\\w+=\\w+)([|].+)*)?\\}$" ),
+//        CHILDREN( "^\\{[Cc]hildren(([:]\\w+=\\w+)([|].+)*)?\\}$" )
+//        ;
+//
+//        private final Pattern patternToSkip;
+//
+//        public boolean matches( String text ) {
+//            return this.patternToSkip.matcher(text).matches();
+//        }
+//
+//        SkipEscapeMarkdownText( String patternToSkip ) {
+//            this.patternToSkip = Pattern.compile(patternToSkip);
+//        }
+//
+//    }
 
-        TOC( "^\\{[Tt][Oo][Cc](([:]\\w+=\\w+)([|].+)*)?\\}$" ),
-        CHILDREN( "^\\{[Cc]hildren(([:]\\w+=\\w+)([|].+)*)?\\}$" )
-        ;
+    /**
+     *
+     */
+    private static Pattern isConfluenceMacroPattern = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$" );
 
-        private final Pattern patternToSkip;
-
-        public boolean matches( String text ) {
-            return this.patternToSkip.matcher(text).matches();
-        }
-
-        SkipEscapeMarkdownText( String patternToSkip ) {
-            this.patternToSkip = Pattern.compile(patternToSkip);
-        }
-
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public static boolean isConfluenceMacro( String text ) {
+        // GUARD
+        if( text == null || text.isEmpty() ) return false;
+        return isConfluenceMacroPattern.matcher(text).matches();
     }
 
     /**
@@ -148,8 +165,8 @@ public class MarkdownVisitorHelper {
         // GUARD
         if( text == null || text.isEmpty() ) return text;
 
-        if( SkipEscapeMarkdownText.TOC.matches( text ) ) return text;
-        if( SkipEscapeMarkdownText.CHILDREN.matches( text ) ) return text;
+//        if( SkipEscapeMarkdownText.TOC.matches( text ) ) return text;
+//        if( SkipEscapeMarkdownText.CHILDREN.matches( text ) ) return text;
 
         final BiFunction<String,String,String> replaceAll = (pattern, value ) -> {
             final Matcher m = Pattern.compile(pattern).matcher(value);
