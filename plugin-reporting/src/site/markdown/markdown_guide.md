@@ -4,7 +4,6 @@ To use markdown it is enough to specify a **.md** file in the **site's uri**.
 
 Below the supported format:
 
-
 ### Header
 ```
 # h1
@@ -142,7 +141,7 @@ Colons can be used to align columns.
 | zebra stripes | are neat      |    $1 |
 
 There must be at least 3 dashes separating each header cell.
-The outer pipes (|) are optional, and you don't need to make the 
+The outer pipes (|) are optional, and you don't need to make the
 raw Markdown line up prettily. You can also use inline Markdown.
 
 Markdown | Less | Pretty
@@ -169,54 +168,64 @@ Markdown | Less | Pretty
 
 ]]></pre>
 
+### Confluence specific
 
-### Notice Block Syntax (Confluence specific)
+#### Notice Block Syntax
 
-### Info
+The **Notice Block Syntax** are particular confluence panel used to give a meaningful notice. The image below show an example of the currently supported block
 
-<pre><![CDATA[
-> **info:** About me
->
->> tposidufsqdf qsfpqs dfopqsdijf q
->>  mldjkflqsdif sqj
->
+<img src="images/noticeblock.png"/>
 
-]]></pre>
-
-### Note without title
+##### Info
 
 <pre><![CDATA[
-> **Note:**
+> **info:** title
 >
-> Contents of my note
+> Body Text
 >
-
 ]]></pre>
 
-### Tip
+##### Tip
 
 <pre><![CDATA[
-> **tip:** About you
+> **tip:** Title
 >
-> tposidufsqdf qsfpqs dfopqsdijf q
->  mldjkflqsdif sqj
+> Body Text
 >
-
 ]]></pre>
 
-
-### Warning with complex content
+##### Warning
 
 <pre><![CDATA[
-> **warning:** About him
+> **warning:** Title
 >
-> tposidufsqdf qsfpqs dfopqsdijf q
->  mldjkflqsdif sqj
+> Body Text
 >
-> - one
-> - two
->
-> have a **strong** and _pure_ feeling
-
 ]]></pre>
 
+##### Note
+
+<pre><![CDATA[
+> **Note:** title
+>
+> Body Text
+>
+]]></pre>
+
+### Include custom macro(s)
+
+to add a confluence macro consistently with markdown format, you have to wrap it within an **HTML comment**. Below some examples:
+
+```
+<!-- {toc:minLevel=2} -->
+
+# This is table of content
+
+* Menu
+    * Menu item1
+    * Menu item2
+* Related pages
+    <!--
+    {children:depth=1}
+    -->
+```
