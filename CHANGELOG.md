@@ -2,8 +2,18 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Next release
+## v6.20
 ### Generic changes
+
+**update site publish message**
+
+
+[cbf82a9d2648f2f](https://github.com/bsorrentino/maven-confluence-plugin/commit/cbf82a9d2648f2f) bsorrentino *2020-12-11 19:13:29*
+
+**set release, update changelog and readme**
+
+
+[ce66f9024e2fb92](https://github.com/bsorrentino/maven-confluence-plugin/commit/ce66f9024e2fb92) bsorrentino *2020-12-11 18:52:21*
 
 **updated changelog**
 
@@ -103,7 +113,7 @@
 [ae08d17763354d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/ae08d17763354d3) bsorrentino *2020-11-03 10:06:33*
 
 
-###  [#235](https://github.com/bsorrentino/maven-confluence-plugin/issues/235) Find a consistent way to add &quot;confluence macro&quot; to markdown     *enhancement*  *under working*  
+###  [#235](https://github.com/bsorrentino/maven-confluence-plugin/issues/235) Find a consistent way to add &quot;confluence macro&quot; to markdown     *enhancement*  
 
 **issue #235 - update site documentation**
 
