@@ -207,7 +207,7 @@
         <profile>
             <id>java9above</id>
             <activation>
-                <jdk>[9,)</jdk>
+                <jdk>[9,)</jdk><!-- java9 and above -->
             </activation>
 
             <dependencies>
@@ -255,7 +255,6 @@
             <id>utest</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-                <!--jdk>11</jdk-->
             </activation>
             <build>
                 <plugins>
