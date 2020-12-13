@@ -1,6 +1,6 @@
 module confluence.markdown.processor.commonmark {
     requires maven.confluence.core;
-    requires metainf.services;
+
     requires lombok;
     requires org.commonmark;
     requires org.commonmark.ext.gfm.strikethrough;
