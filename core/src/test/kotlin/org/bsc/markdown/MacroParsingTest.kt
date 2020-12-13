@@ -3,14 +3,11 @@ package org.bsc.markdown
 import org.bsc.markdown.MarkdownVisitorHelper.isConfluenceMacro
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertTrue
-import java.util.regex.Pattern
 
 class MacroParsingTest {
 
     @Test
     fun parse() {
-
-        val regexp = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$" )
 
         val macros = arrayOf(
             " {toc} ",
@@ -39,6 +36,10 @@ class MacroParsingTest {
             "{navmap:mylabel|wrapAfter=3|cellWidth=110|cellHeight=20|theme=mytheme}",
             "{toc-zone:separator=brackets|location=top}  ",
             "{toc-zone}",
+            "\${project.summary}",
+            "\${plugin.goals}",
+            "\${project.team}",
+            "\${project.scmManager}",
         )
 
         for( literal in macros )  {
