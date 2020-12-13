@@ -60,7 +60,7 @@ public interface MarkdownProcessor {
     }
 
     class Shared {
-        private String name = "pegdown";
+        private String name = "commonmark";
 
         public String getName() {
             return ofNullable(shared.name)

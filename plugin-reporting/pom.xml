@@ -208,7 +208,7 @@
         -->
         <dependency>
             <groupId>org.bsc.maven</groupId>
-            <artifactId>confluence-markdown-processor-pegdown</artifactId>
+            <artifactId>confluence-markdown-processor-commonmark</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
@@ -299,16 +299,8 @@
             <artifactId>maven-plugin-testing-harness</artifactId>
             <scope>test</scope>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.2.7-b41</version>
-            <scope>test</scope>
-        </dependency>
--->
-    </dependencies>
 
+    </dependencies>
 
     <profiles>
 
