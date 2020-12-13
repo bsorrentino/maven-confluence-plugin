@@ -14,6 +14,7 @@ module maven.confluence.core {
 
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.dataformat.yaml;
+    requires com.fasterxml.jackson.dataformat.xml;
 
     requires java.logging;
     requires java.xml.bind;
