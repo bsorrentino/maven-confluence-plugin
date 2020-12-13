@@ -4,9 +4,7 @@
  */
 package org.bsc.confluence.model;
 
-import static java.lang.String.format;
-
-import java.io.File;
+import javax.xml.bind.annotation.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,18 +14,13 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import static java.lang.String.format;
 
 /**
  *
  * @author bsorrentino
  */
+@SuppressWarnings("JavadocReference")
 @XmlRootElement(name = "site", namespace = Site.NAMESPACE)
 public class Site {
 
@@ -66,13 +59,62 @@ public class Site {
         this.spaceKey = spaceKey;
     }
 
+
+    private transient Optional<Path> _basedir = Optional.empty();
+    
+    @XmlTransient
+    public void setBasedir( Path basedir ) {
+        
+        this._basedir = Optional.ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?
+                Paths.get(p.toString()) :
+                Paths.get(p.getParent().toString()));
+           
+    }
+     
+    public Path getBasedir() {
+        return _basedir.orElseThrow( () -> new IllegalStateException("basedir is not set!"));
+    }
+
+    @XmlAttribute(name="label")
+    public java.util.List<String> labels = new ArrayList<>();
+
+    //@XmlElement(name = "label")
+    public java.util.List<String> getLabels() {
+        return labels;
+    }
+
+    /**
+     * need for XmlMapper
+     * @see https://stackoverflow.com/a/40839029/521197
+     *
+     * @param label
+     */
+    public void setLabel( String label) {
+        this.labels.add(label);
+    }
+
+    Home home;
+
+    @XmlElement(name = "home", required = true)
+    public Home getHome() {
+        return home;
+    }
+
+    public void setHome(Home home) {
+        this.home = home;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // TYPE(s)
+    ////////////////////////////////////////////////////////////////////////////////
+
     /**
      * class Source
      */
     @XmlType(namespace = Site.NAMESPACE)
     protected static class Source {
         private static final Pattern lead_trail_spaces = Pattern.compile("^(.*)\\s+$|^\\s+(.*)");
-        
+
         protected transient final Site site;
 
         public Source() {
@@ -99,7 +141,7 @@ public class Site {
         public java.net.URI getRelativeUri() {
             return site.getBasedir().toUri().relativize(getUri());
         }
-        
+
         String name;
 
         @XmlAttribute
@@ -110,9 +152,9 @@ public class Site {
         public final Optional<String> optName() {
             return Optional.ofNullable(name);
         }
-        
+
         public void setName(String name) {
-            if( lead_trail_spaces.matcher(name).matches() ) 
+            if( lead_trail_spaces.matcher(name).matches() )
                 throw new IllegalArgumentException(format("name [%s] is not valid!", name));
             this.name = name;
         }
@@ -176,47 +218,15 @@ public class Site {
             this.contentType = DEFAULT_CONTENT_TYPE;
             this.version = DEFAULT_VERSION;
         }
-        
+
     }
 
     /**
      * class Page
      */
+    @SuppressWarnings("JavadocReference")
     @XmlType(name = "page", namespace = Site.NAMESPACE)
     public static class Page extends Source {
-
-        java.util.List<Attachment> attachments;
-
-//        @Deprecated
-//        public File getSource() {
-//
-//            final java.net.URI _uri = super.getUri();
-//            if (null == _uri) {
-//                throw new IllegalStateException("uri is null");
-//            }
-//
-//            if (!_uri.isAbsolute() && !"file".equals(_uri.getScheme())) {
-//                throw new IllegalArgumentException("uri not represent a file");
-//            }
-//
-//            return new java.io.File(_uri);
-//        }
-
-        private java.util.List<String> labels;
-
-        @XmlElement(name = "label")
-        public java.util.List<String> getLabels() {
-            if (null == labels) {
-                synchronized (this) {
-                    labels = new java.util.ArrayList<String>();
-                }
-            }
-            return labels;
-        }
-
-        public void setLabels(java.util.List<String> labels) {
-            this.labels = labels;
-        }
 
         private Page parent;
 
@@ -224,11 +234,12 @@ public class Site {
         public final void setParent(Page p) {
             parent = p;
         }
-        
+
         public final Page getParent() {
             return parent;
         }
-        
+
+
         @XmlTransient
         public final java.util.List<String> getComputedLabels() {
 
@@ -249,28 +260,58 @@ public class Site {
             return getLabels();
         }
 
-        java.util.List<Page> children;
+        @XmlAttribute(name="label")
+        public java.util.List<String> labels = new ArrayList<>();
 
-        @XmlElement(name = "child")
+        //@XmlElement(name = "label")
+        public java.util.List<String> getLabels() {
+            return labels;
+        }
+
+        /**
+         * need for XmlMapper
+         * @see https://stackoverflow.com/a/40839029/521197
+         *
+         * @param label
+         */
+        public void setLabel( String label) {
+            this.labels.add(label);
+        }
+
+        @XmlAttribute(name="child")
+        public java.util.List<Page> children = ChildListProxy.newInstance(this);
+
+        //@XmlElement(name = "child")
         public java.util.List<Page> getChildren() {
-
-            if (null == children) {
-                synchronized (this) {
-                    children = ChildListProxy.newInstance(this);
-                    /* children = new java.util.ArrayList<Page>(); */
-                }
-            }
             return children;
         }
 
-        @XmlElement(name = "attachment")
+        /**
+         * need for XmlMapper
+         *
+         * @see https://stackoverflow.com/a/40839029/521197
+         * @param child
+         */
+        public void setChild( Page child ) {
+            children.add( child );
+        }
+
+        @XmlAttribute(name="attachment")
+        public java.util.List<Attachment> attachments = new ArrayList<>();
+
+        //@XmlElement(name = "attachment")
         public List<Attachment> getAttachments() {
-            if (null == attachments) {
-                synchronized (this) {
-                    attachments = new java.util.ArrayList<Attachment>();
-                }
-            }
             return attachments;
+        }
+
+        /**
+         * need for XmlMapper
+         *
+         * @see https://stackoverflow.com/a/40839029/521197
+         * @param attachment
+         */
+        public void setAttachment( Attachment attachment ) {
+            attachments.add( attachment );
         }
 
         public java.net.URI getUri(String ext) {
@@ -321,7 +362,7 @@ public class Site {
          *
          * <p>
          * For example, to add a new item, do as follows:
-         * 
+         *
          * <pre>
          * getGenerateds().add(newItem);
          * </pre>
@@ -370,25 +411,25 @@ public class Site {
         }
 
         /**
-         * 
+         *
          * @param criteria
          * @return
          */
         public Optional<Page> findPage( Predicate<Page> criteria ) {
-            if( criteria.test(this) ) return Optional.of(this); 
-            
+            if( criteria.test(this) ) return Optional.of(this);
+
             for( Page child : getChildren() ) {
-                
+
                 final Optional<Page> result = child.findPage(criteria);
                 if( result.isPresent() ) {
                     return result;
                 }
             }
-            
+
             return Optional.empty();
         }
     }
-  
+
     @XmlType(name = "home", namespace = Site.NAMESPACE)
     public static class Home extends Page {
         private String parentPageTitle;
@@ -420,13 +461,13 @@ public class Site {
         }
 
         /**
-         * 
+         *
          * @return
          */
         public final Optional<String> optParentPageTitle() {
             return Optional.ofNullable(parentPageTitle);
         }
-        
+
 
         private String parentPageId;
 
@@ -454,59 +495,16 @@ public class Site {
         }
 
         /**
-         * 
+         *
          * @return
          */
         public final Optional<String> optParentPageId() {
             return Optional.ofNullable(parentPageId);
         }
-        
 
-        
-        
-    }
-    
-    private transient Optional<Path> _basedir = Optional.empty();
-    
-    @XmlTransient
-    public void setBasedir( Path basedir ) {
-        
-        this._basedir = Optional.ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?
-                Paths.get(p.toString()) :
-                Paths.get(p.getParent().toString()));
-           
-    }
-     
-    public Path getBasedir() {
-        return _basedir.orElseThrow( () -> new IllegalStateException("basedir is not set!"));
+
+
+
     }
 
-    private java.util.List<String> labels;
-
-    @XmlElement(name = "label")
-    public java.util.List<String> getLabels() {
-        if (null == labels) {
-            synchronized (this) {
-                labels = new java.util.ArrayList<String>();
-            }
-        }
-        return labels;
-    }
-
-    public void setLabels(java.util.List<String> labels) {
-        this.labels = labels;
-    }
-
-    Home home;
-
-    @XmlElement(name = "home", required = true)
-    public Home getHome() {
-        return home;
-    }
-
-    public void setHome(Home home) {
-        this.home = home;
-    }
-
-    
 }

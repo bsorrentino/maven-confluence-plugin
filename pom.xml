@@ -32,10 +32,11 @@
         <module>test-integration</module>
         <module>processor-freemarker</module>
         <module>addon-scrollversions</module>
-        <module>processor-pegdown</module>
-        <module>processor-flexmark</module>
         <module>processor-commonmark</module>
         <module>gitlog+jira</module>
+<!--
+        <module>processor-pegdown</module>
+-->
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
@@ -362,6 +363,13 @@
                         <arg>-Xlint:unchecked</arg>
                         <arg>-Xlint:deprecation</arg>
                     </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.16</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

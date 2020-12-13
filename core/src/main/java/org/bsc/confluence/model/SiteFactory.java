@@ -4,9 +4,14 @@
  */
 package org.bsc.confluence.model;
 
-import static java.lang.String.format;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import lombok.extern.apachecommons.CommonsLog;
+import org.apache.commons.io.FilenameUtils;
+import org.bsc.confluence.preprocessor.SitePocessorService;
 
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
@@ -14,16 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
-import org.apache.commons.io.FilenameUtils;
-import org.bsc.confluence.preprocessor.SitePocessorService;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
-import lombok.extern.apachecommons.CommonsLog;
+import static java.lang.String.format;
 
 /**
  *
@@ -70,10 +66,9 @@ public interface SiteFactory {
                 case "xml":
                 {      
                     try {
-                        final JAXBContext jc = JAXBContext.newInstance(Site.class);
-                        final Unmarshaller unmarshaller = jc.createUnmarshaller(); 
-                        
-                        result.complete( (Site)unmarshaller.unmarshal( new StringReader(preprocessedDescriptor)) );
+                        final ObjectMapper mapper = new ObjectMapper(new XmlFactory());
+                        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                        result.complete( mapper.readValue( preprocessedDescriptor, Site.class  ) );
                     }
                     catch( Exception e ) {
                         result.completeExceptionally(e);

@@ -17,21 +17,20 @@ and open the template in the editor.
     xsi:schemaLocation='ConfluenceSiteSchema-3.3.0-beta2.xsd'>
 
     <home  uri="encoding.confluence">
-        
-        
+
+        <attachment name="home.png" uri="home.png" comment="home_comment" contentType="image/png" version="1"/>
+
         <child name="Page 1" uri="page1.md">           
-            <attachment  uri="PR137" comment="PR137"  version="1"></attachment>
+            <attachment  uri="PR137" comment="PR137"  version="1"/>
         </child> 
         <child name="Page 2" uri="page2.md">           
-            <attachment name="attach1.png" uri="attach1.png" comment="attach1_comment" contentType="image/png" version="1"></attachment>
+            <attachment name="attach1.png" uri="attach1.png" comment="attach1_comment" contentType="image/png" version="1"/>
         </child> 
        
-        
-        <attachment name="home.png" uri="home.png" comment="home_comment" contentType="image/png" version="1"></attachment>
 
     </home>
-    
+
     <label>encoding</label>
     <label>test</label>
-        
+
 </bsc:site>
