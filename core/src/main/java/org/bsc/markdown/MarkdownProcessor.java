@@ -59,20 +59,34 @@ public interface MarkdownProcessor {
 
     }
 
-    class Shared {
+    class Shared implements MarkdownProcessor {
         private String name = "commonmark";
+        private MarkdownProcessor processor;
 
+        @Override
         public String getName() {
             return ofNullable(shared.name)
                     .orElseThrow( () -> new IllegalStateException( "processor's name doesn't set!" ));
         }
 
-        public void setName(String value) {
-            name = value;
+        @Override
+        public String processMarkdown(MarkdownParserContext context, String content) throws IOException {
+            return ofNullable(processor)
+                    .orElseThrow( () -> new IllegalStateException( "processor has not been initialized yet!" ))
+                    .processMarkdown( context, content);
         }
 
-        public MarkdownProcessor load( ) {
-            return MarkdownProcessor.load( getName() );
+        public void setName(String value) {
+            name = ofNullable(value)
+                    .orElseThrow( () -> new IllegalArgumentException( "processor's name cannot be null!" ));
+        }
+
+        public MarkdownProcessor init( ) {
+            if( processor!=null ) {
+                throw new IllegalStateException( "processor's is already initialized!" );
+            }
+            processor =  MarkdownProcessor.load( getName() );
+            return processor;
         }
     }
 

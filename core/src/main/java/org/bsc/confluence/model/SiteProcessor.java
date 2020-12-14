@@ -283,7 +283,7 @@ public class SiteProcessor {
             final String content,
             final Optional<String> pagePrefixToApply) throws IOException {
 
-        return MarkdownProcessor.shared.load().processMarkdown(new MarkdownParserContext() {
+        return MarkdownProcessor.shared.processMarkdown(new MarkdownParserContext() {
             @Override
             public Optional<Site> getSite() {
                 return Optional.of(site);

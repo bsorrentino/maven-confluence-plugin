@@ -98,7 +98,7 @@ public class ConfluenceBlogpostMojo extends AbstractBaseConfluenceMojo {
 
         final Storage storage = Storage.of(
                                     ( isMarkdown )
-                                        ? MarkdownProcessor.shared.load().processMarkdown(contentData)
+                                        ? MarkdownProcessor.shared.processMarkdown(contentData)
                                         : contentData,
                                     representation);
 

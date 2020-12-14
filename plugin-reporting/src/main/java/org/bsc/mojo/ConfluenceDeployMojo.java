@@ -36,6 +36,7 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
+import org.bsc.markdown.MarkdownProcessor;
 import org.bsc.mojo.configuration.MarkdownProcessorInfo;
 import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
 import org.bsc.reporting.renderer.*;
@@ -290,6 +291,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
+        // Init markdown Processor
+        MarkdownProcessor.shared.init();
+
+        // Init Deploy State Manager
 		initDeployStateManager();
 
         final Site site = loadSite();
