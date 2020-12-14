@@ -578,23 +578,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         final String _homePageTitle = getPageTitle();
 
         final Function<Model.Page, CompletableFuture<Model.Page>> updateHomePage = (p) ->
-            canProceedToUpdateResource(site.getHome().getUri())
-                    .thenCompose( update ->  {
-                        if(update)
-                            return getHomeContent(site, Optional.of(p), locale)
-                                    .thenCompose( content -> confluence.storePage(p, content ) );
-                        else {
-                            getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
-                                    getPrintableStringForResource(site.getHome().getUri()) ));
-                            return /*confluence.storePage(page)*/ completedFuture(p);
-                        }});
-
+            canProceedToUpdateResource(site.getHome().getUri(),
+                    () -> getHomeContent(site, Optional.of(p), locale).
+                                                thenCompose( content -> confluence.storePage(p, content ) ),
+                    () -> skipUpdatePageWithUri( site.getHome().getUri(), p ));
 
         final Function<Model.Page, CompletableFuture<Model.Page>> createHomePage = (_parentPage) ->
                 resetUpdateStatusForResource(site.getHome().getUri())
                         .thenCompose( reset -> getHomeContent(  site, Optional.empty(), locale ) )
                         .thenCompose( content -> confluence.createPage(_parentPage, _homePageTitle,content) );
-
 
         final Model.Page confluenceHomePage =
             loadParentPage(confluence, Optional.of(site))
@@ -750,7 +742,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         pluginDescriptor.setDependencies(deps);
         pluginDescriptor.setDescription(project.getDescription());
 
-        PluginToolsRequest req = new DefaultPluginToolsRequest(project, pluginDescriptor);
+        final PluginToolsRequest req = new DefaultPluginToolsRequest(project, pluginDescriptor);
         req.setEncoding(getEncoding());
         req.setLocal(local);
         req.setRemoteRepos(remoteRepos);
@@ -1074,24 +1066,16 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             getProperties().put("artifactId",   getProject().getArtifactId());
             getProperties().put("version",      getProject().getVersion());
 
-            Function<Model.Page, CompletableFuture<Model.Page>> updatePage = (p) ->
-                canProceedToUpdateResource( site.getHome().getUri())
-                        .thenCompose( update -> {
-                            if(update) {
-                                return getHomeContent( site, Optional.of(p), pluginDescriptor, locale)
-                                        .thenCompose( content -> confluence.storePage(p, content));
-                            } else {
-                                getLog().info( String.format("page [%s] has not been updated (deploy skipped)",
-                                        getPrintableStringForResource(site.getHome().getUri()) ));
-                                return confluence.storePage(p);
-                            }});
+            final Function<Model.Page, CompletableFuture<Model.Page>> updatePage = (p) ->
+                canProceedToUpdateResource( site.getHome().getUri(),
+                        () -> getHomeContent( site, Optional.of(p), pluginDescriptor, locale)
+                                        .thenCompose( content -> confluence.storePage(p, content)),
+                        () -> skipUpdatePageWithUri( site.getHome().getUri(), p ));
 
-                Function<Model.Page, CompletableFuture<Model.Page>> createPage = (parent) ->
+            final Function<Model.Page, CompletableFuture<Model.Page>> createPage = (parent) ->
                     resetUpdateStatusForResource(site.getHome().getUri())
                         .thenCompose( reset -> getHomeContent(site, Optional.empty(), pluginDescriptor, locale)
                         .thenCompose( content ->confluence.createPage(parent, title, content)));
-
-
 
             return removeSnaphot(confluence, parentPage, title)
                     .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )

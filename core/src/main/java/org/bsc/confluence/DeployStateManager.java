@@ -94,7 +94,7 @@ public class DeployStateManager {
 
     }
 
-    private void save() {
+    public void save() {
         final Path file = Paths.get(outdir.toString(), STORAGE_NAME);
 
         if( !Files.exists(file)) return;
@@ -167,7 +167,7 @@ public class DeployStateManager {
 
         if(!Objects.equals(fileMd5Hash, lastStoredFileMd5Hash)) {
             s.put(key, createValue(fileMd5Hash));
-            save();
+            //save();
             return true;
         }
 

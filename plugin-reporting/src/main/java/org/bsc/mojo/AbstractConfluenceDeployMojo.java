@@ -287,6 +287,13 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
     }
 
+    protected  CompletableFuture<Model.Page> skipUpdatePageWithUri( java.net.URI uri, Model.Page page ) {
+        getLog().info(format("page [%s] has not been updated (deploy skipped)",
+                getPrintableStringForResource(uri)));
+        return /* confluence.storePage(p) */ completedFuture(page);
+
+    }
+
     /**
      *
      * @param site
@@ -322,16 +329,10 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
 
         final Function<Model.Page, CompletableFuture<Model.Page>> updatePage = p ->
-                canProceedToUpdateResource(source)
-                    .thenCompose(update -> {
-                        if (update)
-                            return getPageContent( ofNullable(p), site, source, child, pageTitleToApply )
-                                    .thenCompose( storage -> confluence.storePage(p, storage));
-                        else {
-                            getLog().info(format("page [%s] has not been updated (deploy skipped)",
-                                    getPrintableStringForResource(source)));
-                            return /* confluence.storePage(p) */ completedFuture(p);
-                    }});
+                canProceedToUpdateResource(source,
+                        () -> getPageContent( ofNullable(p), site, source, child, pageTitleToApply ).thenCompose( storage -> confluence.storePage(p, storage)),
+                        () -> skipUpdatePageWithUri( source, p ))
+                ;
 
         final Supplier<CompletableFuture<Model.Page>> createPage = () ->
                     resetUpdateStatusForResource(source)
@@ -402,8 +403,18 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param uri
      * @return
      */
-    protected CompletableFuture<Boolean> canProceedToUpdateResource(java.net.URI uri) {
-        return completedFuture( deployStateManager.map( dsm -> dsm.isUpdated(uri) ).orElse(true) );
+    protected <U> CompletableFuture<U> canProceedToUpdateResource(java.net.URI uri,
+                                                                  Supplier<CompletableFuture<U>> yes,
+                                                                  Supplier<CompletableFuture<U>> no ) {
+        return deployStateManager.map( dsm -> {
+                if( dsm.isUpdated(uri) ) {
+                    return yes.get().thenApply(v -> {
+                                dsm.save();
+                                return v;
+                            });
+                }
+                return  no.get();
+            }).orElseGet( () -> yes.get());
     }
 
     /**
@@ -548,6 +559,19 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
     /**
      *
+     * @param uri
+     * @param finalAttachment
+     * @return
+     */
+    private  CompletableFuture<Model.Attachment> skipUpdateAttachmentWithUri( java.net.URI uri, Model.Attachment finalAttachment ) {
+        getLog().info(format("attachment [%s] has not been updated (deploy skipped)",
+                getPrintableStringForResource(uri)));
+        return completedFuture(finalAttachment);
+
+    }
+
+    /**
+     *
      * @param confluence
      * @param confluencePage
      * @param attachment
@@ -581,15 +605,11 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     result.setComment(attachment.getComment());
                     return completedFuture(result);
 
-                }).thenCompose(finalAttachment -> canProceedToUpdateResource(uri).thenCompose(updated -> {
-                    if (updated) {
-                        return updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment);
-                    } else {
-                        getLog().info(format("attachment [%s] has not been updated (deploy skipped)",
-                                getPrintableStringForResource(uri)));
-                        return completedFuture(finalAttachment);
-                    }
-                }));
+                }).thenCompose(finalAttachment ->
+                        canProceedToUpdateResource(uri,
+                                () -> updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment),
+                                () -> skipUpdateAttachmentWithUri( uri, finalAttachment ))
+                );
 
     }
 
