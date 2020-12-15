@@ -578,10 +578,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         final String _homePageTitle = getPageTitle();
 
         final Function<Model.Page, CompletableFuture<Model.Page>> updateHomePage = (p) ->
-            canProceedToUpdateResource(site.getHome().getUri(),
+            updatePageIfNeeded(site.getHome().getUri(), p,
                     () -> getHomeContent(site, Optional.of(p), locale).
-                                                thenCompose( content -> confluence.storePage(p, content ) ),
-                    () -> skipUpdatePageWithUri( site.getHome().getUri(), p ));
+                                                thenCompose( content -> confluence.storePage(p, content )));
 
         final Function<Model.Page, CompletableFuture<Model.Page>> createHomePage = (_parentPage) ->
                 resetUpdateStatusForResource(site.getHome().getUri())
@@ -1067,10 +1066,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             getProperties().put("version",      getProject().getVersion());
 
             final Function<Model.Page, CompletableFuture<Model.Page>> updatePage = (p) ->
-                canProceedToUpdateResource( site.getHome().getUri(),
+                updatePageIfNeeded( site.getHome().getUri(),p,
                         () -> getHomeContent( site, Optional.of(p), pluginDescriptor, locale)
-                                        .thenCompose( content -> confluence.storePage(p, content)),
-                        () -> skipUpdatePageWithUri( site.getHome().getUri(), p ));
+                                        .thenCompose( content -> confluence.storePage(p, content)));
 
             final Function<Model.Page, CompletableFuture<Model.Page>> createPage = (parent) ->
                     resetUpdateStatusForResource(site.getHome().getUri())

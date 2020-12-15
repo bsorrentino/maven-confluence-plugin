@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class DeployStateManager {
 
@@ -123,6 +125,25 @@ public class DeployStateManager {
         return Json.createArrayBuilder().add(value).build().getJsonString(0);
         // From 1.1
         // return Json.createValue(0L)
+    }
+
+    /**
+     *
+     * @param uri
+     * @param yes
+     * @param no
+     * @param <U>
+     * @return
+     */
+    public <U> CompletableFuture<U> isUpdated(java.net.URI uri,
+                                               Supplier<CompletableFuture<U>> yes,
+                                               Supplier<CompletableFuture<U>> no ) {
+        return ( isUpdated(uri) )
+                ? yes.get().thenApply(v -> {
+                        save();
+                        return v;
+                    })
+                : no.get();
     }
 
     /**
