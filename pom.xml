@@ -5,7 +5,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>6.20</version>
+    <version>7.0-beta1</version>
     <name>CONFLUENCE-REPORTING::Parent</name>
     <description>Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the
         same time, to keep in-sync both project &amp; documentation
@@ -32,10 +32,11 @@
         <module>test-integration</module>
         <module>processor-freemarker</module>
         <module>addon-scrollversions</module>
-        <module>processor-pegdown</module>
-        <module>processor-flexmark</module>
         <module>processor-commonmark</module>
         <module>gitlog+jira</module>
+<!--
+        <module>processor-pegdown</module>
+-->
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
@@ -269,29 +270,6 @@
                     </configuration>
                 </plugin>
 
-                <!--
-                    jgitflow:feature-start Starts a feature branch
-                    jgitflow:feature-finish Finishes a feature branch
-                    # Starts a release
-                    jgitflow:release-start -DreleaseVersion=  -DdevelopmentVersion=
-                    jgitflow:release-finish Finishes a release
-                    jgitflow:hotfix-start Starts a hotfix
-                    jgitflow:hotfix-finish Finishes a hotfix
-                    jgitflow:build-number Updates the pom versions in the current branch by adding a build number label
-                -->
-                <plugin>
-                    <groupId>external.atlassian.jgitflow</groupId>
-                    <artifactId>jgitflow-maven-plugin</artifactId>
-                    <version>1.0-m5.1</version>
-                    <configuration>
-                        <flowInitContext>
-                            <versionTagPrefix>v</versionTagPrefix>
-                        </flowInitContext>
-                        <!-- see goals wiki page for configuration options -->
-                        <noDeploy>true</noDeploy>
-                    </configuration>
-                </plugin>
-
                 <plugin>
                     <artifactId>maven-plugin-plugin</artifactId>
                     <version>${pluginToolsVersion}</version>
@@ -301,6 +279,11 @@
                     <groupId>se.bjurr.gitchangelog</groupId>
                     <artifactId>git-changelog-maven-plugin</artifactId>
                     <version>1.61</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
                 </plugin>
 
             </plugins>
@@ -362,6 +345,13 @@
                         <arg>-Xlint:unchecked</arg>
                         <arg>-Xlint:deprecation</arg>
                     </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.16</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

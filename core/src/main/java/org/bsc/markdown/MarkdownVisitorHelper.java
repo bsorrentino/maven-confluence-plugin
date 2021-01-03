@@ -144,6 +144,7 @@ public class MarkdownVisitorHelper {
      *
      */
     private static Pattern isConfluenceMacroPattern = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$" );
+    private static Pattern isConfluenceVariable = Pattern.compile( "^[\\s]*\\$\\{([\\w-\\.]+)\\}[\\s]*$" );
 
     /**
      *
@@ -153,7 +154,8 @@ public class MarkdownVisitorHelper {
     public static boolean isConfluenceMacro( String text ) {
         // GUARD
         if( text == null || text.isEmpty() ) return false;
-        return isConfluenceMacroPattern.matcher(text).matches();
+        return  isConfluenceMacroPattern.matcher(text).matches() ||
+                isConfluenceVariable.matcher(text).matches();
     }
 
     /**
