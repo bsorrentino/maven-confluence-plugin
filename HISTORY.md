@@ -1,42 +1,36 @@
 # Release History
 
+## 2019
+
+Date  | Release | Info
+--- | --- | ---
+**Nov 13, 2019** | [Release 6.7.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.1) |
+**Nov 02, 2019** | [Release 6.7](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7) | Added [site processor](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html) support - enhanced implementation inspired on PR *202* by [LZaruba](https://github.com/LZaruba).
+**Oct 30, 2019** | [Release 6.6](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.6) | Merged PR *201*,*205*,*207* by [LZaruba](https://github.com/LZaruba)
+**Oct 29, 2019** | [Release 6.5](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5) |
+**Oct 21, 2019** | [Release 6.5-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta2) |
+**Oct 14, 2019** | [Release 6.5-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.5-beta1) | Added support for [Scroll Versions for Confluence](https://marketplace.atlassian.com/apps/1210818/scroll-versions-for-confluence?hosting=server&tab=overview).
+**Oct 01, 2019** | [Release 6.4.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4.1) |
+**Aug 02, 2019** | [Release 6.4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.4) |
+**Jul 15, 2019** | [Release 6.3.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3.2) |
+**Jun 12, 2019** | [Release 6.3.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3.1) |
+**Mar 26, 2019** | [Release 6.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.3) |
+**Feb 07, 2019** | [Release 6.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.2) |
+**Jan 16, 2019**  |[Release 6.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.1) |
+**Jan 14,2019**  | **[confluence-site](https://github.com/bsorrentino/maven-confluence-plugin/tree/cli)** |  Has been moved to an independent repository [confluence-site-publisher](https://github.com/bsorrentino/confluence-site-publisher).
+**jan 08, 2019** | [Release 6.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0) |
+
 ## 2018
 
-Nov 26, 2018 | [Release 6.0-rc4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc4) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc4%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-Sep 26, 2018 | [Release 6.0-rc3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc3) | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc3%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-Aug 14, 2018 | **Release 6.0-rc2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc2%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-* Refer to [Issue 160](https://github.com/bsorrentino/maven-confluence-plugin/issues/160) - Error reading unique result from REST API
-
-Jul 24, 2018 | **Release 6.0-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-rc1%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-* Refer to [Issue 158](https://github.com/bsorrentino/maven-confluence-plugin/issues/158) - When publish markdown pages with `6.0-beta2` and active deployState parameter then pages are not published correctly
-
-Jul 09, 2018 | **Release 6.0-beta2** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-beta2%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-* Refer to [Issue 157](https://github.com/bsorrentino/maven-confluence-plugin/issues/157) - unclear doc about deployState parameter
-
-* Refer to [Issue 156](https://github.com/bsorrentino/maven-confluence-plugin/issues/156) - `6.0-beta1` changes naming rules for nested children pages
-
-Jul 04, 2018 | **Release 6.0-beta1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C6.0-beta1%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
-* Refer to [Issue 153](https://github.com/bsorrentino/maven-confluence-plugin/issues/153) - move to jdk8. Introduced use of `Optional`, `Stream` and `CompletableFuture`
-
-* Refer to [Issue 150](https://github.com/bsorrentino/maven-confluence-plugin/issues/150) - Avoid republishing for confluence pages not changed. Introduced new configuration [`deployState`](http://bsorrentino.github.io/maven-confluence-plugin/deploy-mojo.html#deployState)
-
-
-Jan 04, 2018 | **Release 5.1.1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cconfluence-reporting-maven-plugin%7C5.1.1%7Cmaven-plugin)**  |
----- | ---- | ---- |
-
- * Refer to [Issue 148](https://github.com/bsorrentino/maven-confluence-plugin/issues/148) - confluence-reporting:export leads to `host parameter is null` exception
+Date  | Release | Info
+--- | --- | ---
+Nov 26, 2018 | [Release 6.0-rc4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc4)  |
+Sep 26, 2018 | [Release 6.0-rc3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc3) |  |
+Aug 14, 2018 | [Release 6.0-rc2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc2) | Refer to [Issue 160](https://github.com/bsorrentino/maven-confluence-plugin/issues/160) - Error reading unique result from REST API.
+Jul 24, 2018 | [Release 6.0-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-rc1) | Refer to [Issue 158](https://github.com/bsorrentino/maven-confluence-plugin/issues/158) - When publish markdown pages with `6.0-beta2` and active deployState parameter then pages are not published correctly.
+Jul 09, 2018 | [Release 6.0-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-beta2) | Refer to [Issue 157](https://github.com/bsorrentino/maven-confluence-plugin/issues/157) - unclear doc about deployState parameter.<br> Refer to [Issue 156](https://github.com/bsorrentino/maven-confluence-plugin/issues/156) - `6.0-beta1` changes naming rules for nested children pages.
+Jul 04, 2018 | [Release 6.0-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.0-beta1) |  Refer to [Issue 153](https://github.com/bsorrentino/maven-confluence-plugin/issues/153) - move to jdk8. Introduced use of `Optional`, `Stream` and `CompletableFuture`.<br> Refer to [Issue 150](https://github.com/bsorrentino/maven-confluence-plugin/issues/150) - Avoid republishing for confluence pages not changed. Introduced new configuration [`deployState`](http://bsorrentino.github.io/maven-confluence-plugin/deploy-mojo.html#deployState).
+Jan 04, 2018 | [Release 5.1.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v5.1.1) | Refer to [Issue 148](https://github.com/bsorrentino/maven-confluence-plugin/issues/148) - confluence-reporting:export leads to `host parameter is null` exception.
 
 ## 2017
 
@@ -261,8 +255,8 @@ Markdown support refinements, refer to documentation from:
 
 
 
-|Jun 5,2015 | [All Codehaus services have been terminated](http://www.codehaus.org/termination/) 
- --- | --- 
+|Jun 5,2015 | [All Codehaus services have been terminated](http://www.codehaus.org/termination/)
+ --- | ---
 
   * Refer to [Issue 77] - http://docs.codehaus.org/display/MVNCONFSITE is dead
 
@@ -307,8 +301,8 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
   * Refer to [Issue 58](https://github.com/bsorrentino/maven-confluence-plugin/issues/58) - Rename Plugin
   * See [documentation](http://bsorrentino.github.io/maven-confluence-reporting-plugin/)
 
-|March 2014 | **Branch for release 4 has been moved to [GITHUB](https://github.com/bsorrentino/maven-confluence-reporting-plugin)** 
- --- | --- 
+|March 2014 | **Branch for release 4 has been moved to [GITHUB](https://github.com/bsorrentino/maven-confluence-reporting-plugin)**
+ --- | ---
 
 |Feb 4,2014 | **Release 3.4.4-rc1** | available from  **[MAVEN CENTRAL REPO](http://search.maven.org/#artifactdetails%7Corg.bsc.maven%7Cmaven-confluence-reporting-plugin%7C3.4.4-rc1%7Cmaven-plugin)**  |
  --- | --- | ---
@@ -325,12 +319,12 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
 ## 2013
 
-|Oct 29,2013 | **JBoss Forge plugin 1.1** | available for installation 
+|Oct 29,2013 | **JBoss Forge plugin 1.1** | available for installation
  --- | --- | ---
 
   * fix upon site.xml namespace
 
-|Oct 20,2013 | **JBoss Forge plugin 1.0** | available for installation 
+|Oct 20,2013 | **JBoss Forge plugin 1.0** | available for installation
  --- | --- | ---
 
   * Refer to [Issue 52](https://github.com/bsorrentino/maven-confluence-plugin/issues/52)  -  see [GettingStarted\_with\_JBoss\_Forge](GettingStarted_with_JBoss_Forge.md)
@@ -357,7 +351,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
 > From release 3.4.x the plugin provides new **goals** not longer related to **site phase** (no loger need maven-site-plugin). Such goals are :
 
-> | confluence-reporting:**delete** |  -  | confluence-reporting:**deploy** 
+> | confluence-reporting:**delete** |  -  | confluence-reporting:**deploy**
 
 > Refer to [maven documentation](http://bsc-documentation-repo.googlecode.com/svn/trunk/maven-confluence-plugin/maven-confluence-reporting-plugin/index.html) for details.
 
@@ -371,7 +365,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
   * fixed [Issue 41](https://github.com/bsorrentino/maven-confluence-plugin/issues/41), [Issue 53](https://github.com/bsorrentino/maven-confluence-plugin/issues/53)
 
 | Apr 25,2013 | **Start developing [JBoss Forge](http://forge.jboss.org/) Integration**
- --- | --- 
+ --- | ---
 
   * [Issue 52](https://github.com/bsorrentino/maven-confluence-plugin/issues/52)
 
@@ -389,8 +383,8 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
   * See [What's new in 3.3.0 release](WhatsNewInRelease3_3.md)
 
-|Oct 12,2012 | **export code from svn to git** 
- --- | --- 
+|Oct 12,2012 | **export code from svn to git**
+ --- | ---
 
 |Oct 8,2012 | **Release 3.2.4** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**
  --- | --- | ---
@@ -438,23 +432,23 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
   * fixed [issue 30](https://github.com/bsorrentino/maven-confluence-plugin/issues/30) - add parentPageTitle as build-in variable
   * fixed [issue 32](https://github.com/bsorrentino/maven-confluence-plugin/issues/32) - Add parameter to override page title.
 
-|Dec 15,2011 | Project has been approved in [CODEHAUS FOUNDATION](http://xircles.codehaus.org/) with name **Maven Confluence Site Plugin** 
- --- | --- 
+|Dec 15,2011 | Project has been approved in [CODEHAUS FOUNDATION](http://xircles.codehaus.org/) with name **Maven Confluence Site Plugin**
+ --- | ---
 
   * [Codehaus Site Home](http://xircles.codehaus.org/projects/maven-confluence-site)
   * [Codehaus Confluence Home](http://docs.codehaus.org/display/MVNCONFSITE)
 
-|Dec 09,2011 | **Release 3.1.2** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)** 
+|Dec 09,2011 | **Release 3.1.2** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**
  --- | --- | ---
 
   * fixed [issue 29](https://github.com/bsorrentino/maven-confluence-plugin/issues/29) - Wrong render in Confluence 4
 
-|Nov 21,2011 | **Release 3.1.1** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)** 
+|Nov 21,2011 | **Release 3.1.1** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**
  --- | --- | ---
 
   * fixed [issue 26](https://github.com/bsorrentino/maven-confluence-plugin/issues/26) - Works through proxy
 
-|Oct 20,2011 | **Release 3.1.0** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)** 
+|Oct 20,2011 | **Release 3.1.0** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**
  --- | --- | ---
 
   * fixed [issue 25](https://github.com/bsorrentino/maven-confluence-plugin/issues/25) - Confluence 4.x compatibility. Detect confluence version and use right communication protocol
@@ -472,7 +466,7 @@ has been renamed from **maven-confluence-reporting-plugin** to **confluence-repo
 
   * fixed [issue 22](https://github.com/bsorrentino/maven-confluence-plugin/issues/22)
 
- Ago 5,2011 | **Release 3.0.2** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)** 
+ Ago 5,2011 | **Release 3.0.2** | available from  **[MAVEN CENTRAL REPO](http://repo2.maven.org/maven2)**
  --- | --- | ---
 
   * fixed [issue 20](https://github.com/bsorrentino/maven-confluence-plugin/issues/20)
@@ -482,11 +476,11 @@ Jun 18,2011 | **Release 3.0.1** | available from  **[MAVEN CENTRAL REPO](http://
  --- | --- | ---
 
 
-Jun 16,2011 | submitted request to [SONATYPE](http://oss.sonatype.org/) to allow, artifact deploying, within central repository 
- --- | --- 
+Jun 16,2011 | submitted request to [SONATYPE](http://oss.sonatype.org/) to allow, artifact deploying, within central repository
+ --- | ---
 
-Apr 1,2011 | Created a branch to continue support of maven2 - the trunk now contains the 3.x code-line for support of maven3 
- --- | --- 
+Apr 1,2011 | Created a branch to continue support of maven2 - the trunk now contains the 3.x code-line for support of maven3
+ --- | ---
 
 * refer to [issue 15](https://github.com/bsorrentino/maven-confluence-plugin/issues/15)
 
@@ -508,19 +502,19 @@ Jun 2,2010 | **Release 1.3** | Available from **JAVA.NET REPOSITORY** ( see [Iss
   * fixed [issue 11](https://github.com/bsorrentino/maven-confluence-plugin/issues/11) - integrate the plugin documentation in site phase
   * fixed [issue 12](https://github.com/bsorrentino/maven-confluence-plugin/issues/12)
 
-May 20,2010 | **Release 1.2.1** | Available from **JAVA.NET REPOSITORY** ( see [Issue 10](https://github.com/bsorrentino/maven-confluence-plugin/issues/10) ) 
+May 20,2010 | **Release 1.2.1** | Available from **JAVA.NET REPOSITORY** ( see [Issue 10](https://github.com/bsorrentino/maven-confluence-plugin/issues/10) )
  --- | --- | ---
 
   * fixed [issue 9](https://github.com/bsorrentino/maven-confluence-plugin/issues/9) - fix encoding text
   * fixed [issue 10](https://github.com/bsorrentino/maven-confluence-plugin/issues/10) - porting on java net repo
 
-Mar 2010 | **Release 1.2 is out** this release allow to add child pages. (see [Issue 7](https://github.com/bsorrentino/maven-confluence-plugin/issues/7)) 
- --- | ---
+Mar 2010 | **Release 1.2** | This release allows to add child pages. (see [Issue 7](https://github.com/bsorrentino/maven-confluence-plugin/issues/7))
+ --- | --- | ---
 
 ## 2009
 
-Dec 2009 | **Release 1.1 is out** this release allow to document both projects and plugin
- --- | ---
+Dec 2009 | **Release 1.1** | this release allows to document both projects and plugin.
+--- | --- | ---
 
-Oct 2009 | This plugin has been accepted and published on [Atlassian plugin center](https://plugins.atlassian.com/plugin/home). Open page and search for *maven-confluence-plugin* 
- --- | ---
+Oct 2009 | This plugin has been accepted and published on [Atlassian plugin center](https://plugins.atlassian.com/plugin/home). Open page and search for *maven-confluence-plugin*
+--- | ---
