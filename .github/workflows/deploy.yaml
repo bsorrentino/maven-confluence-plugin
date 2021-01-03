@@ -10,6 +10,24 @@ on:
      - 'v*'
 
 jobs:
+  docs:
+    if: ${{ false }}  # disable for now
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 9
+        uses: actions/setup-java@v1
+        with:
+          java-version: 9
+      - name: Deploy site to Github pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+          OSS_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: |
+          mvn -B install --file pom.xml -s settings-template.xml
+          mvn -B -Preport -pl plugin-reporting site --file pom.xml -s settings-template.xml
+
   build:
 
     runs-on: ubuntu-latest
@@ -27,21 +45,7 @@ jobs:
         run: ./gpg-setup.sh
       - name: Deploy to OSS Sonatype
         env:
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+          OSS_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         # mvn -Prelease source:jar javadoc:jar deploy -Dgpg.passphrase=thephrase
         run: mvn -B -Prelease source:jar javadoc:jar deploy --file pom.xml -s settings-template.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
-  docs:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 8
-      - name: Deploy site to Github pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
-        # mvn -Prelease source:jar javadoc:jar deploy -Dgpg.passphrase=thephrase
-        run: mvn -B -Preport -pl plugin-reporting site --file pom.xml -s settings-template.xml
