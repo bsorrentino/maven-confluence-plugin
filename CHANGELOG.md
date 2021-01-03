@@ -2,6 +2,129 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**updated version to the next release**
+
+
+[01fb3e278f6a71a](https://github.com/bsorrentino/maven-confluence-plugin/commit/01fb3e278f6a71a) bsorrentino *2020-01-03 13:50:30*
+
+**clean code**
+
+
+[ec061e2288f7cc8](https://github.com/bsorrentino/maven-confluence-plugin/commit/ec061e2288f7cc8) bsorrentino *2020-12-15 12:31:58*
+
+**fixed issue: DeployStateManaged save the hash also on deploy failure**
+
+
+[b648dd0507f3db0](https://github.com/bsorrentino/maven-confluence-plugin/commit/b648dd0507f3db0) bsorrentino *2020-12-14 18:55:44*
+
+**added: action compiles on jdk 9**
+
+
+[7fa9b39a19e6a60](https://github.com/bsorrentino/maven-confluence-plugin/commit/7fa9b39a19e6a60) bsorrentino *2020-12-13 23:33:48*
+
+**added: support for plugin  variables ${...} in markdown**
+
+
+[bfbb355fdfd89fe](https://github.com/bsorrentino/maven-confluence-plugin/commit/bfbb355fdfd89fe) bsorrentino *2020-12-13 23:30:33*
+
+**removed: metainf.services module**
+
+
+[00bc08237ea307e](https://github.com/bsorrentino/maven-confluence-plugin/commit/00bc08237ea307e) bsorrentino *2020-12-13 22:59:11*
+
+**added SPI META-INF service implementation info**
+
+
+[9d9080c1baeb122](https://github.com/bsorrentino/maven-confluence-plugin/commit/9d9080c1baeb122) bsorrentino *2020-12-13 22:55:46*
+
+**removed metainf-services annotation**
+
+
+[8bcf592b175830d](https://github.com/bsorrentino/maven-confluence-plugin/commit/8bcf592b175830d) bsorrentino *2020-12-13 22:55:03*
+
+**added multirelease jar support in maven**
+
+ * removed metainf-services processor
+
+[9d07de394d3ec9a](https://github.com/bsorrentino/maven-confluence-plugin/commit/9d07de394d3ec9a) bsorrentino *2020-12-13 22:54:26*
+
+**removed jgitflow-maven-plugin added version 3.2.0 of maven-jar-plugin**
+
+
+[2dff3dafb122d91](https://github.com/bsorrentino/maven-confluence-plugin/commit/2dff3dafb122d91) bsorrentino *2020-12-13 22:53:39*
+
+**add multirelease jar support in maven**
+
+
+[c8971587ce847b5](https://github.com/bsorrentino/maven-confluence-plugin/commit/c8971587ce847b5) bsorrentino *2020-12-13 22:51:24*
+
+**add multirelease jar support in maven**
+
+
+[f6d8553a688796f](https://github.com/bsorrentino/maven-confluence-plugin/commit/f6d8553a688796f) bsorrentino *2020-12-13 22:50:54*
+
+**set 'commonmark' as default markdown processor. pegdown is deprecated**
+
+
+[b53c05a073451ff](https://github.com/bsorrentino/maven-confluence-plugin/commit/b53c05a073451ff) bsorrentino *2020-12-13 21:33:29*
+
+**clean code**
+
+
+[7e1917a0471cd6a](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e1917a0471cd6a) bsorrentino *2020-12-13 21:22:55*
+
+**fixed problem on delete when home.name attribute in site is not set**
+
+
+[1680a5dc0527eb1](https://github.com/bsorrentino/maven-confluence-plugin/commit/1680a5dc0527eb1) bsorrentino *2020-12-13 19:30:04*
+
+**pegdown processor is removed by build - end of support**
+
+
+[829fc2da16510ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/829fc2da16510ed) bsorrentino *2020-12-12 11:43:23*
+
+**update changelog**
+
+
+[e5567affd120a1c](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5567affd120a1c) bsorrentino *2020-12-11 19:56:45*
+
+**move to next development version**
+
+
+[23de6c44ec10aeb](https://github.com/bsorrentino/maven-confluence-plugin/commit/23de6c44ec10aeb) bsorrentino *2020-12-11 19:25:22*
+
+
+###  [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224) make java.util.ServiceLoader works properly in Java9    *bug*  *under working*  
+
+**issue #224 - fixed load markdown processor lifecycle**
+
+
+[d3958c3ad9a0547](https://github.com/bsorrentino/maven-confluence-plugin/commit/d3958c3ad9a0547) bsorrentino *2020-12-14 10:04:15*
+
+**issue #224 - Removed jaxb-xml-impl in favour of jackson-xml-impl**
+
+
+[72c75d41960e7c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/72c75d41960e7c5) bsorrentino *2020-12-13 21:20:43*
+
+**issue #224 - added support for multi version jar**
+
+
+[40a402a072dc73d](https://github.com/bsorrentino/maven-confluence-plugin/commit/40a402a072dc73d) bsorrentino *2020-12-13 19:33:16*
+
+**issue #224 - Added support for java9 module**
+
+
+[229cbc511025784](https://github.com/bsorrentino/maven-confluence-plugin/commit/229cbc511025784) bsorrentino *2020-12-12 14:48:56*
+
+**issue #224 - Added support of java9 module**
+
+
+[88fb15d1fd52087](https://github.com/bsorrentino/maven-confluence-plugin/commit/88fb15d1fd52087) bsorrentino *2020-12-12 11:38:17*
+
+
 ## v6.20
 ### Generic changes
 
