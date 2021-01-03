@@ -3,11 +3,11 @@
 
 name: Deploy New Version
 
-#on: workflow_dispatch
-on:
- push:
-   tags:
-     - 'v*'
+on: workflow_dispatch
+#on:
+# push:
+#   tags:
+#     - 'v*'
 
 jobs:
   build:
@@ -27,11 +27,12 @@ jobs:
         run: ./gpg-setup.sh
       - name: Deploy to OSS Sonatype
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         # mvn -Prelease source:jar javadoc:jar deploy -Dgpg.passphrase=thephrase
         run: mvn -B -Prelease source:jar javadoc:jar deploy --file pom.xml -s settings-template.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
   docs:
-
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -43,5 +44,6 @@ jobs:
       - name: Deploy site to Github pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         # mvn -Prelease source:jar javadoc:jar deploy -Dgpg.passphrase=thephrase
         run: mvn -B -Preport -pl plugin-reporting site --file pom.xml -s settings-template.xml
