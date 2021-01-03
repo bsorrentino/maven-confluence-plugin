@@ -3,11 +3,11 @@
 
 name: Deploy New Version
 
-#on: workflow_dispatch
-on:
- push:
-   tags:
-     - 'v*'
+on: workflow_dispatch
+#on:
+# push:
+#   tags:
+#     - 'v*'
 
 jobs:
   docs:
