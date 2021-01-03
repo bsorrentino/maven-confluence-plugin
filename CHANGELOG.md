@@ -5,6 +5,21 @@
 ## Next release
 ### Generic changes
 
+**updated documentation**
+
+
+[6177b384190b04e](https://github.com/bsorrentino/maven-confluence-plugin/commit/6177b384190b04e) bsorrentino *2020-01-03 16:27:47*
+
+**add action for deploy new version to sonatype server**
+
+
+[f0af742eded5f48](https://github.com/bsorrentino/maven-confluence-plugin/commit/f0af742eded5f48) bsorrentino *2020-01-03 16:27:25*
+
+**add action for deploy new version to sonatype server**
+
+
+[d62168c8eea976b](https://github.com/bsorrentino/maven-confluence-plugin/commit/d62168c8eea976b) bsorrentino *2020-01-03 14:04:29*
+
 **updated version to the next release**
 
 
