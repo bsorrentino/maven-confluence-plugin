@@ -577,26 +577,26 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     /**
      *
      * @param uri
-     * @param attachment
+     * @param defaultResult
      * @param performUpdate
      * @return
      */
     protected CompletableFuture<Model.Attachment> updateAttachmentIfNeeded(
                                         java.net.URI uri,
-                                        Model.Attachment attachment,
+                                        Model.Attachment defaultResult,
                                         Supplier<CompletableFuture<Model.Attachment>> performUpdate )
     {
 
         return canProceedToUpdateResource(uri,
                 () -> performUpdate.get()
                         .thenApply( p -> {
-                            getLog().info(format("attachment [%s] has been updated!",
+                            getLog().info(format("defaultResult [%s] has been updated!",
                                     getPrintableStringForResource(uri)));
                             return p;
                         }),
-                () -> completedFuture(attachment)
+                () -> completedFuture(defaultResult)
                         .thenApply( p -> {
-                            getLog().info(format("attachment [%s] has not been updated! (deploy skipped)",
+                            getLog().info(format("defaultResult [%s] has not been updated! (deploy skipped)",
                                     getPrintableStringForResource(uri)));
                             return p;
                         })
@@ -609,39 +609,46 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param confluencePage
      * @param attachment
      */
-    private CompletableFuture<Model.Attachment> generateAttachment(final ConfluenceService confluence, final Site site,
-            final Model.Page confluencePage, final Site.Attachment attachment) {
+    private CompletableFuture<Model.Attachment> generateAttachment(final ConfluenceService confluence,
+                                                                   final Site site,
+                                                                   final Model.Page confluencePage,
+                                                                   final Site.Attachment attachment)
+    {
 
-        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]", confluencePage.getId(),
-                confluencePage.getTitle(), getPrintableStringForResource(attachment.getUri())));
+        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]",
+                confluencePage.getId(),
+                confluencePage.getTitle(),
+                getPrintableStringForResource(attachment.getUri())));
 
         final java.net.URI uri = attachment.getUri();
 
-        return confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
-                .exceptionally(e -> {
-                    getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(),
-                            e.getMessage()));
-                    return empty();
-                }).thenCompose(att -> {
+        final Model.Attachment defaultAttachment = confluence.createAttachment();
+        defaultAttachment.setFileName(attachment.getName());
+        defaultAttachment.setContentType(attachment.getContentType());
+        defaultAttachment.setComment(attachment.getComment());
 
-                    if (!att.isPresent()) {
-                        getLog().debug(format("Creating new attachment for [%s]", attachment.getName()));
-                        Model.Attachment result = confluence.createAttachment();
-                        result.setFileName(attachment.getName());
-                        result.setContentType(attachment.getContentType());
-                        result.setComment(attachment.getComment());
-                        return resetUpdateStatusForResource(uri).thenCompose(reset -> completedFuture(result));
-                    }
+        return updateAttachmentIfNeeded(uri,defaultAttachment, () ->
+            confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
+                    .exceptionally(e -> {
+                        getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(),
+                                e.getMessage()));
+                        return empty();
+                    })
+                    .thenCompose(optAttachment ->
+                        optAttachment.map( result -> {
+                            result.setContentType(attachment.getContentType());
+                            result.setComment(attachment.getComment());
+                            return completedFuture(result);
 
-                    Model.Attachment result = att.get();
-                    result.setContentType(attachment.getContentType());
-                    result.setComment(attachment.getComment());
-                    return completedFuture(result);
-
-                }).thenCompose(finalAttachment ->
-                        updateAttachmentIfNeeded(uri,finalAttachment,
-                                () -> updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment)));
-
+                        }).orElseGet( () ->
+                            resetUpdateStatusForResource(uri)
+                                    .thenCompose(reset -> completedFuture(defaultAttachment))
+                        )
+                    )
+                    .thenCompose(finalAttachment ->
+                            updateAttachmentIfNeeded(uri, finalAttachment,
+                                    () -> updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment)))
+        );
 
     }
 

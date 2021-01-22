@@ -301,7 +301,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         initTemplateProperties( site );
 
-        final Locale parsedLocale = !StringUtils.isEmpty(locale) ? new Locale(locale) : Locale.getDefault();
+        final Locale parsedLocale = ofNullable(locale)
+                                        .filter( l -> !l.isEmpty())
+                                        .map(Locale::new)
+                                        .orElseGet(Locale::getDefault);
 
         if ( project.getPackaging().equals( "maven-plugin" ) )
        /////////////////////////////////////////////////////////////////
