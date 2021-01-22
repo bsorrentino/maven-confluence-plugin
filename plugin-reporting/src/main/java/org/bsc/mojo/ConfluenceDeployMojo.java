@@ -299,6 +299,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         final Site site = loadSite();
 
+        site.setDefaultFileExt(getFileExt());
+
         initTemplateProperties( site );
 
         final Locale parsedLocale = ofNullable(locale)

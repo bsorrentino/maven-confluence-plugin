@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 
 /**
  *
@@ -49,7 +50,7 @@ public class Site {
      * @return
      */
     public final Optional<String> optSpaceKey() {
-        return Optional.ofNullable(spaceKey);
+        return ofNullable(spaceKey);
     }
     
     /**
@@ -59,20 +60,49 @@ public class Site {
         this.spaceKey = spaceKey;
     }
 
-
+    /**
+     * Attribute basedir
+     */
     private transient Optional<Path> _basedir = Optional.empty();
-    
+    /**
+     *
+     * @param basedir
+     */
     @XmlTransient
     public void setBasedir( Path basedir ) {
         
-        this._basedir = Optional.ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?
+        this._basedir = ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?
                 Paths.get(p.toString()) :
                 Paths.get(p.getParent().toString()));
            
     }
-     
+    /**
+     *
+      * @return
+     */
     public Path getBasedir() {
         return _basedir.orElseThrow( () -> new IllegalStateException("basedir is not set!"));
+    }
+    /**
+     * default document extension
+     *
+     * Attribute defaultExt
+     */
+    private transient Optional<String> _defaultFileExt = Optional.empty();
+    /**
+     *
+     * @param basedir
+     */
+    @XmlTransient
+    public void setDefaultFileExt( String fileExt ) {
+        this._defaultFileExt = ofNullable(fileExt);
+    }
+    /**
+     *
+     * @return
+     */
+    public Optional<String> optDefaultFileExt() {
+        return _defaultFileExt;
     }
 
     @XmlAttribute(name="label")
@@ -121,16 +151,25 @@ public class Site {
             this.site = _SITE.peek();
         }
 
+        /**
+         * attribute URI
+         */
         private java.net.URI uri;
-
+        /**
+         *
+         * @return
+         */
         @XmlAttribute
-        public final java.net.URI getUri() {
+        public java.net.URI getUri() {
             if (uri != null && !uri.isAbsolute()) {
                 return site.getBasedir().toUri().resolve(uri);
             }
             return uri;
         }
-
+        /**
+         *
+         * @param value
+         */
         public final void setUri(java.net.URI value) {
             if (null == value) {
                 throw new IllegalArgumentException("uri is null");
@@ -150,7 +189,7 @@ public class Site {
         }
 
         public final Optional<String> optName() {
-            return Optional.ofNullable(name);
+            return ofNullable(name);
         }
 
         public void setName(String name) {
@@ -314,18 +353,16 @@ public class Site {
             attachments.add( attachment );
         }
 
-        public java.net.URI getUri(String ext) {
+        @Override
+        public java.net.URI getUri() {
 
-            if (getUri() == null) {
-                if (getName() == null) {
-                    throw new IllegalStateException("name is null");
-                }
-
-                setUri(site.getBasedir().toUri().resolve(getName().concat(ext)));
-
-            }
-
-            return getUri();
+            return ofNullable(super.getUri()).orElseGet( () ->  {
+                if (getName() == null) throw new IllegalStateException("name is null");
+                final String pageName = site.optDefaultFileExt().map( ext -> getName().concat(ext) ).orElse( getName() );
+                final java.net.URI pageUri = site.getBasedir().toUri().resolve( pageName );
+                setUri( pageUri );
+                return pageUri;
+            });
         }
 
         boolean ignoreVariables = false;
@@ -340,12 +377,12 @@ public class Site {
         @XmlAttribute(name = "ignore-variables")
         @Deprecated
         public void setIgnoreVariablesDeprecated(Boolean value) {
-            this.ignoreVariables = Optional.ofNullable(value).orElse( false );
+            this.ignoreVariables = ofNullable(value).orElse( false );
         }
 
         @XmlAttribute(name = "ignoreVariables")
         public void setIgnoreVariables(Boolean value) {
-            this.ignoreVariables = Optional.ofNullable(value).orElse( false );
+            this.ignoreVariables = ofNullable(value).orElse( false );
         }
 
         @XmlElement(name = "generated")
@@ -465,7 +502,7 @@ public class Site {
          * @return
          */
         public final Optional<String> optParentPageTitle() {
-            return Optional.ofNullable(parentPageTitle);
+            return ofNullable(parentPageTitle);
         }
 
 
@@ -499,7 +536,7 @@ public class Site {
          * @return
          */
         public final Optional<String> optParentPageId() {
-            return Optional.ofNullable(parentPageId);
+            return ofNullable(parentPageId);
         }
 
 

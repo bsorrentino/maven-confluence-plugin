@@ -290,25 +290,25 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     /**
      *
      * @param uri
-     * @param page
+     * @param defaultResult
      * @param performUpdate
      * @return
      */
     protected CompletableFuture<Model.Page> updatePageIfNeeded(java.net.URI uri,
-                                                              Model.Page page,
+                                                              Model.Page defaultResult,
                                                               Supplier<CompletableFuture<Model.Page>> performUpdate )
     {
 
         return canProceedToUpdateResource(uri,
                 () -> performUpdate.get()
                         .thenApply( p -> {
-                            getLog().info(format("page [%s] has been updated!",
+                            getLog().info(format("defaultResult [%s] has been updated!",
                                     getPrintableStringForResource(uri)));
                             return p;
                         }),
-                () -> completedFuture(page)
+                () -> completedFuture(defaultResult)
                         .thenApply( p -> {
-                            getLog().info(format("page [%s] has not been updated! (deploy skipped)",
+                            getLog().info(format("defaultResult [%s] has not been updated! (deploy skipped)",
                                 getPrintableStringForResource(uri)));
                             return p;
                         })
@@ -331,7 +331,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         final String homeTitle = site.getHome().getName();
 
-        final java.net.URI source = child.getUri(getFileExt());
+        final java.net.URI source = child.getUri();
 
         getLog().debug(
                 format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
