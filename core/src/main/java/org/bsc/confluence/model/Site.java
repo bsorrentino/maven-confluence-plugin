@@ -142,7 +142,7 @@ public class Site {
      * class Source
      */
     @XmlType(namespace = Site.NAMESPACE)
-    protected static class Source {
+    public static class Source {
         private static final Pattern lead_trail_spaces = Pattern.compile("^(.*)\\s+$|^\\s+(.*)");
 
         protected transient final Site site;
