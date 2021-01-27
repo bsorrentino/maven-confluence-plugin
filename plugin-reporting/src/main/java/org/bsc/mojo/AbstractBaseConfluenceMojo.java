@@ -17,8 +17,11 @@ import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -311,8 +314,10 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     @Override
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
-        if( getLog().isDebugEnabled())
+        if( getLog().isDebugEnabled()) {
             System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
+            Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.FINE));
+        }
 
         if( skip ) {
             getLog().info("plugin execution skipped");
