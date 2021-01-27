@@ -323,6 +323,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             generateProjectReport(confluence, site, parsedLocale);
         }
 
+        deployStateManager.ifPresent( DeployStateManager::save );
+
     }
 
     protected void generateProjectHomeTemplate( final MiniTemplator t, final Site site, final Locale locale) throws MojoExecutionException {
@@ -588,8 +590,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                                                 thenCompose( content -> confluence.storePage(p, content )));
 
         final Function<Model.Page, CompletableFuture<Model.Page>> createHomePage = (_parentPage) ->
-                resetUpdateStatusForSource(site.getHome())
-                        .thenCompose( reset -> getHomeContent(  site, Optional.empty(), locale ) )
+                        getHomeContent(  site, Optional.empty(), locale )
                         .thenCompose( content -> confluence.createPage(_parentPage, _homePageTitle,content) );
 
         final Model.Page confluenceHomePage =
@@ -1076,9 +1077,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                                         .thenCompose( content -> confluence.storePage(p, content)));
 
             final Function<Model.Page, CompletableFuture<Model.Page>> createPage = (parent) ->
-                    resetUpdateStatusForSource(site.getHome())
-                        .thenCompose( reset -> getHomeContent(site, Optional.empty(), pluginDescriptor, locale)
-                        .thenCompose( content ->confluence.createPage(parent, title, content)));
+                        getHomeContent(site, Optional.empty(), pluginDescriptor, locale)
+                        .thenCompose( content ->confluence.createPage(parent, title, content));
 
             return removeSnaphot(confluence, parentPage, title)
                     .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )

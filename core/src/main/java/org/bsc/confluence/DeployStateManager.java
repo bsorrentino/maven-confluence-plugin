@@ -1,7 +1,6 @@
 package org.bsc.confluence;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bsc.confluence.model.Site;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
@@ -10,21 +9,33 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 public class DeployStateManager {
+    private static final java.util.logging.Logger log =
+            java.util.logging.Logger.getLogger(DeployStateManager.class.getName());
 
-    private static JsonString createValue( String value ) {
+    private static void debug( String msg, Object ...args ) {
+        log.fine( () -> format( msg, args));
+    }
+    private static void warn( String msg, Throwable ex  ) {
+        log.log(Level.WARNING, msg, ex);
+    }
+
+    private static boolean isFileSchema( java.net.URI uri ) {
+        return ofNullable(uri)
+                .map( u -> "file".equalsIgnoreCase(u.getScheme()) )
+                .orElse(false);
+    }
+
+    public static JsonString createValue( String value ) {
         return Json.createArrayBuilder().add(value).build().getJsonString(0);
         // From 1.1
         // return Json.createValue(0L)
@@ -41,13 +52,28 @@ public class DeployStateManager {
                     return new Data( (JsonString)entry );
                 case OBJECT:
                     return new Data( (JsonObject)entry);
+                case NULL:
+                    return new Data( createValue(""));
                 default:
                     throw new IllegalArgumentException( format("value [%s] is not valid type!", entry.toString()) );
             }
         }
 
-        final Optional<String> optId;
+        public static Data empty() {
+            return Data.of( createValue("") );
+        }
+
+        private Optional<JsonValue> optExtraAttribute;
         private JsonString hash;
+
+        private Data(JsonString hash ) {
+            optExtraAttribute = Optional.empty();
+            this.hash = hash;
+        }
+        private Data( JsonObject entry ) {
+            this.optExtraAttribute = ofNullable(entry.get("extra"));
+            this.hash = entry.getJsonString("hash");
+        }
 
         public JsonString getHash() {
             return hash;
@@ -57,22 +83,19 @@ public class DeployStateManager {
             this.hash = hash;
         }
 
-        private Data(JsonString hash ) {
-            optId = empty();
-            this.hash = hash;
+        public Optional<JsonValue> getOptExtraAttribute() {
+            return optExtraAttribute;
         }
-        private Data( JsonObject entry ) {
-            this.optId = ofNullable(entry.getJsonString("id").getString());
-            this.hash = entry.getJsonString("hash");
+
+        public void setExtraAttribute(JsonValue value) {
+            debug( "Data.setExtraAttribute( %s )", String.valueOf(value) );
+            this.optExtraAttribute = ofNullable(value);
         }
 
         final JsonValue toJson() {
-            return optId.map( id -> (JsonValue)Json.createObjectBuilder()
-                                        .add( "id", id)
-                                        .add("hash", hash )
-                                        .build())
-                                    .orElseGet( () -> hash);
-
+            final JsonObjectBuilder b = Json.createObjectBuilder();
+            optExtraAttribute.ifPresent( extra ->  b.add( "extra", extra) );
+            return b.add("hash", hash ).build();
         }
     }
 
@@ -87,13 +110,17 @@ public class DeployStateManager {
         return result;
     }
 
-
     private Map<String, Map<String,Data>> storage = new HashMap<>();
 
-    private final String endpoint;
-    private final Path outdir;
+    private final String            endpoint;
+    private final Path              outdir;
     private final JsonWriterFactory writerFactory;
 
+    /**
+     *
+     * @param endpoint
+     * @param outdir
+     */
     private DeployStateManager( String endpoint, Path outdir ) {
         requireNonNull(endpoint, "endpoint is null!");
         requireNonNull(outdir, "outdir is null!");
@@ -116,16 +143,6 @@ public class DeployStateManager {
         config.put(JsonGenerator.PRETTY_PRINTING, true);
         this.writerFactory = Json.createWriterFactory(config);
     }
-
-    /**
-     *
-     * @param msg
-     * @param args
-     */
-    private void trace( String msg, Object ...args) {
-//        System.out.print( "TRACE ==> ");
-//        System.out.println( String.format( msg, (Object[])args ));
-    }
     /**
      *
      */
@@ -137,28 +154,30 @@ public class DeployStateManager {
                 Files.createFile(file);
             } catch (IOException e) {
                 // TODO
-                e.printStackTrace();
+                warn( format("error creating file '%s'", file),e );
             }
 
         } else {
             try (JsonReader r = Json.createReader(Files.newBufferedReader(file))) {
                 r.readObject().entrySet().forEach(e -> {
                     final Map<String, Data> ss = new HashMap<>();
-                    ((JsonObject) e.getValue()).entrySet().forEach(ee -> ss.put(ee.getKey(), Data.of(ee.getValue())));
+                    ((JsonObject) e.getValue()).entrySet()
+                            .forEach(ee -> ss.put(ee.getKey(), Data.of(ee.getValue())));
                     storage.put(e.getKey(), ss);
                 });
             } catch (Exception ex) {
                 // TODO
-                ex.printStackTrace();
+                warn( format("error reading file '%s'", file),ex );
             }
         }
         if (!storage.containsKey(endpoint)) {
             storage.put(endpoint, new HashMap<>());
-            save();
         }
 
     }
-
+    /**
+     *
+     */
     public void save() {
         synchronized (this) {
 
@@ -172,144 +191,158 @@ public class DeployStateManager {
                 final JsonObjectBuilder b1 = Json.createObjectBuilder();
                 e.getValue().entrySet().forEach(ee -> b1.add(ee.getKey(), ee.getValue().toJson()));
                 b.add(e.getKey(), b1);
-
             });
 
             try (JsonWriter w = writerFactory.createWriter(Files.newBufferedWriter(file))) {
-
-                //storage.put("updated", Json.createValue(sdf.format(new java.util.Date())));
+//                storage.put("updated", Json.createValue(sdf.format(new java.util.Date())));
                 w.writeObject(b.build());
             } catch (Exception ex) {
                 // TODD
-                ex.printStackTrace();
+                warn( format("error saving file '%s'", file),ex );
             }
         }
     }
-
     /**
      *
-     * @param source
+     * @param uri
+     * @param extraAttribute
      * @param yes
      * @param no
      * @param <U>
-     * @param <S>
      * @return
      */
-    public <U,S extends Site.Source>
-            CompletableFuture<U>
-            isUpdated(S source,
+    public <U> CompletableFuture<U>
+            isUpdated(java.net.URI uri,
+                      Optional<JsonValue> extraAttribute,
                       Supplier<CompletableFuture<U>> yes,
                       Supplier<CompletableFuture<U>> no )
     {
-        final java.net.URI uri = source.getUri();
-        trace( "%s isUpdated( %s )", source.getName(), uri );
-
-        return ( isUpdated(uri) )
-                ? yes.get().thenApply(v -> {
-                        save();
-                        return v;
-                    })
-                : no.get();
+        synchronized (this) {
+            return isUpdated(uri, extraAttribute) ? yes.get() : no.get();
+        }
     }
-
     /**
      *
      * @param uri
      * @return
      */
-    private boolean isUpdated( java.net.URI uri ) {
+    private boolean isUpdated( java.net.URI uri, Optional<JsonValue> extraAttribute ) {
         if (uri == null) return false;
-
-        final String scheme = uri.getScheme();
-
-        return Objects.isNull(scheme) ||
-                !"file".equalsIgnoreCase(scheme) ||
-                isUpdated(Paths.get(uri));
+        return ( !isFileSchema(uri) || isUpdated(Paths.get(uri), extraAttribute) );
     }
+    /**
+     *
+     * @param uri
+     * @return
+     */
+    private Optional<String> getKeyFormUri( java.net.URI uri ) {
+        return (uri != null && "file".equalsIgnoreCase(uri.getScheme())) ?
+            ofNullable(Paths.get(uri))
+                    .flatMap( file -> ofNullable( String.valueOf(outdir.relativize(file.toAbsolutePath())) )) :
+                Optional.empty();
 
+    }
+    /**
+     *
+     * @param uri
+     * @return
+     */
+    public Optional<JsonValue> getOptExtraAttribute( java.net.URI uri ) {
+
+        if( !isFileSchema(uri) ) return Optional.empty(); // GUARD
+
+        return ofNullable( storage.get(endpoint) )
+                .flatMap( s ->
+                    getKeyFormUri( uri )
+                        .flatMap( key -> ofNullable(s.get(key))
+                                .flatMap( data -> data.getOptExtraAttribute()) ));
+    }
+    /**
+     *
+     * @param uri
+     * @param value
+     */
+    public void setExtraAttribute( java.net.URI uri, JsonValue value ) {
+        debug( "DeployStateManager.setExtraAttribute( '%s', '%s' )", String.valueOf(uri), String.valueOf(value) );
+
+        synchronized (this) {
+            isUpdated( uri, ofNullable(value));
+        }
+    }
     /**
      *
      * @param file
      * @return
      */
-    protected boolean isUpdated(Path file) {
-        trace( "isUpdated( %s )",  file );
+    boolean isUpdated(Path file, Optional<JsonValue> extraAttribute ) {
+        debug( "isUpdated( %s )",  file );
 
         if( file == null ) return false;
 
-        final Path b = file.toAbsolutePath();
+        return ofNullable(storage.get(endpoint)).map( s -> {
+            final String key = String.valueOf(outdir.relativize( file.toAbsolutePath() ));
 
-        final Map<String,Data> s =  storage.get(endpoint);
+            final String fileMd5Hash = md5Hash(file);
 
-        if( s==null ) return true;
+            boolean updated =  ofNullable(s.get(key)).map( data -> {
+                final String lastStoredFileMd5Hash = data.getHash().getString();
 
-        final String key = outdir.relativize( b ).toString();
-
-        final String fileMd5Hash = md5Hash(file);
-        return ofNullable(s.get(key)).map( data -> {
-            final String lastStoredFileMd5Hash = data.getHash().getString();
-
-            if(!Objects.equals(fileMd5Hash, lastStoredFileMd5Hash)) {
-                trace( "%s - data.setHash( %s )",  key, fileMd5Hash );
-                data.setHash(createValue(fileMd5Hash));
+                if(!Objects.equals(fileMd5Hash, lastStoredFileMd5Hash)) {
+                    debug( "%s - data.setHash( %s )",  key, fileMd5Hash );
+                    data.setHash(createValue(fileMd5Hash));
+                    return true;
+                }
+                return false;
+            }).orElseGet( () -> {
+                debug( "%s - data.setHash( %s )",  key, fileMd5Hash );
+                s.put( key, Data.of(createValue(fileMd5Hash)) );
                 return true;
-            }
-            return false;
-        }).orElseGet( () -> {
-            trace( "%s - data.setHash( %s )",  key, fileMd5Hash );
-            s.put( key, Data.of(createValue(fileMd5Hash)) );
-            return true;
-        });
-    }
+            });
 
-    private static String md5Hash(Path file) {
+            extraAttribute.ifPresent( extra -> s.get(key).setExtraAttribute(extra) );
+
+            return updated;
+
+        })
+        .orElse(true);
+
+    }
+    /**
+     *
+     * @param file
+     * @return
+     */
+    private String md5Hash(Path file) {
         try(FileInputStream fis = new FileInputStream(file.toFile())) {
             return DigestUtils.md5Hex(fis);
         } catch (IOException e) {
-            // todo
-            e.printStackTrace();
+            // TODO
+            warn( format("error generating md5Hash for file '%s'", file), e  );
         }
         return null;
     }
-
     /**
      *
-     * @param source
-     * @param <S>
+     * @param uri
      * @return
      */
-    public <S extends Site.Source> boolean resetState( S source ) {
-
-        final java.net.URI uri = source.getUri();
-
-        if( uri == null ) return false;
-
-        final String scheme = uri.getScheme();
-
-        return Objects.nonNull(scheme) &&
-                "file".equalsIgnoreCase(scheme) &&
-                resetState(Paths.get(uri));
+    public boolean removeState( java.net.URI uri ) {
+      return isFileSchema(uri) && removeState(Paths.get(uri));
     }
-
     /**
      *
      * @param file
      */
-    protected boolean resetState( Path file ) {
+    boolean removeState( Path file ) {
         if( file == null ) return false;
 
-        final Path b = file.toAbsolutePath();
-
-        final Map<String,Data> s =  storage.get(endpoint);
-
-        final String key = outdir.relativize( b ).toString();
-
-        ofNullable( s.get(key) )
-                .map( data -> { data.setHash( createValue("")); return data; } )
-                .orElseGet( () -> s.put( key, Data.of(createValue(""))) );
-        save();
-
-        return true;
+        return ofNullable(storage.get(endpoint))
+                .map( s -> {
+                    final String key = String.valueOf(outdir.relativize( file.toAbsolutePath() ));
+                    s.remove( key );
+                    return true;
+                })
+                .orElse(false);
     }
 
     @Override

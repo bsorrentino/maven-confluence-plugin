@@ -19,6 +19,7 @@ import org.bsc.confluence.model.SiteFactory;
 import org.bsc.confluence.model.SiteProcessor;
 import org.bsc.mojo.configuration.DeployStateInfo;
 
+import javax.json.JsonValue;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -199,7 +200,6 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
         return labels;
     }
-
     /**
      * initialize properties shared with template
      */
@@ -227,7 +227,12 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
 
     }
-
+    /**
+     *
+     * @param source
+     * @param <S>
+     * @return
+     */
     protected <S extends Site.Source> String getPrintableStringForResource(S source) {
 
         final java.net.URI uri = source.getUri();
@@ -240,7 +245,6 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
 
     }
-
     /**
      *
      * @param <T>
@@ -287,35 +291,48 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                 });
 
     }
-
     /**
      *
-     * @param page
-     * @param defaultResult
+     * @param sitePage
+     * @param confluencePage
+     * @return
+     */
+    protected CompletableFuture<Model.Page> savePageIdToDeployStateManager( Site.Page sitePage, Model.Page confluencePage ) {
+        return deployStateManager
+                .map( dsm -> {
+                    final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
+                    dsm.setExtraAttribute(sitePage.getUri(), id );
+                    return completedFuture(confluencePage);
+                })
+                .orElse( completedFuture(confluencePage) );
+    }
+    /**
+     *
+     * @param sitePage
+     * @param confluencePage
      * @param performUpdate
      * @return
      */
-    protected CompletableFuture<Model.Page> updatePageIfNeeded(Site.Page page,
-                                                              Model.Page defaultResult,
+    protected CompletableFuture<Model.Page> updatePageIfNeeded(Site.Page sitePage,
+                                                              Model.Page confluencePage,
                                                               Supplier<CompletableFuture<Model.Page>> performUpdate )
     {
 
-        return canProceedToUpdateSource(page,
+        return canProceedToUpdatePage(sitePage, confluencePage,
                 () -> performUpdate.get()
                         .thenApply( p -> {
                             getLog().info(format("page [%s] updated!",
-                                    getPrintableStringForResource(page)));
+                                    getPrintableStringForResource(sitePage)));
                             return p;
                         }),
-                () -> completedFuture(defaultResult)
+                () -> completedFuture(confluencePage)
                         .thenApply( p -> {
                             getLog().info(format("page [%s] not updated! (deploy skipped)",
-                                getPrintableStringForResource(page)));
+                                getPrintableStringForResource(sitePage)));
                             return p;
                         })
                 );
     }
-
     /**
      *
      * @param site
@@ -355,23 +372,23 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         final java.net.URI uri = child.getUri();
 
         final Function<Model.Page, CompletableFuture<Model.Page>>
-                updatePage = p ->
+                updatePageFunction = p ->
                     updatePageIfNeeded(child,p,
                         () -> getPageContent( ofNullable(p), site, uri, child, pageTitleToApply )
                                 .thenCompose( storage -> confluence.storePage(p, storage)));
 
         final Supplier<CompletableFuture<Model.Page>>
-                createPage = () ->
-                    resetUpdateStatusForSource(child)
-                        .thenCompose( reset -> getPageContent( Optional.empty(), site, uri, child, pageTitleToApply ) )
-                        .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage));
+                createPageFunction = () ->
+                        getPageContent( Optional.empty(), site, uri, child, pageTitleToApply )
+                            .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
+                            .thenCompose( page -> savePageIdToDeployStateManager(child, page ));
 
         final Model.Page result =
                 confluence.getPage(parentPage.getSpace(), pageTitleToApply)
                 .thenCompose(page ->
                         (page.isPresent())
-                                ? updatePage.apply(page.get())
-                                : createPage.get())
+                                ? updatePageFunction.apply(page.get())
+                                : createPageFunction.get())
                 .thenCompose( p -> confluence.addLabelsByName( p.getId(), child.getComputedLabels() ).thenApply( (v) -> p) )
                 .join();
 
@@ -417,34 +434,50 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         }
     }
+//    protected <S extends Site.Source> CompletableFuture<Boolean> resetUpdateStatusForSource( S source ) {
+//        final java.net.URI uri = source.getUri();
+//        return completedFuture( deployStateManager.map( dsm -> dsm.resetState(uri) ).orElse(false) );
+//        return completedFuture(false);
+//    }
     /**
      *
-     * @param source
-     * @param <S>
-     * @return
-     */
-    protected <S extends Site.Source> CompletableFuture<Boolean> resetUpdateStatusForSource( S source ) {
-        return completedFuture( deployStateManager.map( dsm -> dsm.resetState(source) ).orElse(false) );
-    }
-    /**
-     *
-     * @param source
-     * @param yes
+     * @param sitePage
+     * @param confluencePage
      * @param no
      * @param <U>
-     * @param <T>
      * @return
      */
-    private <U,T extends Site.Source> CompletableFuture<U>
-            canProceedToUpdateSource(T source,
+    private <U> CompletableFuture<U>
+            canProceedToUpdatePage(  Site.Page sitePage,
+                                     Model.Page confluencePage,
                                      Supplier<CompletableFuture<U>> yes,
                                      Supplier<CompletableFuture<U>> no )
     {
+        final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
         return deployStateManager
-                .map( dsm -> dsm.isUpdated(source, yes, no) )
+                .map( dsm -> dsm.isUpdated(sitePage.getUri(), ofNullable(id), yes, no) )
                 .orElseGet( () -> yes.get());
     }
 
+    /**
+     *
+     * @param siteAttachment
+     * @param confluenceAttachment
+     * @param yes
+     * @param no
+     * @param <U>
+     * @return
+     */
+    private <U> CompletableFuture<U>
+    canProceedToUpdateAttachment(  Site.Attachment siteAttachment,
+                                   Model.Attachment confluenceAttachment,
+                                   Supplier<CompletableFuture<U>> yes,
+                                   Supplier<CompletableFuture<U>> no )
+    {
+        return deployStateManager
+                .map( dsm -> dsm.isUpdated(siteAttachment.getUri(), empty(), yes, no) )
+                .orElseGet( () -> yes.get());
+    }
     /**
      *
      * @param site
@@ -587,28 +620,28 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
     /**
      *
-     * @param attachment
-     * @param defaultResult
+     * @param siteAttachment
+     * @param confluenceAttachment
      * @param performUpdate
      * @return
      */
     protected CompletableFuture<Model.Attachment> updateAttachmentIfNeeded(
-                                        Site.Attachment attachment,
-                                        Model.Attachment defaultResult,
+                                        Site.Attachment siteAttachment,
+                                        Model.Attachment confluenceAttachment,
                                         Supplier<CompletableFuture<Model.Attachment>> performUpdate )
     {
 
-        return canProceedToUpdateSource(attachment,
+        return canProceedToUpdateAttachment(siteAttachment,confluenceAttachment,
                 () -> performUpdate.get()
                         .thenApply( p -> {
                             getLog().info(format("attachment [%s] updated!",
-                                    getPrintableStringForResource(attachment)));
+                                    getPrintableStringForResource(siteAttachment)));
                             return p;
                         }),
-                () -> completedFuture(defaultResult)
+                () -> completedFuture(confluenceAttachment)
                         .thenApply( p -> {
                             getLog().info(format("attachment [%s] not updated! (deploy skipped)",
-                                    getPrintableStringForResource(attachment)));
+                                    getPrintableStringForResource(siteAttachment)));
                             return p;
                         })
         );
@@ -651,10 +684,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                             result.setComment(attachment.getComment());
                             return completedFuture(result);
 
-                        }).orElseGet( () ->
-                            resetUpdateStatusForSource(attachment)
-                                    .thenCompose(reset -> completedFuture(defaultAttachment))
-                        )
+                        }).orElseGet( () -> completedFuture(defaultAttachment) )
                     )
                     .thenCompose(finalAttachment ->
                             updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment))
