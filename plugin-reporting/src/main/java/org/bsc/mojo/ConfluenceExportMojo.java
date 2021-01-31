@@ -6,17 +6,22 @@
 
 package org.bsc.mojo;
 
-import java.util.Optional;
-
+import lombok.val;
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.confluence.xmlrpc.ConfluenceExportDecorator;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
+import static java.lang.String.format;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 
 /**
  * Export a confluence page either in PDF or DOC 
@@ -59,32 +64,46 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
     private java.io.File outputDirectory;
     
     
-    private void exportPage( ConfluenceService confluence ) throws Exception  {
-        final ExportFormat exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
+    private CompletableFuture<Void> exportPage(ConfluenceService confluence, Model.Page parentPage )   {
 
-        final Model.Page parentPage = loadParentPage(confluence, Optional.empty())
-                                            .join();
+        val result = new CompletableFuture<Void>();
 
-        if( outputFile == null ) {
+        val exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
 
-            outputFile = ( outputDirectory == null ) ? 
-                                new java.io.File( String.format("%s.%s", pageTitle, exfmt.name().toLowerCase())) : 
-                                new java.io.File( outputDirectory, String.format("%s.%s", pageTitle, exfmt.name().toLowerCase())) 
-                    ;
+        outputFile = ofNullable(outputFile).orElseGet( () -> {
+
+            val fileName = format("%s.%s", pageTitle, exfmt.name().toLowerCase());
+
+            final java.io.File file =
+                    ofNullable(outputDirectory)
+                        .map( dir -> new java.io.File( dir, fileName))
+                        .orElseGet( () -> new java.io.File( fileName));
+
+            return file;
+        });
+
+        try {
+            FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
+
+            val url = ConfluenceService.Protocol.XMLRPC.removeFrom(ConfluenceExportMojo.super.getEndPoint());
+
+            val exporter =
+                    new ConfluenceExportDecorator( confluence, url );
+
+            exporter.exportPage(parentPage.getSpace(),
+                    pageTitle,
+                    exfmt,
+                    outputFile);
+
+            result.complete(null);
+
+
+        } catch (IOException e) {
+            result.completeExceptionally(e);
         }
 
-        FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
+        return result;
 
-        final String url = ConfluenceService.Protocol.XMLRPC.removeFrom(ConfluenceExportMojo.super.getEndPoint()); 
-
-		final ConfluenceExportDecorator exporter =
-				new ConfluenceExportDecorator( confluence, url );
-
-		exporter.exportPage(parentPage.getSpace(),
-		                    pageTitle,
-		                    exfmt,
-		                    outputFile);
-        
     }
 
     /**
@@ -95,8 +114,9 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
     @Override
     public void execute( ConfluenceService confluence) throws Exception {
 
-        exportPage(confluence);
-
+        loadParentPage(confluence, empty())
+                .thenCompose( parentPage -> exportPage( confluence, parentPage ))
+                .join();
     }
     
 }
