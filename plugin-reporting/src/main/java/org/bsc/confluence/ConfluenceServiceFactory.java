@@ -131,11 +131,6 @@ public class ConfluenceServiceFactory {
             return xmlrpcService.addAttachment(page, attachment, source);
         }
 
-        @Override
-        public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
-            xmlrpcService.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
-        }
-
         /**
          * factory method
          *

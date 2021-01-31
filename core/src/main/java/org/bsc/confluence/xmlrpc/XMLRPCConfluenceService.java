@@ -325,23 +325,6 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public void exportPage( String url, 
-                            String spaceKey, 
-                            String pageTitle, 
-                            ExportFormat exfmt, 
-                            File outputFile) throws Exception 
-    {
-            final ConfluenceExportDecorator exporter = 
-                new ConfluenceExportDecorator( this, url );
-
-            exporter.exportPage(spaceKey, 
-                                pageTitle, 
-                                exfmt, 
-                                outputFile);
-
-    }
-
-    @Override
     public String toString() {
         try {
             final ServerInfo si = connection.getServerInfo();

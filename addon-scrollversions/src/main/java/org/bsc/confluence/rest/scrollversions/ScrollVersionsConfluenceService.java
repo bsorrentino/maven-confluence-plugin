@@ -692,11 +692,6 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
-        delegate.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
-    }
-
-    @Override
     public Model.Attachment createAttachment() {
         return delegate.createAttachment();
     }

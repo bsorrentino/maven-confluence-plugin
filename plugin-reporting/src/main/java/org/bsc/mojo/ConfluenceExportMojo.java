@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ExportFormat;
+import org.bsc.confluence.xmlrpc.ConfluenceExportDecorator;
 
 /**
  * Export a confluence page either in PDF or DOC 
@@ -74,15 +75,15 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
 
         FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
 
-
         final String url = ConfluenceService.Protocol.XMLRPC.removeFrom(ConfluenceExportMojo.super.getEndPoint()); 
 
-        
-        confluence.exportPage(  url, 
-                                parentPage.getSpace(), 
-                                pageTitle, //parentPage.getTitle(), 
-                                exfmt, 
-                                outputFile);
+		final ConfluenceExportDecorator exporter =
+				new ConfluenceExportDecorator( confluence, url );
+
+		exporter.exportPage(parentPage.getSpace(),
+		                    pageTitle,
+		                    exfmt,
+		                    outputFile);
         
     }
 
