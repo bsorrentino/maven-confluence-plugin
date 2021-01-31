@@ -207,12 +207,6 @@ public interface ConfluenceService extends Closeable{
 
     CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) ;
 
-    void exportPage(    String url, 
-                        String spaceKey, 
-                        String pageTitle, 
-                        ExportFormat exfmt, 
-                        java.io.File outputFile) throws Exception;
-    
     ////////////////////////////////////////////////////////////////////////////////
     // ATTACHMENT
     ///////////////////////////////////////////////////////////////////////////////
