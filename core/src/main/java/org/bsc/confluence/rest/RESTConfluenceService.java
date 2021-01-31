@@ -267,22 +267,22 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         return runAsync( () -> addLabels(id.toString(), labels) );
     }
 
-    @Override
-    public void exportPage(	String url, 
-    							String spaceKey, 
-    							String pageTitle, 
-    							ExportFormat exfmt, 
-    							File outputFile) throws Exception 
-    {
-
-		final ConfluenceExportDecorator exporter = 
-				new ConfluenceExportDecorator( this, url );
-		
-		exporter.exportPage(spaceKey, 
-		                    pageTitle, 
-		                    exfmt, 
-		                    outputFile);
-    }
+//    @Override
+//    public void exportPage(	String url,
+//    							String spaceKey,
+//    							String pageTitle,
+//    							ExportFormat exfmt,
+//    							File outputFile) throws Exception
+//    {
+//
+//		final ConfluenceExportDecorator exporter =
+//				new ConfluenceExportDecorator( this, url );
+//
+//		exporter.exportPage(spaceKey,
+//		                    pageTitle,
+//		                    exfmt,
+//		                    outputFile);
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////
     // ATTACHMENT
