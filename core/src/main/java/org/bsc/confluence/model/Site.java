@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -25,118 +26,21 @@ import static java.util.Optional.ofNullable;
 @XmlRootElement(name = "site", namespace = Site.NAMESPACE)
 public class Site {
 
-    public static final String NAMESPACE = "https://github.com/bsorrentino/maven-confluence-plugin";
-    /**
-     *
-     */
-    protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
-
-    /**
-     * 
-     */
-    public Site() {
-        _SITE.push(this);
-    }
-
-    private String spaceKey;
-    
-    @XmlAttribute(name="space-key")
-    public final String getSpaceKey() {
-       return spaceKey; 
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public final Optional<String> optSpaceKey() {
-        return ofNullable(spaceKey);
-    }
-    
-    /**
-     * @param spaceKey the spaceKey to set
-     */
-    public void setSpaceKey(String spaceKey) {
-        this.spaceKey = spaceKey;
-    }
-
-    /**
-     * Attribute basedir
-     */
-    private transient Optional<Path> _basedir = Optional.empty();
-    /**
-     *
-     * @param basedir
-     */
-    @XmlTransient
-    public void setBasedir( Path basedir ) {
-        
-        this._basedir = ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?
-                Paths.get(p.toString()) :
-                Paths.get(p.getParent().toString()));
-           
-    }
-    /**
-     *
-      * @return
-     */
-    public Path getBasedir() {
-        return _basedir.orElseThrow( () -> new IllegalStateException("basedir is not set!"));
-    }
-    /**
-     * default document extension
-     *
-     * Attribute defaultExt
-     */
-    private transient Optional<String> _defaultFileExt = Optional.empty();
-    /**
-     *
-     * @param basedir
-     */
-    @XmlTransient
-    public void setDefaultFileExt( String fileExt ) {
-        this._defaultFileExt = ofNullable(fileExt);
-    }
-    /**
-     *
-     * @return
-     */
-    public Optional<String> optDefaultFileExt() {
-        return _defaultFileExt;
-    }
-
-    @XmlAttribute(name="label")
-    public java.util.List<String> labels = new ArrayList<>();
-
-    //@XmlElement(name = "label")
-    public java.util.List<String> getLabels() {
-        return labels;
-    }
-
-    /**
-     * need for XmlMapper
-     * @see https://stackoverflow.com/a/40839029/521197
-     *
-     * @param label
-     */
-    public void setLabel( String label) {
-        this.labels.add(label);
-    }
-
-    Home home;
-
-    @XmlElement(name = "home", required = true)
-    public Home getHome() {
-        return home;
-    }
-
-    public void setHome(Home home) {
-        this.home = home;
-    }
-
     ////////////////////////////////////////////////////////////////////////////////
     // TYPE(s)
     ////////////////////////////////////////////////////////////////////////////////
+
+    public interface IAnchor {
+
+        Optional<String> getParentPageTitle() ;
+
+        void setParentPageTitle(String parentPageTitle);
+
+        Optional<String> getParentPageId();
+
+        void setParentPageId(String parentPageId);
+
+    }
 
     /**
      * class Source
@@ -320,7 +224,6 @@ public class Site {
         @XmlAttribute(name="child")
         public java.util.List<Page> children = ChildListProxy.newInstance(this);
 
-        //@XmlElement(name = "child")
         public java.util.List<Page> getChildren() {
             return children;
         }
@@ -338,7 +241,6 @@ public class Site {
         @XmlAttribute(name="attachment")
         public java.util.List<Attachment> attachments = new ArrayList<>();
 
-        //@XmlElement(name = "attachment")
         public List<Attachment> getAttachments() {
             return attachments;
         }
@@ -425,7 +327,7 @@ public class Site {
             protected String ref;
 
             /**
-             * Obtient la valeur de la propriété ref.
+             * Obtain value of the 'ref' property.
              *
              * @return possible object is {@link String }
              *
@@ -435,7 +337,7 @@ public class Site {
             }
 
             /**
-             * Définit la valeur de la propriété ref.
+             * set value of the 'ref' property.
              *
              * @param value
              *            allowed object is {@link String }
@@ -463,21 +365,32 @@ public class Site {
                 }
             }
 
-            return Optional.empty();
+            return empty();
         }
     }
 
     @XmlType(name = "home", namespace = Site.NAMESPACE)
-    public static class Home extends Page {
-        private String parentPageTitle;
+    public static class Home extends Page implements IAnchor {
 
+        /**
+         *  Attribute parentPageTitle
+         */
+        private Optional<String> parentPageTitle = empty();
         /**
          * @return the parentPageTitle
          */
-        public String getParentPageTitle() {
+        @Override
+        public Optional<String> getParentPageTitle() {
             return parentPageTitle;
         }
-
+        /**
+         *
+         * @param parentPageTitle the parentPageTitle to set
+         */
+        @XmlAttribute( name="parentPage")
+        public void setParentPageTitle(String parentPageTitle) {
+            this.parentPageTitle = ofNullable(parentPageTitle);
+        }
         /**
          * this attribute name containing dash is not supported in yaml format
          *
@@ -486,62 +399,213 @@ public class Site {
         @Deprecated
         @XmlAttribute( name="parent-page")
         public void setParentPageTitleDeperecated(String parentPageTitle) {
-            this.parentPageTitle = parentPageTitle;
+            this.parentPageTitle = ofNullable(parentPageTitle);
         }
 
         /**
-         * @param parentPageTitle the parentPageTitle to set
+         * Attribute parentPageId
          */
-        @XmlAttribute( name="parentPage")
-        public void setParentPageTitle(String parentPageTitle) {
-            this.parentPageTitle = parentPageTitle;
-        }
-
+        private Optional<String> parentPageId = empty();
         /**
          *
-         * @return
-         */
-        public final Optional<String> optParentPageTitle() {
-            return ofNullable(parentPageTitle);
-        }
-
-
-        private String parentPageId;
-
-        /**
          * @return the parentPageTitle
          */
-        public String getParentPageId() {
+        @Override
+        public Optional<String> getParentPageId() {
             return parentPageId;
         }
         /**
          * this attribute name containing dash is not supported in yaml format
-
+         *
          * @param parentPageId the parentPageTitle to set
          */
         @XmlAttribute( name="parent-page-id")
         public void setParentPageIdDeprecated(String parentPageId) {
-            this.parentPageId = parentPageId;
+            this.parentPageId = ofNullable(parentPageId);
         }
         /**
+         *
          * @param parentPageId the parentPageTitle to set
          */
         @XmlAttribute( name="parentPageId")
         public void setParentPageId(String parentPageId) {
-            this.parentPageId = parentPageId;
+            this.parentPageId = ofNullable(parentPageId);
+        }
+
+    }
+
+    @XmlType(name = "anchor", namespace = Site.NAMESPACE)
+    public static class Anchor implements IAnchor {
+        /**
+         *  Attribute parentPageTitle
+         */
+        private Optional<String> parentPageTitle = empty();
+        /**
+         * @return the parentPageTitle
+         */
+        @Override
+        public Optional<String> getParentPageTitle() {
+            return parentPageTitle;
+        }
+        /**
+         *
+         * @param parentPageTitle the parentPageTitle to set
+         */
+        @XmlAttribute( name="parentPage")
+        public void setParentPageTitle(String parentPageTitle) {
+            this.parentPageTitle = ofNullable(parentPageTitle);
+        }
+        /**
+         * Attribute parentPageId
+         */
+        private Optional<String> parentPageId = empty();
+        /**
+         *
+         * @return the parentPageTitle
+         */
+        @Override
+        public Optional<String> getParentPageId() {
+            return parentPageId;
+        }
+        /**
+         * Attribute child
+         */
+        @XmlAttribute(name="child")
+        public java.util.List<Page> children = null; /*ChildListProxy.newInstance(this);*/
+        /**
+         *
+         * @param parentPageId the parentPageTitle to set
+         */
+        @XmlAttribute( name="parentPageId")
+        public void setParentPageId(String parentPageId) {
+            this.parentPageId = ofNullable(parentPageId);
+        }
+
+        public java.util.List<Page> getChildren() {
+            return children;
         }
 
         /**
+         * need for XmlMapper
          *
-         * @return
+         * @see https://stackoverflow.com/a/40839029/521197
+         * @param child
          */
-        public final Optional<String> optParentPageId() {
-            return ofNullable(parentPageId);
+        public void setChild( Page child ) {
+            children.add( child );
         }
 
+    }
 
+    /**
+     *
+     */
+    public static final String NAMESPACE = "https://github.com/bsorrentino/maven-confluence-plugin";
+    /**
+     *
+     */
+    protected static final java.util.Stack<Site> _SITE = new java.util.Stack<Site>();
+    /**
+     * 
+     */
+    public Site() {
+        _SITE.push(this);
+    }
 
+    private String spaceKey;
+    
+    @XmlAttribute(name="space-key")
+    public final String getSpaceKey() {
+       return spaceKey; 
+    }
 
+    /**
+     * 
+     * @return
+     */
+    public final Optional<String> optSpaceKey() {
+        return ofNullable(spaceKey);
+    }
+    
+    /**
+     * @param spaceKey the spaceKey to set
+     */
+    public void setSpaceKey(String spaceKey) {
+        this.spaceKey = spaceKey;
+    }
+
+    /**
+     * Attribute basedir
+     */
+    private transient Optional<Path> _basedir = empty();
+    /**
+     *
+     * @param basedir
+     */
+    @XmlTransient
+    public void setBasedir( Path basedir ) {
+        
+        this._basedir = ofNullable(basedir).map( (p) -> Files.isDirectory(p) ?
+                Paths.get(p.toString()) :
+                Paths.get(p.getParent().toString()));
+           
+    }
+    /**
+     *
+      * @return
+     */
+    public Path getBasedir() {
+        return _basedir.orElseThrow( () -> new IllegalStateException("basedir is not set!"));
+    }
+    /**
+     * default document extension
+     *
+     * Attribute defaultExt
+     */
+    private transient Optional<String> _defaultFileExt = empty();
+    /**
+     *
+     * @param basedir
+     */
+    @XmlTransient
+    public void setDefaultFileExt( String fileExt ) {
+        this._defaultFileExt = ofNullable(fileExt);
+    }
+    /**
+     *
+     * @return
+     */
+    public Optional<String> optDefaultFileExt() {
+        return _defaultFileExt;
+    }
+
+    @XmlAttribute(name="label")
+    public java.util.List<String> labels = new ArrayList<>();
+
+    //@XmlElement(name = "label")
+    public java.util.List<String> getLabels() {
+        return labels;
+    }
+
+    /**
+     * need for XmlMapper
+     * @see https://stackoverflow.com/a/40839029/521197
+     *
+     * @param label
+     */
+    public void setLabel( String label) {
+        this.labels.add(label);
+    }
+
+    Home home;
+
+    @XmlElement(name = "home", required = true)
+    public Home getHome() {
+        return home;
+    }
+
+    public void setHome(Home home) {
+        this.home = home;
     }
 
 }

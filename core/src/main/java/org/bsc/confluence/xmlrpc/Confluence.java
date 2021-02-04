@@ -1,8 +1,5 @@
 package org.bsc.confluence.xmlrpc;
 
-//import java.awt.Label;
-//import javax.naming.directory.SearchResult;
-
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.Proxy;
