@@ -1,6 +1,5 @@
 package org.bsc.markdown;
 
-import lombok.NonNull;
 import org.bsc.confluence.FileExtension;
 import org.bsc.confluence.model.Site;
 
@@ -10,15 +9,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
+/**
+ *
+ */
 public class MarkdownVisitorHelper {
 
     /**
@@ -112,7 +112,7 @@ public class MarkdownVisitorHelper {
         };
 
         return parseContext.getSite()
-                .flatMap( site -> site.getHome().findPage( comparePath ) )
+                .flatMap( site -> site.findPage( comparePath ) )
                 .map( page -> parseContext.getPagePrefixToApply()
                         .filter( prefixToApply -> !url.startsWith(prefixToApply) )
                         .map( prefixToApply -> format( "%s - %s", prefixToApply, page.getName() ) )

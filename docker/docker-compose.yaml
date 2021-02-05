@@ -40,16 +40,21 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@soul.it
       - PGADMIN_DEFAULT_PASSWORD=admin
-  # https://hub.docker.com/r/atlassian/confluence-server
+# docker run -d
+# -v /data/your-confluence-home:/var/atlassian/application-data/confluence
+# --name="confluence"
+# -p 8090:8090
+# -p 8091:8091
+# atlassian/confluence-server
   confluence:
-    depends_on:
-      - db
     image: atlassian/confluence-server:7.6
     container_name: confluence
     ports:
       - "8090:8090"
       - "8091:8091"
-    links:
-      - "db:db"
     volumes:
       - "~/confluence/home:/var/atlassian/application-data/confluence"
+    links:
+      - "db:db"
+    depends_on:
+      - db
