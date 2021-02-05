@@ -67,13 +67,15 @@ public class SitePrinter {
      * @param level
      * @param parent
      */
-    public static void printChildren(final Site site, PrintStream out, int level, Page parent) {
-        printSource(site, out, level, '-', parent);
+    public static <T extends Site.IPageContainer> void printChildren(final Site site, PrintStream out, int level, T parent) {
 
-        for (Attachment attach : parent.getAttachments()) {
+        if( parent.isPage() ) {
+            printSource(site, out, level, '-', parent.asPage());
+            for (Attachment attach : parent.asPage().getAttachments()) {
 
-            printSource(site, out, level + 1, '#', attach);
+                printSource(site, out, level + 1, '#', attach);
 
+            }
         }
         for (Page child : parent.getChildren()) {
 
@@ -100,7 +102,7 @@ public class SitePrinter {
             }
         }
 
-        printChildren(site, out, 0, site.getHome());
+        printChildren(site, out, 0, site.getHomeAnchor());
 
     }
 

@@ -5,6 +5,7 @@
 package org.bsc.confluence.model;
 
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,6 +41,22 @@ public class Site {
 
         void setChild( Page child );
 
+        /**
+         *
+         * @return true if the container is a page itself
+         */
+        default boolean isPage() {
+            return Page.class.isInstance(this);
+        }
+
+        /**
+         *
+         * @return
+         */
+        default Page asPage() {
+            return (Page)this;
+        }
+
         default Stream<Page> asStream() {
             return ofNullable(getChildren())
                     .map( c -> c.stream())
@@ -68,20 +85,6 @@ public class Site {
 
         void setParentPageId(String parentPageId);
 
-        /**
-         *
-         * @return true if the container is a page itself
-         */
-        default boolean isPage() {
-            return Page.class.isInstance(this);
-        }
-        /**
-         *
-         * @return
-         */
-        default Page asPage() {
-            return (Page)this;
-        }
 
     }
     /**
@@ -550,26 +553,22 @@ public class Site {
         _SITE.push(this);
     }
 
-    private String spaceKey;
-    
-    @XmlAttribute(name="space-key")
-    public final String getSpaceKey() {
-       return spaceKey; 
-    }
+    private Optional<String> spaceKey = empty();
 
     /**
      * 
      * @return
      */
-    public final Optional<String> optSpaceKey() {
-        return ofNullable(spaceKey);
+    public final Optional<String> getSpaceKey() {
+        return spaceKey;
     }
     
     /**
      * @param spaceKey the spaceKey to set
      */
+    @XmlAttribute(name="space-key")
     public void setSpaceKey(String spaceKey) {
-        this.spaceKey = spaceKey;
+        this.spaceKey = ofNullable(spaceKey);
     }
 
     /**
@@ -645,7 +644,7 @@ public class Site {
      *
      * @return
      */
-    @XmlElement(name = "home", required = true)
+    @XmlElement(name = "home", required = false)
     public Home getHome() {
         return _home.orElseThrow( () -> new IllegalStateException("'Home' tag is not provided!"));
     }
@@ -659,14 +658,14 @@ public class Site {
     /**
      * Attribute anchor
      */
-    @XmlElement(name = "anchor", required = true)
-    private Optional<? extends IPageAnchor> _anchor = empty();
+    private Optional<Anchor> _anchor = empty();
     /**
      *
      * @return
      */
-    public Optional<? extends IPageAnchor> getAnchor() {
-        return _anchor;
+    @XmlElement(name = "anchor", required = false)
+    public Anchor getAnchor() {
+        return _anchor.orElseThrow( () -> new IllegalStateException("'Anchor' tag is not provided!"));
     }
     /**
      * need for XmlMapper

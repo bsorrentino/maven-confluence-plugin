@@ -205,9 +205,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
         return supplyAsync( () -> {
 
-            final String _spaceKey =  site.flatMap( s -> s.optSpaceKey() ).orElse(spaceKey);
-            final String _parentPageId = site.flatMap( s -> s.getHome().getParentPageId()).orElse( parentPageId );
-            final String _parentPageTitle = site.flatMap( s -> s.getHome().getParentPageTitle()).orElse(parentPageTitle);
+            final String _spaceKey =  site.flatMap( s -> s.getSpaceKey() ).orElse(spaceKey);
+            final String _parentPageId = site.flatMap( s -> s.getHomeAnchor().getParentPageId()).orElse( parentPageId );
+            final String _parentPageTitle = site.flatMap( s -> s.getHomeAnchor().getParentPageTitle()).orElse(parentPageTitle);
 
             Optional<Model.Page> result = Optional.empty();
 
