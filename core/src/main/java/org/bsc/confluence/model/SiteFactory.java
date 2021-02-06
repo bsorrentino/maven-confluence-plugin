@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
 import org.bsc.confluence.preprocessor.SitePocessorService;
 
@@ -27,7 +28,7 @@ import static java.lang.String.format;
  */
 public interface SiteFactory {
 	
-	@CommonsLog
+	@Log
 	final class LogHolder {}
 	
     interface Folder {
@@ -108,7 +109,7 @@ public interface SiteFactory {
                                                 //.exceptionally( e -> _createSite.apply(content).join() ) 
                                                 )
             									.orElseGet( () ->{
-            										LogHolder.log.debug( format("a Preprocessor service is not configurated") );
+            										LogHolder.log.fine( format("a Preprocessor service is not configurated") );
             										return _createSite.apply(content);
             									})
                     .get();
