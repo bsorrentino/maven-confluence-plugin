@@ -8,13 +8,10 @@ package org.bsc.confluence.xmlrpc;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ExportFormat;
-import org.bsc.confluence.rest.model.Blogpost;
 import org.bsc.confluence.xmlrpc.model.*;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -28,7 +25,6 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.bsc.confluence.ConfluenceUtils.sanitizeLabel;
 
 /**
