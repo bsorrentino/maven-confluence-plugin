@@ -22,6 +22,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>confluence-rest-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

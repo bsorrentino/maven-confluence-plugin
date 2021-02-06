@@ -41,10 +41,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.xmlrpc</groupId>
-            <artifactId>xmlrpc-client</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -54,11 +50,6 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
         </dependency>
 
         <dependency>
@@ -106,13 +97,6 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.32</version>
             <scope>test</scope>
         </dependency>
 
