@@ -163,21 +163,21 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      *
      * @since 7.0-beta2
      */
-    @Parameter( name = "confluence.timeout.connect.secs", defaultValue="10")
+    @Parameter( property = "confluence.timeout.connect.secs", defaultValue="10")
     private long connectTimeoutInSeconds = 10;
     /**
      * set the confluence service socket write timeout in seconds
      *
      * @since 7.0-beta2
      */
-    @Parameter( name = "confluence.timeout.write.secs", defaultValue="10")
+    @Parameter( property = "confluence.timeout.write.secs", defaultValue="10")
     private long writeTimeoutInSeconds = 10;
     /**
      * set the confluence service socket read timeout in seconds
      *
      * @since 7.0-beta2
      */
-    @Parameter( name = "confluence.timeout.read.secs", defaultValue="10")
+    @Parameter( property = "confluence.timeout.read.secs", defaultValue="10")
     private long readTimeoutInSeconds = 10;
     /**
      * 
