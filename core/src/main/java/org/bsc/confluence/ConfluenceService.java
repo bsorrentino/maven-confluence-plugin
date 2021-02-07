@@ -22,9 +22,9 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
  */
 public interface ConfluenceService extends Closeable{
 
-    String connectTimeoutInSeconds = "confluenceservice.timeout.connect.secs";
-    String writeTimeoutInSeconds   = "confluenceservice.timeout.write.secs";
-    String readTimeoutInSeconds    = "confluenceservice.timeout.read.secs";
+    String connectTimeoutInSeconds = "confluence.timeout.connect.secs";
+    String writeTimeoutInSeconds   = "confluence.timeout.write.secs";
+    String readTimeoutInSeconds    = "confluence.timeout.read.secs";
 
     enum Protocol {
         
