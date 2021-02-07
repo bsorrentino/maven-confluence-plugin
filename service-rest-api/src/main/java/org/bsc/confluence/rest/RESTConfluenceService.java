@@ -68,18 +68,16 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
             throw new IllegalArgumentException("url argument is not valid!", ex);
         }
 
-
         this.credentials = credentials;
 
-        client.connectTimeout(10, TimeUnit.SECONDS);
-        client.writeTimeout(10, TimeUnit.SECONDS);
-        client.readTimeout(30, TimeUnit.SECONDS);
+        client.connectTimeout(ConfluenceService.getConnectTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
+        client.writeTimeout(ConfluenceService.getWriteTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
+        client.readTimeout(ConfluenceService.getReadTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
 
         if (!sslInfo.isIgnore() && "https".equals(this.endpoint.getProtocol())) {
 
             client.hostnameVerifier(sslInfo.getHostnameVerifier())
                     .sslSocketFactory(sslInfo.getSSLSocketFactory(), sslInfo.getTrustManager())
-
             ;
         }
 
