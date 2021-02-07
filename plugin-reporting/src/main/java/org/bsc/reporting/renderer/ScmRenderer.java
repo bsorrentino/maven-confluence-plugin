@@ -117,7 +117,7 @@ public class ScmRenderer extends AbstractProjectInfoRenderer {
         }
         
         // fix issue #141
-        startSection( "Source Control Management");
+        startSection( getI18nString("title"));
 
         ScmRepository anonymousRepository = getScmRepository(anonymousConnection);
         ScmRepository devRepository = getScmRepository(devConnection);

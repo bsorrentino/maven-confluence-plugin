@@ -35,7 +35,7 @@ public class ProjectSummaryRenderer extends AbstractMavenReportRenderer {
 
 	@Override
 	public String getTitle() {
-		return "Project Summary";
+        return getReportString( "report.summary.title" );
 	}
 
 	@Override
