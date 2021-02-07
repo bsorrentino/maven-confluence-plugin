@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 /**
@@ -20,6 +21,10 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
  * @author bsorrentino
  */
 public interface ConfluenceService extends Closeable{
+
+    String connectTimeoutInSeconds = "confluence.timeout.connect.secs";
+    String writeTimeoutInSeconds   = "confluence.timeout.write.secs";
+    String readTimeoutInSeconds    = "confluence.timeout.read.secs";
 
     enum Protocol {
         
@@ -177,7 +182,33 @@ public interface ConfluenceService extends Closeable{
         }
 
     }
-    
+
+    static long getConnectTimeout(TimeUnit timeUnit) {
+        final long seconds = Long.valueOf(System.getProperty( connectTimeoutInSeconds, "10"));
+        return  TimeUnit.SECONDS.convert(seconds, timeUnit);
+    }
+    static long getWriteTimeout(TimeUnit timeUnit) {
+        final long seconds = Long.valueOf(System.getProperty( writeTimeoutInSeconds, "10"));
+        return  TimeUnit.SECONDS.convert(seconds, timeUnit);
+    }
+    static long getReadTimeout(TimeUnit timeUnit) {
+        final long seconds = Long.valueOf(System.getProperty( readTimeoutInSeconds, "10"));
+        return  TimeUnit.SECONDS.convert(seconds, timeUnit);
+    }
+
+    static void setConnectTimeouts( long value, TimeUnit timeUnit) {
+        final long seconds = timeUnit.toSeconds(value);
+        System.setProperty( connectTimeoutInSeconds, String.valueOf(seconds) );
+    }
+    static void setWriteTimeouts( long value, TimeUnit timeUnit ) {
+        final long seconds = timeUnit.toSeconds(value);
+        System.setProperty( writeTimeoutInSeconds, String.valueOf(seconds) );
+    }
+    static void setReadTimeouts( long value, TimeUnit timeUnit ) {
+        final long seconds = timeUnit.toSeconds(value);
+        System.setProperty( readTimeoutInSeconds, String.valueOf(seconds) );
+    }
+
     Credentials getCredentials();
 
     CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  ;

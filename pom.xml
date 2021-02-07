@@ -34,9 +34,11 @@
         <module>addon-scrollversions</module>
         <module>processor-commonmark</module>
         <module>gitlog+jira</module>
-<!--
-        <module>processor-pegdown</module>
--->
+        <module>service-rest-api</module>
+        <module>service-xmlrpc-api</module>
+        <!--
+                <module>processor-pegdown</module>
+        -->
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>

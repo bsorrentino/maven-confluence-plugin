@@ -20,6 +20,7 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -157,8 +158,28 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
      */
     @Parameter( name = "scrollVersions")
     private ScrollVersionsInfo scrollVersions = new ScrollVersionsInfo();
-
-   /**
+    /**
+     * set the confluence service socket connection timeout in seconds
+     *
+     * @since 7.0-beta2
+     */
+    @Parameter( name = "confluence.timeout.connect.secs", defaultValue="10")
+    private long connectTimeoutInSeconds = 10;
+    /**
+     * set the confluence service socket write timeout in seconds
+     *
+     * @since 7.0-beta2
+     */
+    @Parameter( name = "confluence.timeout.write.secs", defaultValue="10")
+    private long writeTimeoutInSeconds = 10;
+    /**
+     * set the confluence service socket read timeout in seconds
+     *
+     * @since 7.0-beta2
+     */
+    @Parameter( name = "confluence.timeout.read.secs", defaultValue="10")
+    private long readTimeoutInSeconds = 10;
+    /**
      * 
      * Indicates whether the build will continue even if there are clean errors.     
      * 
@@ -167,7 +188,6 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     public boolean isFailOnError() {
         return failOnError;
     }
-  
     /**
      *
      */
@@ -205,9 +225,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
         return supplyAsync( () -> {
 
-            final String _spaceKey =  site.flatMap( s -> s.optSpaceKey() ).orElse(spaceKey);
-            final String _parentPageId = site.flatMap( s -> s.getHome().optParentPageId()).orElse( parentPageId );
-            final String _parentPageTitle = site.flatMap( s -> s.getHome().optParentPageTitle()).orElse(parentPageTitle);
+            final String _spaceKey =  site.flatMap( s -> s.getSpaceKey() ).orElse(spaceKey);
+            final String _parentPageId = site.flatMap( s -> s.getHomeAnchor().getParentPageId()).orElse( parentPageId );
+            final String _parentPageTitle = site.flatMap( s -> s.getHomeAnchor().getParentPageTitle()).orElse(parentPageTitle);
 
             Optional<Model.Page> result = Optional.empty();
 
@@ -315,7 +335,9 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
     public final void execute() throws MojoExecutionException, MojoFailureException {
 
         if( getLog().isDebugEnabled()) {
+            // Set Commons Logging debug level
             System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
+            // Set java logging debug level
             Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.FINE));
         }
 
@@ -337,6 +359,10 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo {
 
         final ConfluenceService.Credentials credentials =
                 new ConfluenceService.Credentials(getUsername(), getPassword());
+
+        ConfluenceService.setConnectTimeouts( connectTimeoutInSeconds, TimeUnit.SECONDS );
+        ConfluenceService.setReadTimeouts( readTimeoutInSeconds, TimeUnit.SECONDS );
+        ConfluenceService.setWriteTimeouts( writeTimeoutInSeconds, TimeUnit.SECONDS );
 
         try ( ConfluenceService confluence  =
                       ConfluenceServiceFactory.createInstance(
