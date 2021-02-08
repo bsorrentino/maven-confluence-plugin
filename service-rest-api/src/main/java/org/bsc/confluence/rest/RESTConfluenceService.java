@@ -83,7 +83,8 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 
     }
 
-    private <S, T> CompletableFuture<T> cast(CompletableFuture<S> s) {
+    @SuppressWarnings("unchecked")
+    private <T extends S, S> CompletableFuture<T> cast(CompletableFuture<S> s) {
         return (CompletableFuture<T>) s;
     }
 
