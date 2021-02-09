@@ -5,6 +5,216 @@
 ## Next release
 ### Generic changes
 
+**updated release to 7.0-beta2**
+
+
+[e90e8efa245411f](https://github.com/bsorrentino/maven-confluence-plugin/commit/e90e8efa245411f) bsorrentino *2021-02-09 16:41:27*
+
+**removed warning 'Unchecked cast'**
+
+
+[17d749152dbc9df](https://github.com/bsorrentino/maven-confluence-plugin/commit/17d749152dbc9df) bsorrentino *2021-02-09 16:20:53*
+
+**clean code**
+
+
+[1d95a76efbce875](https://github.com/bsorrentino/maven-confluence-plugin/commit/1d95a76efbce875) bsorrentino *2021-02-08 18:55:43*
+
+**updated docker compose to support confluence 7.6**
+
+
+[93ba4523d31df4e](https://github.com/bsorrentino/maven-confluence-plugin/commit/93ba4523d31df4e) bsorrentino *2021-02-07 15:33:23*
+
+**clean code**
+
+
+[e04a3c705d635ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/e04a3c705d635ed) bsorrentino *2021-01-31 22:23:08*
+
+**remove exportPage method from ConfluenceService**
+
+
+[630f872dc2c367c](https://github.com/bsorrentino/maven-confluence-plugin/commit/630f872dc2c367c) bsorrentino *2021-01-31 18:15:21*
+
+**remove exportPage method from ConfluenceService**
+
+
+[2add1ab75968649](https://github.com/bsorrentino/maven-confluence-plugin/commit/2add1ab75968649) bsorrentino *2021-01-31 18:15:09*
+
+**initialized java.util.logging default level**
+
+
+[582623e62ce23bc](https://github.com/bsorrentino/maven-confluence-plugin/commit/582623e62ce23bc) bsorrentino *2021-01-27 18:53:27*
+
+**added defaultFileExt attribute to Site model**
+
+ * clean code
+
+[e9b65a608deb2bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/e9b65a608deb2bd) bsorrentino *2021-01-22 19:05:53*
+
+**optimized attachments pubblication process making check for skip faster**
+
+
+[bc9a95b41f7a570](https://github.com/bsorrentino/maven-confluence-plugin/commit/bc9a95b41f7a570) bsorrentino *2021-01-22 16:30:26*
+
+**created: shell script to deploy site to github pages**
+
+
+[a3f400d74ebe379](https://github.com/bsorrentino/maven-confluence-plugin/commit/a3f400d74ebe379) bsorrentino *2020-01-03 18:03:40*
+
+**disable docs job**
+
+
+[ecdd02cebe345ce](https://github.com/bsorrentino/maven-confluence-plugin/commit/ecdd02cebe345ce) bsorrentino *2020-01-03 17:18:08*
+
+**update deploy.yaml**
+
+
+[58bf8fd34be0300](https://github.com/bsorrentino/maven-confluence-plugin/commit/58bf8fd34be0300) bsorrentino *2020-01-03 17:12:21*
+
+**update deploy.yaml**
+
+
+[fae49d9c13aadc9](https://github.com/bsorrentino/maven-confluence-plugin/commit/fae49d9c13aadc9) bsorrentino *2020-01-03 17:04:20*
+
+**update deploy.yaml**
+
+
+[d26c1cecf2996a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/d26c1cecf2996a5) bsorrentino *2020-01-03 17:00:41*
+
+**update deploy.yaml**
+
+
+[815ec06f0809840](https://github.com/bsorrentino/maven-confluence-plugin/commit/815ec06f0809840) bsorrentino *2020-01-03 16:51:22*
+
+**update deploy.yaml**
+
+
+[7c4804db8e30d8e](https://github.com/bsorrentino/maven-confluence-plugin/commit/7c4804db8e30d8e) bsorrentino *2020-01-03 16:43:09*
+
+**moved to next developer release**
+
+
+[7e1409d99f2c410](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e1409d99f2c410) bsorrentino *2020-01-03 16:29:54*
+
+
+###  [#239](https://github.com/bsorrentino/maven-confluence-plugin/issues/239) Support new version of site model that skip home definition    *enhancement*  *on hold*  
+
+**issue #239 - updated mojo timeout property names**
+
+
+[140047bda4fe353](https://github.com/bsorrentino/maven-confluence-plugin/commit/140047bda4fe353) bsorrentino *2021-02-07 14:20:06*
+
+**issue #239 - added parameters to mojos**
+
+
+[a8a2a9f034910e8](https://github.com/bsorrentino/maven-confluence-plugin/commit/a8a2a9f034910e8) bsorrentino *2021-02-07 14:17:02*
+
+**issue #239 - added support for timeout parameters**
+
+
+[c2c30d1aabdf9bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2c30d1aabdf9bb) bsorrentino *2021-02-07 12:27:27*
+
+**issue #239 - added module rest and xmlrpc to better manage service layer**
+
+
+[1e7bab24ef0a95e](https://github.com/bsorrentino/maven-confluence-plugin/commit/1e7bab24ef0a95e) bsorrentino *2021-02-07 12:16:11*
+
+**issue #239 - updated mojo timeout property names**
+
+
+[aef9cea8c862568](https://github.com/bsorrentino/maven-confluence-plugin/commit/aef9cea8c862568) bsorrentino *2021-02-07 11:46:37*
+
+**issue #239 - added parameters to mojos**
+
+
+[af111f0aec2cdcf](https://github.com/bsorrentino/maven-confluence-plugin/commit/af111f0aec2cdcf) bsorrentino *2021-02-07 11:34:59*
+
+**issue #239 - added support for timeout parameters**
+
+
+[d1346acb2f22475](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1346acb2f22475) bsorrentino *2021-02-07 11:34:30*
+
+**issue #239 - added module rest and xmlrpc to better manage service layer**
+
+
+[79f6e4239c4f56a](https://github.com/bsorrentino/maven-confluence-plugin/commit/79f6e4239c4f56a) bsorrentino *2021-02-06 18:56:17*
+
+**issue #239 - added module rest and xmlrpc to better manage service layer**
+
+
+[287d3be0cfc4190](https://github.com/bsorrentino/maven-confluence-plugin/commit/287d3be0cfc4190) bsorrentino *2021-02-06 18:56:07*
+
+**issue #239 - Started to integrate anchor**
+
+
+[c6557edf51fa377](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6557edf51fa377) Build Pipeline *2021-02-05 19:01:29*
+
+**issue #239 - added Anchor to the site model as alternative to Home**
+
+
+[2210fafa669a808](https://github.com/bsorrentino/maven-confluence-plugin/commit/2210fafa669a808) bsorrentino *2021-02-05 12:58:06*
+
+**issue #239 - started implementing Site.Anchor element**
+
+
+[d659e9b0d32bb35](https://github.com/bsorrentino/maven-confluence-plugin/commit/d659e9b0d32bb35) Build Pipeline *2021-02-04 18:22:15*
+
+
+###  [#240](https://github.com/bsorrentino/maven-confluence-plugin/issues/240) add the &quot;page id&quot; to the deploy history(state) manager     *enhancement*  
+
+**issue #240 - Updated DeployStateManager to manage extra attribute in addition to 'hash'**
+
+
+[3d93f3ce6b6bc09](https://github.com/bsorrentino/maven-confluence-plugin/commit/3d93f3ce6b6bc09) bsorrentino *2021-01-27 18:56:14*
+
+**issue #240 - Updated DeployStateManager to manage directly Page and Attachment instead of URI**
+
+
+[0fb6a40c5853029](https://github.com/bsorrentino/maven-confluence-plugin/commit/0fb6a40c5853029) bsorrentino *2021-01-26 22:32:32*
+
+
+###  [#241](https://github.com/bsorrentino/maven-confluence-plugin/issues/241) Increase socket timeout    *enhancement*  
+
+**issue #241 - removed confluence service classes from core**
+
+
+[3903423485a7a13](https://github.com/bsorrentino/maven-confluence-plugin/commit/3903423485a7a13) bsorrentino *2021-02-07 12:25:24*
+
+**issue #241 - added module rest and xmlrpc to better manage service layer**
+
+
+[aee5fa602d6b488](https://github.com/bsorrentino/maven-confluence-plugin/commit/aee5fa602d6b488) bsorrentino *2021-02-07 12:20:44*
+
+
+###  [#242](https://github.com/bsorrentino/maven-confluence-plugin/issues/242) add i18n titles to ProjectSummaryRenderer and ScmRenderer    *bug*  
+
+**fix issue #242**
+
+
+[2f2ca0f784fabf6](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f2ca0f784fabf6) 3a04huk *2021-02-07 11:54:27*
+
+
+### GitHub #339   
+
+**issue #339 - moved httpclient dep in xmlrpc module**
+
+
+[dd7cc15a15e7fce](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd7cc15a15e7fce) bsorrentino *2021-02-07 12:25:46*
+
+**issue #339 - moved httpclient dep in xmlrpc module**
+
+
+[20cda6a28efd409](https://github.com/bsorrentino/maven-confluence-plugin/commit/20cda6a28efd409) bsorrentino *2021-02-06 19:14:27*
+
+
+## v7.0-beta1
+### Generic changes
+
+**update changelog**
+
+
+[01ce7a875a5539e](https://github.com/bsorrentino/maven-confluence-plugin/commit/01ce7a875a5539e) bsorrentino *2020-01-03 16:28:12*
+
 **updated documentation**
 
 
@@ -112,7 +322,7 @@
 [23de6c44ec10aeb](https://github.com/bsorrentino/maven-confluence-plugin/commit/23de6c44ec10aeb) bsorrentino *2020-12-11 19:25:22*
 
 
-###  [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224) make java.util.ServiceLoader works properly in Java9    *bug*  *under working*  
+###  [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224) make java.util.ServiceLoader works properly in Java9    *bug*  
 
 **issue #224 - fixed load markdown processor lifecycle**
 

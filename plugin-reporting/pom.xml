@@ -5,7 +5,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.0-beta1</version>
+        <version>7.0-beta2</version>
     </parent>
 
     <prerequisites>
@@ -199,6 +199,16 @@
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>maven-confluence-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>confluence-xmlrpc-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>confluence-rest-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 

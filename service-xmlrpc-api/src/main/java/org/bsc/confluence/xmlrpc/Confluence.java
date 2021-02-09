@@ -1,8 +1,5 @@
 package org.bsc.confluence.xmlrpc;
 
-//import java.awt.Label;
-//import javax.naming.directory.SearchResult;
-
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -15,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 import org.apache.commons.httpclient.Credentials;
@@ -93,10 +91,12 @@ class Confluence {
     
         final java.net.URI serviceURI = new java.net.URI(endpoint);
 
-        XmlRpcClientConfigImpl clientConfig = new XmlRpcClientConfigImpl();
+        final XmlRpcClientConfigImpl clientConfig = new XmlRpcClientConfigImpl();
         clientConfig.setServerURL(serviceURI.toURL() );
-
         clientConfig.setEnabledForExtensions(true); // add this to support attachment upload
+        clientConfig.setConnectionTimeout( (int)ConfluenceService.getConnectTimeout(TimeUnit.SECONDS) );
+        clientConfig.setReplyTimeout((int)Math.max( ConfluenceService.getReadTimeout(TimeUnit.SECONDS),
+                                                    ConfluenceService.getWriteTimeout(TimeUnit.SECONDS)) );
 
         client.setConfig( clientConfig );
 
@@ -320,6 +320,7 @@ class Confluence {
      * add or update a page. For adding, the Page given as an argument should have space, title and content fields at a minimum. For updating, the Page given should have id, space, title, content and
      * version fields at a minimum. The parentId field is always optional. All other fields will be ignored.
      */
+    @SuppressWarnings("unchecked")
     public Page storePage(Page page) throws Exception {
         final Map<String,Object> data = (Map<String, Object>) call(SERVICE_PREFIX_1, "storePage", new Object[] { page });
         return new Page(data);
@@ -861,7 +862,7 @@ class Confluence {
         final Object[] args = { arg1, arg2, arg3, arg4 };
         return call(command, args);
     }
-
+    @SuppressWarnings("unchecked")
     private <T> T call(String command, Object[] args) throws Exception {
         return (T) call( getServicePrefix(), command, args );
     }

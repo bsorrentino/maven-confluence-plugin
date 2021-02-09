@@ -299,9 +299,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         final Site site = loadSite();
 
+        site.setDefaultFileExt(getFileExt());
+
         initTemplateProperties( site );
 
-        final Locale parsedLocale = !StringUtils.isEmpty(locale) ? new Locale(locale) : Locale.getDefault();
+        final Locale parsedLocale = ofNullable(locale)
+                                        .filter( l -> !l.isEmpty())
+                                        .map(Locale::new)
+                                        .orElseGet(Locale::getDefault);
 
         if ( project.getPackaging().equals( "maven-plugin" ) )
        /////////////////////////////////////////////////////////////////
@@ -317,6 +322,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         {
             generateProjectReport(confluence, site, parsedLocale);
         }
+
+        deployStateManager.ifPresent( DeployStateManager::save );
 
     }
 
@@ -578,13 +585,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         final String _homePageTitle = getPageTitle();
 
         final Function<Model.Page, CompletableFuture<Model.Page>> updateHomePage = (p) ->
-            updatePageIfNeeded(site.getHome().getUri(), p,
+            updatePageIfNeeded(site.getHome(), p,
                     () -> getHomeContent(site, Optional.of(p), locale).
                                                 thenCompose( content -> confluence.storePage(p, content )));
 
         final Function<Model.Page, CompletableFuture<Model.Page>> createHomePage = (_parentPage) ->
-                resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset -> getHomeContent(  site, Optional.empty(), locale ) )
+                        getHomeContent(  site, Optional.empty(), locale )
                         .thenCompose( content -> confluence.createPage(_parentPage, _homePageTitle,content) );
 
         final Model.Page confluenceHomePage =
@@ -1066,14 +1072,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             getProperties().put("version",      getProject().getVersion());
 
             final Function<Model.Page, CompletableFuture<Model.Page>> updatePage = (p) ->
-                updatePageIfNeeded( site.getHome().getUri(),p,
+                updatePageIfNeeded( site.getHome(),p,
                         () -> getHomeContent( site, Optional.of(p), pluginDescriptor, locale)
                                         .thenCompose( content -> confluence.storePage(p, content)));
 
             final Function<Model.Page, CompletableFuture<Model.Page>> createPage = (parent) ->
-                    resetUpdateStatusForResource(site.getHome().getUri())
-                        .thenCompose( reset -> getHomeContent(site, Optional.empty(), pluginDescriptor, locale)
-                        .thenCompose( content ->confluence.createPage(parent, title, content)));
+                        getHomeContent(site, Optional.empty(), pluginDescriptor, locale)
+                        .thenCompose( content ->confluence.createPage(parent, title, content));
 
             return removeSnaphot(confluence, parentPage, title)
                     .thenCompose( deleted -> confluence.getPage(parentPage.getSpace(), parentPage.getTitle()) )

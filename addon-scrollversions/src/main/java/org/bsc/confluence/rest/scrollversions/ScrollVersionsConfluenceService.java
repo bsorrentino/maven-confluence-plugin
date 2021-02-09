@@ -1,7 +1,7 @@
 package org.bsc.confluence.rest.scrollversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.java.Log;
 import lombok.val;
 import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
@@ -29,9 +30,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 
-@CommonsLog( topic = "confluence-maven-plugin" )
+@Log( topic = "confluence-maven-plugin" )
 public class ScrollVersionsConfluenceService implements ConfluenceService {
-
 
     enum ChangeType {
         ADD_VERSION("Modify"),
@@ -414,15 +414,15 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     private void debug(String message, Object...args ) {
-        if( !log.isDebugEnabled() ) return;
+        if( !log.isLoggable(Level.FINE) ) return;
 
-        log.debug( format( message, (Object[])args ) );
+        log.fine( format( message, (Object[])args ) );
     }
 
     private void trace(String message, Object...args ) {
-        if( !log.isTraceEnabled() ) return;
+        if( !log.isLoggable(Level.FINER) ) return;
 
-        log.trace( format( message, (Object[])args ) );
+        log.finer( format( message, (Object[])args ) );
     }
 
     private CompletableFuture<ScrollVersions.Model.Result> toResult(Model.Page page ) {
@@ -689,11 +689,6 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     @Override
     public CompletableFuture<Void> addLabelsByName(Model.ID id, String[] labels) {
         return delegate.addLabelsByName(id, labels);
-    }
-
-    @Override
-    public void exportPage(String url, String spaceKey, String pageTitle, ExportFormat exfmt, File outputFile) throws Exception {
-        delegate.exportPage(url, spaceKey, pageTitle, exfmt, outputFile);
     }
 
     @Override

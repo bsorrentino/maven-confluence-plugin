@@ -19,6 +19,7 @@ import org.bsc.confluence.model.SiteFactory;
 import org.bsc.confluence.model.SiteProcessor;
 import org.bsc.mojo.configuration.DeployStateInfo;
 
+import javax.json.JsonValue;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -199,7 +200,6 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
         return labels;
     }
-
     /**
      * initialize properties shared with template
      */
@@ -227,9 +227,15 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
 
     }
+    /**
+     *
+     * @param source
+     * @param <S>
+     * @return
+     */
+    protected <S extends Site.Source> String getPrintableStringForResource(S source) {
 
-    protected String getPrintableStringForResource(java.net.URI uri) {
-
+        final java.net.URI uri = source.getUri();
         try {
             Path p = Paths.get(uri);
             return getProject().getBasedir().toPath().relativize(p).toString();
@@ -239,7 +245,6 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
 
     }
-
     /**
      *
      * @param <T>
@@ -286,35 +291,48 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                 });
 
     }
-
     /**
      *
-     * @param uri
-     * @param page
+     * @param sitePage
+     * @param confluencePage
+     * @return
+     */
+    protected CompletableFuture<Model.Page> savePageIdToDeployStateManager( Site.Page sitePage, Model.Page confluencePage ) {
+        return deployStateManager
+                .map( dsm -> {
+                    final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
+                    dsm.setExtraAttribute(sitePage.getUri(), id );
+                    return completedFuture(confluencePage);
+                })
+                .orElse( completedFuture(confluencePage) );
+    }
+    /**
+     *
+     * @param sitePage
+     * @param confluencePage
      * @param performUpdate
      * @return
      */
-    protected CompletableFuture<Model.Page> updatePageIfNeeded(java.net.URI uri,
-                                                              Model.Page page,
+    protected CompletableFuture<Model.Page> updatePageIfNeeded(Site.Page sitePage,
+                                                              Model.Page confluencePage,
                                                               Supplier<CompletableFuture<Model.Page>> performUpdate )
     {
 
-        return canProceedToUpdateResource(uri,
+        return canProceedToUpdatePage(sitePage, confluencePage,
                 () -> performUpdate.get()
                         .thenApply( p -> {
-                            getLog().info(format("page [%s] has been updated!",
-                                    getPrintableStringForResource(uri)));
+                            getLog().info(format("page [%s] updated!",
+                                    getPrintableStringForResource(sitePage)));
                             return p;
                         }),
-                () -> completedFuture(page)
+                () -> completedFuture(confluencePage)
                         .thenApply( p -> {
-                            getLog().info(format("page [%s] has not been updated! (deploy skipped)",
-                                getPrintableStringForResource(uri)));
+                            getLog().info(format("page [%s] not updated! (deploy skipped)",
+                                getPrintableStringForResource(sitePage)));
                             return p;
                         })
                 );
     }
-
     /**
      *
      * @param site
@@ -331,15 +349,13 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         final String homeTitle = site.getHome().getName();
 
-        final java.net.URI source = child.getUri(getFileExt());
-
         getLog().debug(
                 format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
                     parentPage.getSpace(),
                     homeTitle,
                     parentPage.getTitle(),
                     child.getName(),
-                    getPrintableStringForResource(source)));
+                    getPrintableStringForResource(child)));
 
         final String pageTitleToApply = isChildrenTitlesPrefixed()
                 ? format("%s - %s", homeTitle, child.getName())
@@ -349,26 +365,30 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             final String snapshot = pageTitleToApply.concat("-SNAPSHOT");
 
             confluence.removePage(parentPage, snapshot)
-                    .thenAccept(deleted -> getLog().info(format("Page [%s] has been removed!", snapshot)))
+                    .thenAccept(deleted -> getLog().info(format("Page [%s] removed!", snapshot)))
                     .exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
         }
 
-        final Function<Model.Page, CompletableFuture<Model.Page>> updatePage = p ->
-                updatePageIfNeeded(source,p,
-                        () -> getPageContent( ofNullable(p), site, source, child, pageTitleToApply )
+        final java.net.URI uri = child.getUri();
+
+        final Function<Model.Page, CompletableFuture<Model.Page>>
+                updatePageFunction = p ->
+                    updatePageIfNeeded(child,p,
+                        () -> getPageContent( ofNullable(p), site, uri, child, pageTitleToApply )
                                 .thenCompose( storage -> confluence.storePage(p, storage)));
 
-        final Supplier<CompletableFuture<Model.Page>> createPage = () ->
-                    resetUpdateStatusForResource(source)
-                        .thenCompose( reset -> getPageContent( Optional.empty(), site, source, child, pageTitleToApply ) )
-                        .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage));
+        final Supplier<CompletableFuture<Model.Page>>
+                createPageFunction = () ->
+                        getPageContent( Optional.empty(), site, uri, child, pageTitleToApply )
+                            .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
+                            .thenCompose( page -> savePageIdToDeployStateManager(child, page ));
 
         final Model.Page result =
                 confluence.getPage(parentPage.getSpace(), pageTitleToApply)
                 .thenCompose(page ->
                         (page.isPresent())
-                                ? updatePage.apply(page.get())
-                                : createPage.get())
+                                ? updatePageFunction.apply(page.get())
+                                : createPageFunction.get())
                 .thenCompose( p -> confluence.addLabelsByName( p.getId(), child.getComputedLabels() ).thenApply( (v) -> p) )
                 .join();
 
@@ -377,7 +397,6 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         return result;
 
     }
-
     /**
      * Issue 46
      *
@@ -415,25 +434,50 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         }
     }
-
-    protected CompletableFuture<Boolean> resetUpdateStatusForResource(java.net.URI uri) {
-        return completedFuture( deployStateManager.map( dsm -> dsm.resetState(uri) ).orElse(false) );
+//    protected <S extends Site.Source> CompletableFuture<Boolean> resetUpdateStatusForSource( S source ) {
+//        final java.net.URI uri = source.getUri();
+//        return completedFuture( deployStateManager.map( dsm -> dsm.resetState(uri) ).orElse(false) );
+//        return completedFuture(false);
+//    }
+    /**
+     *
+     * @param sitePage
+     * @param confluencePage
+     * @param no
+     * @param <U>
+     * @return
+     */
+    private <U> CompletableFuture<U>
+            canProceedToUpdatePage(  Site.Page sitePage,
+                                     Model.Page confluencePage,
+                                     Supplier<CompletableFuture<U>> yes,
+                                     Supplier<CompletableFuture<U>> no )
+    {
+        final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
+        return deployStateManager
+                .map( dsm -> dsm.isUpdated(sitePage.getUri(), ofNullable(id), yes, no) )
+                .orElseGet( () -> yes.get());
     }
 
     /**
      *
-     * @param uri
+     * @param siteAttachment
+     * @param confluenceAttachment
+     * @param yes
+     * @param no
+     * @param <U>
      * @return
      */
-    private <U> CompletableFuture<U> canProceedToUpdateResource(java.net.URI uri,
-                                                                  Supplier<CompletableFuture<U>> yes,
-                                                                  Supplier<CompletableFuture<U>> no )
+    private <U> CompletableFuture<U>
+    canProceedToUpdateAttachment(  Site.Attachment siteAttachment,
+                                   Model.Attachment confluenceAttachment,
+                                   Supplier<CompletableFuture<U>> yes,
+                                   Supplier<CompletableFuture<U>> no )
     {
         return deployStateManager
-                .map( dsm -> dsm.isUpdated(uri, yes, no) )
+                .map( dsm -> dsm.isUpdated(siteAttachment.getUri(), empty(), yes, no) )
                 .orElseGet( () -> yes.get());
     }
-
     /**
      *
      * @param site
@@ -576,28 +620,28 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
     /**
      *
-     * @param uri
-     * @param attachment
+     * @param siteAttachment
+     * @param confluenceAttachment
      * @param performUpdate
      * @return
      */
     protected CompletableFuture<Model.Attachment> updateAttachmentIfNeeded(
-                                        java.net.URI uri,
-                                        Model.Attachment attachment,
+                                        Site.Attachment siteAttachment,
+                                        Model.Attachment confluenceAttachment,
                                         Supplier<CompletableFuture<Model.Attachment>> performUpdate )
     {
 
-        return canProceedToUpdateResource(uri,
+        return canProceedToUpdateAttachment(siteAttachment,confluenceAttachment,
                 () -> performUpdate.get()
                         .thenApply( p -> {
-                            getLog().info(format("attachment [%s] has been updated!",
-                                    getPrintableStringForResource(uri)));
+                            getLog().info(format("attachment [%s] updated!",
+                                    getPrintableStringForResource(siteAttachment)));
                             return p;
                         }),
-                () -> completedFuture(attachment)
+                () -> completedFuture(confluenceAttachment)
                         .thenApply( p -> {
-                            getLog().info(format("attachment [%s] has not been updated! (deploy skipped)",
-                                    getPrintableStringForResource(uri)));
+                            getLog().info(format("attachment [%s] not updated! (deploy skipped)",
+                                    getPrintableStringForResource(siteAttachment)));
                             return p;
                         })
         );
@@ -609,39 +653,42 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param confluencePage
      * @param attachment
      */
-    private CompletableFuture<Model.Attachment> generateAttachment(final ConfluenceService confluence, final Site site,
-            final Model.Page confluencePage, final Site.Attachment attachment) {
+    private CompletableFuture<Model.Attachment> generateAttachment(final ConfluenceService confluence,
+                                                                   final Site site,
+                                                                   final Model.Page confluencePage,
+                                                                   final Site.Attachment attachment)
+    {
 
-        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]", confluencePage.getId(),
-                confluencePage.getTitle(), getPrintableStringForResource(attachment.getUri())));
+        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]",
+                confluencePage.getId(),
+                confluencePage.getTitle(),
+                getPrintableStringForResource(attachment)));
 
         final java.net.URI uri = attachment.getUri();
 
-        return confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
-                .exceptionally(e -> {
-                    getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(),
-                            e.getMessage()));
-                    return empty();
-                }).thenCompose(att -> {
+        final Model.Attachment defaultAttachment = confluence.createAttachment();
+        defaultAttachment.setFileName(attachment.getName());
+        defaultAttachment.setContentType(attachment.getContentType());
+        defaultAttachment.setComment(attachment.getComment());
 
-                    if (!att.isPresent()) {
-                        getLog().debug(format("Creating new attachment for [%s]", attachment.getName()));
-                        Model.Attachment result = confluence.createAttachment();
-                        result.setFileName(attachment.getName());
-                        result.setContentType(attachment.getContentType());
-                        result.setComment(attachment.getComment());
-                        return resetUpdateStatusForResource(uri).thenCompose(reset -> completedFuture(result));
-                    }
+        return updateAttachmentIfNeeded(attachment,defaultAttachment, () ->
+            confluence.getAttachment(confluencePage.getId(), attachment.getName(), attachment.getVersion())
+                    .exceptionally(e -> {
+                        getLog().debug(format("Error getting attachment [%s] from confluence: [%s]", attachment.getName(),
+                                e.getMessage()));
+                        return empty();
+                    })
+                    .thenCompose(optAttachment ->
+                        optAttachment.map( result -> {
+                            result.setContentType(attachment.getContentType());
+                            result.setComment(attachment.getComment());
+                            return completedFuture(result);
 
-                    Model.Attachment result = att.get();
-                    result.setContentType(attachment.getContentType());
-                    result.setComment(attachment.getComment());
-                    return completedFuture(result);
-
-                }).thenCompose(finalAttachment ->
-                        updateAttachmentIfNeeded(uri,finalAttachment,
-                                () -> updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment)));
-
+                        }).orElseGet( () -> completedFuture(defaultAttachment) )
+                    )
+                    .thenCompose(finalAttachment ->
+                            updateAttachmentData(confluence, site, uri, confluencePage, finalAttachment))
+        );
 
     }
 
