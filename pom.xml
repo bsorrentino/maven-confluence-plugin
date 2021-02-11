@@ -29,7 +29,6 @@
         <module>plugin-reporting</module>
         <module>test-publishing</module>
         <module>test-plugin</module>
-        <module>test-integration</module>
         <module>processor-freemarker</module>
         <module>addon-scrollversions</module>
         <module>processor-commonmark</module>
@@ -37,7 +36,8 @@
         <module>service-rest-api</module>
         <module>service-xmlrpc-api</module>
         <!--
-                <module>processor-pegdown</module>
+        <module>test-integration</module>
+        <module>processor-pegdown</module>
         -->
     </modules>
     <scm>
