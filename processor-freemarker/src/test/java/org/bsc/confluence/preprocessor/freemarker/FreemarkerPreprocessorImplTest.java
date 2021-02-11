@@ -1,4 +1,4 @@
-package org.bsc.confluence.preprocessor;
+package org.bsc.confluence.preprocessor.freemarker;
 
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,9 +11,10 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import lombok.val;
+import org.bsc.preprocessor.freemarker.FreemarkerPreprocessorImpl;
 import org.junit.jupiter.api.Test;
 
-public class PreprocessorImplTest {
+public class FreemarkerPreprocessorImplTest {
 
     @Test
     public void noMarkupTest() throws IOException, URISyntaxException {
@@ -36,7 +37,7 @@ public class PreprocessorImplTest {
     }
 
     private void testInternal(String resourceName) throws URISyntaxException, IOException {
-        val p = new PreprocessorImpl();
+        val p = new FreemarkerPreprocessorImpl();
         val readInput = read(resourceName + ".input");
         final Map<String,Object> varInput = singletonMap("key", singletonMap("innerKey", "value1"));
         val readOutput = read(resourceName + ".output");

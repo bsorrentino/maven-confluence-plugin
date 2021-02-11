@@ -1,4 +1,4 @@
-package org.bsc.confluence.preprocessor;
+package org.bsc.preprocessor.freemarker;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.kohsuke.MetaInfServices;
-
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -20,20 +18,20 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.TemplateModelException;
 import freemarker.template.Version;
+import org.bsc.preprocessor.SiteProcessorService;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2019
  * 
  * updated by bsorrentino
  */
-@MetaInfServices(SitePocessorService.class)
-public class PreprocessorImpl implements SitePocessorService {
+public class FreemarkerPreprocessorImpl implements SiteProcessorService {
 
     private static final Version VERSION = Configuration.VERSION_2_3_29;
 
     private final Configuration cfg;
 
-    public PreprocessorImpl() {
+    public FreemarkerPreprocessorImpl() {
         cfg = new Configuration(VERSION);
         cfg.setDefaultEncoding(StandardCharsets.UTF_8.name());
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);

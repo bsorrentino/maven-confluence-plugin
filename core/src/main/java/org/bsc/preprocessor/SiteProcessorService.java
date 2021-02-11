@@ -1,4 +1,4 @@
-package org.bsc.confluence.preprocessor;
+package org.bsc.preprocessor;
 
 import java.util.Map;
 import java.util.Optional;
@@ -11,17 +11,17 @@ import java.util.stream.StreamSupport;
  * 
  * updated by bsorrentino
  */
-public interface SitePocessorService {
+public interface SiteProcessorService {
 
 	/**
 	 * search the first suitable PreprocessorService published through SPI
 	 * 
 	 * @return
 	 */
-    static Optional<SitePocessorService> getDefaultPreprocessorService() {
-        final ServiceLoader<SitePocessorService> loader = ServiceLoader.load(SitePocessorService.class);
+    static Optional<SiteProcessorService> getDefaultPreprocessorService() {
+        final ServiceLoader<SiteProcessorService> loader = ServiceLoader.load(SiteProcessorService.class);
         
-        final Iterable<SitePocessorService> iterable = () -> loader.iterator();
+        final Iterable<SiteProcessorService> iterable = () -> loader.iterator();
         
         return StreamSupport.stream(iterable.spliterator(), false)
                 .findFirst();

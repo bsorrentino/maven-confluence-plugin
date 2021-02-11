@@ -20,4 +20,5 @@ module maven.confluence.core {
     requires java.xml.bind;
 
     exports org.bsc.markdown;
+    exports org.bsc.preprocessor;
 }

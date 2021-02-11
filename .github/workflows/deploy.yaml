@@ -11,7 +11,8 @@ push:
 
 jobs:
   docs:
-    if: ${{ false }}  # disable for now
+    # disable for now
+    # if: ${{ false }}
     runs-on: ubuntu-latest
 
     steps:
@@ -21,13 +22,14 @@ jobs:
         with:
           java-version: 9
       - name: Deploy site to Github pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
-          OSS_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: |
-          mvn -B install --file pom.xml -s settings-template.xml
-          mvn -B -Preport -pl plugin-reporting site --file pom.xml -s settings-template.xml
-
+          mvn -B install site --file pom.xml -s settings-template.xml
+          mvn -B -pl plugin-reporting site --file pom.xml -s settings-template.xml
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./plugin-reporting/target/site
   build:
 
     runs-on: ubuntu-latest
