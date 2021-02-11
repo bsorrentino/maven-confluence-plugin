@@ -49,20 +49,21 @@ home:
   name: "issue202"
   uri: issue202.md
   attachments:
-<#if Files.exists(Paths.get('src/site/confluence/issue202/images/dashboard.png')) == true>
+<#if Files.exists(Paths.get(project.basedir, 'src/site/confluence/issue202/images/dashboard.png')) == true>
     - name: "dashboard.png"
       uri: images/dashboard.png
       contentType: "image/png"
       version: 1
       comment: image
 </#if>
-<#if Files.exists(Paths.get('src/site/confluence/issue202/images/unknown.png')) == true>
+<#if Files.exists(Paths.get(project.basedir, 'src/site/confluence/issue202/images/unknown.png')) == true>
     - name: "unknown.png"
       uri: images/dashboard.png
       contentType: "image/png"
       version: 1
       comment: unknown image
 </#if>
+
 
 ```
 
@@ -85,10 +86,10 @@ Create a simple java library project maven compliant
     </dependency>
 ```
 
-### 3. Implement the interface `org.bsc.confluence.preprocessor.SitePocessorService`       
+### 3. Implement the interface `org.bsc.preprocessor.SiteProcessorService`       
 
 ```java
-public interface SitePocessorService {
+public interface SiteProcessorService {
     /**
      * name of Preprocessor service
      *
@@ -112,8 +113,8 @@ The [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html) specific
 However there is a great library that extremely simplify publishing of SPI service named [META-INF/services generator](http://metainf-services.kohsuke.org/) that use behind the scene a **java annotation processor** that automatically generates the required mapping file using a java annotation `@MetaInfServices` as shown below
 
 ```java
-@MetaInfServices(SitePocessorService.class)
-public class PreprocessorImpl implements SitePocessorService {
+@MetaInfServices(SiteProcessorService.class)
+public class PreprocessorImpl implements SiteProcessorService {
 
 }
 ```
