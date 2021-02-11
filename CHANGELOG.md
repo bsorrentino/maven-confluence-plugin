@@ -5,6 +5,96 @@
 ## Next release
 ### Generic changes
 
+**moved to release version**
+
+
+[abdb5ba5d525580](https://github.com/bsorrentino/maven-confluence-plugin/commit/abdb5ba5d525580) bsorrentino *2021-02-11 18:55:09*
+
+**update documentation**
+
+
+[cead3d4206fcc58](https://github.com/bsorrentino/maven-confluence-plugin/commit/cead3d4206fcc58) bsorrentino *2021-02-11 18:54:41*
+
+**update readme**
+
+
+[449a4eeede1ab60](https://github.com/bsorrentino/maven-confluence-plugin/commit/449a4eeede1ab60) bsorrentino *2021-02-11 18:54:23*
+
+**added publish site aciton**
+
+
+[4d79f7464a7ef77](https://github.com/bsorrentino/maven-confluence-plugin/commit/4d79f7464a7ef77) bsorrentino *2021-02-11 18:46:47*
+
+**update actions**
+
+
+[828777f3d2e28fe](https://github.com/bsorrentino/maven-confluence-plugin/commit/828777f3d2e28fe) bsorrentino *2021-02-11 16:43:33*
+
+**skipped itest module**
+
+
+[46a9d67d758fe5f](https://github.com/bsorrentino/maven-confluence-plugin/commit/46a9d67d758fe5f) bsorrentino *2021-02-11 16:37:16*
+
+**update actions**
+
+
+[c8fa61726f60347](https://github.com/bsorrentino/maven-confluence-plugin/commit/c8fa61726f60347) bsorrentino *2021-02-11 16:31:42*
+
+**clean code**
+
+
+[76828e6f91bf45d](https://github.com/bsorrentino/maven-confluence-plugin/commit/76828e6f91bf45d) bsorrentino *2021-02-11 16:27:56*
+
+**moved to development version**
+
+
+[fac21e2520efd65](https://github.com/bsorrentino/maven-confluence-plugin/commit/fac21e2520efd65) Build Pipeline *2021-02-10 16:10:50*
+
+
+###  [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224) make java.util.ServiceLoader works properly in Java9    *bug*  
+
+**issue #244 - make freemarker preprocessor module compliant with JDK9 (refers to issue #224)**
+
+
+[76c7434e57edf11](https://github.com/bsorrentino/maven-confluence-plugin/commit/76c7434e57edf11) bsorrentino *2021-02-11 11:25:39*
+
+
+###  [#244](https://github.com/bsorrentino/maven-confluence-plugin/issues/244) site processor maven-confluence-processor-freemarker doesn&#39;t work on 7.0-beta2    *bug*  
+
+**issue #244 - fixed export packages (Java9 Modules)**
+
+
+[60ddbdca06b1958](https://github.com/bsorrentino/maven-confluence-plugin/commit/60ddbdca06b1958) bsorrentino *2021-02-11 16:57:16*
+
+**issue #244 - fixed export packages (Java9 Modules)**
+
+
+[688bfe292a07690](https://github.com/bsorrentino/maven-confluence-plugin/commit/688bfe292a07690) bsorrentino *2021-02-11 16:57:07*
+
+**issue #244 - Updated test for freemarker**
+
+
+[99c4df21dec8989](https://github.com/bsorrentino/maven-confluence-plugin/commit/99c4df21dec8989) bsorrentino *2021-02-11 14:33:50*
+
+**issue #244 - make freemarker preprocessor module compliant with JDK9 (refers to issue #224)**
+
+
+[76c7434e57edf11](https://github.com/bsorrentino/maven-confluence-plugin/commit/76c7434e57edf11) bsorrentino *2021-02-11 11:25:39*
+
+
+## v7.0-beta2
+### Generic changes
+
+**update readme**
+
+
+[b2bb1a44ba3e3c3](https://github.com/bsorrentino/maven-confluence-plugin/commit/b2bb1a44ba3e3c3) bsorrentino *2021-02-09 16:52:31*
+
+**update changelog**
+
+
+[d4c23ad8de1aa84](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4c23ad8de1aa84) bsorrentino *2021-02-09 16:43:22*
+
 **updated release to 7.0-beta2**
 
 
