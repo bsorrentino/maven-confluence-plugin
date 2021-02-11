@@ -3,11 +3,11 @@
 
 name: Deploy New Version
 
-#on: workflow_dispatch
-on:
-push:
-  tags:
-    - 'v*'
+on: workflow_dispatch
+# on:
+# push:
+#   tags:
+#     - 'v*'
 
 jobs:
   docs:
@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: master
       - name: Set up JDK 9
         uses: actions/setup-java@v1
         with:
@@ -36,6 +38,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: master
       - name: Set up JDK 9
         uses: actions/setup-java@v1
         with:
