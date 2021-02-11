@@ -1,4 +1,4 @@
-package org.bsc.confluence.preprocessor.freemarker;
+package org.bsc.preprocessor.freemarker;
 
 import java.io.IOException;
 import java.io.StringReader;

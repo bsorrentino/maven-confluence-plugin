@@ -1,4 +1,4 @@
-package org.bsc.confluence.preprocessor;
+package org.bsc.preprocessor;
 
 import java.util.Map;
 import java.util.Optional;

@@ -11,12 +11,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.bsc.confluence.preprocessor.SiteProcessorService;
+import org.bsc.preprocessor.SiteProcessorService;
 
 import java.io.FileInputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;

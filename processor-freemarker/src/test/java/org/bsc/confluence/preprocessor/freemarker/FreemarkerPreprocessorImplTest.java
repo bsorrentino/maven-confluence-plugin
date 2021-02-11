@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import lombok.val;
-import org.bsc.confluence.preprocessor.freemarker.FreemarkerPreprocessorImpl;
+import org.bsc.preprocessor.freemarker.FreemarkerPreprocessorImpl;
 import org.junit.jupiter.api.Test;
 
 public class FreemarkerPreprocessorImplTest {
