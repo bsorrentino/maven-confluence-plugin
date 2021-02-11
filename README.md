@@ -11,8 +11,8 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > The standard maven documentation is [here](http://bsorrentino.github.io/maven-confluence-plugin/)
 > * [Goals](http://bsorrentino.github.io/maven-confluence-plugin/plugin-info.html)
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
-> * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
 > * [Use YAML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_yaml_guide.html)
+> * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
 ### Format
 > * [Markdown Syntax Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 > * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
@@ -25,8 +25,9 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
  Date  | Release | Info   
 --- | --- | ---
- **Feb 9, 2021** | [Release 7.0-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-beta2) | Refer to issue [#240](https://github.com/bsorrentino/maven-confluence-plugin/issues/240) add the `page id` to the deploy history(state) manager. <br> Refer to [#241](https://github.com/bsorrentino/maven-confluence-plugin/issues/241) Increase socket timeout. <br> Refer issue [#242](https://github.com/bsorrentino/maven-confluence-plugin/issues/242) add i18n titles to ProjectSummaryRenderer and ScmRenderer. **Thanks to [3a04huk ](https://github.com/bsorrentino/maven-confluence-plugin/issues?q=is%3Apr+author%3A3a04huk) for the [PR](https://github.com/bsorrentino/maven-confluence-plugin/pull/243)**
- **Jan 3, 2021** | [Release 7.0-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-beta1) | This release introduce [multi version jar](http://openjdk.java.net/jeps/238) support. Refer to issue [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224).<br> From this release the **Pegdown markdown parser** has been removed as dependency and it will be not supported anymore.It has been replaced by **Commonmark**
+ **Feb 11, 2021** | [Release 7.0-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-rc1) | Refer to [#244](https://github.com/bsorrentino/maven-confluence-plugin/issues/244) processor-freemarker doesn't work on 7.0-beta2.
+ **Feb 9, 2021** | [Release 7.0-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-beta2) | Refer to [#240](https://github.com/bsorrentino/maven-confluence-plugin/issues/240) add the `page id` to the deploy history(state) manager. <br> Refer to [#241](https://github.com/bsorrentino/maven-confluence-plugin/issues/241) Increase socket timeout. <br> Refer to [#242](https://github.com/bsorrentino/maven-confluence-plugin/issues/242) add i18n titles to ProjectSummaryRenderer and ScmRenderer. **Thanks to [3a04huk ](https://github.com/bsorrentino/maven-confluence-plugin/issues?q=is%3Apr+author%3A3a04huk) for the [PR](https://github.com/bsorrentino/maven-confluence-plugin/pull/243)**
+ **Jan 3, 2021** | [Release 7.0-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-beta1) | This release introduce [multi version jar](http://openjdk.java.net/jeps/238) support. Refer to [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224).<br> From this release the **Pegdown markdown parser** has been removed as dependency and it will be not supported anymore.It has been replaced by **Commonmark**
  **Dec 11, 2020** | [Release 6.20](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.20) | Fix issue [#235](https://github.com/bsorrentino/maven-confluence-plugin/issues/235), see section **Include custom macro(s)** in [Markdown Syntax Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html) for details
  **Nov 02, 2020** | [Release 6.11](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.11) | Bump junit from 4.12 to 4.13.1
  **Sep 25, 2020** | [Release 6.10](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.10) | Fix issue [#229](https://github.com/bsorrentino/maven-confluence-plugin/issues/229) .
