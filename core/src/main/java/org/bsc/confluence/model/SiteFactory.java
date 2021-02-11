@@ -8,10 +8,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import lombok.extern.apachecommons.CommonsLog;
 import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
-import org.bsc.confluence.preprocessor.SitePocessorService;
+import org.bsc.confluence.preprocessor.SiteProcessorService;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -101,7 +100,7 @@ public interface SiteFactory {
             
             final String content = new String(Files.readAllBytes(siteDescriptor.toPath()), StandardCharsets.UTF_8);
             
-            final Optional<SitePocessorService> siteProcessor = SitePocessorService.getDefaultPreprocessorService();
+            final Optional<SiteProcessorService> siteProcessor = SiteProcessorService.getDefaultPreprocessorService();
             
             return siteProcessor.map( p -> p.process(content, variables)
                                                 .thenCompose( _createSite )
