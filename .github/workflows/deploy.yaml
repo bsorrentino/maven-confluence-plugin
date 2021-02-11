@@ -10,28 +10,6 @@ on: workflow_dispatch
 #     - 'v*'
 
 jobs:
-  docs:
-    # disable for now
-    # if: ${{ false }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: master
-      - name: Set up JDK 9
-        uses: actions/setup-java@v1
-        with:
-          java-version: 9
-      - name: Deploy site to Github pages
-        run: |
-          mvn -B install site --file pom.xml -s settings-template.xml
-          mvn -B -pl plugin-reporting site --file pom.xml -s settings-template.xml
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./plugin-reporting/target/site
   build:
 
     runs-on: ubuntu-latest
