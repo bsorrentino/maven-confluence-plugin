@@ -25,7 +25,6 @@ import org.bsc.confluence.preprocessor.SiteProcessorService;
  * 
  * updated by bsorrentino
  */
-//@MetaInfServices(org.bsc.confluence.preprocessor.SiteProcessorService.class)
 public class FreemarkerPreprocessorImpl implements SiteProcessorService {
 
     private static final Version VERSION = Configuration.VERSION_2_3_29;
