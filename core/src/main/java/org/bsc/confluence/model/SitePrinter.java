@@ -1,12 +1,12 @@
 package org.bsc.confluence.model;
 
-import java.io.PrintStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.bsc.confluence.model.Site.Attachment;
 import org.bsc.confluence.model.Site.Page;
 import org.bsc.confluence.model.Site.Source;
+
+import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class SitePrinter {
     
@@ -68,6 +68,7 @@ public class SitePrinter {
      * @param parent
      */
     public static void printChildren(final Site site, PrintStream out, int level, Page parent) {
+
         printSource(site, out, level, '-', parent);
 
         for (Attachment attach : parent.getAttachments()) {

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -318,10 +319,11 @@ public class Site {
         }
 
         @XmlAttribute(name="child")
-        public java.util.List<Page> children = ChildListProxy.newInstance(this);
+        private java.util.List<Page> children;
 
         //@XmlElement(name = "child")
         public java.util.List<Page> getChildren() {
+            if( children == null ) children = ChildListProxy.newInstance(this); // LAZY LOAD
             return children;
         }
 
@@ -332,14 +334,15 @@ public class Site {
          * @param child
          */
         public void setChild( Page child ) {
-            children.add( child );
+            getChildren().add( child );
         }
 
         @XmlAttribute(name="attachment")
-        public java.util.List<Attachment> attachments = new ArrayList<>();
+        private java.util.List<Attachment> attachments;
 
         //@XmlElement(name = "attachment")
         public List<Attachment> getAttachments() {
+            if( attachments == null ) attachments = new ArrayList<>(); // LAZY LOAD
             return attachments;
         }
 
@@ -350,7 +353,7 @@ public class Site {
          * @param attachment
          */
         public void setAttachment( Attachment attachment ) {
-            attachments.add( attachment );
+            getAttachments().add( attachment );
         }
 
         @Override
