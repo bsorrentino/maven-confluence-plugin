@@ -10,8 +10,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.preprocessor.SiteProcessorService;
 
+import java.io.FileInputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
@@ -97,22 +100,30 @@ public interface SiteFactory {
                 
                 return result;
             }; // end lambda function
-            
-            final String content = new String(Files.readAllBytes(siteDescriptor.toPath()), StandardCharsets.UTF_8);
+
+            byte[] siteDescriptorBytes;
+            try( java.io.InputStream is = new FileInputStream(siteDescriptor.toPath().toFile()) ) {
+                siteDescriptorBytes = IOUtils.toByteArray( is );
+            }
+            // JAVA 11
+            // siteDescriptorBytes = Files.readAllBytes(siteDescriptor.toPath());
+
+            final String content = new String(siteDescriptorBytes, StandardCharsets.UTF_8);
             
             final Optional<SiteProcessorService> siteProcessor = SiteProcessorService.getDefaultPreprocessorService();
             
-            return siteProcessor.map( p -> p.process(content, variables)
-                                                .thenCompose( _createSite )
+            final CompletableFuture<Site> future =
+                    siteProcessor.map( p -> p.process(content, variables)
+                                            .thenCompose( _createSite )
                                                 // uncomment if you want process source content ignoring preprocess exception
                                                 //.exceptionally( e -> _createSite.apply(content).join() ) 
-                                                )
-            									.orElseGet( () ->{
-            										LogHolder.log.fine( format("a Preprocessor service is not configurated") );
-            										return _createSite.apply(content);
-            									})
-                    .get();
-                                                
+                                    )
+                                    .orElseGet( () -> {
+                                            LogHolder.log.fine( format("a Preprocessor service is not configurated") );
+                                            return _createSite.apply(content);
+                                    });
+
+            return future.join();
                    
     
         }

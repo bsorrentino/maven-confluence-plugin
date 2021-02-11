@@ -485,7 +485,7 @@
         </profile>
 
         <profile>
-            <id>freemaker</id>
+            <id>freemarker</id>
 
             <build>
 
