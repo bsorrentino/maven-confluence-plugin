@@ -18,7 +18,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.TemplateModelException;
 import freemarker.template.Version;
-import org.bsc.confluence.preprocessor.SiteProcessorService;
+import org.bsc.preprocessor.SiteProcessorService;
 
 /**
  * @author Lukas Zaruba, lukas.zaruba@gmail.com, 2019
