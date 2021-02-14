@@ -266,7 +266,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         return processPageUri(site, child, pageToUpdate, source, pagePrefixToApply)
                 .thenCompose( content -> {
-
+                    final CompletableFuture<Storage> result = new CompletableFuture<>();
                     try {
 
                         final MiniTemplator t = new MiniTemplator.Builder()
@@ -281,13 +281,13 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                             t.setVariableOpt("page.title", pageTitleToApply);
                         }
 
-                        return completedFuture(Storage.of(t.generateOutput(), content.getType()));
+                        result.complete(Storage.of(t.generateOutput(), content.getType()));
 
                     } catch (Exception ex) {
-                        final CompletableFuture<Storage> result = new CompletableFuture<>();
-                        result.completeExceptionally(ex);
-                        return result;
+                      result.completeExceptionally(ex);
                     }
+                    return result;
+
                 });
 
     }
@@ -379,7 +379,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         final Supplier<CompletableFuture<Model.Page>>
                 createPageFunction = () ->
-                        getPageContent( Optional.empty(), site, uri, child, pageTitleToApply )
+                        getPageContent( empty(), site, uri, child, pageTitleToApply )
                             .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
                             .thenCompose( page -> savePageIdToDeployStateManager(child, page ));
 
@@ -414,20 +414,19 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                 }
                 final java.net.URI uri = new java.net.URI(v);
 
-                if (uri.getScheme() == null) {
-                    continue;
-                }
+                if (uri.getScheme() == null) continue;
 
-                getProperties().put(e.getKey(), processUriContent(site, site.getHome(), uri, getCharset()));
-
-            } catch (ProcessUriException ex) {
-                getLog().warn(
-                        format("error processing value of property [%s] - %s", e.getKey(), ex.getMessage()));
-                if (ex.getCause() != null)
-                    getLog().debug(ex.getCause());
+                processUriContent(site, site.getHome(), uri, getCharset())
+                        .thenAccept( content -> getProperties().put(e.getKey(), content) )
+                        .exceptionally( ex -> {
+                            getLog().warn(
+                                    format("error processing value of property [%s] - %s",
+                                            e.getKey(), ex.getMessage()));
+                            return null;
+                        })
+                        .join();
 
             } catch (URISyntaxException ex) {
-
                 // DO Nothing
                 getLog().debug(format("property [%s] is not a valid uri", e.getKey()));
             }
@@ -487,15 +486,16 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @return
      * @throws ProcessUriException
      */
-    private String processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset) throws ProcessUriException {
+    private CompletableFuture<String> processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset)  {
 
-        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : empty();
+        final Optional<String> pagePrefixToApply =
+                (isChildrenTitlesPrefixed()) ?
+                        ofNullable(this.getPageTitle()) :
+                        empty();
 
-        try {
-            return SiteProcessor.processUriContent(site, child, uri, pagePrefixToApply, content -> content.getContent(charset) );
-        } catch (Exception ex) {
-            throw new ProcessUriException("error reading content!", ex);
-        }
+        return SiteProcessor.processUriContent(site, child, uri, pagePrefixToApply)
+                .thenApply( pageContent -> pageContent.getContent(charset) );
+
     }
 
     /**
@@ -528,14 +528,12 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             return Files.newDirectoryStream(attachmentPath, attachment.getName());
         }
 
-        final DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
-            @Override
-            public boolean accept(Path entry) throws IOException {
+        final DirectoryStream.Filter<Path> filter = entry ->
+                        !(Files.isDirectory(entry) ||
+                        Files.isHidden(entry) ||
+                        Files.isSymbolicLink(entry) ||
+                        !Files.isReadable(entry));
 
-                return !(Files.isDirectory(entry) || Files.isHidden(entry) || Files.isSymbolicLink(entry)
-                        || (!Files.isReadable(entry)));
-            }
-        };
         return Files.newDirectoryStream(attachmentPath, filter);
     }
 
