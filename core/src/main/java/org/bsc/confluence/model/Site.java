@@ -182,16 +182,16 @@ public class Site {
             return site.getBasedir().toUri().relativize(getUri());
         }
 
+        @XmlAttribute(required = true)
         String name;
 
-        @XmlAttribute
         public String getName() {
             return name;
         }
 
-        public final Optional<String> optName() {
-            return ofNullable(name);
-        }
+//        public final Optional<String> optName() {
+//            return ofNullable(name);
+//        }
 
         public void setName(String name) {
             if( lead_trail_spaces.matcher(name).matches() )
@@ -201,7 +201,7 @@ public class Site {
 
         @Override
         public String toString() {
-            return getClass().getSimpleName() + ": " + getName() + " - " + String.valueOf(getUri());
+            return format( "%s: %s - %s", getClass().getSimpleName(),getName(),getUri());
         }
     }
 
