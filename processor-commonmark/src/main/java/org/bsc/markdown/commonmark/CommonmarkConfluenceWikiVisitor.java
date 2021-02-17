@@ -326,7 +326,9 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(HtmlInline node) {
-        processChildren(node).pre("<<HTMI>>").post("<</HTMI>>").process();
+        processChildren(node)
+                //.pre("<<HTMI>>").post("<</HTMI>>")
+                .process();
     }
 
     //@Custom
