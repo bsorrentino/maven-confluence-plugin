@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.0-rc1</version>
+        <version>7.0-rc2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -84,18 +84,12 @@
                     <labels>
                         <label>maven</label>
                     </labels>
-                    <properties>
-                        <evaluation>(y)</evaluation>
-                        <page>classpath:plugin-report.properties</page>
-                        <page1>file://${basedir}/src/main/resources/confluence.html</page1>
-                    </properties>
+                    <wikiFilesExt>.confluence</wikiFilesExt>
+                    <failOnError>true</failOnError>
                     <sslCertificate/>
                     <!--
-                    <sslCertificate>
-                        <ignore>true</ignore>
-                    </sslCertificate>
+                    <sslCertificate><ignore>true</ignore></sslCertificate>
                     -->
-
                 </configuration>
                 <executions>
                     <!--
@@ -123,7 +117,6 @@
                         <configuration>
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/site4confluence.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
                         </configuration>
@@ -139,7 +132,6 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-
                             <!-- TEST ISSUE 147 -->
                             <skip>false</skip>
                             <!-- TEST ISSUE 107
@@ -147,13 +139,10 @@
                             -->
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <!--siteDescriptor>${basedir}/src/site/confluence/site5.xml</siteDescriptor-->
                             <siteDescriptor>${basedir}/src/site/confluence/site5-issue108.xml</siteDescriptor>
                             <!-- TEST ISSUE 39 -->
-
                             <deployState/>
-
                         </configuration>
                     </execution>
                     <!--
@@ -169,17 +158,13 @@
                         <configuration>
                             <!-- TEST ISSUE 40 -->
                             <siteDescriptor>${basedir}/src/site/confluence/issue158/site-issue158.xml</siteDescriptor>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
-
                             <deployState>
                                 <active>true</active>
                             </deployState>
-
                             <properties>
                                 <my_prop>my_prop_value</my_prop>
                             </properties>
-
                         </configuration>
                     </execution>
                     <!--
@@ -195,9 +180,7 @@
                         <configuration>
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/template.confluence</templateWiki>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
-
                             <deployState>
                                 <active>true</active>
                             </deployState>
@@ -216,7 +199,6 @@
                         <configuration>
                             <!-- TEST ISSUE 40 -->
                             <templateWiki>${basedir}/src/site/confluence/issue129/template.confluence</templateWiki>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <!-- TEST ISSUE 39 -->
                         </configuration>
                     </execution>
@@ -231,7 +213,6 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/site-issue110.xml</siteDescriptor>
                             <failOnError>false</failOnError>
                         </configuration>
@@ -248,7 +229,6 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue187/site-issue187.xml</siteDescriptor>
                             <failOnError>false</failOnError>
                         </configuration>
@@ -264,9 +244,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue189/site-issue189.yaml</siteDescriptor>
-                            <failOnError>true</failOnError>
                         </configuration>
                     </execution>
                     <!--
@@ -280,9 +258,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue191/site-issue191.yaml</siteDescriptor>
-                            <failOnError>true</failOnError>
                         </configuration>
                     </execution>
                     <!--
@@ -296,9 +272,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue194/site-issue194.yaml</siteDescriptor>
-                            <failOnError>true</failOnError>
                             <spaceKey>SVTS</spaceKey>
                             <parentPageTitle>Topic 1</parentPageTitle>
                             <scrollVersions>
@@ -318,9 +292,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue208/site-issue208.xml</siteDescriptor>
-                            <failOnError>true</failOnError>
                         </configuration>
                     </execution>
                     <!--
@@ -335,7 +307,6 @@
                             <!--suppress UnresolvedMavenProperty -->
                             <title>${blog.title}</title>
                             <content>${project.basedir}/src/site/confluence/issue219/blog.md</content>
-                            <failOnError>true</failOnError>
                         </configuration>
                     </execution>
                     <!--
@@ -349,9 +320,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
                             <siteDescriptor>${basedir}/src/site/confluence/issue223/site.yml</siteDescriptor>
-                            <failOnError>true</failOnError>
                             <spaceKey>SVTS</spaceKey>
                             <parentPageTitle>Topic 1</parentPageTitle>
                             <scrollVersions>
@@ -371,39 +340,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
-                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml
-                            </siteDescriptor>
-                            <failOnError>true</failOnError>
-                            <markdownProcessor>
-                                <name>commonmark</name>
-                            </markdownProcessor>
-                        </configuration>
-                    </execution>
-                    <!--
-                    mvn confluence-reporting:deploy@pegdown
-                    mvn confluence-reporting:delete@pegdown
-                    -->
-                    <execution>
-                        <id>pegdown</id>
-                        <goals>
-                            <goal>deploy</goal>
-                            <goal>delete</goal>
-                        </goals>
-                        <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
-                            <siteDescriptor>
-                                ${basedir}/src/site/confluence/issue154/site-pegdown.yaml
-                            </siteDescriptor>
-                            <failOnError>true</failOnError>
-
-                            <!--
-                            <spaceKey>SVTS</spaceKey>
-                            <parentPageTitle>Topic 1</parentPageTitle>
-                            <scrollVersions>
-                                <version>alpha</version>
-                            </scrollVersions>
-                            -->
+                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
                         </configuration>
                     </execution>
                     <!--
@@ -419,12 +356,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
-                            <failOnError>true</failOnError>
                             <siteDescriptor>${basedir}/src/site/confluence/issue215/confluence/site.xml</siteDescriptor>
-                            <markdownProcessor>
-                                <name>commonmark</name>
-                            </markdownProcessor>
                         </configuration>
                     </execution>
                     <!--
@@ -438,12 +370,7 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
-                            <failOnError>true</failOnError>
                             <siteDescriptor>${basedir}/src/site/confluence/issue226/site.yml</siteDescriptor>
-                            <markdownProcessor>
-                                <name>commonmark</name>
-                            </markdownProcessor>
                         </configuration>
                     </execution>
                     <!--
@@ -457,21 +384,35 @@
                             <goal>delete</goal>
                         </goals>
                         <configuration>
-                            <wikiFilesExt>.confluence</wikiFilesExt>
-                            <failOnError>true</failOnError>
                             <siteDescriptor>${basedir}/src/site/confluence/issue227/site.yaml</siteDescriptor>
-                            <markdownProcessor>
-                                <name>commonmark</name>
-                            </markdownProcessor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue245
+                    mvn confluence-reporting:delete@issue245
+                    -->
+                    <execution>
+                        <id>issue245</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <evaluation>(y)</evaluation>
+                                <page>classpath:unknown.properties</page>
+                                <!--
+                                <page1>file://${basedir}/src/main/resources/confluence.html</page1>
+                                -->
+                            </properties>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue245/site.yml</siteDescriptor>
                         </configuration>
                     </execution>
 
                 </executions>
             </plugin>
-
-
         </plugins>
-
     </build>
 
     <profiles>
@@ -480,15 +421,11 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-
-
         </profile>
 
         <profile>
             <id>freemarker</id>
-
             <build>
-
                 <plugins>
                     <plugin>
                         <groupId>org.bsc.maven</groupId>

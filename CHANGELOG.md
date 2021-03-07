@@ -5,6 +5,53 @@
 ## Next release
 ### Generic changes
 
+**removed htmlinline output debug info**
+
+
+[14dba471b8fb50e](https://github.com/bsorrentino/maven-confluence-plugin/commit/14dba471b8fb50e) bsorrentino *2021-02-17 11:11:03*
+
+**set 'name' attribute as required**
+
+
+[2e70827f3f9c7d6](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e70827f3f9c7d6) bsorrentino *2021-02-17 11:10:23*
+
+**update actions**
+
+
+[d8082376be22051](https://github.com/bsorrentino/maven-confluence-plugin/commit/d8082376be22051) bsorrentino *2021-02-11 19:20:15*
+
+**updated to dev version**
+
+
+[da74ad4680dcd96](https://github.com/bsorrentino/maven-confluence-plugin/commit/da74ad4680dcd96) bsorrentino *2021-02-11 19:16:57*
+
+**update actions**
+
+
+[4c86cc3c8e14e02](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c86cc3c8e14e02) bsorrentino *2021-02-11 19:15:30*
+
+**update actions**
+
+
+[58963e711ed6fc3](https://github.com/bsorrentino/maven-confluence-plugin/commit/58963e711ed6fc3) bsorrentino *2021-02-11 19:04:30*
+
+
+###  [#245](https://github.com/bsorrentino/maven-confluence-plugin/issues/245) npe when children uri from classpath    *bug*  
+
+**issue #245 - Improved code to load content from classpath. Test refinements**
+
+
+[6c470fc5545741f](https://github.com/bsorrentino/maven-confluence-plugin/commit/6c470fc5545741f) bsorrentino *2021-02-14 20:20:07*
+
+
+## v7.0-rc1
+### Generic changes
+
+**changelog updated**
+
+
+[e1fbce5bd8f3309](https://github.com/bsorrentino/maven-confluence-plugin/commit/e1fbce5bd8f3309) bsorrentino *2021-02-11 18:56:30*
+
 **moved to release version**
 
 

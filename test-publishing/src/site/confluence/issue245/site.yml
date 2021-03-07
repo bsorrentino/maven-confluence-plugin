@@ -1,0 +1,10 @@
+home:
+  name: "test issue 245"
+  uri: test.md
+  children:
+    - name: template1
+      uri: classpath:template1.confluence
+    - name: defaultTemplate
+      uri: classpath:defaultTemplate.confluence
+    - name: unknown
+      uri: classpath:unknown.confluence

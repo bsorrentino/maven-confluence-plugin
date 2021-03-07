@@ -1,5 +1,6 @@
 package org.bsc.confluence.model;
 
+import lombok.NonNull;
 import lombok.Value;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
@@ -14,10 +15,11 @@ import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.bsc.confluence.FileExtension.*;
 
@@ -25,7 +27,9 @@ public class SiteProcessor {
    
     @Value(staticConstructor="of")
     public static class PageContent {
+        @NonNull
         String content;
+        @NonNull
         Storage.Representation type;
 
         public InputStream getInputStream() {
@@ -43,7 +47,21 @@ public class SiteProcessor {
             return content;
         }
     }
+    /**
+     *
+     * @param source
+     * @return
+     */
+    private static Optional<java.io.InputStream> getResourceAsStream( String source ) {
 
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        java.io.InputStream is = cl.getResourceAsStream(source);
+        if (is == null) {
+            cl = Site.class.getClassLoader();
+            is = cl.getResourceAsStream(source);
+        }
+        return ofNullable(is);
+    }
     /**
      *
      * @param uri
@@ -55,31 +73,24 @@ public class SiteProcessor {
             final java.net.URI uri, 
             java.util.function.BiFunction<Optional<Exception>,Optional<java.io.InputStream>, T> callback) 
     {
-        Objects.requireNonNull(uri, "uri is null!");
-        Objects.requireNonNull(callback, "callback is null!");
+        requireNonNull(uri, "uri is null!");
+        requireNonNull(callback, "callback is null!");
 
         final String scheme = uri.getScheme();
 
-        Objects.requireNonNull(scheme, format("uri [%s] is invalid!", String.valueOf(uri)));
+        requireNonNull(scheme, format("uri [%s] is invalid!", String.valueOf(uri)));
         
         final String source = uri.getRawSchemeSpecificPart();
 
-        java.io.InputStream result = null;
+        Optional<java.io.InputStream> result;
 
         if ("classpath".equalsIgnoreCase(scheme)) {
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-            result = cl.getResourceAsStream(source);
+            result = getResourceAsStream(source);
 
-            if (result == null) {
-
-                cl = Site.class.getClassLoader();
-
-                result = cl.getResourceAsStream(source);
-
+            if( !result.isPresent() ) {
                 final Exception ex = new Exception(format("resource [%s] doesn't exist in classloader", source));
-                return callback.apply( Optional.of(ex), Optional.empty());
-
+                return callback.apply( Optional.of(ex), empty());
             }
 
         } else {
@@ -88,17 +99,16 @@ public class SiteProcessor {
                 
                 java.net.URL url = uri.toURL();
 
-                result = url.openStream();
+                result = ofNullable(url.openStream());
 
             } catch (IOException e) {
                 final Exception ex = new Exception(format("error opening url [%s]!", source), e);
-                return callback.apply( Optional.of(ex), Optional.empty());
+                return callback.apply( Optional.of(ex), empty());
             }
         }
 
-        return callback.apply( Optional.empty(), Optional.of(result));
+        return callback.apply( empty(), result);
     }
-
     /**
      *
      * @param site
@@ -116,11 +126,11 @@ public class SiteProcessor {
            final java.net.URI uri, 
            final Optional<String> pagePrefixToApply)
    {
-       Objects.requireNonNull(uri, "uri is null!");
+       requireNonNull(uri, "uri is null!");
 
        String scheme = uri.getScheme();
 
-       Objects.requireNonNull(scheme, format("uri [%s] is invalid!", String.valueOf(uri)));
+       requireNonNull(scheme, format("uri [%s] is invalid!", String.valueOf(uri)));
 
        final CompletableFuture<PageContent> result = new CompletableFuture<>();
 
@@ -131,39 +141,32 @@ public class SiteProcessor {
        final boolean isMarkdown =  MARKDOWN.isExentionOf(path);
        final boolean isStorage = XML.isExentionOf(path) || XHTML.isExentionOf(path);
 
-       final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE
-               : Storage.Representation.WIKI;
+       final Storage.Representation representation = (isStorage) ?
+               Storage.Representation.STORAGE :
+               Storage.Representation.WIKI;
 
        String content = null;
 
-
        if ("classpath".equalsIgnoreCase(scheme)) {
-           ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-           java.io.InputStream is = cl.getResourceAsStream(source);
+           final Optional<java.io.InputStream> is = getResourceAsStream(source);
 
-           if (is == null) {
+           if( !is.isPresent() ) {
+               result.completeExceptionally( new Exception( format("page [%s] doesn't exist in classloader", source)));
+               return result;
+           }
 
-               cl = Site.class.getClassLoader();
+           try {
 
-               is = cl.getResourceAsStream(source);
+               final String candidateContent = IOUtils.toString(is.get());
 
-               if (is == null) {
-                   result.completeExceptionally( new Exception( format("page [%s] doesn't exist in classloader", source)));
-                   return result;
-               }
+               content = (isMarkdown) ?
+                       processMarkdown( site, child, page, candidateContent, pagePrefixToApply) :
+                       candidateContent;
 
-               try {
-                   final String candidateContent = IOUtils.toString(is);
-
-                   content = (isMarkdown) ? processMarkdown( site, child, page, candidateContent, pagePrefixToApply) : candidateContent;
-
-               } catch (IOException e) {
-                   result.completeExceptionally( new Exception( format("error processing markdown for page [%s] ", source)));
-                   return result;
-               }
-
-
+           } catch (IOException e) {
+               result.completeExceptionally( new Exception( format("error processing markdown for page [%s] ", source)));
+               return result;
            }
 
        } else {
@@ -196,19 +199,21 @@ public class SiteProcessor {
     * @return
     * @throws Exception
     */
-   public static <T,P extends Site.Page> T processUriContent(
+   public static
+   <P extends Site.Page> CompletableFuture<PageContent>
+   processUriContent(
                final Site site,
                final P child,
                final java.net.URI uri,                                  
-               final Optional<String> homePageTitle,
-               final Function<PageContent, T> onSuccess 
-           ) throws /* ProcessUri */Exception 
+               final Optional<String> homePageTitle )
    {
-       Objects.requireNonNull(uri, "uri is null!");
+       requireNonNull(uri, "uri is null!");
 
        String scheme = uri.getScheme();
 
-       Objects.requireNonNull(scheme, format("uri [%s] is invalid!", String.valueOf(uri)));
+       requireNonNull(scheme, format("uri [%s] is invalid!", uri));
+
+       final CompletableFuture<PageContent> result = new CompletableFuture<>();
 
        final String source = uri.getRawSchemeSpecificPart();
 
@@ -224,46 +229,44 @@ public class SiteProcessor {
 
        if ("classpath".equalsIgnoreCase(scheme)) {
 
-           ClassLoader cl = Thread.currentThread().getContextClassLoader();
+           final Optional<java.io.InputStream> is = getResourceAsStream(source);
 
-           java.io.InputStream is = cl.getResourceAsStream(source);
-
-           if (is == null) {
-               // getLog().warn(String.format("resource [%s] doesn't exist in context
-               // classloader", source));
-
-               cl = Site.class.getClassLoader();
-
-               is = cl.getResourceAsStream(source);
-
-               if (is == null) {
-                   throw new Exception(format("resource [%s] doesn't exist in classloader", source));
-               }
-
-               final String candidateContent = IOUtils.toString(is);
-
-               content = (isMarkdown) ? processMarkdown( site, child, Optional.empty(), candidateContent, homePageTitle) : candidateContent;
-
+           if (!is.isPresent()) {
+               result.completeExceptionally( new Exception(format("resource [%s] doesn't exist in classloader", source)));
+               return result;
            }
+
+           try {
+               final String candidateContent = IOUtils.toString(is.get());
+
+               content = (isMarkdown) ? processMarkdown(site, child, empty(), candidateContent, homePageTitle) : candidateContent;
+
+            } catch (IOException e) {
+                result.completeExceptionally( new Exception( format("error processing page [%s] ", source)));
+                return result;
+            }
 
        } else {
 
            try {
-
-               java.net.URL url = uri.toURL();
+               final java.net.URL url = uri.toURL();
 
                final java.io.InputStream is = url.openStream();
 
                final String candidateContent = IOUtils.toString(is);
 
-               content = (isMarkdown) ? processMarkdown( site, child, Optional.empty(), candidateContent, homePageTitle) : candidateContent;
+               content = (isMarkdown) ?
+                       processMarkdown( site, child, empty(), candidateContent, homePageTitle) :
+                       candidateContent;
 
            } catch (IOException e) {
-               throw new Exception(format("error opening url [%s]!", source), e);
+               result.completeExceptionally( new Exception(format("error opening url [%s]!", source), e));
+               return result;
            }
        }
 
-       return onSuccess.apply( PageContent.of(content, representation) );
+       result.complete( PageContent.of(content, representation) );
+       return result;
    }
 
     /**
