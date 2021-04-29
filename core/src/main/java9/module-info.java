@@ -6,7 +6,8 @@ module maven.confluence.core {
 
     requires org.apache.commons.codec;
     //requires commons.httpclient;
-    requires commons.io;
+    // requires commons.io;
+    requires org.apache.commons.io;
     //requires commons.logging;
 
     //requires xmlrpc.client;
