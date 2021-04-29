@@ -3,7 +3,11 @@
 
 name: Deploy New Snapshot
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+     branches:
+       - develop
+
 # on:
 #   push:
 #     branches:
