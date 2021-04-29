@@ -19,6 +19,7 @@ import org.bsc.confluence.model.SiteFactory;
 import org.bsc.confluence.model.SiteProcessor;
 import org.bsc.mojo.configuration.DeployStateInfo;
 
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.io.File;
 import java.io.FileFilter;
@@ -36,7 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
@@ -366,25 +366,41 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
             confluence.removePage(parentPage, snapshot)
                     .thenAccept(deleted -> getLog().info(format("Page [%s] removed!", snapshot)))
-                    .exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
+                    //.exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
+                    .join();
         }
 
         final java.net.URI uri = child.getUri();
 
-        final Function<Model.Page, CompletableFuture<Model.Page>>
-                updatePageFunction = p ->
+        // Update Page Inline Function
+        final AsyncProcessPageFunc updatePageFunction = p ->
                     updatePageIfNeeded(child,p,
                         () -> getPageContent( ofNullable(p), site, uri, child, pageTitleToApply )
                                 .thenCompose( storage -> confluence.storePage(p, storage)));
 
-        final Supplier<CompletableFuture<Model.Page>>
-                createPageFunction = () ->
+        // Create Page Function
+        final AsyncPageSupplier createPageFunction = () ->
                         getPageContent( empty(), site, uri, child, pageTitleToApply )
                             .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
                             .thenCompose( page -> savePageIdToDeployStateManager(child, page ));
 
+        // Get Page Inline Function
+        final AsyncSupplier<Optional<Model.Page>> getPage = () -> {
+
+           final Optional<JsonValue> extra =
+                   deployStateManager.flatMap( dsm ->
+                        dsm.getOptExtraAttribute(child.getUri()) );
+
+           return extra
+                   .filter( e -> e.getValueType()==JsonValue.ValueType.STRING )
+                   .map( e -> ((JsonString)e).getString() )
+                   .map( id -> confluence.newPage( Model.ID.of(id) )  )
+                   .map( p -> completedFuture(Optional.of(p) ))
+                   .orElse( confluence.getPage(parentPage.getSpace(), pageTitleToApply) );
+        };
+
         final Model.Page result =
-                confluence.getPage(parentPage.getSpace(), pageTitleToApply)
+                getPage.get()
                 .thenCompose(page ->
                         (page.isPresent())
                                 ? updatePageFunction.apply(page.get())

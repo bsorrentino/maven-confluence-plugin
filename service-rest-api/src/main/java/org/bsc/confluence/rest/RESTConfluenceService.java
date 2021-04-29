@@ -157,6 +157,13 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
 
     @Override
+    public Model.Page newPage(Model.ID id) {
+        return new Page(Json.createObjectBuilder()
+                        .add( "id", id.toString())
+                        .build());
+    }
+
+    @Override
     public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title) {
 
         return childrenPages(String.valueOf(parentPageId))

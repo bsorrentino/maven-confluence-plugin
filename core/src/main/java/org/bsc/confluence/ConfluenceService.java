@@ -211,6 +211,18 @@ public interface ConfluenceService extends Closeable{
 
     Credentials getCredentials();
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // PAGE
+    ///////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * factory method
+     * Create a temporary in memory Model.Page with only ID set
+     * @param id
+     * @return
+     */
+    Model.Page newPage( Model.ID id );
+
     CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  ;
 
     CompletableFuture<Boolean> removePage( Model.Page parentPage, String title ) ;
@@ -227,6 +239,12 @@ public interface ConfluenceService extends Closeable{
 
     CompletableFuture<Optional<Model.Page>> getPage( String spaceKey, String pageTitle ) ;
 
+    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) ;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // LABEL
+    ///////////////////////////////////////////////////////////////////////////////
+
     CompletableFuture<Void> addLabelsByName( Model.ID id, String[] labels ) ;
 
     default CompletableFuture<Void> addLabelsByName( Model.ID id, java.util.List<String> labels ) {
@@ -235,8 +253,6 @@ public interface ConfluenceService extends Closeable{
         final String[] labelArray = new String[ labels.size() ];
         return addLabelsByName( id, labels.toArray(labelArray) );
     }
-
-    CompletableFuture<java.util.List<Model.PageSummary>> getDescendents(Model.ID pageId) ;
 
     ////////////////////////////////////////////////////////////////////////////////
     // ATTACHMENT

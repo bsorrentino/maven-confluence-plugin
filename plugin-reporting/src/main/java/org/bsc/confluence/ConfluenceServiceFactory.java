@@ -51,6 +51,11 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
+        public Model.Page newPage(Model.ID id) {
+            return xmlrpcService.newPage(id);
+        }
+
+        @Override
         public CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  {
             return xmlrpcService.getPageByTitle(parentPageId, title);
         }

@@ -503,6 +503,11 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         return delegate.getCredentials();
     }
 
+    @Override
+    public Model.Page newPage(Model.ID id) {
+        return delegate.newPage( id );
+    }
+
     /**
      * fix issue 223
      *

@@ -14,15 +14,13 @@ import org.bsc.ssl.SSLCertificateInfo;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.bsc.confluence.ConfluenceUtils.sanitizeLabel;
@@ -107,6 +105,15 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     @Override
     public Credentials getCredentials() {
         return credentials;
+    }
+
+
+    @Override
+    public Model.Page newPage(Model.ID id) {
+
+        final java.util.Map<String,Object> attributes = new HashMap<>();
+        attributes.put( "id", id.toString());
+        return new Page( unmodifiableMap(attributes));
     }
 
     /**
