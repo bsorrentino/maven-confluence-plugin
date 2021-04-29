@@ -384,6 +384,11 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                             .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
                             .thenCompose( page -> savePageIdToDeployStateManager(child, page ));
 
+        // Create or Update Page Function
+        final AsyncPageFunc<Optional<Model.Page>> createOrUpdate = optPage ->
+                optPage.map( page -> updatePageFunction.apply(page) )
+                        .orElseGet( () -> createPageFunction.get() );
+
         // Get Page Inline Function
         final AsyncSupplier<Optional<Model.Page>> getPage = () -> {
 
@@ -394,21 +399,20 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
            return extra
                    .filter( e -> e.getValueType()==JsonValue.ValueType.STRING )
                    .map( e -> ((JsonString)e).getString() )
-                   .map( id -> confluence.newPage( Model.ID.of(id) )  )
+                   .map( id -> confluence.newPage( Model.ID.of(id), pageTitleToApply )  )
                    .map( p -> completedFuture(Optional.of(p) ))
                    .orElse( confluence.getPage(parentPage.getSpace(), pageTitleToApply) );
         };
 
         final Model.Page result =
                 getPage.get()
-                .thenCompose(page ->
-                        (page.isPresent())
-                                ? updatePageFunction.apply(page.get())
-                                : createPageFunction.get())
+                .thenCompose(createOrUpdate)
                 .thenCompose( p -> confluence.addLabelsByName( p.getId(), child.getComputedLabels() ).thenApply( (v) -> p) )
+                .thenApply( p -> {
+                    child.setName(pageTitleToApply);
+                    return p;
+                })
                 .join();
-
-        child.setName(pageTitleToApply);
 
         return result;
 

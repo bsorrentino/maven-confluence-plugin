@@ -51,8 +51,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.Page newPage(Model.ID id) {
-            return xmlrpcService.newPage(id);
+        public Model.Page newPage(Model.ID id, String title) {
+            return xmlrpcService.newPage(id, title);
         }
 
         @Override
