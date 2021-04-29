@@ -574,6 +574,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     }
 
+    /**
+     *
+     * @param confluence
+     * @param site
+     * @param locale
+     */
     private void generateProjectReport(
             final ConfluenceService confluence,
             final Site site,
@@ -584,17 +590,17 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         //
         final String _homePageTitle = getPageTitle();
 
-        final Function<Model.Page, CompletableFuture<Model.Page>> updateHomePage = (p) ->
-            updatePageIfNeeded(site.getHome(), p,
-                    () -> getHomeContent(site, Optional.of(p), locale).
-                                                thenCompose( content -> confluence.storePage(p, content )));
+        final ProcessPageFunc updateHomePage = p ->
+            updatePageIfNeeded(site.getHome(), p, () ->
+                    getHomeContent(site, Optional.of(p), locale)
+                            .thenCompose( content -> confluence.storePage(p, content )));
 
-        final Function<Model.Page, CompletableFuture<Model.Page>> createHomePage = (_parentPage) ->
-                        getHomeContent(  site, Optional.empty(), locale )
+        final ProcessPageFunc createHomePage = _parentPage ->
+                    getHomeContent(  site, Optional.empty(), locale )
                         .thenCompose( content -> confluence.createPage(_parentPage, _homePageTitle,content) );
 
-        final Model.Page confluenceHomePage =
-            loadParentPage(confluence, Optional.of(site))
+
+        loadParentPage(confluence, Optional.of(site))
             .thenCompose( _parentPage ->
                 removeSnaphot(confluence, _parentPage, _homePageTitle)
                     .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
@@ -604,16 +610,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                                 createHomePage.apply(_parentPage);
                     })
                     .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
-
+            )
+            .thenAccept( confluenceHomePage ->
+                    generateChildren(
+                            confluence,
+                            site,
+                            site.getHome(),
+                            confluenceHomePage,
+                            new HashMap<>())
             ).join();
-
-
-        generateChildren(
-                confluence,
-                site,
-                site.getHome(),
-                confluenceHomePage,
-                new HashMap<>());
 
     }
 
