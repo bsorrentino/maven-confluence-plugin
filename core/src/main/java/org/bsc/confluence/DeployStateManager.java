@@ -25,6 +25,9 @@ public class DeployStateManager {
     private static void debug( String msg, Object ...args ) {
         log.fine( () -> format( msg, args));
     }
+    private static void info( String msg, Object ...args ) {
+        log.info( () -> format( msg, args));
+    }
     private static void warn( String msg, Throwable ex  ) {
         log.log(Level.WARNING, msg, ex);
     }
@@ -63,15 +66,15 @@ public class DeployStateManager {
             return Data.of( createValue("") );
         }
 
-        private Optional<JsonValue> optExtraAttribute;
+        private JsonValue optExtraAttribute;
         private JsonString hash;
 
         private Data(JsonString hash ) {
-            optExtraAttribute = Optional.empty();
+            optExtraAttribute = null;
             this.hash = hash;
         }
         private Data( JsonObject entry ) {
-            this.optExtraAttribute = ofNullable(entry.get("extra"));
+            this.optExtraAttribute = entry.get("extra");
             this.hash = entry.getJsonString("hash");
         }
 
@@ -84,17 +87,17 @@ public class DeployStateManager {
         }
 
         public Optional<JsonValue> getOptExtraAttribute() {
-            return optExtraAttribute;
+            return ofNullable(optExtraAttribute);
         }
 
         public void setExtraAttribute(JsonValue value) {
             debug( "Data.setExtraAttribute( %s )", String.valueOf(value) );
-            this.optExtraAttribute = ofNullable(value);
+            this.optExtraAttribute = value;
         }
 
         final JsonValue toJson() {
             final JsonObjectBuilder b = Json.createObjectBuilder();
-            optExtraAttribute.ifPresent( extra ->  b.add( "extra", extra) );
+            getOptExtraAttribute().ifPresent( extra ->  b.add( "extra", extra) );
             return b.add("hash", hash ).build();
         }
     }
@@ -170,9 +173,12 @@ public class DeployStateManager {
                 warn( format("error reading file '%s'", file),ex );
             }
         }
-        if (!storage.containsKey(endpoint)) {
-            storage.put(endpoint, new HashMap<>());
-        }
+
+        storage.computeIfAbsent( endpoint, key -> new HashMap<>() );
+
+//        if (!storage.containsKey(endpoint)) {
+//            storage.put(endpoint, new HashMap<>());
+//        }
 
     }
     /**
@@ -213,7 +219,7 @@ public class DeployStateManager {
      */
     public <U> CompletableFuture<U>
             isUpdated(java.net.URI uri,
-                      Optional<JsonValue> extraAttribute,
+                      JsonValue extraAttribute,
                       Supplier<CompletableFuture<U>> yes,
                       Supplier<CompletableFuture<U>> no )
     {
@@ -226,7 +232,7 @@ public class DeployStateManager {
      * @param uri
      * @return
      */
-    private boolean isUpdated( java.net.URI uri, Optional<JsonValue> extraAttribute ) {
+    private boolean isUpdated( java.net.URI uri, JsonValue extraAttribute ) {
         if (uri == null) return false;
         return ( !isFileSchema(uri) || isUpdated(Paths.get(uri), extraAttribute) );
     }
@@ -266,7 +272,7 @@ public class DeployStateManager {
         debug( "DeployStateManager.setExtraAttribute( '%s', '%s' )", String.valueOf(uri), String.valueOf(value) );
 
         synchronized (this) {
-            isUpdated( uri, ofNullable(value));
+            isUpdated( uri, value );
         }
     }
     /**
@@ -274,7 +280,7 @@ public class DeployStateManager {
      * @param file
      * @return
      */
-    boolean isUpdated(Path file, Optional<JsonValue> extraAttribute ) {
+    boolean isUpdated(Path file, JsonValue extraAttribute ) {
         debug( "isUpdated( %s )",  file );
 
         if( file == null ) return false;
@@ -299,7 +305,7 @@ public class DeployStateManager {
                 return true;
             });
 
-            extraAttribute.ifPresent( extra -> s.get(key).setExtraAttribute(extra) );
+            ofNullable(extraAttribute).ifPresent( extra -> s.get(key).setExtraAttribute(extra) );
 
             return updated;
 
@@ -321,13 +327,25 @@ public class DeployStateManager {
         }
         return null;
     }
+
+    /**
+     *
+     */
+    public DeployStateManager clear() {
+        storage.computeIfPresent( endpoint, (key, prev) -> {
+            info( "cleared [%d] entries in deploy state manager!", prev.size());
+            return new HashMap<>();
+        });
+        return this;
+    }
+
     /**
      *
      * @param uri
      * @return
      */
     public boolean removeState( java.net.URI uri ) {
-      return isFileSchema(uri) && removeState(Paths.get(uri));
+        return isFileSchema(uri) && removeState(Paths.get(uri));
     }
     /**
      *
