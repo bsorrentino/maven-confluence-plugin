@@ -7,7 +7,6 @@ import java.io.File
 import java.io.FileWriter
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.Optional.empty
 
 class DeployStateManagerTest {
     private val basedir = Paths.get(System.getProperty("java.io.tmpdir") );
@@ -28,15 +27,15 @@ class DeployStateManagerTest {
         val dsm = DeployStateManager.load("http://localhost:8090/confluence", basedir)
         assertTrue(stateFile.toFile().exists())
         assertTrue(stateFile.toFile().isFile)
-        assertTrue(dsm.isUpdated(Paths.get("pom.xml"), empty()))
+        assertTrue(dsm.isUpdated(Paths.get("pom.xml"), null))
     }
 
     @Test
     fun testIsNotUpdatedForExistingFile() {
         val dsm = DeployStateManager.load("http://localhost:8090/confluence", basedir)
-        assertTrue(dsm.isUpdated(Paths.get("pom.xml"), empty()))
+        assertTrue(dsm.isUpdated(Paths.get("pom.xml"), null))
         val dsm2 = DeployStateManager.load("http://localhost:8090/confluence", basedir)
-        assertFalse(dsm2.isUpdated(Paths.get("pom.xml"), empty()))
+        assertFalse(dsm2.isUpdated(Paths.get("pom.xml"), null))
     }
 
     @Test
@@ -47,12 +46,12 @@ class DeployStateManagerTest {
 
         val dsm = DeployStateManager.load("http://localhost:8090/confluence", basedir)
 
-        assertTrue(dsm.isUpdated(tmpFile.toPath(),empty()))
-        assertFalse(dsm.isUpdated(tmpFile.toPath(),empty()))
+        assertTrue(dsm.isUpdated(tmpFile.toPath(),null))
+        assertFalse(dsm.isUpdated(tmpFile.toPath(),null))
 
         FileWriter(tmpFile).use { it.write("My changed content") }
 
-        assertTrue(dsm.isUpdated(tmpFile.toPath(),empty()))
+        assertTrue(dsm.isUpdated(tmpFile.toPath(),null))
 
         //clean-up
         tmpFile.delete()
@@ -61,10 +60,10 @@ class DeployStateManagerTest {
     @Test
     fun resetState() {
         val dsm = DeployStateManager.load("http://localhost:8090/confluence", basedir)
-        assertTrue(dsm.isUpdated(Paths.get("pom.xml"),empty()))
-        assertFalse(dsm.isUpdated(Paths.get("pom.xml"),empty()))
+        assertTrue(dsm.isUpdated(Paths.get("pom.xml"),null))
+        assertFalse(dsm.isUpdated(Paths.get("pom.xml"),null))
         dsm.removeState(Paths.get("pom.xml"))
-        assertTrue(dsm.isUpdated(Paths.get("pom.xml"),empty()))
-        assertFalse(dsm.isUpdated(Paths.get("pom.xml"),empty()))
+        assertTrue(dsm.isUpdated(Paths.get("pom.xml"),null))
+        assertFalse(dsm.isUpdated(Paths.get("pom.xml"),null))
     }
 }

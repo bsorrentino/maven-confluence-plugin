@@ -476,7 +476,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     {
         final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
         return deployStateManager
-                .map( dsm -> dsm.isUpdated(sitePage.getUri(), ofNullable(id), yes, no) )
+                .map( dsm -> dsm.isUpdated(sitePage.getUri(), id, yes, no) )
                 .orElseGet( () -> yes.get());
     }
 
@@ -496,7 +496,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                    Supplier<CompletableFuture<U>> no )
     {
         return deployStateManager
-                .map( dsm -> dsm.isUpdated(siteAttachment.getUri(), empty(), yes, no) )
+                .map( dsm -> dsm.isUpdated(siteAttachment.getUri(), null, yes, no) )
                 .orElseGet( () -> yes.get());
     }
     /**

@@ -6,6 +6,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Server;
+import org.bsc.AsyncFunctionDefinition;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
@@ -32,7 +33,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  *
  * @author bsorrentino
  */
-public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements AsyncTypesDefinition {
+public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements AsyncFunctionDefinition {
     /**
      * Skip plugin execution
      *

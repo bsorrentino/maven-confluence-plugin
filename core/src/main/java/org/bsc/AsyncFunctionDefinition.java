@@ -1,4 +1,4 @@
-package org.bsc.mojo;
+package org.bsc;
 
 import org.bsc.confluence.ConfluenceService;
 
@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public interface AsyncTypesDefinition {
+public interface AsyncFunctionDefinition {
 
 
     /**
