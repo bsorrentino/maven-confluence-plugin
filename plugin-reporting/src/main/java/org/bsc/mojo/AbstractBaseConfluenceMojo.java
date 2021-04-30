@@ -32,7 +32,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  *
  * @author bsorrentino
  */
-public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements TypesDefinition {
+public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements AsyncTypesDefinition {
     /**
      * Skip plugin execution
      *
