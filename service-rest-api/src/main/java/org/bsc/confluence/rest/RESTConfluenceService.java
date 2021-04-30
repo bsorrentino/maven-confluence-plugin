@@ -284,7 +284,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
 
     @Override
-    public Model.Attachment createAttachment() {
+    public Model.Attachment newAttachment() {
         return new Attachment();
     }
 

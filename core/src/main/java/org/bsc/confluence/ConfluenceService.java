@@ -217,7 +217,7 @@ public interface ConfluenceService extends Closeable{
 
     /**
      * factory method
-     * Create a temporary in memory Model.Page with only ID set
+     * Create a temporary in memory Model.Page with ID and Title set
      * @param id
      * @return
      */
@@ -263,7 +263,7 @@ public interface ConfluenceService extends Closeable{
      * 
      * @return 
      */
-    Model.Attachment createAttachment();
+    Model.Attachment newAttachment();
 
     /**
      *

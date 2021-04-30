@@ -349,13 +349,16 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         final String homeTitle = site.getHome().getName();
 
-        getLog().debug(
-                format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
-                    parentPage.getSpace(),
-                    homeTitle,
-                    parentPage.getTitle(),
-                    child.getName(),
-                    getPrintableStringForResource(child)));
+        if( getLog().isDebugEnabled() ) {
+            getLog().debug( new StringBuilder()
+                            .append( format("generateChild", parentPage.getSpace()) ).append("\n\t")
+                            .append( format("spacekey=[%s]", homeTitle ) ).append("\n\t")
+                            .append( format("home=[%s]", homeTitle ) ).append("\n\t")
+                            .append( format("parent=[%s]", parentPage.getTitle() ) ).append("\n\t")
+                            .append( format("page=[%s]", child.getName() ) ).append("\n\t")
+                            .append( format("%s", getPrintableStringForResource(child) ) )
+                            .toString());
+        }
 
         final String pageTitleToApply = isChildrenTitlesPrefixed()
                 ? format("%s - %s", homeTitle, child.getName())
@@ -404,8 +407,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                    .orElse( confluence.getPage(parentPage.getSpace(), pageTitleToApply) );
         };
 
-        final Model.Page result =
-                getPage.get()
+        return getPage.get()
                 .thenCompose(createOrUpdate)
                 .thenCompose( p -> confluence.addLabelsByName( p.getId(), child.getComputedLabels() ).thenApply( (v) -> p) )
                 .thenApply( p -> {
@@ -413,8 +415,6 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                     return p;
                 })
                 .join();
-
-        return result;
 
     }
     /**
@@ -458,10 +458,12 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 //        return completedFuture( deployStateManager.map( dsm -> dsm.resetState(uri) ).orElse(false) );
 //        return completedFuture(false);
 //    }
+
     /**
      *
      * @param sitePage
      * @param confluencePage
+     * @param yes
      * @param no
      * @param <U>
      * @return
@@ -677,14 +679,18 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                                                    final Site.Attachment attachment)
     {
 
-        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]",
-                confluencePage.getId(),
-                confluencePage.getTitle(),
-                getPrintableStringForResource(attachment)));
+        if( getLog().isDebugEnabled() ) {
+            getLog().debug( new StringBuilder()
+                    .append( "generateAttachment" ).append("\n\t")
+                    .append( format("pageId:[%s]", confluencePage.getId() ) ).append("\n\t")
+                    .append( format("title:[%s]", confluencePage.getTitle() ) ).append("\n\t")
+                    .append( format("file:[%s]", getPrintableStringForResource(attachment) ) )
+                    .toString());
+        }
 
         final java.net.URI uri = attachment.getUri();
 
-        final Model.Attachment defaultAttachment = confluence.createAttachment();
+        final Model.Attachment defaultAttachment = confluence.newAttachment();
         defaultAttachment.setFileName(attachment.getName());
         defaultAttachment.setContentType(attachment.getContentType());
         defaultAttachment.setComment(attachment.getComment());
@@ -787,10 +793,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         if (folder.exists() && folder.isDirectory()) {
 
-            folder.listFiles(new FileFilter() {
-
-                @Override
-                public boolean accept(File file) {
+            folder.listFiles( file -> {
 
                     if (file.isHidden() || file.getName().charAt(0) == '.') {
                         return false;
@@ -831,8 +834,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
                     return false;
 
-                }
-            });
+                });
         }
 
     }

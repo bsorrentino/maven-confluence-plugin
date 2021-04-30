@@ -5,12 +5,10 @@ import lombok.extern.java.Log;
 import lombok.val;
 import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ExportFormat;
 import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.scrollversions.model.ScrollVersions;
 import org.bsc.ssl.SSLCertificateInfo;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -697,8 +695,8 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public Model.Attachment createAttachment() {
-        return delegate.createAttachment();
+    public Model.Attachment newAttachment() {
+        return delegate.newAttachment();
     }
 
     @Override

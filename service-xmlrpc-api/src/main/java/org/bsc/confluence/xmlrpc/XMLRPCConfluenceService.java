@@ -269,7 +269,7 @@ public class XMLRPCConfluenceService implements ConfluenceService {
     // ATTACHMENT
     ///////////////////////////////////////////////////////////////////////////////
     @Override
-    public Model.Attachment createAttachment() {
+    public Model.Attachment newAttachment() {
         return new Attachment();
     }
 

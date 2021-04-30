@@ -14,7 +14,6 @@ import org.bsc.mojo.configuration.ScrollVersionsInfo;
 import org.bsc.ssl.SSLCertificateInfo;
 
 import javax.json.JsonObjectBuilder;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -122,8 +121,8 @@ public class ConfluenceServiceFactory {
         }
 
         @Override
-        public Model.Attachment createAttachment() {
-            return xmlrpcService.createAttachment();
+        public Model.Attachment newAttachment() {
+            return xmlrpcService.newAttachment();
         }
 
         @Override
