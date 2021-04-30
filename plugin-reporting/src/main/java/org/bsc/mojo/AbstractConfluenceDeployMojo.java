@@ -51,7 +51,7 @@ import static org.bsc.confluence.model.SiteProcessor.processUri;
  *
  * @author bsorrentino
  */
-public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenceSiteMojo implements SiteFactory.Folder {
+public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenceSiteMojo implements SiteFactory.Folder, DeployStateSupport {
 
     /**
      * Home page template source. Template name will be used also as template source
@@ -126,7 +126,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     /**
      *
      */
-    protected Optional<DeployStateManager> deployStateManager = empty();
+    protected DeployStateManager _deployStateManager = null;
 
     /**
      *
@@ -200,6 +200,25 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
         return labels;
     }
+
+    @Override
+    public final DeployStateInfo getDeployState() {
+        return deployState;
+    }
+
+    /**
+     * Lazy initialization
+     *
+     * @return
+     */
+    @Override
+    public final Optional<DeployStateManager> getDeployStateManager() {
+        if (_deployStateManager ==null) {
+            _deployStateManager = initDeployStateManager().orElse(null);
+        }
+        return ofNullable(_deployStateManager);
+    }
+
     /**
      * initialize properties shared with template
      */
@@ -298,7 +317,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @return
      */
     protected CompletableFuture<Model.Page> savePageIdToDeployStateManager( Site.Page sitePage, Model.Page confluencePage ) {
-        return deployStateManager
+        return getDeployStateManager()
                 .map( dsm -> {
                     final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
                     dsm.setExtraAttribute(sitePage.getUri(), id );
@@ -396,7 +415,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         final AsyncSupplier<Optional<Model.Page>> getPage = () -> {
 
            final Optional<JsonValue> extra =
-                   deployStateManager.flatMap( dsm ->
+                   getDeployStateManager().flatMap( dsm ->
                         dsm.getOptExtraAttribute(child.getUri()) );
 
            return extra
@@ -475,7 +494,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                      Supplier<CompletableFuture<U>> no )
     {
         final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
-        return deployStateManager
+        return getDeployStateManager()
                 .map( dsm -> dsm.isUpdated(sitePage.getUri(), id, yes, no) )
                 .orElseGet( () -> yes.get());
     }
@@ -495,7 +514,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                    Supplier<CompletableFuture<U>> yes,
                                    Supplier<CompletableFuture<U>> no )
     {
-        return deployStateManager
+        return getDeployStateManager()
                 .map( dsm -> dsm.isUpdated(siteAttachment.getUri(), null, yes, no) )
                 .orElseGet( () -> yes.get());
     }

@@ -221,24 +221,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     @Parameter( alias="markdownProcessor" )
     private MarkdownProcessorInfo markdownProcessorInfo = new MarkdownProcessorInfo();
 
-
-    /**
-     *
-     */
-    private void initDeployStateManager() {
-
-        if( !deployState.isActive() ) {
-            return;
-        }
-
-        if( !deployState.optOutdir().isPresent() ) {
-            deployState.setOutdir( Paths.get(getProject().getBuild().getDirectory()).toFile() );
-        }
-
-        deployStateManager = Optional.of( DeployStateManager.load( getEndPoint(), deployState.getOutdir() ) );
-
-    }
-
     /**
      *
      * @return site
@@ -293,9 +275,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         // Init markdown Processor
         MarkdownProcessor.shared.init();
 
-        // Init Deploy State Manager
-		initDeployStateManager();
-
         final Site site = loadSite();
 
         site.setDefaultFileExt(getFileExt());
@@ -322,7 +301,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             generateProjectReport(confluence, site, parsedLocale);
         }
 
-        deployStateManager.ifPresent( DeployStateManager::save );
+        getDeployStateManager().ifPresent( DeployStateManager::save );
 
     }
 

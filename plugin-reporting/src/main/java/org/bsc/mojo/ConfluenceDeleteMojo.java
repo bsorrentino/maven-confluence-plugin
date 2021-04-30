@@ -70,17 +70,18 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
     }
 
     @Override
-    public DeployStateInfo getDeployState() { return deployState; }
+    public final DeployStateInfo getDeployState() { return deployState; }
 
     /**
      * Lazy load
      * @return
      */
     @Override
-    public Optional<DeployStateManager> getDeployStateManager() {
-        return (_deployStateManager !=null) ?
-                Optional.of(_deployStateManager) :
-                initDeployStateManager();
+    public final Optional<DeployStateManager> getDeployStateManager() {
+        if (_deployStateManager ==null) {
+            _deployStateManager = initDeployStateManager().orElse(null);
+        }
+        return ofNullable(_deployStateManager);
     }
 
     /**
