@@ -161,6 +161,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
         return new Page(Json.createObjectBuilder()
                         .add( "id", id.toString())
                         .add( "title", title )
+                        .add( "space", Json.createObjectBuilder().add( "key", ""))
                         .build());
     }
 

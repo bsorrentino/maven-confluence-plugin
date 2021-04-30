@@ -114,6 +114,7 @@ public class XMLRPCConfluenceService implements ConfluenceService {
         final java.util.Map<String,Object> attributes = new HashMap<>();
         attributes.put( "id", id.toString());
         attributes.put( "title", title);
+        attributes.put( "space", "");
         return new Page( unmodifiableMap(attributes));
     }
 
