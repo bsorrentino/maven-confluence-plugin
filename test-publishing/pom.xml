@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.0-rc2</version>
+        <version>7.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -341,6 +341,7 @@
                         </goals>
                         <configuration>
                             <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
+                            <deployState/>
                         </configuration>
                     </execution>
                     <!--

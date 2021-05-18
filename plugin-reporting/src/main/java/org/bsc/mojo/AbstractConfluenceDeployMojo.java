@@ -19,6 +19,7 @@ import org.bsc.confluence.model.SiteFactory;
 import org.bsc.confluence.model.SiteProcessor;
 import org.bsc.mojo.configuration.DeployStateInfo;
 
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.io.File;
 import java.io.FileFilter;
@@ -36,7 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
@@ -51,7 +51,7 @@ import static org.bsc.confluence.model.SiteProcessor.processUri;
  *
  * @author bsorrentino
  */
-public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenceSiteMojo implements SiteFactory.Folder {
+public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenceSiteMojo implements SiteFactory.Folder, DeployStateSupport {
 
     /**
      * Home page template source. Template name will be used also as template source
@@ -126,7 +126,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     /**
      *
      */
-    protected Optional<DeployStateManager> deployStateManager = empty();
+    protected DeployStateManager _deployStateManager = null;
 
     /**
      *
@@ -200,6 +200,25 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
         return labels;
     }
+
+    @Override
+    public final DeployStateInfo getDeployState() {
+        return deployState;
+    }
+
+    /**
+     * Lazy initialization
+     *
+     * @return
+     */
+    @Override
+    public final Optional<DeployStateManager> getDeployStateManager() {
+        if (_deployStateManager ==null) {
+            _deployStateManager = initDeployStateManager().orElse(null);
+        }
+        return ofNullable(_deployStateManager);
+    }
+
     /**
      * initialize properties shared with template
      */
@@ -298,7 +317,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @return
      */
     protected CompletableFuture<Model.Page> savePageIdToDeployStateManager( Site.Page sitePage, Model.Page confluencePage ) {
-        return deployStateManager
+        return getDeployStateManager()
                 .map( dsm -> {
                     final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
                     dsm.setExtraAttribute(sitePage.getUri(), id );
@@ -349,13 +368,16 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         final String homeTitle = site.getHome().getName();
 
-        getLog().debug(
-                format("generateChild\n\tspacekey=[%s]\n\thome=[%s]\n\tparent=[%s]\n\tpage=[%s]\n\t%s",
-                    parentPage.getSpace(),
-                    homeTitle,
-                    parentPage.getTitle(),
-                    child.getName(),
-                    getPrintableStringForResource(child)));
+        if( getLog().isDebugEnabled() ) {
+            getLog().debug( new StringBuilder()
+                            .append( format("generateChild", parentPage.getSpace()) ).append("\n\t")
+                            .append( format("spacekey=[%s]", homeTitle ) ).append("\n\t")
+                            .append( format("home=[%s]", homeTitle ) ).append("\n\t")
+                            .append( format("parent=[%s]", parentPage.getTitle() ) ).append("\n\t")
+                            .append( format("page=[%s]", child.getName() ) ).append("\n\t")
+                            .append( format("%s", getPrintableStringForResource(child) ) )
+                            .toString());
+        }
 
         final String pageTitleToApply = isChildrenTitlesPrefixed()
                 ? format("%s - %s", homeTitle, child.getName())
@@ -366,35 +388,52 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
             confluence.removePage(parentPage, snapshot)
                     .thenAccept(deleted -> getLog().info(format("Page [%s] removed!", snapshot)))
-                    .exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
+                    //.exceptionally(ex -> throwRTE("page [%s] not found!", snapshot, ex));
+                    .join();
         }
 
         final java.net.URI uri = child.getUri();
 
-        final Function<Model.Page, CompletableFuture<Model.Page>>
-                updatePageFunction = p ->
+        // Update Page Inline Function
+        final AsyncProcessPageFunc updatePageFunction = p ->
                     updatePageIfNeeded(child,p,
                         () -> getPageContent( ofNullable(p), site, uri, child, pageTitleToApply )
                                 .thenCompose( storage -> confluence.storePage(p, storage)));
 
-        final Supplier<CompletableFuture<Model.Page>>
-                createPageFunction = () ->
+        // Create Page Function
+        final AsyncPageSupplier createPageFunction = () ->
                         getPageContent( empty(), site, uri, child, pageTitleToApply )
                             .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
                             .thenCompose( page -> savePageIdToDeployStateManager(child, page ));
 
-        final Model.Page result =
-                confluence.getPage(parentPage.getSpace(), pageTitleToApply)
-                .thenCompose(page ->
-                        (page.isPresent())
-                                ? updatePageFunction.apply(page.get())
-                                : createPageFunction.get())
+        // Create or Update Page Function
+        final AsyncPageFunc<Optional<Model.Page>> createOrUpdate = optPage ->
+                optPage.map( page -> updatePageFunction.apply(page) )
+                        .orElseGet( () -> createPageFunction.get() );
+
+        // Get Page Inline Function
+        final AsyncSupplier<Optional<Model.Page>> getPage = () -> {
+
+           final Optional<JsonValue> extra =
+                   getDeployStateManager().flatMap( dsm ->
+                        dsm.getOptExtraAttribute(child.getUri()) );
+
+           return extra
+                   .filter( e -> e.getValueType()==JsonValue.ValueType.STRING )
+                   .map( e -> ((JsonString)e).getString() )
+                   .map( id -> confluence.newPage( Model.ID.of(id), pageTitleToApply )  )
+                   .map( p -> completedFuture(Optional.of(p) ))
+                   .orElse( confluence.getPage(parentPage.getSpace(), pageTitleToApply) );
+        };
+
+        return getPage.get()
+                .thenCompose(createOrUpdate)
                 .thenCompose( p -> confluence.addLabelsByName( p.getId(), child.getComputedLabels() ).thenApply( (v) -> p) )
+                .thenApply( p -> {
+                    child.setName(pageTitleToApply);
+                    return p;
+                })
                 .join();
-
-        child.setName(pageTitleToApply);
-
-        return result;
 
     }
     /**
@@ -438,10 +477,12 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 //        return completedFuture( deployStateManager.map( dsm -> dsm.resetState(uri) ).orElse(false) );
 //        return completedFuture(false);
 //    }
+
     /**
      *
      * @param sitePage
      * @param confluencePage
+     * @param yes
      * @param no
      * @param <U>
      * @return
@@ -453,8 +494,8 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                      Supplier<CompletableFuture<U>> no )
     {
         final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
-        return deployStateManager
-                .map( dsm -> dsm.isUpdated(sitePage.getUri(), ofNullable(id), yes, no) )
+        return getDeployStateManager()
+                .map( dsm -> dsm.isUpdated(sitePage.getUri(), id, yes, no) )
                 .orElseGet( () -> yes.get());
     }
 
@@ -473,8 +514,8 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                    Supplier<CompletableFuture<U>> yes,
                                    Supplier<CompletableFuture<U>> no )
     {
-        return deployStateManager
-                .map( dsm -> dsm.isUpdated(siteAttachment.getUri(), empty(), yes, no) )
+        return getDeployStateManager()
+                .map( dsm -> dsm.isUpdated(siteAttachment.getUri(), null, yes, no) )
                 .orElseGet( () -> yes.get());
     }
     /**
@@ -657,14 +698,18 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                                                    final Site.Attachment attachment)
     {
 
-        getLog().debug(format("generateAttachment\n\tpageId:[%s]\n\ttitle:[%s]\n\tfile:[%s]",
-                confluencePage.getId(),
-                confluencePage.getTitle(),
-                getPrintableStringForResource(attachment)));
+        if( getLog().isDebugEnabled() ) {
+            getLog().debug( new StringBuilder()
+                    .append( "generateAttachment" ).append("\n\t")
+                    .append( format("pageId:[%s]", confluencePage.getId() ) ).append("\n\t")
+                    .append( format("title:[%s]", confluencePage.getTitle() ) ).append("\n\t")
+                    .append( format("file:[%s]", getPrintableStringForResource(attachment) ) )
+                    .toString());
+        }
 
         final java.net.URI uri = attachment.getUri();
 
-        final Model.Attachment defaultAttachment = confluence.createAttachment();
+        final Model.Attachment defaultAttachment = confluence.newAttachment();
         defaultAttachment.setFileName(attachment.getName());
         defaultAttachment.setContentType(attachment.getContentType());
         defaultAttachment.setComment(attachment.getComment());
@@ -767,10 +812,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         if (folder.exists() && folder.isDirectory()) {
 
-            folder.listFiles(new FileFilter() {
-
-                @Override
-                public boolean accept(File file) {
+            folder.listFiles( file -> {
 
                     if (file.isHidden() || file.getName().charAt(0) == '.') {
                         return false;
@@ -811,8 +853,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
                     return false;
 
-                }
-            });
+                });
         }
 
     }

@@ -2,7 +2,6 @@ package org.bsc.mojo;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -222,24 +221,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     @Parameter( alias="markdownProcessor" )
     private MarkdownProcessorInfo markdownProcessorInfo = new MarkdownProcessorInfo();
 
-
-    /**
-     *
-     */
-    private void initDeployStateManager() {
-
-        if( !deployState.isActive() ) {
-            return;
-        }
-
-        if( !deployState.optOutdir().isPresent() ) {
-            deployState.setOutdir( Paths.get(getProject().getBuild().getDirectory()).toFile() );
-        }
-
-        deployStateManager = Optional.of( DeployStateManager.load( getEndPoint(), deployState.getOutdir() ) );
-
-    }
-
     /**
      *
      * @return site
@@ -294,9 +275,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         // Init markdown Processor
         MarkdownProcessor.shared.init();
 
-        // Init Deploy State Manager
-		initDeployStateManager();
-
         final Site site = loadSite();
 
         site.setDefaultFileExt(getFileExt());
@@ -323,7 +301,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             generateProjectReport(confluence, site, parsedLocale);
         }
 
-        deployStateManager.ifPresent( DeployStateManager::save );
+        getDeployStateManager().ifPresent( DeployStateManager::save );
 
     }
 
@@ -574,6 +552,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     }
 
+    /**
+     *
+     * @param confluence
+     * @param site
+     * @param locale
+     */
     private void generateProjectReport(
             final ConfluenceService confluence,
             final Site site,
@@ -584,17 +568,17 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         //
         final String _homePageTitle = getPageTitle();
 
-        final Function<Model.Page, CompletableFuture<Model.Page>> updateHomePage = (p) ->
-            updatePageIfNeeded(site.getHome(), p,
-                    () -> getHomeContent(site, Optional.of(p), locale).
-                                                thenCompose( content -> confluence.storePage(p, content )));
+        final AsyncProcessPageFunc updateHomePage = p ->
+            updatePageIfNeeded(site.getHome(), p, () ->
+                    getHomeContent(site, Optional.of(p), locale)
+                            .thenCompose( content -> confluence.storePage(p, content )));
 
-        final Function<Model.Page, CompletableFuture<Model.Page>> createHomePage = (_parentPage) ->
-                        getHomeContent(  site, Optional.empty(), locale )
+        final AsyncProcessPageFunc createHomePage = _parentPage ->
+                    getHomeContent(  site, Optional.empty(), locale )
                         .thenCompose( content -> confluence.createPage(_parentPage, _homePageTitle,content) );
 
-        final Model.Page confluenceHomePage =
-            loadParentPage(confluence, Optional.of(site))
+
+        loadParentPage(confluence, Optional.of(site))
             .thenCompose( _parentPage ->
                 removeSnaphot(confluence, _parentPage, _homePageTitle)
                     .thenCompose( deleted -> confluence.getPage(_parentPage.getSpace(), _homePageTitle))
@@ -604,16 +588,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                                 createHomePage.apply(_parentPage);
                     })
                     .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
-
+            )
+            .thenAccept( confluenceHomePage ->
+                    generateChildren(
+                            confluence,
+                            site,
+                            site.getHome(),
+                            confluenceHomePage,
+                            new HashMap<>())
             ).join();
-
-
-        generateChildren(
-                confluence,
-                site,
-                site.getHome(),
-                confluenceHomePage,
-                new HashMap<>());
 
     }
 

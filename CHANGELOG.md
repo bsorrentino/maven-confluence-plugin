@@ -5,6 +5,90 @@
 ## Next release
 ### Generic changes
 
+**add space attribute to newPage factory method on confluence service**
+
+
+[775261ac57f9505](https://github.com/bsorrentino/maven-confluence-plugin/commit/775261ac57f9505) bsorrentino *2021-04-30 17:30:49*
+
+**refactor deploy state management**
+
+
+[cd6bbd799f7a257](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd6bbd799f7a257) bsorrentino *2021-04-30 15:49:46*
+
+**clean code**
+
+
+[495ed872f9df349](https://github.com/bsorrentino/maven-confluence-plugin/commit/495ed872f9df349) bsorrentino *2021-04-30 10:08:14*
+
+**fix newPage method**
+
+
+[eddebffe46cf7fb](https://github.com/bsorrentino/maven-confluence-plugin/commit/eddebffe46cf7fb) bsorrentino *2021-04-29 21:17:06*
+
+**fix newPage method**
+
+
+[dd98d097aac082b](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd98d097aac082b) bsorrentino *2021-04-29 21:16:03*
+
+**manage extra attribute in deployStateManager**
+
+
+[595847e4a185233](https://github.com/bsorrentino/maven-confluence-plugin/commit/595847e4a185233) bsorrentino *2021-04-29 18:37:18*
+
+**add TypesDefinition interface**
+
+
+[f007ccd3f9e525b](https://github.com/bsorrentino/maven-confluence-plugin/commit/f007ccd3f9e525b) bsorrentino *2021-04-29 16:16:47*
+
+**update action**
+
+
+[bb399bfb93e8925](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb399bfb93e8925) bsorrentino *2021-04-29 10:37:42*
+
+**rename module commons.io to org.apache.commons.io**
+
+
+[a85d50509cc1646](https://github.com/bsorrentino/maven-confluence-plugin/commit/a85d50509cc1646) bsorrentino *2021-04-29 10:35:32*
+
+**Bump commons-io from 1.4 to 2.7**
+
+ * Bumps commons-io from 1.4 to 2.7.
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[ef35e0c843605d7](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef35e0c843605d7) dependabot[bot] *2021-04-26 20:12:54*
+
+**moved to next development version**
+
+
+[0ebafb77fbe056f](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ebafb77fbe056f) bsorrentino *2021-03-07 17:50:39*
+
+
+###  [#250](https://github.com/bsorrentino/maven-confluence-plugin/issues/250) deleteMojo : remove deploy state file    *Task*  
+
+**issue #250 - clear deploystate on delete mojo**
+
+
+[7072c8741497450](https://github.com/bsorrentino/maven-confluence-plugin/commit/7072c8741497450) bsorrentino *2021-04-30 14:07:55*
+
+**issue #250 - clear deploystate on delete mojo**
+
+
+[77706af405a845b](https://github.com/bsorrentino/maven-confluence-plugin/commit/77706af405a845b) bsorrentino *2021-04-30 14:07:41*
+
+
+## v7.0-rc2
+### Generic changes
+
+**update readme**
+
+
+[9d23ab5acd751c8](https://github.com/bsorrentino/maven-confluence-plugin/commit/9d23ab5acd751c8) bsorrentino *2021-03-07 17:46:52*
+
+**prepare for release**
+
+
+[5b73edec7fada64](https://github.com/bsorrentino/maven-confluence-plugin/commit/5b73edec7fada64) bsorrentino *2021-02-23 18:33:05*
+
 **removed htmlinline output debug info**
 
 
@@ -34,43 +118,6 @@
 
 
 [58963e711ed6fc3](https://github.com/bsorrentino/maven-confluence-plugin/commit/58963e711ed6fc3) bsorrentino *2021-02-11 19:04:30*
-
-
-###  [#245](https://github.com/bsorrentino/maven-confluence-plugin/issues/245) npe when children uri from classpath    *bug*  
-
-**issue #245 - Improved code to load content from classpath. Test refinements**
-
-
-[6c470fc5545741f](https://github.com/bsorrentino/maven-confluence-plugin/commit/6c470fc5545741f) bsorrentino *2021-02-14 20:20:07*
-
-
-## v7.0-rc1
-### Generic changes
-
-**changelog updated**
-
-
-[e1fbce5bd8f3309](https://github.com/bsorrentino/maven-confluence-plugin/commit/e1fbce5bd8f3309) bsorrentino *2021-02-11 18:56:30*
-
-**moved to release version**
-
-
-[abdb5ba5d525580](https://github.com/bsorrentino/maven-confluence-plugin/commit/abdb5ba5d525580) bsorrentino *2021-02-11 18:55:09*
-
-**update documentation**
-
-
-[cead3d4206fcc58](https://github.com/bsorrentino/maven-confluence-plugin/commit/cead3d4206fcc58) bsorrentino *2021-02-11 18:54:41*
-
-**update readme**
-
-
-[449a4eeede1ab60](https://github.com/bsorrentino/maven-confluence-plugin/commit/449a4eeede1ab60) bsorrentino *2021-02-11 18:54:23*
-
-**added publish site aciton**
-
-
-[4d79f7464a7ef77](https://github.com/bsorrentino/maven-confluence-plugin/commit/4d79f7464a7ef77) bsorrentino *2021-02-11 18:46:47*
 
 **update actions**
 
@@ -127,6 +174,43 @@
 
 
 [76c7434e57edf11](https://github.com/bsorrentino/maven-confluence-plugin/commit/76c7434e57edf11) bsorrentino *2021-02-11 11:25:39*
+
+
+###  [#245](https://github.com/bsorrentino/maven-confluence-plugin/issues/245) npe when children uri from classpath    *bug*  
+
+**issue #245 - Improved code to load content from classpath. Test refinements**
+
+
+[6c470fc5545741f](https://github.com/bsorrentino/maven-confluence-plugin/commit/6c470fc5545741f) bsorrentino *2021-02-14 20:20:07*
+
+
+## v7.0-rc1
+### Generic changes
+
+**changelog updated**
+
+
+[e1fbce5bd8f3309](https://github.com/bsorrentino/maven-confluence-plugin/commit/e1fbce5bd8f3309) bsorrentino *2021-02-11 18:56:30*
+
+**moved to release version**
+
+
+[abdb5ba5d525580](https://github.com/bsorrentino/maven-confluence-plugin/commit/abdb5ba5d525580) bsorrentino *2021-02-11 18:55:09*
+
+**update documentation**
+
+
+[cead3d4206fcc58](https://github.com/bsorrentino/maven-confluence-plugin/commit/cead3d4206fcc58) bsorrentino *2021-02-11 18:54:41*
+
+**update readme**
+
+
+[449a4eeede1ab60](https://github.com/bsorrentino/maven-confluence-plugin/commit/449a4eeede1ab60) bsorrentino *2021-02-11 18:54:23*
+
+**added publish site aciton**
+
+
+[4d79f7464a7ef77](https://github.com/bsorrentino/maven-confluence-plugin/commit/4d79f7464a7ef77) bsorrentino *2021-02-11 18:46:47*
 
 
 ## v7.0-beta2

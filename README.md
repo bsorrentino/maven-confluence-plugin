@@ -25,6 +25,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
  Date  | Release | Info   
 --- | --- | ---
+ **May 18, 2021** | [Release 7.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0) | Refer to [Major Release 7.0](https://github.com/bsorrentino/maven-confluence-plugin/projects/1) for details
  **Mar 07, 2021** | [Release 7.0-r2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-rc2) | Refer to [#245](https://github.com/bsorrentino/maven-confluence-plugin/issues/245) npe when children uri from classpath
  **Feb 11, 2021** | [Release 7.0-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-rc1) | Refer to [#244](https://github.com/bsorrentino/maven-confluence-plugin/issues/244) processor-freemarker doesn't work on 7.0-beta2.
  **Feb 09, 2021** | [Release 7.0-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-beta2) | Refer to [#240](https://github.com/bsorrentino/maven-confluence-plugin/issues/240) add the `page id` to the deploy history(state) manager. <br> Refer to [#241](https://github.com/bsorrentino/maven-confluence-plugin/issues/241) Increase socket timeout. <br> Refer to [#242](https://github.com/bsorrentino/maven-confluence-plugin/issues/242) add i18n titles to ProjectSummaryRenderer and ScmRenderer. **Thanks to [3a04huk ](https://github.com/bsorrentino/maven-confluence-plugin/issues?q=is%3Apr+author%3A3a04huk) for the [PR](https://github.com/bsorrentino/maven-confluence-plugin/pull/243)**
