@@ -533,9 +533,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                 .thenCompose( content -> {
 
                     try {
-                        final MiniTemplator t = new MiniTemplator.Builder()
+                        final MiniTemplator t = MiniTemplator.builder()
                                 .setSkipUndefinedVars(true)
-                                .build( content.getInputStream(), getCharset() );
+                                .setCharset(getCharset() )
+                                .build( content.getInputStream() );
 
                         generateProjectHomeTemplate( t, site, locale );
 
@@ -851,9 +852,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
                         try {
 
-                            final MiniTemplator t = new MiniTemplator.Builder()
+                            final MiniTemplator t = MiniTemplator.builder()
                                     .setSkipUndefinedVars(true)
-                                    .build( content.getInputStream(), getCharset() );
+                                    .setCharset( getCharset() )
+                                    .build( content.getInputStream() );
 
                             /////////////////////////////////////////////////////////////////
                             // SUMMARY
@@ -954,9 +956,10 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
                     try {
 
-                        final MiniTemplator t = new MiniTemplator.Builder()
+                        final MiniTemplator t = MiniTemplator.builder()
                                 .setSkipUndefinedVars(true)
-                                .build( content.getInputStream(), getCharset() );
+                                .setCharset(getCharset())
+                                .build( content.getInputStream()  );
 
                         /////////////////////////////////////////////////////////////////
                         // SUMMARY
