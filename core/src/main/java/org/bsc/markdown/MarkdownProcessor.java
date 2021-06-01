@@ -82,10 +82,14 @@ public interface MarkdownProcessor {
         }
 
         public MarkdownProcessor init( ) {
-            if( processor!=null ) {
-                throw new IllegalStateException( "processor's is already initialized!" );
+//            Issue #248
+//
+//            if( processor!=null ) {
+//                throw new IllegalStateException( "processor's is already initialized!" );
+//            }
+            if( processor==null ) {
+                processor = MarkdownProcessor.load(getName());
             }
-            processor =  MarkdownProcessor.load( getName() );
             return processor;
         }
     }
