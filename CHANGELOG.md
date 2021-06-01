@@ -5,6 +5,43 @@
 ## Next release
 ### Generic changes
 
+**update readme**
+
+
+[8fef3a9d33cc21c](https://github.com/bsorrentino/maven-confluence-plugin/commit/8fef3a9d33cc21c) bsorrentino *2021-06-01 10:34:38*
+
+**move to new release version**
+
+
+[f6173e4e1ae7d9c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f6173e4e1ae7d9c) bsorrentino *2021-06-01 10:29:17*
+
+**update minitemplator version 1.3**
+
+
+[29a2faf6a503d61](https://github.com/bsorrentino/maven-confluence-plugin/commit/29a2faf6a503d61) bsorrentino *2021-06-01 10:24:53*
+
+**update minitemplator version 1.3**
+
+
+[85ba4801d1060f5](https://github.com/bsorrentino/maven-confluence-plugin/commit/85ba4801d1060f5) bsorrentino *2021-06-01 10:24:38*
+
+
+###  [#248](https://github.com/bsorrentino/maven-confluence-plugin/issues/248) Maven multi module project (error: generating report: processor&#39;s is already initialized!)    *bug*  
+
+**issue #248 - remove exception on multiple markdown processor initialization**
+
+
+[12b1c3d1111f8d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/12b1c3d1111f8d8) bsorrentino *2021-05-29 13:50:54*
+
+
+## v7.0
+### Generic changes
+
+**prepare for release 7.0**
+
+
+[cf34c7e85393d10](https://github.com/bsorrentino/maven-confluence-plugin/commit/cf34c7e85393d10) bsorrentino *2021-05-18 10:04:28*
+
 **add space attribute to newPage factory method on confluence service**
 
 
