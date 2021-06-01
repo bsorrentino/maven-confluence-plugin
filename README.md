@@ -25,6 +25,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
  Date  | Release | Info   
 --- | --- | ---
+ **Jun 01, 2021** | [Release 7.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.1) | Refer to [#248](https://github.com/bsorrentino/maven-confluence-plugin/issues/248) for details
  **May 18, 2021** | [Release 7.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0) | Refer to [Major Release 7.0](https://github.com/bsorrentino/maven-confluence-plugin/projects/1) for details
  **Mar 07, 2021** | [Release 7.0-r2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-rc2) | Refer to [#245](https://github.com/bsorrentino/maven-confluence-plugin/issues/245) npe when children uri from classpath
  **Feb 11, 2021** | [Release 7.0-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-rc1) | Refer to [#244](https://github.com/bsorrentino/maven-confluence-plugin/issues/244) processor-freemarker doesn't work on 7.0-beta2.
