@@ -157,10 +157,11 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
 
     @Override
-    public Model.Page newPage(Model.ID id, String title) {
+    public Model.Page newPage(Model.ID id, String title, int version) {
         return new Page(Json.createObjectBuilder()
                         .add( "id", id.toString())
                         .add( "title", title )
+                        .add( "version", Json.createObjectBuilder().add("version", version).build())
                         .add( "space", Json.createObjectBuilder().add( "key", ""))
                         .build());
     }

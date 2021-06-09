@@ -19,8 +19,6 @@ import org.bsc.confluence.model.SiteFactory;
 import org.bsc.confluence.model.SiteProcessor;
 import org.bsc.mojo.configuration.DeployStateInfo;
 
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -319,8 +317,12 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     protected CompletableFuture<Model.Page> savePageIdToDeployStateManager( Site.Page sitePage, Model.Page confluencePage ) {
         return getDeployStateManager()
                 .map( dsm -> {
-                    final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
-                    dsm.setExtraAttribute(sitePage.getUri(), id );
+
+                    final DeployStateManager.Data attributes = DeployStateManager.Data.create()
+                        .setAttributeString( "id", confluencePage.getId().toString() )
+                        .setAttributeInt( "version", confluencePage.getVersion() );
+                    dsm.setAttributes(sitePage.getUri(), attributes );
+
                     return completedFuture(confluencePage);
                 })
                 .orElse( completedFuture(confluencePage) );
@@ -414,15 +416,15 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         // Get Page Inline Function
         final AsyncSupplier<Optional<Model.Page>> getPage = () -> {
 
-           final Optional<JsonValue> extra =
+           final Optional<DeployStateManager.Data> attributes =
                    getDeployStateManager().flatMap( dsm ->
-                        dsm.getOptExtraAttribute(child.getUri()) );
+                        dsm.getAttributes(child.getUri()) );
 
-           return extra
-                   .filter( e -> e.getValueType()==JsonValue.ValueType.STRING )
-                   .map( e -> ((JsonString)e).getString() )
-                   .map( id -> confluence.newPage( Model.ID.of(id), pageTitleToApply )  )
-                   .map( p -> completedFuture(Optional.of(p) ))
+           return attributes
+                   .flatMap( attrs ->
+                       attrs.getAttributeString("id")
+                               .map( id -> confluence.newPage( Model.ID.of(id), pageTitleToApply,  attrs.getAttributeInt("version").orElse(0)))
+                               .map( p -> completedFuture(Optional.of(p)) ))
                    .orElse( confluence.getPage(parentPage.getSpace(), pageTitleToApply) );
         };
 
@@ -493,9 +495,13 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                      Supplier<CompletableFuture<U>> yes,
                                      Supplier<CompletableFuture<U>> no )
     {
-        final JsonValue id = DeployStateManager.createValue(confluencePage.getId().toString());
+        final String id = confluencePage.getId().toString();
+        final DeployStateManager.Data attributes =
+                DeployStateManager.Data.create()
+                        .setAttributeString("id", id )
+                        .setAttributeInt( "version", confluencePage.getVersion() );
         return getDeployStateManager()
-                .map( dsm -> dsm.isUpdated(sitePage.getUri(), id, yes, no) )
+                .map( dsm -> dsm.isUpdated(sitePage.getUri(), attributes, yes, no) )
                 .orElseGet( () -> yes.get());
     }
 

@@ -41,64 +41,109 @@ public class DeployStateManager {
     public static JsonString createValue( String value ) {
         return Json.createArrayBuilder().add(value).build().getJsonString(0);
         // From 1.1
+        // return Json.createValue("")
+    }
+    public static JsonNumber createValue( int value ) {
+        return Json.createArrayBuilder().add(value).build().getJsonNumber( 0 );
+        // From 1.1
         // return Json.createValue(0L)
     }
 
     public static final String STORAGE_NAME = ".confluence-maven-plugin-storage.json";
 
-    static class Data {
+    public static class Data {
+        final static String HASH = "hash";
 
         public static Data of(JsonValue entry) {
             requireNonNull(entry, "entry is null!");
             switch( entry.getValueType() ) {
                 case STRING:
-                    return new Data( (JsonString)entry );
+                    return create().setHash( ((JsonString)entry).getString() );
                 case OBJECT:
                     return new Data( (JsonObject)entry);
                 case NULL:
-                    return new Data( createValue(""));
+                    return new Data();
                 default:
                     throw new IllegalArgumentException( format("value [%s] is not valid type!", entry.toString()) );
             }
         }
 
-        public static Data empty() {
-            return Data.of( createValue("") );
+        public static Data of( Data data ) {
+            return new Data( data.attributes );
         }
 
-        private JsonValue optExtraAttribute;
-        private JsonString hash;
-
-        private Data(JsonString hash ) {
-            optExtraAttribute = null;
-            this.hash = hash;
-        }
-        private Data( JsonObject entry ) {
-            this.optExtraAttribute = entry.get("extra");
-            this.hash = entry.getJsonString("hash");
+        public static Data create() {
+            return new Data();
         }
 
-        public JsonString getHash() {
-            return hash;
+        private Map<String,JsonValue>  attributes = new HashMap<>();
+
+        private Data() {
         }
 
-        public void setHash(JsonString hash) {
-            this.hash = hash;
+        private Data( Map<String,JsonValue> attributes ) {
+            this.attributes.putAll(attributes);
         }
 
-        public Optional<JsonValue> getOptExtraAttribute() {
-            return ofNullable(optExtraAttribute);
+        public Optional<String> getHash() {
+            return getAttributeString(HASH);
         }
 
-        public void setExtraAttribute(JsonValue value) {
-            debug( "Data.setExtraAttribute( %s )", String.valueOf(value) );
-            this.optExtraAttribute = value;
+        public Data setHash(String hash) {
+            setAttributeString(HASH,hash);
+            return this;
+        }
+
+        public Optional<String> getAttributeString(String name)  {
+
+            return ofNullable(attributes.get(name.toLowerCase())).flatMap( v -> {
+                if (v.getValueType() == JsonValue.ValueType.STRING) {
+                    return ofNullable( ((JsonString)v).getString() );
+                }
+                return  Optional.empty();
+            });
+        }
+
+        public Optional<Integer> getAttributeInt( String name)  {
+            return ofNullable(attributes.get(name.toLowerCase())).flatMap( v -> {
+                if (v.getValueType() == JsonValue.ValueType.NUMBER) {
+                    return ofNullable( ((JsonNumber)v).intValue());
+                }
+                return  Optional.empty();
+            });
+        }
+
+        public final Data copyAttributes( Data data, boolean excludeHash ) {
+            // Objects.requireNonNull(data, "argument 'data' is null!");
+
+            if( data == null ) return this;
+
+            if( excludeHash ) {
+                data.attributes.entrySet().stream()
+                        .filter( attr -> HASH.compareTo(attr.getKey())!=0 )
+                        .forEach( attr -> this.attributes.put( attr.getKey(), attr.getValue() ));
+            }
+            else {
+                this.attributes.putAll(data.attributes);
+            }
+            return this;
+        }
+
+        public Data setAttributeString(String name, String value) {
+            debug( "Data.setAttributeString( %s )", String.valueOf(value) );
+            this.attributes.put( name.toLowerCase(), createValue(value) );
+            return this;
+        }
+        public Data setAttributeInt(String name, Integer value) {
+            debug( "Data.setAttributeInt( %s )", String.valueOf(value) );
+            this.attributes.put( name.toLowerCase(), createValue(value) );
+            return this;
         }
 
         final JsonValue toJson() {
-            final JsonObjectBuilder b = Json.createObjectBuilder();
-            getOptExtraAttribute().ifPresent( extra ->  b.add( "extra", extra) );
-            return b.add("hash", hash ).build();
+            final  JsonObjectBuilder builder = Json.createObjectBuilder();
+            attributes.entrySet().forEach( e -> builder.add( e.getKey(), e.getValue()));
+            return builder.build();
         }
     }
 
@@ -208,10 +253,11 @@ public class DeployStateManager {
             }
         }
     }
+
     /**
      *
      * @param uri
-     * @param extraAttribute
+     * @param attributes
      * @param yes
      * @param no
      * @param <U>
@@ -219,12 +265,12 @@ public class DeployStateManager {
      */
     public <U> CompletableFuture<U>
             isUpdated(java.net.URI uri,
-                      JsonValue extraAttribute,
+                      Data attributes,
                       Supplier<CompletableFuture<U>> yes,
                       Supplier<CompletableFuture<U>> no )
     {
         synchronized (this) {
-            return isUpdated(uri, extraAttribute) ? yes.get() : no.get();
+            return isUpdated(uri, attributes) ? yes.get() : no.get();
         }
     }
     /**
@@ -232,9 +278,9 @@ public class DeployStateManager {
      * @param uri
      * @return
      */
-    private boolean isUpdated( java.net.URI uri, JsonValue extraAttribute ) {
+    private boolean isUpdated( java.net.URI uri, Data attributes ) {
         if (uri == null) return false;
-        return ( !isFileSchema(uri) || isUpdated(Paths.get(uri), extraAttribute) );
+        return ( !isFileSchema(uri) || isUpdated(Paths.get(uri), attributes) );
     }
     /**
      *
@@ -253,26 +299,25 @@ public class DeployStateManager {
      * @param uri
      * @return
      */
-    public Optional<JsonValue> getOptExtraAttribute( java.net.URI uri ) {
+    public Optional<Data> getAttributes( java.net.URI uri ) {
 
         if( !isFileSchema(uri) ) return Optional.empty(); // GUARD
 
         return ofNullable( storage.get(endpoint) )
                 .flatMap( s ->
                     getKeyFormUri( uri )
-                        .flatMap( key -> ofNullable(s.get(key))
-                                .flatMap( data -> data.getOptExtraAttribute()) ));
+                        .flatMap( key -> ofNullable(s.get(key))) );
     }
     /**
      *
      * @param uri
-     * @param value
+     * @param attributes
      */
-    public void setExtraAttribute( java.net.URI uri, JsonValue value ) {
-        debug( "DeployStateManager.setExtraAttribute( '%s', '%s' )", String.valueOf(uri), String.valueOf(value) );
+    public void setAttributes( java.net.URI uri, Data attributes ) {
+        debug( "DeployStateManager.setExtraAttribute( '%s', '%s' )", String.valueOf(uri), String.valueOf(attributes.toJson()) );
 
         synchronized (this) {
-            isUpdated( uri, value );
+            isUpdated( uri, attributes );
         }
     }
     /**
@@ -280,34 +325,39 @@ public class DeployStateManager {
      * @param file
      * @return
      */
-    boolean isUpdated(Path file, JsonValue extraAttribute ) {
+    boolean isUpdated(Path file, Data attributes ) {
         debug( "isUpdated( %s )",  file );
 
         if( file == null ) return false;
 
         return ofNullable(storage.get(endpoint)).map( s -> {
+
             final String key = String.valueOf(outdir.relativize( file.toAbsolutePath() ));
 
             final String fileMd5Hash = md5Hash(file);
 
-            boolean updated =  ofNullable(s.get(key)).map( data -> {
-                final String lastStoredFileMd5Hash = data.getHash().getString();
+            return
+                ofNullable(s.get(key))
+                    .map( data -> data.copyAttributes(attributes, true) )
+                    .map( data ->
+                        data.getHash().map( lastStoredFileMd5Hash -> {
 
-                if(!Objects.equals(fileMd5Hash, lastStoredFileMd5Hash)) {
-                    debug( "%s - data.setHash( %s )",  key, fileMd5Hash );
-                    data.setHash(createValue(fileMd5Hash));
-                    return true;
-                }
-                return false;
-            }).orElseGet( () -> {
+                        if(!Objects.equals(fileMd5Hash, lastStoredFileMd5Hash)) {
+                            debug( "%s - data.setHash( %s )",  key, fileMd5Hash );
+                            data.setHash(fileMd5Hash);
+                            return true;
+                        }
+                        return false;
+                    }).orElse(false)
+
+            ).orElseGet( () -> {
                 debug( "%s - data.setHash( %s )",  key, fileMd5Hash );
-                s.put( key, Data.of(createValue(fileMd5Hash)) );
+                final DeployStateManager.Data attrs =
+                        Data.of(attributes)
+                        .setHash(fileMd5Hash);
+                s.put( key, attrs);
                 return true;
             });
-
-            ofNullable(extraAttribute).ifPresent( extra -> s.get(key).setExtraAttribute(extra) );
-
-            return updated;
 
         })
         .orElse(true);
@@ -347,6 +397,7 @@ public class DeployStateManager {
     public boolean removeState( java.net.URI uri ) {
         return isFileSchema(uri) && removeState(Paths.get(uri));
     }
+
     /**
      *
      * @param file

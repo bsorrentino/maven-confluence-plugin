@@ -221,7 +221,7 @@ public interface ConfluenceService extends Closeable{
      * @param id
      * @return
      */
-    Model.Page newPage( Model.ID id, String title );
+    Model.Page newPage( Model.ID id, String title, int version );
 
     CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  ;
 
