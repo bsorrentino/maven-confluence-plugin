@@ -109,12 +109,14 @@ public class XMLRPCConfluenceService implements ConfluenceService {
 
 
     @Override
-    public Model.Page newPage(Model.ID id, String title) {
+    public Model.Page newPage(Model.ID id, String space, String title, int version) {
 
         final java.util.Map<String,Object> attributes = new HashMap<>();
         attributes.put( "id", id.toString());
         attributes.put( "title", title);
-        attributes.put( "space", "");
+        attributes.put( "space", space );
+        attributes.put( "version", version);
+
         return new Page( unmodifiableMap(attributes));
     }
 
