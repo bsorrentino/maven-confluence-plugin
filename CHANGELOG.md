@@ -2,6 +2,43 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**update release**
+
+
+[7108b3def51b243](https://github.com/bsorrentino/maven-confluence-plugin/commit/7108b3def51b243) bsorrentino *2021-06-10 09:22:43*
+
+**update readme**
+
+
+[492e4eea3bf0b42](https://github.com/bsorrentino/maven-confluence-plugin/commit/492e4eea3bf0b42) bsorrentino *2021-06-10 09:18:21*
+
+**move to next develop version**
+
+
+[c302540359443ae](https://github.com/bsorrentino/maven-confluence-plugin/commit/c302540359443ae) bsorrentino *2021-06-09 13:01:20*
+
+**update changelog**
+
+
+[e98ba924afd76d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e98ba924afd76d3) bsorrentino *2021-06-01 10:38:13*
+
+
+###  [#252](https://github.com/bsorrentino/maven-confluence-plugin/issues/252) add version in DeployStateManager extra attribute    *bug*  
+
+**issue #252 - add version increment**
+
+
+[cec540da163d883](https://github.com/bsorrentino/maven-confluence-plugin/commit/cec540da163d883) bsorrentino *2021-06-10 00:06:32*
+
+**issue #252 - add support for version attribute**
+
+
+[24e1a0fc631adad](https://github.com/bsorrentino/maven-confluence-plugin/commit/24e1a0fc631adad) bsorrentino *2021-06-09 17:19:01*
+
+
 ## v7.1
 ### Generic changes
 
