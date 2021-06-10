@@ -160,15 +160,16 @@ public interface ConfluenceService extends Closeable{
             ID getId();
             
             String getTitle();
-            
+
             String getSpace();
-            
+
             ID getParentId();
         }
 
         interface Page extends PageSummary {
 
             int getVersion();
+
         }
 
         interface Blogpost  {
@@ -219,9 +220,12 @@ public interface ConfluenceService extends Closeable{
      * factory method
      * Create a temporary in memory Model.Page with ID and Title set
      * @param id
+     * @param space
+     * @param title
+     * @param version
      * @return
      */
-    Model.Page newPage( Model.ID id, String title );
+    Model.Page newPage( Model.ID id, String space, String title, int version );
 
     CompletableFuture<Optional<? extends Model.PageSummary>> getPageByTitle(Model.ID parentPageId, String title)  ;
 

@@ -6,6 +6,7 @@ import lombok.Value;
 import org.bsc.confluence.ConfluenceService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
