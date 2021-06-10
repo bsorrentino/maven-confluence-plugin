@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -69,7 +70,7 @@ public class DeployStateManager {
         }
 
         public static Data of( Data data ) {
-            return new Data( data.attributes );
+            return ( data == null ) ? new Data() : new Data( data.attributes );
         }
 
         public static Data create() {
@@ -95,7 +96,7 @@ public class DeployStateManager {
         }
 
         public Optional<String> getAttributeString(String name)  {
-
+            debug( "Data.getAttributeString( %s )", name );
             return ofNullable(attributes.get(name.toLowerCase())).flatMap( v -> {
                 if (v.getValueType() == JsonValue.ValueType.STRING) {
                     return ofNullable( ((JsonString)v).getString() );
@@ -105,12 +106,24 @@ public class DeployStateManager {
         }
 
         public Optional<Integer> getAttributeInt( String name)  {
+            debug( "Data.getAttributeInt( %s )", name );
             return ofNullable(attributes.get(name.toLowerCase())).flatMap( v -> {
                 if (v.getValueType() == JsonValue.ValueType.NUMBER) {
                     return ofNullable( ((JsonNumber)v).intValue());
                 }
                 return  Optional.empty();
             });
+        }
+
+        public Data setAttributeString(String name, String value) {
+            debug( "Data.setAttributeString( %s, %s )", name, value );
+            this.attributes.put( name.toLowerCase(), createValue(value) );
+            return this;
+        }
+        public Data setAttributeInt(String name, Integer value) {
+            debug( "Data.setAttributeInt( %s, %d )", name, value );
+            this.attributes.put( name.toLowerCase(), createValue(value) );
+            return this;
         }
 
         public final Data copyAttributes( Data data, boolean excludeHash ) {
@@ -129,21 +142,20 @@ public class DeployStateManager {
             return this;
         }
 
-        public Data setAttributeString(String name, String value) {
-            debug( "Data.setAttributeString( %s )", String.valueOf(value) );
-            this.attributes.put( name.toLowerCase(), createValue(value) );
-            return this;
-        }
-        public Data setAttributeInt(String name, Integer value) {
-            debug( "Data.setAttributeInt( %s )", String.valueOf(value) );
-            this.attributes.put( name.toLowerCase(), createValue(value) );
-            return this;
+        final JsonValue toJson() {
+
+            final  JsonObjectBuilder builder = Json.createObjectBuilder();
+
+            attributes.entrySet().forEach( e -> builder.add( e.getKey(), e.getValue()));
+
+            return builder.build();
         }
 
-        final JsonValue toJson() {
-            final  JsonObjectBuilder builder = Json.createObjectBuilder();
-            attributes.entrySet().forEach( e -> builder.add( e.getKey(), e.getValue()));
-            return builder.build();
+        @Override
+        public String toString() {
+            return attributes.entrySet().stream()
+                    .map(e -> format("[%s,%s]", e.getKey(), e.getValue()))
+                    .collect(Collectors.joining(","));
         }
     }
 
@@ -314,7 +326,9 @@ public class DeployStateManager {
      * @param attributes
      */
     public void setAttributes( java.net.URI uri, Data attributes ) {
-        debug( "DeployStateManager.setExtraAttribute( '%s', '%s' )", String.valueOf(uri), String.valueOf(attributes.toJson()) );
+        debug( "DeployStateManager.setAttributes( '%s', '%s' )",
+                String.valueOf(uri),
+                String.valueOf(attributes) );
 
         synchronized (this) {
             isUpdated( uri, attributes );
@@ -326,7 +340,7 @@ public class DeployStateManager {
      * @return
      */
     boolean isUpdated(Path file, Data attributes ) {
-        debug( "isUpdated( %s )",  file );
+        debug( "isUpdated( %s, %s )",  file, attributes );
 
         if( file == null ) return false;
 

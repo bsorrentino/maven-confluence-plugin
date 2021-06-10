@@ -17,7 +17,11 @@
 package org.bsc.confluence.xmlrpc.model;
 
 import java.util.Map;
+import java.util.Optional;
+
 import org.bsc.confluence.ConfluenceService.Model;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * @version $Revision$ $Date$

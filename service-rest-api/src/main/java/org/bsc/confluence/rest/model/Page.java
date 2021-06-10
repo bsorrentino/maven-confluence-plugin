@@ -8,6 +8,10 @@ package org.bsc.confluence.rest.model;
 import javax.json.JsonObject;
 import org.bsc.confluence.ConfluenceService.Model;
 
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+
 /**
  *
  * @author bsorrentino

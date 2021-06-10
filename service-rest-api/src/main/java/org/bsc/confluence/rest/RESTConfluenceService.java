@@ -157,12 +157,12 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
 
     @Override
-    public Model.Page newPage(Model.ID id, String title, int version) {
+    public Model.Page newPage(Model.ID id, String space, String title, int version) {
         return new Page(Json.createObjectBuilder()
+                        .add( "version", Json.createObjectBuilder().add("number", version).build())
                         .add( "id", id.toString())
                         .add( "title", title )
-                        .add( "version", Json.createObjectBuilder().add("version", version).build())
-                        .add( "space", Json.createObjectBuilder().add( "key", ""))
+                        .add( "space", Json.createObjectBuilder().add( "key", space))
                         .build());
     }
 
@@ -221,7 +221,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 
         int previousVersion = page.getVersion();
 
-        final JsonObject input = Json.createObjectBuilder()
+        final JsonObjectBuilder builder = Json.createObjectBuilder()
                 .add("version", Json.createObjectBuilder().add("number", ++previousVersion))
                 .add("id", page.getId().getValue())
                 .add("type", "page")
@@ -230,8 +230,9 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
                 .add("body", Json.createObjectBuilder()
                         .add("storage", Json.createObjectBuilder()
                                 .add("representation", content.rapresentation.toString())
-                                .add("value", content.value)))
-                .build();
+                                .add("value", content.value)));
+
+        final JsonObject input =  builder.build();
 
         final CompletableFuture<Model.Page> updatePage =
                 updatePage(page.getId().toString(), input)

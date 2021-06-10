@@ -314,7 +314,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param confluencePage
      * @return
      */
-    protected CompletableFuture<Model.Page> savePageIdToDeployStateManager( Site.Page sitePage, Model.Page confluencePage ) {
+    protected CompletableFuture<Model.Page> saveAttributesToDeployStateManager(Site.Page sitePage, Model.Page confluencePage ) {
         return getDeployStateManager()
                 .map( dsm -> {
 
@@ -400,13 +400,14 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         final AsyncProcessPageFunc updatePageFunction = p ->
                     updatePageIfNeeded(child,p,
                         () -> getPageContent( ofNullable(p), site, uri, child, pageTitleToApply )
-                                .thenCompose( storage -> confluence.storePage(p, storage)));
+                                .thenCompose( storage -> confluence.storePage(p, storage))
+                                .thenCompose( page -> saveAttributesToDeployStateManager(child, page )));
 
         // Create Page Function
         final AsyncPageSupplier createPageFunction = () ->
                         getPageContent( empty(), site, uri, child, pageTitleToApply )
                             .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
-                            .thenCompose( page -> savePageIdToDeployStateManager(child, page ));
+                            .thenCompose( page -> saveAttributesToDeployStateManager(child, page ));
 
         // Create or Update Page Function
         final AsyncPageFunc<Optional<Model.Page>> createOrUpdate = optPage ->
@@ -423,7 +424,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
            return attributes
                    .flatMap( attrs ->
                        attrs.getAttributeString("id")
-                               .map( id -> confluence.newPage( Model.ID.of(id), pageTitleToApply,  attrs.getAttributeInt("version").orElse(0)))
+                               .map( id -> confluence.newPage( Model.ID.of(id), parentPage.getSpace(), pageTitleToApply,  attrs.getAttributeInt("version").orElse(0)))
                                .map( p -> completedFuture(Optional.of(p)) ))
                    .orElse( confluence.getPage(parentPage.getSpace(), pageTitleToApply) );
         };
@@ -495,10 +496,9 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                      Supplier<CompletableFuture<U>> yes,
                                      Supplier<CompletableFuture<U>> no )
     {
-        final String id = confluencePage.getId().toString();
         final DeployStateManager.Data attributes =
                 DeployStateManager.Data.create()
-                        .setAttributeString("id", id )
+                        .setAttributeString("id", confluencePage.getId().toString() )
                         .setAttributeInt( "version", confluencePage.getVersion() );
         return getDeployStateManager()
                 .map( dsm -> dsm.isUpdated(sitePage.getUri(), attributes, yes, no) )

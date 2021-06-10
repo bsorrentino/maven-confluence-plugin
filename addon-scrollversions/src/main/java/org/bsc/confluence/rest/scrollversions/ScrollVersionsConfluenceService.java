@@ -502,8 +502,8 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     @Override
-    public Model.Page newPage(Model.ID id, String title, int version ) {
-        return delegate.newPage( id, title, version );
+    public Model.Page newPage(Model.ID id, String space, String title, int version ) {
+        return delegate.newPage( id, space, title, version );
     }
 
     /**
