@@ -158,7 +158,7 @@ public class SiteProcessor {
 
            try {
 
-               final String candidateContent = IOUtils.toString(is.get());
+               final String candidateContent = IOUtils.toString(is.get(), Charset.defaultCharset());
 
                content = (isMarkdown) ?
                        processMarkdown( site, child, page, candidateContent, pagePrefixToApply) :
@@ -177,7 +177,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               final String candidateContent = IOUtils.toString(is);
+               final String candidateContent = IOUtils.toString(is, Charset.defaultCharset());
 
                content = (isMarkdown) ? processMarkdown( site, child, page, candidateContent, pagePrefixToApply) : candidateContent;
 
@@ -225,7 +225,7 @@ public class SiteProcessor {
        final Storage.Representation representation = (isStorage) ? Storage.Representation.STORAGE
                : Storage.Representation.WIKI;
 
-       String content = null;
+       String content;
 
        if ("classpath".equalsIgnoreCase(scheme)) {
 
@@ -237,7 +237,7 @@ public class SiteProcessor {
            }
 
            try {
-               final String candidateContent = IOUtils.toString(is.get());
+               final String candidateContent = IOUtils.toString(is.get(), Charset.defaultCharset());
 
                content = (isMarkdown) ? processMarkdown(site, child, empty(), candidateContent, homePageTitle) : candidateContent;
 
@@ -253,7 +253,7 @@ public class SiteProcessor {
 
                final java.io.InputStream is = url.openStream();
 
-               final String candidateContent = IOUtils.toString(is);
+               final String candidateContent = IOUtils.toString(is, Charset.defaultCharset());
 
                content = (isMarkdown) ?
                        processMarkdown( site, child, empty(), candidateContent, homePageTitle) :
