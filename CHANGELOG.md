@@ -5,6 +5,58 @@
 ## Next release
 ### Generic changes
 
+**move to next release**
+
+
+[b00f8b4fbe2d3f9](https://github.com/bsorrentino/maven-confluence-plugin/commit/b00f8b4fbe2d3f9) bsorrentino *2021-07-19 15:21:04*
+
+**update readme**
+
+
+[175ec5dc4bbe3c2](https://github.com/bsorrentino/maven-confluence-plugin/commit/175ec5dc4bbe3c2) bsorrentino *2021-07-19 15:20:33*
+
+**update warnin message**
+
+
+[834b27ab9e7e35a](https://github.com/bsorrentino/maven-confluence-plugin/commit/834b27ab9e7e35a) Build Pipeline *2021-07-15 14:48:45*
+
+**add ConfluenceService Proxy for debug purpose**
+
+
+[b9e103b8b635aea](https://github.com/bsorrentino/maven-confluence-plugin/commit/b9e103b8b635aea) bsorrentino *2021-07-15 14:09:15*
+
+**move to nexe development version**
+
+
+[14445163ab44ba8](https://github.com/bsorrentino/maven-confluence-plugin/commit/14445163ab44ba8) bsorrentino *2021-07-15 14:09:15*
+
+**add ConfluenceService Proxy for debug purpose**
+
+
+[68421c7daa382bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/68421c7daa382bb) bsorrentino *2021-07-07 16:02:10*
+
+**move to nexe development version**
+
+
+[3276b6af1f5c8e6](https://github.com/bsorrentino/maven-confluence-plugin/commit/3276b6af1f5c8e6) bsorrentino *2021-06-11 08:52:39*
+
+
+###  [#253](https://github.com/bsorrentino/maven-confluence-plugin/issues/253) NullPointerException // error generating report    *under verification*  
+
+**issue #253 - catch NPE on dependencies collector**
+
+
+[78c2eb29e51b5f1](https://github.com/bsorrentino/maven-confluence-plugin/commit/78c2eb29e51b5f1) Build Pipeline *2021-07-15 14:10:27*
+
+
+## v7.2
+### Generic changes
+
+**update changelog**
+
+
+[e9a1028a7f54970](https://github.com/bsorrentino/maven-confluence-plugin/commit/e9a1028a7f54970) bsorrentino *2021-06-10 09:44:14*
+
 **update release**
 
 
