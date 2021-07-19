@@ -616,11 +616,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         ReportingResolutionListener listener = new ReportingResolutionListener();
 
         try {
-            collector.collect(project.getDependencyArtifacts(), project.getArtifact(), managedVersions,
-                    localRepository, project.getRemoteArtifactRepositories(), artifactMetadataSource, null,
-                    Collections.singletonList(listener));
-        } catch (ArtifactResolutionException e) {
-            getLog().error("An error occurred while resolving project dependencies.", e);
+            collector.collect(  project.getDependencyArtifacts(),
+                                project.getArtifact(),
+                                managedVersions,
+                                localRepository,
+                                project.getRemoteArtifactRepositories(),
+                                artifactMetadataSource, null,
+                                Collections.singletonList(listener));
+        } catch (Exception e) {
+            getLog().warn("An error occurred while resolving project dependencies.", e);
         }
 
         return listener;
