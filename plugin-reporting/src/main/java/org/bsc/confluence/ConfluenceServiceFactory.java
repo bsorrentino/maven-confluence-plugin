@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.bsc.confluence;
 
 import org.bsc.confluence.ConfluenceService.Credentials;
@@ -16,12 +11,19 @@ import org.bsc.ssl.SSLCertificateInfo;
 import javax.json.JsonObjectBuilder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static org.bsc.confluence.xmlrpc.XMLRPCConfluenceService.createInstanceDetectingVersion;
+
 /**
  *
  * @author bsorrentino
@@ -169,9 +171,33 @@ public class ConfluenceServiceFactory {
         
     }
 
+    private static Optional<ConfluenceService> _tryCeateInstance( String endpoint,
+                                                        Credentials credentials, 
+                                                        ConfluenceProxy proxyInfo, 
+                                                        SSLCertificateInfo sslInfo,
+                                                        ScrollVersionsInfo svi ) throws Exception
+    {
+
+        ConfluenceService result = null;
+        if( ConfluenceService.Protocol.XMLRPC.match(endpoint)) {
+            result = new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);
+        }
+        else if( ConfluenceService.Protocol.REST.match(endpoint)) {
+            result =  svi.optVersion()
+                    .map( version -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, version, credentials, sslInfo) )
+                    .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo) )
+                     ;
+        }
+        return Optional.ofNullable(result);
+
+    }
+
+    private static final java.util.logging.Logger log =
+            java.util.logging.Logger.getLogger(ConfluenceServiceFactory.class.getName());
+
     /**
      * return XMLRPC based Confluence services
-     * 
+     *
      * @param endpoint
      * @param credentials
      * @param proxyInfo
@@ -180,29 +206,43 @@ public class ConfluenceServiceFactory {
      * @return XMLRPC based Confluence services
      * @throws Exception
      */
-    public static ConfluenceService createInstance( String endpoint, 
-                                                        Credentials credentials, 
-                                                        ConfluenceProxy proxyInfo, 
-                                                        SSLCertificateInfo sslInfo,
-                                                        ScrollVersionsInfo svi ) throws Exception
+    public static ConfluenceService createInstance( String endpoint,
+                                                    Credentials credentials,
+                                                    ConfluenceProxy proxyInfo,
+                                                    SSLCertificateInfo sslInfo,
+                                                    ScrollVersionsInfo svi ) throws Exception
     {
-            if( ConfluenceService.Protocol.XMLRPC.match(endpoint)) {
-                return new MixedConfluenceService(endpoint, credentials, proxyInfo, sslInfo);               
-            }
-            if( ConfluenceService.Protocol.REST.match(endpoint)) {
-                return svi.optVersion()
-                        .map( version -> (ConfluenceService)new ScrollVersionsConfluenceService(endpoint, version, credentials, sslInfo) )
-                        .orElseGet( () -> new RESTConfluenceService(endpoint, credentials /*, proxyInfo*/, sslInfo))
-                         ;               
-            }
-            
-            throw new IllegalArgumentException( 
-                    format("endpoint doesn't contain a valid API protocol\nIt must be '%s' or '%s'",
-                            ConfluenceService.Protocol.XMLRPC.path(),
-                            ConfluenceService.Protocol.REST.path()) 
-                    );
 
+
+        final ConfluenceService result =  _tryCeateInstance( endpoint, credentials, proxyInfo, sslInfo, svi )
+                .orElseThrow( () -> new IllegalArgumentException(
+                        format("endpoint doesn't contain a valid API protocol\nIt must be '%s' or '%s'",
+                                ConfluenceService.Protocol.XMLRPC.path(),
+                                ConfluenceService.Protocol.REST.path())
+                ));
+
+        if( log.isLoggable(Level.FINE) ) {
+
+            final InvocationHandler handler = (Object proxy, Method method, Object[] args ) -> {
+
+                final String arguments = (args!=null && args.length > 0 ) ?
+                        Arrays.stream(args)
+                                .map(String::valueOf)
+                                .collect(Collectors.joining("\n", "\narguments:\n", "----\n")) : "";
+
+                log.fine( format( "ConfluenceService.%s()%s", method.getName(), arguments ) );
+
+               return method.invoke(result, args);
+            };
+
+            return (ConfluenceService) Proxy.newProxyInstance( ConfluenceServiceFactory.class.getClassLoader(),
+                                            new Class[] { ConfluenceService.class },
+                                            handler
+                                            );
+        }
+
+        return result;
 
     }
-     
+
 }

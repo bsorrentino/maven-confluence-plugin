@@ -124,7 +124,7 @@ public abstract class AbstractBaseConfluenceSiteMojo extends AbstractBaseConflue
     public Site createSiteFromModel(Map<String, Object> variables) {
 
         if (!isSiteDescriptorValid()) {
-            getLog().warn("siteDescriptor is not valid!");
+            getLog().warn("siteDescriptor is missing!");
             return null;
         }
 
