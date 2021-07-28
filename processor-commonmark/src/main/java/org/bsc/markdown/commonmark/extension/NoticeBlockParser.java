@@ -39,7 +39,7 @@ public class NoticeBlockParser extends AbstractBlockParser {
         if (isMarker(state, nextNonSpace)) {
             int newColumn = state.getColumn() + state.getIndent() + 1;
             // optional following space or tab
-            if (Parsing.isSpaceOrTab(state.getLine(), nextNonSpace + 1)) {
+            if (Parsing.isSpaceOrTab(state.getLine().getContent(), nextNonSpace + 1)) {
                 newColumn++;
             }
             return BlockContinue.atColumn(newColumn);
@@ -51,7 +51,7 @@ public class NoticeBlockParser extends AbstractBlockParser {
     static final Pattern pattern = Pattern.compile("^>\\s+[*][*]([Ww]arning|[Nn]ote|[Ii]nfo|[Tt]ip)[:][*][*]\\s*(.*)$");
 
     private static Optional<Matcher> isStartedMarker(ParserState state, int index) {
-        final CharSequence line = state.getLine();
+        final CharSequence line = state.getLine().getContent();
 
         return ( state.getIndent() < Parsing.CODE_BLOCK_INDENT && index < line.length() ) ?
             ofNullable(pattern.matcher(line)).filter( m -> m.matches() ) :
@@ -59,7 +59,7 @@ public class NoticeBlockParser extends AbstractBlockParser {
     }
 
     private static boolean isMarker(ParserState state, int index) {
-        CharSequence line = state.getLine();
+        final CharSequence line = state.getLine().getContent();
         return state.getIndent() < Parsing.CODE_BLOCK_INDENT && index < line.length() && line.charAt(index) == '>';
     }
 
@@ -74,7 +74,7 @@ public class NoticeBlockParser extends AbstractBlockParser {
                         int newColumn = state.getColumn() + state.getIndent() + 1;
                         // optional following space or tab
 
-                        if (Parsing.isSpaceOrTab(state.getLine(), nextNonSpace + 1)) {
+                        if (Parsing.isSpaceOrTab(state.getLine().getContent(), nextNonSpace + 1)) {
                             newColumn++;
                         }
                         final NoticeBlock block =  new NoticeBlock( NoticeBlock.Type.fromString(m.group(1)), m.group(2)) ;
