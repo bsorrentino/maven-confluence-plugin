@@ -1,9 +1,7 @@
 package org.bsc.makdown.commonmark;
 
 import org.bsc.confluence.model.Site
-import org.bsc.markdown.MarkdownVisitorHelper
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.net.URI
@@ -39,7 +37,7 @@ class Issue226Test {
         assertEquals( """value = \{ \"Foo\", \"Bar\" \}""", CommonmarkConfluenceWikiVisitor.escapeMarkdownText( null, """value = { \"Foo\", \"Bar\" }""" ) )
 
     }
-    @Test @Ignore
+    @Test //@Ignore
     fun parse() {
         val content = parseResource()
 
@@ -50,6 +48,7 @@ This check ensures that:
 * All {{@Transactional}} annotation usages are on method level and only on public methods
 * Any method, belonging to a bean class and has an entity in its parameters or return type has {{@Transactional(propagation = Propagation.MANDATORY)}}
 * An Aspect bean does not contain any {{@Transactional}} annotation
+
 h2. Properties
 ||name||description||type||default values||since||
 |patterns|classes excluded|[String\[\]|https://checkstyle.sourceforge.io/property_types.html#String.5B.5D]|{{[]}}|1.0|

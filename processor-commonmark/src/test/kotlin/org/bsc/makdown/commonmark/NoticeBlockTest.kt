@@ -69,6 +69,7 @@ class NoticeBlockTest {
         mldjkflqsdif sqj
         * one
         * two
+        
         have a *strong* and _pure_ feeling
         {warning}
     """.trimIndent(), parse() )
