@@ -12,6 +12,10 @@
     <artifactId>confluence-markdown-processor-commonmark</artifactId>
     <name>CONFLUENCE-REPORTING::Markdown::Commonmark::Processor</name>
 
+    <properties>
+        <commonmark.version>0.17.0</commonmark.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -28,19 +32,19 @@
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark-ext-gfm-strikethrough</artifactId>
-            <version>0.14.0</version>
+            <version>${commonmark.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark-ext-gfm-tables</artifactId>
-            <version>0.14.0</version>
+            <version>${commonmark.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
-            <version>0.14.0</version>
+            <version>${commonmark.version}</version>
         </dependency>
 
         <dependency>
