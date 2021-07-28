@@ -60,12 +60,22 @@ class CheatSheetTest {
     To have a line break without a paragraph, you will need to use two trailing spaces.
     Note that this line is separate, but within the same paragraph.
     (This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)
-    * Unordered list can use asterisks
-    * Or minuses
-    * Or pluses
-    {quote}
-    {quote}
-
+    
+    Unordered list can use asterisks
+    
+    * asterisks 1
+    * asterisks 2
+    
+    Or minuses
+    
+    * minuses 1
+    * minuses 2
+    
+    Or pluses
+    
+    * pluses 1
+    * pluses 2
+    
     h1. Test break after ListBlock
     """.trimIndent(), parse( "lists") )
 
