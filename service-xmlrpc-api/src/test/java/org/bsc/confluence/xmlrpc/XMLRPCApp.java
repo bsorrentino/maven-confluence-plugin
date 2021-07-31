@@ -5,8 +5,8 @@
  */
 package org.bsc.confluence.xmlrpc;
 
-import java.net.HttpURLConnection;
-
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceProxy;
@@ -15,8 +15,7 @@ import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ExportFormat;
 import org.bsc.ssl.SSLCertificateInfo;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
+import java.net.HttpURLConnection;
 
 /**
  *
@@ -94,10 +93,8 @@ public class XMLRPCApp {
 
            Model.Page page = p.orElseThrow( () -> new RuntimeException("page not found!") );
            
-           java.io.InputStream is = null;
-           java.io.FileOutputStream fos = null;
            try {
-               
+
                final String req = String.format("%s/%s?pageId=%s", url, ExportFormat.PDF.url, page.getId());
                System.out.println(req);
                java.net.URL _url = new java.net.URL(req);
@@ -114,17 +111,14 @@ public class XMLRPCApp {
 
                urlConnection.setUseCaches(false);
 
-               is = urlConnection.getInputStream();
+               try (final java.io.InputStream is = urlConnection.getInputStream();
+                    final java.io.FileOutputStream fos = new java.io.FileOutputStream("target/out.pdf")) {
 
-               fos = new java.io.FileOutputStream("target/out.pdf");
+                   IOUtils.copy(is, fos);
+               }
 
-               IOUtils.copy(is, fos);
-           }
-           catch( Exception ex ) {
+           } catch( Exception ex ) {
                throw new RuntimeException(ex);
-           } finally {
-               IOUtils.closeQuietly(is);
-               IOUtils.closeQuietly(fos);
            }
 
        });

@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.MarkdownParserContext
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
+import java.nio.charset.Charset
 import java.util.*
 
 
@@ -27,10 +28,10 @@ fun parseContent(site: Site, content: String, linkPrefixEnabled: Boolean = true)
 
 }
 
-fun parseResource(type: Class<*>, name: String, site: Site, imagePrefixEnabled: Boolean = true): String? =
+fun parseResource(type: Class<*>, name: String, site: Site): String? =
         try {
                 type.classLoader.getResourceAsStream("$name.md").use {
-                        parseContent(site, IOUtils.toString(it))
+                        parseContent(site, IOUtils.toString(it, Charset.defaultCharset()))
                 }
         } catch (e: Exception) {
                 //Assertions.fail()

@@ -288,7 +288,8 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
                         final MiniTemplator t = new MiniTemplator.Builder()
                                 .setSkipUndefinedVars(true)
-                                .build(content.getInputStream(), getCharset());
+                                .setCharset(getCharset())
+                                .build(content.getInputStream(getCharset()));
 
                         if (!child.isIgnoreVariables()) {
 

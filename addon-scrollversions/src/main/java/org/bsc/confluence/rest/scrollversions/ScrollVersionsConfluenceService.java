@@ -456,10 +456,12 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         return future;
     }
 
+    @SuppressWarnings("unchecked")
     private <S,T> CompletableFuture<T> cast( CompletableFuture<S> s ) {
         return (CompletableFuture<T>)s;
     }
 
+    @SuppressWarnings("unchecked")
     private <S,T> Optional<T> cast( Optional<S> s ) {
         return (Optional<T>)s;
     }

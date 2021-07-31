@@ -6,17 +6,30 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
-import static java.util.Collections.binarySearch;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
+
+
+class ParsedVersion implements Comparable<ParsedVersion> {
+    final String string;
+    final ArtifactVersion parsed;
+
+    ParsedVersion( String version ) {
+        this.string = version;
+        this.parsed = VersionUtil.parseArtifactVersion(version);
+    }
+
+    @Override
+    public int compareTo( ParsedVersion o) {
+        return parsed.compareTo(o.parsed);
+    }
+}
 
 /**
  * @author ar
@@ -54,6 +67,7 @@ public class VersionUtil {
     }
 
     protected static ArtifactVersion parseArtifactVersion(String version) {
+
         version = version.replaceAll("\\s", "");
         version = removeNonDigitPrefix(version);
         version = addSuffixDelimeterIfNeeded(version);
@@ -62,6 +76,8 @@ public class VersionUtil {
             artifactVersion = new DefaultArtifactVersion(StringUtils.substring(version, 0, version.length() - Artifact.SNAPSHOT_VERSION.length() - 1));
         }
         return artifactVersion;
+
+
     }
 
     /**
@@ -78,19 +94,20 @@ public class VersionUtil {
         if (version.contains("-")) return version;
         int i = 0;
         for (; i < version.length(); i++) {
-            if (!Character.isDigit(version.charAt(i)) &&version.charAt(i) != '.') {
+            if (!Character.isDigit(version.charAt(i)) && version.charAt(i) != '.') {
                 break;
             }
         }
         if (i > 0) {
-            final String endVer = version.substring(i, version.length());
-            if (version.charAt(i - 1) == '.') {
-                return version.substring(0, i - 1) + "-" + endVer;
-            } else {
-                return version.substring(0, i) + "-" + endVer;
-            }
-        } else
-            return version;
+            final String endVer = version.substring(i);
+
+            if (!endVer.isEmpty())
+                return ((version.charAt(i - 1) == '.') ?
+                    version.substring(0, i - 1) :
+                    version.substring(0, i)) + "-" + endVer ;
+        }
+
+        return version;
     }
 
     protected static String removeNonDigitPrefix(String version) {
@@ -126,28 +143,25 @@ public class VersionUtil {
      * @param versionTagNamePart
      * @return
      */
-    public static String findNearestVersionTagsBefore(Collection<String> versionTagList, String versionTagNamePart) {
+    public static Optional<String> findNearestVersionTagsBefore(Collection<String> versionTagList, String versionTagNamePart) {
 
-        final Map<ArtifactVersion, String> map =
-                versionTagList.stream().collect( toMap( VersionUtil::parseArtifactVersion, identity() ));
 
-        final ArtifactVersion currentVersion = parseArtifactVersion(versionTagNamePart);
-
-        final List<ArtifactVersion> sortedList = map.keySet().stream().sorted().collect(toList());
+        final ParsedVersion currentVersion = new ParsedVersion(versionTagNamePart);
 
         //the index of the search key, if it is contained in the list; otherwise, (-(insertion point) - 1).
-        int index = binarySearch(sortedList, currentVersion, null);
 
-        if (index >= 0) {
-            return map.get(sortedList.get(index));
-        }
+        final Predicate<ParsedVersion> compare = ( v ) ->
+                v.string.startsWith(currentVersion.string) ||
+                        currentVersion.compareTo(v) >= 0;
 
-        if (sortedList.size() > 0) {
-            int i = -index-2;
-            return (i>=0) ? map.get(sortedList.get(i)) : null ;
-        }
+        return versionTagList.stream()
+                .map( ParsedVersion::new )
+                .sorted( Comparator.reverseOrder() )
+                .filter( compare )
+                .findFirst()
+                        .map( v -> v.string)
 
-        return null;
+        ;
     }
 
     /**

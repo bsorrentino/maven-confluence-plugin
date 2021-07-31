@@ -12,10 +12,8 @@ import org.bsc.markdown.MarkdownProcessor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -32,8 +30,14 @@ public class SiteProcessor {
         @NonNull
         Storage.Representation type;
 
+        /**
+         * use {@link #getInputStream(Charset)}
+         * @deprecated
+         * @return input stream
+         */
+        @Deprecated
         public InputStream getInputStream() {
-            return IOUtils.toInputStream(content);
+            return IOUtils.toInputStream(content, Charset.defaultCharset());
         }
 
         public InputStream getInputStream( Charset charset ) throws IOException {
