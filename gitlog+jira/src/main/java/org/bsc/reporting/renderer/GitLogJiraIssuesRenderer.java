@@ -173,8 +173,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         if (!calculateRuleForSinceTagName.equals(CalculateRuleForSinceTagName.LATEST_RELEASE_VERSION)) {
             versionTagList = VersionUtil.removeTagWithVersion(versionTagList, tagNamePart);
         }
-        String nearestVersionTagName = VersionUtil.findNearestVersionTagsBefore(versionTagList, tagNamePart);
-        gitLogSinceTagName = nearestVersionTagName;
+        gitLogSinceTagName = VersionUtil.findNearestVersionTagsBefore(versionTagList, tagNamePart).orElse(null);
 
     }
 

@@ -11,9 +11,9 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import java.io.IOException
+import java.nio.charset.Charset
 import java.nio.file.Paths
 import java.util.*
-import java.util.Optional.ofNullable
 import java.util.regex.Pattern
 
 /**
@@ -73,7 +73,7 @@ class SiteTest : SiteFactory.Model {
         val parentPageTitle = Optional.of("Test")
         val stream = javaClass.classLoader.getResourceAsStream("withRefLink.md")
         Assertions.assertNotNull(stream)
-        val content = SiteProcessor.processMarkdown(site, site!!.home, Optional.empty(), IOUtils.toString(stream), parentPageTitle)
+        val content = SiteProcessor.processMarkdown(site, site!!.home, Optional.empty(), IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
         Assertions.assertNotNull(content)
         val converted = content.split("\n+".toRegex()).toTypedArray()
         var i = 1
@@ -83,7 +83,7 @@ class SiteTest : SiteFactory.Model {
         Assertions.assertEquals("* This is my [google|http://google.com] link defined after.", converted[i++])
         Assertions.assertEquals("* This is my [more complex google|http://google.com|Other google] link defined after.", converted[i++])
         Assertions.assertEquals("* This is my [relative|relativepage] link defined after.", converted[i++])
-        Assertions.assertEquals("* This is my [rel|relativeagain] link defined after.", converted[i++])
+        Assertions.assertEquals("* This is my [rel|relativeagain] link defined after.", converted[i])
     }
 
     @Test
@@ -93,7 +93,7 @@ class SiteTest : SiteFactory.Model {
         val parentPageTitle = Optional.of("Test IMG")
         val stream = javaClass.classLoader.getResourceAsStream("withImgRefLink.md")
         Assertions.assertNotNull(stream)
-        val content = SiteProcessor.processMarkdown(site, site!!.home, Optional.of(page), IOUtils.toString(stream), parentPageTitle)
+        val content = SiteProcessor.processMarkdown(site, site!!.home, Optional.of(page), IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
         Assertions.assertNotNull(content)
         val converted = content.split("\n+".toRegex()).toTypedArray()
         var i = 1
@@ -103,7 +103,7 @@ class SiteTest : SiteFactory.Model {
         Assertions.assertEquals("* add a ref img !http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y! with title.", converted[i++])
         Assertions.assertEquals("* add a ref img !http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon-y1! without title.", converted[i++])
         Assertions.assertEquals("* add a ref img !\${page.title}^conf-icon-64.png|conf-icon-y2! relative.", converted[i++])
-        Assertions.assertEquals("* add a ref img !\${page.title}^conf-icon-64.png|conf-icon-none! relative with default refname.", converted[i++])
+        Assertions.assertEquals("* add a ref img !\${page.title}^conf-icon-64.png|conf-icon-none! relative with default refname.", converted[i])
     }
 
     @Test
@@ -112,7 +112,7 @@ class SiteTest : SiteFactory.Model {
         val parentPageTitle = Optional.of("Test")
         val stream = javaClass.classLoader.getResourceAsStream("simpleNodes.md")
         Assertions.assertNotNull(stream)
-        val converted = SiteProcessor.processMarkdown(site, site!!.home, Optional.empty(), IOUtils.toString(stream), parentPageTitle)
+        val converted = SiteProcessor.processMarkdown(site, site!!.home, Optional.empty(), IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
         Assertions.assertNotNull(converted)
         Assertions.assertLinesMatch(listOf(
                 "h1. Horizontal rules",

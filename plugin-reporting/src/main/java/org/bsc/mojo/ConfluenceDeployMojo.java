@@ -7,7 +7,6 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactCollector;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.doxia.sink.Sink;
@@ -45,7 +44,6 @@ import org.codehaus.plexus.i18n.I18N;
 
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -536,7 +534,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                         final MiniTemplator t = MiniTemplator.builder()
                                 .setSkipUndefinedVars(true)
                                 .setCharset(getCharset() )
-                                .build( content.getInputStream() );
+                                .build( content.getInputStream(getCharset()) );
 
                         generateProjectHomeTemplate( t, site, locale );
 
@@ -859,7 +857,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                             final MiniTemplator t = MiniTemplator.builder()
                                     .setSkipUndefinedVars(true)
                                     .setCharset( getCharset() )
-                                    .build( content.getInputStream() );
+                                    .build( content.getInputStream(getCharset()) );
 
                             /////////////////////////////////////////////////////////////////
                             // SUMMARY
@@ -963,7 +961,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                         final MiniTemplator t = MiniTemplator.builder()
                                 .setSkipUndefinedVars(true)
                                 .setCharset(getCharset())
-                                .build( content.getInputStream()  );
+                                .build( content.getInputStream(getCharset())  );
 
                         /////////////////////////////////////////////////////////////////
                         // SUMMARY

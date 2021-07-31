@@ -6,11 +6,6 @@
 
 package org.bsc.confluence.xmlrpc;
 
-import static org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY;
-import static java.lang.String.format;
-
-import java.io.IOException;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -22,6 +17,11 @@ import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ExportFormat;
+
+import java.io.IOException;
+
+import static java.lang.String.format;
+import static org.apache.commons.httpclient.HttpStatus.SC_MOVED_TEMPORARILY;
 
 /**
  *
@@ -36,15 +36,13 @@ public class ConfluenceExportDecorator {
     
     final ConfluenceService confluence;
     final String url;
-    
+
     /**
-     * 
+     *
      * @param confluence
      * @param url
-     * @param username
-     * @param password 
      */
-    public ConfluenceExportDecorator(   ConfluenceService confluence, 
+    public ConfluenceExportDecorator(   ConfluenceService confluence,
                                         String url ) 
     {
         assert url!= null;
@@ -190,8 +188,8 @@ public class ConfluenceExportDecorator {
                             java.net.URL url, 
                             java.io.File outputFile ) throws IOException  
     {
-        java.io.InputStream is = null;
-        java.io.FileOutputStream fos = null;
+
+
         GetMethod get = null;
         try {
 
@@ -206,15 +204,13 @@ public class ConfluenceExportDecorator {
                                 String.valueOf(get.getStatusLine())) );
             }
 
-            is = get.getResponseBodyAsStream();
-            
-            fos = new java.io.FileOutputStream(outputFile);
+            try( final java.io.InputStream is = get.getResponseBodyAsStream();
+                 final java.io.FileOutputStream fos = new java.io.FileOutputStream(outputFile) ) {
 
-            IOUtils.copy(is, fos);
+                IOUtils.copy(is, fos);
+            }
             
         } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(fos);
 
             if (get != null) {
                 get.releaseConnection();

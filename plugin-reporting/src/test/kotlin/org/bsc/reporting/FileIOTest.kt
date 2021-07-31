@@ -6,11 +6,11 @@
 package org.bsc.reporting
 
 import org.apache.commons.io.FileUtils
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.nio.charset.Charset
 
 /**
  *
@@ -32,8 +32,7 @@ class FileIOTest {
         assertTrue(folder.exists())
         assertTrue(folder.isDirectory)
 
-        FileUtils.writeStringToFile(outputFile, "this is test")
-
+        FileUtils.writeStringToFile(outputFile, "this is test", Charset.defaultCharset(), false)
         assertTrue(outputFile.exists())
         assertTrue(outputFile.isFile)
     }
