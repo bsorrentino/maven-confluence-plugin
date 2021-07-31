@@ -2,9 +2,10 @@ This check ensures that:
 
 - It can check assignment of literals (e.g. `@FooBar(lorem = "ipsum")`, `@FooBarArray(value = { "Foo", "Bar" })` )
 - All `@Transactional` annotation usages are on method level and only on public methods
-- Any method, belonging to a bean class and has an entity in its parameters or return type&nbsp;
-has `@Transactional(propagation = Propagation.MANDATORY)`
+- Any method, belonging to a bean class and has an entity in its parameters or return type&nbsp;has `@Transactional(propagation = Propagation.MANDATORY)`
 - An Aspect bean does not contain any `@Transactional` annotation
+
+
 
 ## Properties
 

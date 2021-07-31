@@ -6,7 +6,6 @@ import org.hamcrest.core.IsNull
 import org.junit.Assert
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
-import java.io.IOException
 import java.net.URI
 import java.nio.file.Paths
 import java.util.concurrent.CompletableFuture
@@ -164,7 +163,7 @@ class Issue189Test  {
             Assert.assertThat(m.group(1), IsNull.nullValue())
             Assert.assertThat(m.group(2), IsEqual.equalTo("classpath:/image-name.png"))
             getFileName(m.group(2))
-                    .exceptionally { ex: Throwable? -> null }
+                    .exceptionally { _: Throwable? -> null }
                     .thenAccept { fileName: String? -> Assert.assertThat(fileName, IsNull.nullValue()) }
                     .join()
         }
