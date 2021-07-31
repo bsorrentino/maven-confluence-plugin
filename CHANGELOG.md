@@ -5,6 +5,69 @@
 ## Next release
 ### Generic changes
 
+**upgrade javax.json package**
+
+
+[9f39ce6e3cc8c38](https://github.com/bsorrentino/maven-confluence-plugin/commit/9f39ce6e3cc8c38) bsorrentino *2021-07-31 16:31:45*
+
+**update readme**
+
+
+[4f113319d4ce5d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/4f113319d4ce5d8) bsorrentino *2021-07-31 16:30:59*
+
+**remove deprecation**
+
+
+[b24a5c21c3c9304](https://github.com/bsorrentino/maven-confluence-plugin/commit/b24a5c21c3c9304) bsorrentino *2021-07-31 16:07:12*
+
+**move to next release**
+
+
+[17eb45e7cfdb103](https://github.com/bsorrentino/maven-confluence-plugin/commit/17eb45e7cfdb103) bsorrentino *2021-07-31 16:06:14*
+
+**update readme**
+
+
+[0284723f35e16fa](https://github.com/bsorrentino/maven-confluence-plugin/commit/0284723f35e16fa) bsorrentino *2021-07-26 18:35:07*
+
+**move to next development version**
+
+
+[96e83ee3341e04a](https://github.com/bsorrentino/maven-confluence-plugin/commit/96e83ee3341e04a) bsorrentino *2021-07-26 18:30:42*
+
+
+###  [#255](https://github.com/bsorrentino/maven-confluence-plugin/issues/255) Problem with markdown &#39;lists&#39; in confluence page generation    *bug*  
+
+**issue #255 - update unit test**
+
+
+[aebec40014f3273](https://github.com/bsorrentino/maven-confluence-plugin/commit/aebec40014f3273) bsorrentino *2021-07-28 16:12:18*
+
+**issue #255 - update for use of  commonmark to 0.17.0**
+
+
+[7fd5e86fea10c0c](https://github.com/bsorrentino/maven-confluence-plugin/commit/7fd5e86fea10c0c) bsorrentino *2021-07-28 16:11:57*
+
+**issue #255 - add newline after OrderList and BulletList only if it is not nested**
+
+
+[5d69b6895f975c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/5d69b6895f975c5) bsorrentino *2021-07-28 16:10:21*
+
+**issue #255**
+
+ * upgrade commonmark to 0.17.0
+
+[56a5091dd731b9a](https://github.com/bsorrentino/maven-confluence-plugin/commit/56a5091dd731b9a) bsorrentino *2021-07-28 16:05:51*
+
+
+## v7.2.1
+### Generic changes
+
+**update changelog**
+
+
+[a140268ed3a2e99](https://github.com/bsorrentino/maven-confluence-plugin/commit/a140268ed3a2e99) bsorrentino *2021-07-19 15:22:26*
+
 **move to next release**
 
 
