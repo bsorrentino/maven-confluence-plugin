@@ -1,8 +1,7 @@
-module maven.confluence.core {
+open module maven.confluence.core {
 
     requires lombok;
     //requires okhttp3;
-    requires javax.json;
 
     requires org.apache.commons.codec;
     //requires commons.httpclient;
@@ -19,6 +18,7 @@ module maven.confluence.core {
 
     requires java.logging;
     requires java.xml.bind;
+    requires java.json;
 
     exports org.bsc.markdown;
     exports org.bsc.preprocessor;
