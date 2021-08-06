@@ -1,20 +1,5 @@
 package org.bsc.confluence.xmlrpc;
 
-import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.Proxy.Type;
-import java.net.ProxySelector;
-import java.net.URISyntaxException;
-import java.security.Permission;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -27,6 +12,16 @@ import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.xmlrpc.model.*;
+
+import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.Proxy;
+import java.net.Proxy.Type;
+import java.net.ProxySelector;
+import java.net.URISyntaxException;
+import java.security.Permission;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @version $Revision$ $Date$
@@ -94,9 +89,9 @@ class Confluence {
         final XmlRpcClientConfigImpl clientConfig = new XmlRpcClientConfigImpl();
         clientConfig.setServerURL(serviceURI.toURL() );
         clientConfig.setEnabledForExtensions(true); // add this to support attachment upload
-        clientConfig.setConnectionTimeout( (int)ConfluenceService.getConnectTimeout(TimeUnit.SECONDS) );
-        clientConfig.setReplyTimeout((int)Math.max( ConfluenceService.getReadTimeout(TimeUnit.SECONDS),
-                                                    ConfluenceService.getWriteTimeout(TimeUnit.SECONDS)) );
+        clientConfig.setConnectionTimeout( (int)ConfluenceService.getConnectTimeout(TimeUnit.MILLISECONDS) );
+        clientConfig.setReplyTimeout((int)Math.max( ConfluenceService.getReadTimeout(TimeUnit.MILLISECONDS),
+                                                    ConfluenceService.getWriteTimeout(TimeUnit.MILLISECONDS)) );
 
         client.setConfig( clientConfig );
 
