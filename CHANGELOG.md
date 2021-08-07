@@ -5,6 +5,43 @@
 ## Next release
 ### Generic changes
 
+**move to next release**
+
+
+[09b3b9ade9a922f](https://github.com/bsorrentino/maven-confluence-plugin/commit/09b3b9ade9a922f) Build Pipeline *2021-08-07 09:07:55*
+
+**update readme**
+
+
+[1fc51b04eb3e898](https://github.com/bsorrentino/maven-confluence-plugin/commit/1fc51b04eb3e898) Build Pipeline *2021-08-07 09:05:44*
+
+**move to next dev version**
+
+
+[52a63a3ebfdea71](https://github.com/bsorrentino/maven-confluence-plugin/commit/52a63a3ebfdea71) bsorrentino *2021-08-06 10:08:31*
+
+
+###  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) Too low default value for ReadTimeout and WriteTimeout for XmlRpcClient    *under verification*  
+
+**issue #256 - translate timeout in mills for XLMRPC protocol**
+
+
+[209e628e7deebdc](https://github.com/bsorrentino/maven-confluence-plugin/commit/209e628e7deebdc) bsorrentino *2021-08-06 10:05:26*
+
+
+## v7.3
+### Generic changes
+
+**update markdown test**
+
+
+[d02d2bdff71a07d](https://github.com/bsorrentino/maven-confluence-plugin/commit/d02d2bdff71a07d) bsorrentino *2021-07-31 16:42:29*
+
+**update changelog**
+
+
+[74fcdd76effc788](https://github.com/bsorrentino/maven-confluence-plugin/commit/74fcdd76effc788) bsorrentino *2021-07-31 16:33:55*
+
 **upgrade javax.json package**
 
 
