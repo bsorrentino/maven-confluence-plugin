@@ -59,10 +59,6 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
     @Parameter
     protected DeployStateInfo deployState = new DeployStateInfo( false );
 
-    /**
-     * @since 7.0
-     */
-    private DeployStateManager _deployStateManager = null;
 
     @Override
     public MavenProject getProject() {
@@ -73,14 +69,14 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
     public final DeployStateInfo getDeployState() { return deployState; }
 
     /**
-     * Lazy load
+     * @since 7.0
+     */
+    private DeployStateManager _deployStateManager = null;
+
+    /**
      * @return
      */
-    @Override
     public final Optional<DeployStateManager> getDeployStateManager() {
-        if (_deployStateManager ==null) {
-            _deployStateManager = initDeployStateManager().orElse(null);
-        }
         return ofNullable(_deployStateManager);
     }
 
@@ -197,6 +193,8 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
 
     @Override
     public void execute( ConfluenceService confluence ) throws Exception {
+
+        _deployStateManager = initDeployStateManager().orElse(null);
 
         deletePage(confluence);
         

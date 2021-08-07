@@ -17,6 +17,7 @@ import org.bsc.confluence.model.ProcessUriException;
 import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 import org.bsc.confluence.model.SiteProcessor;
+import org.bsc.markdown.MarkdownProcessor;
 import org.bsc.mojo.configuration.DeployStateInfo;
 
 import java.io.File;
@@ -41,6 +42,7 @@ import static java.lang.String.format;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SitePrinter.print;
 import static org.bsc.confluence.model.SiteProcessor.processPageUri;
 import static org.bsc.confluence.model.SiteProcessor.processUri;
 
@@ -121,10 +123,6 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     @Parameter(defaultValue = "true")
     private boolean processProperties = true;
 
-    /**
-     *
-     */
-    protected DeployStateManager _deployStateManager = null;
 
     /**
      *
@@ -205,22 +203,22 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     }
 
     /**
-     * Lazy initialization
+     *
+     */
+    private DeployStateManager _deployStateManager = null;
+
+    /**
      *
      * @return
      */
-    @Override
     public final Optional<DeployStateManager> getDeployStateManager() {
-        if (_deployStateManager ==null) {
-            _deployStateManager = initDeployStateManager().orElse(null);
-        }
         return ofNullable(_deployStateManager);
     }
 
     /**
      * initialize properties shared with template
      */
-    protected void initTemplateProperties(Site site) {
+    private void initTemplateProperties(Site site) {
 
         processProperties(site);
 
@@ -244,6 +242,21 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
 
     }
+
+    /**
+     *
+     * @param confluenceService
+     * @throws Exception
+     */
+    @Override
+    public void execute(ConfluenceService confluenceService) throws Exception {
+
+        // Init markdown Processor
+        MarkdownProcessor.shared.init();
+
+        _deployStateManager = initDeployStateManager().orElse(null);
+    }
+
     /**
      *
      * @param source
@@ -866,7 +879,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     }
 
     @Override
-    public Site createSiteFromFolder() {
+    public final Site createSiteFromFolder() {
 
         final Site result = new Site();
 
@@ -931,6 +944,51 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         }
 
         return result;
+    }
+
+    /**
+     *
+     * @return site
+     */
+    protected Site loadSite() {
+        Site site = createSiteFromModel(getSiteModelVariables());
+
+        if( site != null ) {
+
+            site.setBasedir(getSiteDescriptor().toPath());
+
+            if( site.getHome().getName()!=null ) {
+                setPageTitle( site.getHome().getName() );
+            }
+            else {
+                site.getHome().setName(getPageTitle());
+            }
+
+            java.util.List<String> _labels = getLabels();
+            if( !_labels.isEmpty() ) {
+                site.getLabels().addAll(_labels);
+            }
+        }
+        else {
+            site = createSiteFromFolder();
+
+            try {
+                final Path p = templateWiki.toPath();
+                site.setBasedir(p);
+            }
+            catch( Exception e ) {
+                site.setBasedir(getSiteDescriptor().toPath());
+            }
+
+        }
+
+        print( site, System.out );
+
+        site.setDefaultFileExt(getFileExt());
+
+        initTemplateProperties( site );
+
+        return site;
     }
 
 }

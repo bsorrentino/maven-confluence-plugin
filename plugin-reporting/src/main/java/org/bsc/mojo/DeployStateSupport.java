@@ -21,8 +21,6 @@ public interface DeployStateSupport {
 
     DeployStateInfo getDeployState();
 
-    Optional<DeployStateManager> getDeployStateManager();
-
     default Optional<DeployStateManager> initDeployStateManager() {
 
         if( !getDeployState().isActive() ) return empty();
