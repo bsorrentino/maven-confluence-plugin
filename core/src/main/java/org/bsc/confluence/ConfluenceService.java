@@ -186,15 +186,15 @@ public interface ConfluenceService extends Closeable{
 
     static long getConnectTimeout(TimeUnit timeUnit) {
         final long seconds = Long.valueOf(System.getProperty( connectTimeoutInSeconds, "10"));
-        return  TimeUnit.SECONDS.convert(seconds, timeUnit);
+        return  timeUnit.convert(seconds, TimeUnit.SECONDS);
     }
     static long getWriteTimeout(TimeUnit timeUnit) {
         final long seconds = Long.valueOf(System.getProperty( writeTimeoutInSeconds, "10"));
-        return  TimeUnit.SECONDS.convert(seconds, timeUnit);
+        return  timeUnit.convert(seconds, TimeUnit.SECONDS);
     }
     static long getReadTimeout(TimeUnit timeUnit) {
         final long seconds = Long.valueOf(System.getProperty( readTimeoutInSeconds, "10"));
-        return  TimeUnit.SECONDS.convert(seconds, timeUnit);
+        return  timeUnit.convert(seconds, TimeUnit.SECONDS);
     }
 
     static void setConnectTimeouts( long value, TimeUnit timeUnit) {
