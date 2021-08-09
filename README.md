@@ -25,6 +25,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 
  Date  | Release | Info   
 --- | --- | ---
+ **Aug 09, 2021** | [Release 7.3.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3.2) | Fix problem on resolution of [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256). see the PR [#257](https://github.com/bsorrentino/maven-confluence-plugin/pull/257) for details. Thanks to [qwazer](https://github.com/qwazer) for contribution
  **Aug 07, 2021** | [Release 7.3.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3.1) | Refer to  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) for details
  **Jul 31, 2021** | [Release 7.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3) | Refer to discussion [#247](https://github.com/bsorrentino/maven-confluence-plugin/discussions/247) for details
  **Jul 19, 2021** | [Release 7.2.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.2.1) | Refer to [#253](https://github.com/bsorrentino/maven-confluence-plugin/issues/253) for details

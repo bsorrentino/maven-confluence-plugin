@@ -8,6 +8,36 @@
 **move to next release**
 
 
+[f4594441d700a3c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4594441d700a3c) bsorrentino *2021-08-09 09:08:15*
+
+
+###  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) Too low default value for ReadTimeout and WriteTimeout for XmlRpcClient    *under verification*  
+
+**fix bug on solution provided in #256 - this solve also the PR #257**
+
+
+[8fcdd5a758a0102](https://github.com/bsorrentino/maven-confluence-plugin/commit/8fcdd5a758a0102) bsorrentino *2021-08-09 08:58:35*
+
+
+###  [#257](https://github.com/bsorrentino/maven-confluence-plugin/pull/257) convert seconds to milliseconds when configure XmlRpcClientConfigImpl  
+
+**fix bug on solution provided in #256 - this solve also the PR #257**
+
+
+[8fcdd5a758a0102](https://github.com/bsorrentino/maven-confluence-plugin/commit/8fcdd5a758a0102) bsorrentino *2021-08-09 08:58:35*
+
+
+## v7.3.1
+### Generic changes
+
+**update changelog**
+
+
+[4882997c65bf742](https://github.com/bsorrentino/maven-confluence-plugin/commit/4882997c65bf742) Build Pipeline *2021-08-07 09:09:25*
+
+**move to next release**
+
+
 [09b3b9ade9a922f](https://github.com/bsorrentino/maven-confluence-plugin/commit/09b3b9ade9a922f) Build Pipeline *2021-08-07 09:07:55*
 
 **update readme**
@@ -19,6 +49,35 @@
 
 
 [52a63a3ebfdea71](https://github.com/bsorrentino/maven-confluence-plugin/commit/52a63a3ebfdea71) bsorrentino *2021-08-06 10:08:31*
+
+**move to next development version**
+
+
+[96e83ee3341e04a](https://github.com/bsorrentino/maven-confluence-plugin/commit/96e83ee3341e04a) bsorrentino *2021-07-26 18:30:42*
+
+
+###  [#255](https://github.com/bsorrentino/maven-confluence-plugin/issues/255) Problem with markdown &#39;lists&#39; in confluence page generation    *bug*  
+
+**issue #255 - update unit test**
+
+
+[aebec40014f3273](https://github.com/bsorrentino/maven-confluence-plugin/commit/aebec40014f3273) bsorrentino *2021-07-28 16:12:18*
+
+**issue #255 - update for use of  commonmark to 0.17.0**
+
+
+[7fd5e86fea10c0c](https://github.com/bsorrentino/maven-confluence-plugin/commit/7fd5e86fea10c0c) bsorrentino *2021-07-28 16:11:57*
+
+**issue #255 - add newline after OrderList and BulletList only if it is not nested**
+
+
+[5d69b6895f975c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/5d69b6895f975c5) bsorrentino *2021-07-28 16:10:21*
+
+**issue #255**
+
+ * upgrade commonmark to 0.17.0
+
+[56a5091dd731b9a](https://github.com/bsorrentino/maven-confluence-plugin/commit/56a5091dd731b9a) bsorrentino *2021-07-28 16:05:51*
 
 
 ###  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) Too low default value for ReadTimeout and WriteTimeout for XmlRpcClient    *under verification*  
@@ -66,35 +125,6 @@
 
 
 [0284723f35e16fa](https://github.com/bsorrentino/maven-confluence-plugin/commit/0284723f35e16fa) bsorrentino *2021-07-26 18:35:07*
-
-**move to next development version**
-
-
-[96e83ee3341e04a](https://github.com/bsorrentino/maven-confluence-plugin/commit/96e83ee3341e04a) bsorrentino *2021-07-26 18:30:42*
-
-
-###  [#255](https://github.com/bsorrentino/maven-confluence-plugin/issues/255) Problem with markdown &#39;lists&#39; in confluence page generation    *bug*  
-
-**issue #255 - update unit test**
-
-
-[aebec40014f3273](https://github.com/bsorrentino/maven-confluence-plugin/commit/aebec40014f3273) bsorrentino *2021-07-28 16:12:18*
-
-**issue #255 - update for use of  commonmark to 0.17.0**
-
-
-[7fd5e86fea10c0c](https://github.com/bsorrentino/maven-confluence-plugin/commit/7fd5e86fea10c0c) bsorrentino *2021-07-28 16:11:57*
-
-**issue #255 - add newline after OrderList and BulletList only if it is not nested**
-
-
-[5d69b6895f975c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/5d69b6895f975c5) bsorrentino *2021-07-28 16:10:21*
-
-**issue #255**
-
- * upgrade commonmark to 0.17.0
-
-[56a5091dd731b9a](https://github.com/bsorrentino/maven-confluence-plugin/commit/56a5091dd731b9a) bsorrentino *2021-07-28 16:05:51*
 
 
 ## v7.2.1
