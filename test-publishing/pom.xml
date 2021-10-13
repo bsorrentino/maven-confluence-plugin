@@ -412,7 +412,7 @@
                     </execution>
                     <!--
                     mvn confluence-reporting:deploy@issue261
-                    mvn confluence-reporting:delete@issue245
+                    mvn confluence-reporting:delete@issue261
                     -->
                     <execution>
                         <id>issue261</id>
