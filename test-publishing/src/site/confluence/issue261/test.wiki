@@ -1,0 +1,12 @@
+h2. Hello world
+
+{warning}
+lorem ipsum
+{warning}
+
+
+nejaké špeciálne znaky?
+
+diakritika čučoriedka, soľ, žriebä
+
+„úvodzovky“
