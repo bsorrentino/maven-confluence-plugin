@@ -280,7 +280,7 @@
                 <plugin>
                     <groupId>se.bjurr.gitchangelog</groupId>
                     <artifactId>git-changelog-maven-plugin</artifactId>
-                    <version>1.78</version>
+                    <version>1.84</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
