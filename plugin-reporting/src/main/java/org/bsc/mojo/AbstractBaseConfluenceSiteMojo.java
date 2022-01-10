@@ -8,8 +8,11 @@ import org.bsc.confluence.model.Site;
 import org.bsc.confluence.model.SiteFactory;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
+
+import static org.bsc.confluence.model.SitePrinter.print;
 
 /**
  *
@@ -121,7 +124,7 @@ public abstract class AbstractBaseConfluenceSiteMojo extends AbstractBaseConflue
      * @return
      */
     @Override
-    public Site createSiteFromModel(Map<String, Object> variables) {
+    public final Site createSiteFromModel(Map<String, Object> variables) {
 
         if (!isSiteDescriptorValid()) {
             getLog().warn("siteDescriptor is missing!");
@@ -135,5 +138,6 @@ public abstract class AbstractBaseConfluenceSiteMojo extends AbstractBaseConflue
             return null;
         }
     }
+
 
 }

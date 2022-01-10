@@ -1,0 +1,8 @@
+home:
+  uri: issue261.md
+  parentPageTitle: "Home"
+  name: "Issue #261"
+
+  children:
+    - name: test wiki markup
+      uri: test.wiki

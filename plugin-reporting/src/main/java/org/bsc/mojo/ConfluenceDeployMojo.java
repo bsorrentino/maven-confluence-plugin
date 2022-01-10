@@ -219,46 +219,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     @Parameter( alias="markdownProcessor" )
     private MarkdownProcessorInfo markdownProcessorInfo = new MarkdownProcessorInfo();
 
-    /**
-     *
-     * @return site
-     */
-    private Site loadSite() {
-        Site site = super.createSiteFromModel(getSiteModelVariables());
-
-        if( site != null ) {
-
-            site.setBasedir(getSiteDescriptor().toPath());
-
-            if( site.getHome().getName()!=null ) {
-                setPageTitle( site.getHome().getName() );
-            }
-            else {
-                site.getHome().setName(getPageTitle());
-            }
-
-            java.util.List<String> _labels = getLabels();
-            if( !_labels.isEmpty() ) {
-                site.getLabels().addAll(_labels);
-            }
-        }
-        else {
-            site = super.createSiteFromFolder();
-
-            try {
-                final Path p = templateWiki.toPath();
-                site.setBasedir(p);
-            }
-            catch( Exception e ) {
-                site.setBasedir(getSiteDescriptor().toPath());
-            }
-
-        }
-
-        print( site, System.out );
-
-        return site;
-    }
 
     /**
      *
@@ -268,16 +228,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     @Override
     public void execute( ConfluenceService confluence ) throws Exception {
 
-        getLog().info(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
+        super.execute( confluence );
 
-        // Init markdown Processor
-        MarkdownProcessor.shared.init();
+        getLog().debug(format("executeReport isSnapshot = [%b] isRemoveSnapshots = [%b]", isSnapshot(), isRemoveSnapshots()));
 
         final Site site = loadSite();
-
-        site.setDefaultFileExt(getFileExt());
-
-        initTemplateProperties( site );
 
         final Locale parsedLocale = ofNullable(locale)
                                         .filter( l -> !l.isEmpty())
