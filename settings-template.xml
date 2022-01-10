@@ -35,9 +35,9 @@
                 <snapshot.repo.id>sonatype-server</snapshot.repo.id>
                 <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots/</snapshot.repo.url>
                 <release.repo.id>sonatype-server</release.repo.id>
-                <release.repo.url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</release.repo.url>
+                <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</release.repo.url>
                 <!--release.repo.url>http://oss.sonatype.org/content/repositories/releases</release.repo.url-->
-                <group.repo.url>http://oss.sonatype.org/content/groups/public/</group.repo.url>
+                <group.repo.url>https://oss.sonatype.org/content/groups/public/</group.repo.url>
             </properties>
 
             <repositories>
