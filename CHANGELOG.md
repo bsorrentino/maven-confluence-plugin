@@ -2,24 +2,123 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Next release
+## v7.4
 ### Generic changes
+
+**Merge branch 'release/7.4'**
+
+
+[35891a666918dc9](https://github.com/bsorrentino/maven-confluence-plugin/commit/35891a666918dc9) Build Pipeline *2022-01-10 14:43:38*
+
+**move to next release**
+
+
+[83f8aea3aa353ef](https://github.com/bsorrentino/maven-confluence-plugin/commit/83f8aea3aa353ef) Build Pipeline *2022-01-10 14:41:36*
+
+**update changelog plugin version**
+
+
+[814f3e14abd50b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/814f3e14abd50b0) Build Pipeline *2022-01-10 14:39:52*
+
+**Merge branch 'bugfix/issue261' into develop**
+
+
+[46430538b21c801](https://github.com/bsorrentino/maven-confluence-plugin/commit/46430538b21c801) Build Pipeline *2022-01-10 14:36:30*
+
+**issue #261**
+
+ * update the &#x27;minitemplator&#x27; dep to last release
+
+[ab3912ed9825ddc](https://github.com/bsorrentino/maven-confluence-plugin/commit/ab3912ed9825ddc) Build Pipeline *2022-01-10 14:32:44*
+
+**update(actions)**
+
+ * move to http to https
+
+[2157bae87bc8528](https://github.com/bsorrentino/maven-confluence-plugin/commit/2157bae87bc8528) Build Pipeline *2022-01-10 14:29:04*
+
+**issue #261**
+
+ * update the &#x27;minitemplator&#x27; dep to last development release
+
+[3646d7df8b1df8a](https://github.com/bsorrentino/maven-confluence-plugin/commit/3646d7df8b1df8a) Build Pipeline *2022-01-07 14:19:18*
+
+**clean(code)**
+
+
+[3855da9a3c4cb20](https://github.com/bsorrentino/maven-confluence-plugin/commit/3855da9a3c4cb20) bsorrentino *2021-10-13 15:14:29*
+
+**clean(code): update publish test**
+
+
+[d7b237b68c84e72](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7b237b68c84e72) bsorrentino *2021-10-13 15:04:05*
+
+**clean(code): update publish test**
+
+
+[5dcebfb443a5d1b](https://github.com/bsorrentino/maven-confluence-plugin/commit/5dcebfb443a5d1b) bsorrentino *2021-10-13 15:03:40*
+
+**test(issue): add test for issue #261**
+
+
+[85a4206c0b3d9ff](https://github.com/bsorrentino/maven-confluence-plugin/commit/85a4206c0b3d9ff) bsorrentino *2021-10-13 14:16:36*
+
+**task(build)**
+
+ * upgrade git-changelog-maven-plugin version -&gt; 1.78
+
+[4c7bcc47ec7dbfd](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c7bcc47ec7dbfd) bsorrentino *2021-10-12 10:53:14*
+
+**Merge tag 'v7.3.2' into develop**
+
+ * release that fix 7.3.1
+
+[e005473f63819b7](https://github.com/bsorrentino/maven-confluence-plugin/commit/e005473f63819b7) bsorrentino *2021-08-09 11:24:21*
+
+**Merge branch 'master' into develop**
+
+
+[fc179dee33da18f](https://github.com/bsorrentino/maven-confluence-plugin/commit/fc179dee33da18f) bsorrentino *2021-08-09 09:04:35*
+
+**clean code**
+
+
+[1481415a6503d81](https://github.com/bsorrentino/maven-confluence-plugin/commit/1481415a6503d81) Build Pipeline *2021-08-07 10:28:16*
+
+**move to next dev version**
+
+
+[c0aef8b34fd9199](https://github.com/bsorrentino/maven-confluence-plugin/commit/c0aef8b34fd9199) Build Pipeline *2021-08-07 10:25:30*
+
+**Merge tag 'v7.3.1' into develop**
+
+ * minor release 7.3.1
+
+[023018e74cccb69](https://github.com/bsorrentino/maven-confluence-plugin/commit/023018e74cccb69) Build Pipeline *2021-08-07 09:09:57*
+
+
+## v7.3.2
+### Generic changes
+
+**Merge branch 'hotfix/7.3.2'**
+
+
+[75f221b01c37bc0](https://github.com/bsorrentino/maven-confluence-plugin/commit/75f221b01c37bc0) bsorrentino *2021-08-09 11:19:43*
+
+**update documentation for new release**
+
+
+[6bd342e3b376838](https://github.com/bsorrentino/maven-confluence-plugin/commit/6bd342e3b376838) bsorrentino *2021-08-09 11:19:12*
 
 **move to next release**
 
 
 [f4594441d700a3c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4594441d700a3c) bsorrentino *2021-08-09 09:08:15*
 
-
-###  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) Too low default value for ReadTimeout and WriteTimeout for XmlRpcClient    *under verification*  
-
-**fix bug on solution provided in #256 - this solve also the PR #257**
+**Merge branch 'hotfix/256'**
 
 
-[8fcdd5a758a0102](https://github.com/bsorrentino/maven-confluence-plugin/commit/8fcdd5a758a0102) bsorrentino *2021-08-09 08:58:35*
-
-
-###  [#257](https://github.com/bsorrentino/maven-confluence-plugin/pull/257) convert seconds to milliseconds when configure XmlRpcClientConfigImpl  
+[ee1853902786134](https://github.com/bsorrentino/maven-confluence-plugin/commit/ee1853902786134) bsorrentino *2021-08-09 09:04:32*
 
 **fix bug on solution provided in #256 - this solve also the PR #257**
 
@@ -29,6 +128,11 @@
 
 ## v7.3.1
 ### Generic changes
+
+**Merge branch 'release/7.3.1'**
+
+
+[117a7a20e9b9944](https://github.com/bsorrentino/maven-confluence-plugin/commit/117a7a20e9b9944) Build Pipeline *2021-08-07 09:09:43*
 
 **update changelog**
 
@@ -50,13 +154,21 @@
 
 [52a63a3ebfdea71](https://github.com/bsorrentino/maven-confluence-plugin/commit/52a63a3ebfdea71) bsorrentino *2021-08-06 10:08:31*
 
-**move to next development version**
+**issue #256 - translate timeout in mills for XLMRPC protocol**
 
 
-[96e83ee3341e04a](https://github.com/bsorrentino/maven-confluence-plugin/commit/96e83ee3341e04a) bsorrentino *2021-07-26 18:30:42*
+[209e628e7deebdc](https://github.com/bsorrentino/maven-confluence-plugin/commit/209e628e7deebdc) bsorrentino *2021-08-06 10:05:26*
+
+**Merge tag 'v7.3' into develop**
+
+ * release 7.3
+
+[1580084ce4e6fe7](https://github.com/bsorrentino/maven-confluence-plugin/commit/1580084ce4e6fe7) bsorrentino *2021-07-31 16:43:04*
+
+**Merge branch 'bugfix/255' into develop**
 
 
-###  [#255](https://github.com/bsorrentino/maven-confluence-plugin/issues/255) Problem with markdown &#39;lists&#39; in confluence page generation    *bug*  
+[4ab33f25a04760c](https://github.com/bsorrentino/maven-confluence-plugin/commit/4ab33f25a04760c) bsorrentino *2021-07-28 16:13:53*
 
 **issue #255 - update unit test**
 
@@ -79,17 +191,30 @@
 
 [56a5091dd731b9a](https://github.com/bsorrentino/maven-confluence-plugin/commit/56a5091dd731b9a) bsorrentino *2021-07-28 16:05:51*
 
-
-###  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) Too low default value for ReadTimeout and WriteTimeout for XmlRpcClient    *under verification*  
-
-**issue #256 - translate timeout in mills for XLMRPC protocol**
+**Merge branch 'master' into develop**
 
 
-[209e628e7deebdc](https://github.com/bsorrentino/maven-confluence-plugin/commit/209e628e7deebdc) bsorrentino *2021-08-06 10:05:26*
+[a85d94c3e0ca575](https://github.com/bsorrentino/maven-confluence-plugin/commit/a85d94c3e0ca575) bsorrentino *2021-07-26 18:35:21*
+
+**move to next development version**
+
+
+[96e83ee3341e04a](https://github.com/bsorrentino/maven-confluence-plugin/commit/96e83ee3341e04a) bsorrentino *2021-07-26 18:30:42*
+
+**Merge tag 'v7.2.1' into develop**
+
+ * new minor release
+
+[59ae81b36f5090c](https://github.com/bsorrentino/maven-confluence-plugin/commit/59ae81b36f5090c) bsorrentino *2021-07-19 15:23:10*
 
 
 ## v7.3
 ### Generic changes
+
+**Merge branch 'release/7.3'**
+
+
+[82d62674cd10ad3](https://github.com/bsorrentino/maven-confluence-plugin/commit/82d62674cd10ad3) bsorrentino *2021-07-31 16:42:53*
 
 **update markdown test**
 
@@ -121,6 +246,11 @@
 
 [17eb45e7cfdb103](https://github.com/bsorrentino/maven-confluence-plugin/commit/17eb45e7cfdb103) bsorrentino *2021-07-31 16:06:14*
 
+**Merge branch 'hotfix/doc'**
+
+
+[3d2576f2e3a6c77](https://github.com/bsorrentino/maven-confluence-plugin/commit/3d2576f2e3a6c77) bsorrentino *2021-07-26 18:35:17*
+
 **update readme**
 
 
@@ -129,6 +259,11 @@
 
 ## v7.2.1
 ### Generic changes
+
+**Merge branch 'release/7.2.1'**
+
+
+[f4d6bd69bc6d293](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4d6bd69bc6d293) bsorrentino *2021-07-19 15:23:00*
 
 **update changelog**
 
@@ -145,10 +280,20 @@
 
 [175ec5dc4bbe3c2](https://github.com/bsorrentino/maven-confluence-plugin/commit/175ec5dc4bbe3c2) bsorrentino *2021-07-19 15:20:33*
 
+**Merge branch 'bugfix/issue253' into develop**
+
+
+[bbca44ffeea5f3d](https://github.com/bsorrentino/maven-confluence-plugin/commit/bbca44ffeea5f3d) bsorrentino *2021-07-19 15:15:46*
+
 **update warnin message**
 
 
 [834b27ab9e7e35a](https://github.com/bsorrentino/maven-confluence-plugin/commit/834b27ab9e7e35a) Build Pipeline *2021-07-15 14:48:45*
+
+**issue #253 - catch NPE on dependencies collector**
+
+
+[78c2eb29e51b5f1](https://github.com/bsorrentino/maven-confluence-plugin/commit/78c2eb29e51b5f1) Build Pipeline *2021-07-15 14:10:27*
 
 **add ConfluenceService Proxy for debug purpose**
 
@@ -170,17 +315,20 @@
 
 [3276b6af1f5c8e6](https://github.com/bsorrentino/maven-confluence-plugin/commit/3276b6af1f5c8e6) bsorrentino *2021-06-11 08:52:39*
 
+**Merge tag 'v7.2' into develop**
 
-###  [#253](https://github.com/bsorrentino/maven-confluence-plugin/issues/253) NullPointerException // error generating report    *under verification*  
+ * new release
 
-**issue #253 - catch NPE on dependencies collector**
-
-
-[78c2eb29e51b5f1](https://github.com/bsorrentino/maven-confluence-plugin/commit/78c2eb29e51b5f1) Build Pipeline *2021-07-15 14:10:27*
+[13ae8aae0518da4](https://github.com/bsorrentino/maven-confluence-plugin/commit/13ae8aae0518da4) bsorrentino *2021-06-10 09:46:53*
 
 
 ## v7.2
 ### Generic changes
+
+**Merge branch 'release/7.2'**
+
+
+[430211a648fc6e6](https://github.com/bsorrentino/maven-confluence-plugin/commit/430211a648fc6e6) bsorrentino *2021-06-10 09:46:42*
 
 **update changelog**
 
@@ -197,18 +345,10 @@
 
 [492e4eea3bf0b42](https://github.com/bsorrentino/maven-confluence-plugin/commit/492e4eea3bf0b42) bsorrentino *2021-06-10 09:18:21*
 
-**move to next develop version**
+**Merge branch 'feature/issue252' into develop**
 
 
-[c302540359443ae](https://github.com/bsorrentino/maven-confluence-plugin/commit/c302540359443ae) bsorrentino *2021-06-09 13:01:20*
-
-**update changelog**
-
-
-[e98ba924afd76d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e98ba924afd76d3) bsorrentino *2021-06-01 10:38:13*
-
-
-###  [#252](https://github.com/bsorrentino/maven-confluence-plugin/issues/252) add version in DeployStateManager extra attribute    *bug*  
+[6b8565ffa2ba174](https://github.com/bsorrentino/maven-confluence-plugin/commit/6b8565ffa2ba174) bsorrentino *2021-06-10 00:06:55*
 
 **issue #252 - add version increment**
 
@@ -220,9 +360,40 @@
 
 [24e1a0fc631adad](https://github.com/bsorrentino/maven-confluence-plugin/commit/24e1a0fc631adad) bsorrentino *2021-06-09 17:19:01*
 
+**move to next develop version**
+
+
+[c302540359443ae](https://github.com/bsorrentino/maven-confluence-plugin/commit/c302540359443ae) bsorrentino *2021-06-09 13:01:20*
+
+**Merge branch 'master' into develop**
+
+
+[f9785fa162e46e1](https://github.com/bsorrentino/maven-confluence-plugin/commit/f9785fa162e46e1) bsorrentino *2021-06-01 10:38:27*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[941caac6c725f05](https://github.com/bsorrentino/maven-confluence-plugin/commit/941caac6c725f05) bsorrentino *2021-06-01 10:38:25*
+
+**update changelog**
+
+
+[e98ba924afd76d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e98ba924afd76d3) bsorrentino *2021-06-01 10:38:13*
+
+**Merge tag 'v7.1' into develop**
+
+ * release 7.1
+
+[20494871d45bd50](https://github.com/bsorrentino/maven-confluence-plugin/commit/20494871d45bd50) bsorrentino *2021-06-01 10:36:11*
+
 
 ## v7.1
 ### Generic changes
+
+**Merge branch 'release/7.1'**
+
+
+[cd2d8aa7b59362f](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd2d8aa7b59362f) bsorrentino *2021-06-01 10:36:02*
 
 **update changelog**
 
@@ -249,17 +420,25 @@
 
 [85ba4801d1060f5](https://github.com/bsorrentino/maven-confluence-plugin/commit/85ba4801d1060f5) bsorrentino *2021-06-01 10:24:38*
 
-
-###  [#248](https://github.com/bsorrentino/maven-confluence-plugin/issues/248) Maven multi module project (error: generating report: processor&#39;s is already initialized!)    *bug*  
-
 **issue #248 - remove exception on multiple markdown processor initialization**
 
 
 [12b1c3d1111f8d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/12b1c3d1111f8d8) bsorrentino *2021-05-29 13:50:54*
 
+**Merge tag 'v7.0' into develop**
+
+ * release 7.0
+
+[e79f0f22b220125](https://github.com/bsorrentino/maven-confluence-plugin/commit/e79f0f22b220125) bsorrentino *2021-05-18 10:05:02*
+
 
 ## v7.0
 ### Generic changes
+
+**Merge branch 'release/7.0'**
+
+
+[cb2f22ac41f54aa](https://github.com/bsorrentino/maven-confluence-plugin/commit/cb2f22ac41f54aa) bsorrentino *2021-05-18 10:04:52*
 
 **prepare for release 7.0**
 
@@ -275,6 +454,26 @@
 
 
 [cd6bbd799f7a257](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd6bbd799f7a257) bsorrentino *2021-04-30 15:49:46*
+
+**Merge branch 'feature/issue250' into develop**
+
+
+[924e6d3e327be5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/924e6d3e327be5b) bsorrentino *2021-04-30 14:08:15*
+
+**issue #250 - clear deploystate on delete mojo**
+
+
+[7072c8741497450](https://github.com/bsorrentino/maven-confluence-plugin/commit/7072c8741497450) bsorrentino *2021-04-30 14:07:55*
+
+**issue #250 - clear deploystate on delete mojo**
+
+
+[77706af405a845b](https://github.com/bsorrentino/maven-confluence-plugin/commit/77706af405a845b) bsorrentino *2021-04-30 14:07:41*
+
+**Merge branch 'feature/improve_page_update_check' into develop**
+
+
+[d7b156709789fcc](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7b156709789fcc) bsorrentino *2021-04-30 10:08:46*
 
 **clean code**
 
@@ -311,6 +510,16 @@
 
 [a85d50509cc1646](https://github.com/bsorrentino/maven-confluence-plugin/commit/a85d50509cc1646) bsorrentino *2021-04-29 10:35:32*
 
+**Merge branch 'dependabot/maven/commons-io-commons-io-2.7' into develop**
+
+
+[8a18fd8d69dc36e](https://github.com/bsorrentino/maven-confluence-plugin/commit/8a18fd8d69dc36e) bsorrentino *2021-04-29 10:22:19*
+
+**Merge branch 'develop' into dependabot/maven/commons-io-commons-io-2.7**
+
+
+[cc13f3216d8c57d](https://github.com/bsorrentino/maven-confluence-plugin/commit/cc13f3216d8c57d) bsorrentino *2021-04-29 08:58:34*
+
 **Bump commons-io from 1.4 to 2.7**
 
  * Bumps commons-io from 1.4 to 2.7.
@@ -323,22 +532,20 @@
 
 [0ebafb77fbe056f](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ebafb77fbe056f) bsorrentino *2021-03-07 17:50:39*
 
+**Merge tag 'v7.0-rc2' into develop**
 
-###  [#250](https://github.com/bsorrentino/maven-confluence-plugin/issues/250) deleteMojo : remove deploy state file    *Task*  
+ * release 7.0-rc2
 
-**issue #250 - clear deploystate on delete mojo**
-
-
-[7072c8741497450](https://github.com/bsorrentino/maven-confluence-plugin/commit/7072c8741497450) bsorrentino *2021-04-30 14:07:55*
-
-**issue #250 - clear deploystate on delete mojo**
-
-
-[77706af405a845b](https://github.com/bsorrentino/maven-confluence-plugin/commit/77706af405a845b) bsorrentino *2021-04-30 14:07:41*
+[9f6e69feb284ccd](https://github.com/bsorrentino/maven-confluence-plugin/commit/9f6e69feb284ccd) bsorrentino *2021-03-07 17:47:56*
 
 
 ## v7.0-rc2
 ### Generic changes
+
+**Merge branch 'release/7.0-rc2'**
+
+
+[9cbee393b049cbd](https://github.com/bsorrentino/maven-confluence-plugin/commit/9cbee393b049cbd) bsorrentino *2021-03-07 17:47:34*
 
 **update readme**
 
@@ -360,6 +567,21 @@
 
 [2e70827f3f9c7d6](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e70827f3f9c7d6) bsorrentino *2021-02-17 11:10:23*
 
+**issue #245 - Improved code to load content from classpath. Test refinements**
+
+
+[6c470fc5545741f](https://github.com/bsorrentino/maven-confluence-plugin/commit/6c470fc5545741f) bsorrentino *2021-02-14 20:20:07*
+
+**Merge branch 'master' into develop**
+
+
+[c338e665ad53e33](https://github.com/bsorrentino/maven-confluence-plugin/commit/c338e665ad53e33) bsorrentino *2021-02-11 19:20:32*
+
+**Merge branch 'hotfix/actions'**
+
+
+[d0b27d616f4a5eb](https://github.com/bsorrentino/maven-confluence-plugin/commit/d0b27d616f4a5eb) bsorrentino *2021-02-11 19:20:29*
+
 **update actions**
 
 
@@ -370,6 +592,16 @@
 
 [da74ad4680dcd96](https://github.com/bsorrentino/maven-confluence-plugin/commit/da74ad4680dcd96) bsorrentino *2021-02-11 19:16:57*
 
+**Merge branch 'master' into develop**
+
+
+[95d6f21cf27970e](https://github.com/bsorrentino/maven-confluence-plugin/commit/95d6f21cf27970e) bsorrentino *2021-02-11 19:15:45*
+
+**Merge branch 'hotfix/actions'**
+
+
+[74961269438bfaf](https://github.com/bsorrentino/maven-confluence-plugin/commit/74961269438bfaf) bsorrentino *2021-02-11 19:15:42*
+
 **update actions**
 
 
@@ -379,6 +611,22 @@
 
 
 [58963e711ed6fc3](https://github.com/bsorrentino/maven-confluence-plugin/commit/58963e711ed6fc3) bsorrentino *2021-02-11 19:04:30*
+
+**Merge tag 'v7.0-rc1' into develop**
+
+ * new release
+
+[5705e857e3f44ce](https://github.com/bsorrentino/maven-confluence-plugin/commit/5705e857e3f44ce) bsorrentino *2021-02-11 18:57:03*
+
+**issue #244 - fixed export packages (Java9 Modules)**
+
+
+[60ddbdca06b1958](https://github.com/bsorrentino/maven-confluence-plugin/commit/60ddbdca06b1958) bsorrentino *2021-02-11 16:57:16*
+
+**issue #244 - fixed export packages (Java9 Modules)**
+
+
+[688bfe292a07690](https://github.com/bsorrentino/maven-confluence-plugin/commit/688bfe292a07690) bsorrentino *2021-02-11 16:57:07*
 
 **update actions**
 
@@ -400,31 +648,10 @@
 
 [76828e6f91bf45d](https://github.com/bsorrentino/maven-confluence-plugin/commit/76828e6f91bf45d) bsorrentino *2021-02-11 16:27:56*
 
-**moved to development version**
+**Merge branch 'feature/issue244' into develop**
 
 
-[fac21e2520efd65](https://github.com/bsorrentino/maven-confluence-plugin/commit/fac21e2520efd65) Build Pipeline *2021-02-10 16:10:50*
-
-
-###  [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224) make java.util.ServiceLoader works properly in Java9    *bug*  
-
-**issue #244 - make freemarker preprocessor module compliant with JDK9 (refers to issue #224)**
-
-
-[76c7434e57edf11](https://github.com/bsorrentino/maven-confluence-plugin/commit/76c7434e57edf11) bsorrentino *2021-02-11 11:25:39*
-
-
-###  [#244](https://github.com/bsorrentino/maven-confluence-plugin/issues/244) site processor maven-confluence-processor-freemarker doesn&#39;t work on 7.0-beta2    *bug*  
-
-**issue #244 - fixed export packages (Java9 Modules)**
-
-
-[60ddbdca06b1958](https://github.com/bsorrentino/maven-confluence-plugin/commit/60ddbdca06b1958) bsorrentino *2021-02-11 16:57:16*
-
-**issue #244 - fixed export packages (Java9 Modules)**
-
-
-[688bfe292a07690](https://github.com/bsorrentino/maven-confluence-plugin/commit/688bfe292a07690) bsorrentino *2021-02-11 16:57:07*
+[e47aa5986632391](https://github.com/bsorrentino/maven-confluence-plugin/commit/e47aa5986632391) bsorrentino *2021-02-11 14:34:50*
 
 **issue #244 - Updated test for freemarker**
 
@@ -436,17 +663,25 @@
 
 [76c7434e57edf11](https://github.com/bsorrentino/maven-confluence-plugin/commit/76c7434e57edf11) bsorrentino *2021-02-11 11:25:39*
 
-
-###  [#245](https://github.com/bsorrentino/maven-confluence-plugin/issues/245) npe when children uri from classpath    *bug*  
-
-**issue #245 - Improved code to load content from classpath. Test refinements**
+**moved to development version**
 
 
-[6c470fc5545741f](https://github.com/bsorrentino/maven-confluence-plugin/commit/6c470fc5545741f) bsorrentino *2021-02-14 20:20:07*
+[fac21e2520efd65](https://github.com/bsorrentino/maven-confluence-plugin/commit/fac21e2520efd65) Build Pipeline *2021-02-10 16:10:50*
+
+**Merge tag 'v7.0-beta2' into develop**
+
+ * new release
+
+[8773b19f1c7255e](https://github.com/bsorrentino/maven-confluence-plugin/commit/8773b19f1c7255e) bsorrentino *2021-02-09 16:53:05*
 
 
 ## v7.0-rc1
 ### Generic changes
+
+**Merge branch 'release/7.0-rc1'**
+
+
+[9325ab997628d50](https://github.com/bsorrentino/maven-confluence-plugin/commit/9325ab997628d50) bsorrentino *2021-02-11 18:56:53*
 
 **changelog updated**
 
@@ -476,6 +711,11 @@
 
 ## v7.0-beta2
 ### Generic changes
+
+**Merge branch 'release/7.0-beta2'**
+
+
+[7941563e8368a0f](https://github.com/bsorrentino/maven-confluence-plugin/commit/7941563e8368a0f) bsorrentino *2021-02-09 16:52:54*
 
 **update readme**
 
@@ -507,79 +747,20 @@
 
 [93ba4523d31df4e](https://github.com/bsorrentino/maven-confluence-plugin/commit/93ba4523d31df4e) bsorrentino *2021-02-07 15:33:23*
 
-**clean code**
+**Merge branch 'feature/issue242' into develop**
 
 
-[e04a3c705d635ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/e04a3c705d635ed) bsorrentino *2021-01-31 22:23:08*
+[10e791a322a7ca1](https://github.com/bsorrentino/maven-confluence-plugin/commit/10e791a322a7ca1) bsorrentino *2021-02-07 15:21:50*
 
-**remove exportPage method from ConfluenceService**
-
-
-[630f872dc2c367c](https://github.com/bsorrentino/maven-confluence-plugin/commit/630f872dc2c367c) bsorrentino *2021-01-31 18:15:21*
-
-**remove exportPage method from ConfluenceService**
+**Merge branch '3a04huk-bugfix/#242-add-i18n-to-renderers' into feature/issue242**
 
 
-[2add1ab75968649](https://github.com/bsorrentino/maven-confluence-plugin/commit/2add1ab75968649) bsorrentino *2021-01-31 18:15:09*
+[d2ba9118f6c58d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/d2ba9118f6c58d1) bsorrentino *2021-02-07 15:20:32*
 
-**initialized java.util.logging default level**
-
-
-[582623e62ce23bc](https://github.com/bsorrentino/maven-confluence-plugin/commit/582623e62ce23bc) bsorrentino *2021-01-27 18:53:27*
-
-**added defaultFileExt attribute to Site model**
-
- * clean code
-
-[e9b65a608deb2bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/e9b65a608deb2bd) bsorrentino *2021-01-22 19:05:53*
-
-**optimized attachments pubblication process making check for skip faster**
+**Merge branch 'develop' into issue241**
 
 
-[bc9a95b41f7a570](https://github.com/bsorrentino/maven-confluence-plugin/commit/bc9a95b41f7a570) bsorrentino *2021-01-22 16:30:26*
-
-**created: shell script to deploy site to github pages**
-
-
-[a3f400d74ebe379](https://github.com/bsorrentino/maven-confluence-plugin/commit/a3f400d74ebe379) bsorrentino *2020-01-03 18:03:40*
-
-**disable docs job**
-
-
-[ecdd02cebe345ce](https://github.com/bsorrentino/maven-confluence-plugin/commit/ecdd02cebe345ce) bsorrentino *2020-01-03 17:18:08*
-
-**update deploy.yaml**
-
-
-[58bf8fd34be0300](https://github.com/bsorrentino/maven-confluence-plugin/commit/58bf8fd34be0300) bsorrentino *2020-01-03 17:12:21*
-
-**update deploy.yaml**
-
-
-[fae49d9c13aadc9](https://github.com/bsorrentino/maven-confluence-plugin/commit/fae49d9c13aadc9) bsorrentino *2020-01-03 17:04:20*
-
-**update deploy.yaml**
-
-
-[d26c1cecf2996a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/d26c1cecf2996a5) bsorrentino *2020-01-03 17:00:41*
-
-**update deploy.yaml**
-
-
-[815ec06f0809840](https://github.com/bsorrentino/maven-confluence-plugin/commit/815ec06f0809840) bsorrentino *2020-01-03 16:51:22*
-
-**update deploy.yaml**
-
-
-[7c4804db8e30d8e](https://github.com/bsorrentino/maven-confluence-plugin/commit/7c4804db8e30d8e) bsorrentino *2020-01-03 16:43:09*
-
-**moved to next developer release**
-
-
-[7e1409d99f2c410](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e1409d99f2c410) bsorrentino *2020-01-03 16:29:54*
-
-
-###  [#239](https://github.com/bsorrentino/maven-confluence-plugin/issues/239) Support new version of site model that skip home definition    *enhancement*  *on hold*  
+[aabaa571dace224](https://github.com/bsorrentino/maven-confluence-plugin/commit/aabaa571dace224) bsorrentino *2021-02-07 14:44:28*
 
 **issue #239 - updated mojo timeout property names**
 
@@ -596,15 +777,40 @@
 
 [c2c30d1aabdf9bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2c30d1aabdf9bb) bsorrentino *2021-02-07 12:27:27*
 
+**issue #339 - moved httpclient dep in xmlrpc module**
+
+
+[dd7cc15a15e7fce](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd7cc15a15e7fce) bsorrentino *2021-02-07 12:25:46*
+
+**issue #241 - removed confluence service classes from core**
+
+
+[3903423485a7a13](https://github.com/bsorrentino/maven-confluence-plugin/commit/3903423485a7a13) bsorrentino *2021-02-07 12:25:24*
+
+**issue #241 - added module rest and xmlrpc to better manage service layer**
+
+
+[aee5fa602d6b488](https://github.com/bsorrentino/maven-confluence-plugin/commit/aee5fa602d6b488) bsorrentino *2021-02-07 12:20:44*
+
 **issue #239 - added module rest and xmlrpc to better manage service layer**
 
 
 [1e7bab24ef0a95e](https://github.com/bsorrentino/maven-confluence-plugin/commit/1e7bab24ef0a95e) bsorrentino *2021-02-07 12:16:11*
 
+**fix issue #242**
+
+
+[2f2ca0f784fabf6](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f2ca0f784fabf6) 3a04huk *2021-02-07 11:54:27*
+
 **issue #239 - updated mojo timeout property names**
 
 
 [aef9cea8c862568](https://github.com/bsorrentino/maven-confluence-plugin/commit/aef9cea8c862568) bsorrentino *2021-02-07 11:46:37*
+
+**Merge branch 'feature/issue239' into develop**
+
+
+[ee903c062c7719a](https://github.com/bsorrentino/maven-confluence-plugin/commit/ee903c062c7719a) bsorrentino *2021-02-07 11:36:05*
 
 **issue #239 - added parameters to mojos**
 
@@ -615,6 +821,11 @@
 
 
 [d1346acb2f22475](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1346acb2f22475) bsorrentino *2021-02-07 11:34:30*
+
+**issue #339 - moved httpclient dep in xmlrpc module**
+
+
+[20cda6a28efd409](https://github.com/bsorrentino/maven-confluence-plugin/commit/20cda6a28efd409) bsorrentino *2021-02-06 19:14:27*
 
 **issue #239 - added module rest and xmlrpc to better manage service layer**
 
@@ -641,81 +852,182 @@
 
 [d659e9b0d32bb35](https://github.com/bsorrentino/maven-confluence-plugin/commit/d659e9b0d32bb35) Build Pipeline *2021-02-04 18:22:15*
 
+**clean code**
 
-###  [#240](https://github.com/bsorrentino/maven-confluence-plugin/issues/240) add the &quot;page id&quot; to the deploy history(state) manager     *enhancement*  
+
+[e04a3c705d635ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/e04a3c705d635ed) bsorrentino *2021-01-31 22:23:08*
+
+**Merge branch 'feature/export_refactoring' into develop**
+
+
+[2ce83d4a5929d29](https://github.com/bsorrentino/maven-confluence-plugin/commit/2ce83d4a5929d29) bsorrentino *2021-01-31 18:15:34*
+
+**remove exportPage method from ConfluenceService**
+
+
+[630f872dc2c367c](https://github.com/bsorrentino/maven-confluence-plugin/commit/630f872dc2c367c) bsorrentino *2021-01-31 18:15:21*
+
+**remove exportPage method from ConfluenceService**
+
+
+[2add1ab75968649](https://github.com/bsorrentino/maven-confluence-plugin/commit/2add1ab75968649) bsorrentino *2021-01-31 18:15:09*
+
+**Merge branch 'feature/issue240' into develop**
+
+
+[69a30384c959ea7](https://github.com/bsorrentino/maven-confluence-plugin/commit/69a30384c959ea7) bsorrentino *2021-01-27 19:05:34*
 
 **issue #240 - Updated DeployStateManager to manage extra attribute in addition to 'hash'**
 
 
 [3d93f3ce6b6bc09](https://github.com/bsorrentino/maven-confluence-plugin/commit/3d93f3ce6b6bc09) bsorrentino *2021-01-27 18:56:14*
 
+**initialized java.util.logging default level**
+
+
+[582623e62ce23bc](https://github.com/bsorrentino/maven-confluence-plugin/commit/582623e62ce23bc) bsorrentino *2021-01-27 18:53:27*
+
 **issue #240 - Updated DeployStateManager to manage directly Page and Attachment instead of URI**
 
 
 [0fb6a40c5853029](https://github.com/bsorrentino/maven-confluence-plugin/commit/0fb6a40c5853029) bsorrentino *2021-01-26 22:32:32*
 
+**added defaultFileExt attribute to Site model**
 
-###  [#241](https://github.com/bsorrentino/maven-confluence-plugin/issues/241) Increase socket timeout    *enhancement*  
+ * clean code
 
-**issue #241 - removed confluence service classes from core**
+[e9b65a608deb2bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/e9b65a608deb2bd) bsorrentino *2021-01-22 19:05:53*
 
-
-[3903423485a7a13](https://github.com/bsorrentino/maven-confluence-plugin/commit/3903423485a7a13) bsorrentino *2021-02-07 12:25:24*
-
-**issue #241 - added module rest and xmlrpc to better manage service layer**
+**optimized attachments pubblication process making check for skip faster**
 
 
-[aee5fa602d6b488](https://github.com/bsorrentino/maven-confluence-plugin/commit/aee5fa602d6b488) bsorrentino *2021-02-07 12:20:44*
+[bc9a95b41f7a570](https://github.com/bsorrentino/maven-confluence-plugin/commit/bc9a95b41f7a570) bsorrentino *2021-01-22 16:30:26*
+
+**Merge branch 'master' into develop**
 
 
-###  [#242](https://github.com/bsorrentino/maven-confluence-plugin/issues/242) add i18n titles to ProjectSummaryRenderer and ScmRenderer    *bug*  
+[21ec2d43b416ce9](https://github.com/bsorrentino/maven-confluence-plugin/commit/21ec2d43b416ce9) bsorrentino *2021-01-03 18:10:12*
 
-**fix issue #242**
-
-
-[2f2ca0f784fabf6](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f2ca0f784fabf6) 3a04huk *2021-02-07 11:54:27*
+**Merge branch 'hotfix/site'**
 
 
-### GitHub #339   
+[e1b39e61f309fff](https://github.com/bsorrentino/maven-confluence-plugin/commit/e1b39e61f309fff) bsorrentino *2021-01-03 18:10:07*
 
-**issue #339 - moved httpclient dep in xmlrpc module**
-
-
-[dd7cc15a15e7fce](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd7cc15a15e7fce) bsorrentino *2021-02-07 12:25:46*
-
-**issue #339 - moved httpclient dep in xmlrpc module**
+**created: shell script to deploy site to github pages**
 
 
-[20cda6a28efd409](https://github.com/bsorrentino/maven-confluence-plugin/commit/20cda6a28efd409) bsorrentino *2021-02-06 19:14:27*
+[a3f400d74ebe379](https://github.com/bsorrentino/maven-confluence-plugin/commit/a3f400d74ebe379) bsorrentino *2021-01-03 18:03:40*
+
+**Merge branch 'master' into develop**
+
+
+[6f4fdc89e361aea](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f4fdc89e361aea) bsorrentino *2021-01-03 17:22:23*
+
+**Merge branch 'hotfix/actions'**
+
+
+[432d115e24948f4](https://github.com/bsorrentino/maven-confluence-plugin/commit/432d115e24948f4) bsorrentino *2021-01-03 17:22:21*
+
+**Merge remote-tracking branch 'origin/master'**
+
+
+[1647f5b9a325185](https://github.com/bsorrentino/maven-confluence-plugin/commit/1647f5b9a325185) bsorrentino *2021-01-03 17:22:16*
+
+**Merge remote-tracking branch 'origin/master' into hotfix/actions**
+
+
+[d0d938b97405241](https://github.com/bsorrentino/maven-confluence-plugin/commit/d0d938b97405241) bsorrentino *2021-01-03 17:21:20*
+
+**Merge branch 'master' into develop**
+
+
+[46ebd471dbdf852](https://github.com/bsorrentino/maven-confluence-plugin/commit/46ebd471dbdf852) bsorrentino *2021-01-03 17:18:48*
+
+**Merge branch 'hotfix/actions'**
+
+
+[8751cfa50f77e88](https://github.com/bsorrentino/maven-confluence-plugin/commit/8751cfa50f77e88) bsorrentino *2021-01-03 17:18:45*
+
+**disable docs job**
+
+
+[ecdd02cebe345ce](https://github.com/bsorrentino/maven-confluence-plugin/commit/ecdd02cebe345ce) bsorrentino *2021-01-03 17:18:08*
+
+**update deploy.yaml**
+
+
+[58bf8fd34be0300](https://github.com/bsorrentino/maven-confluence-plugin/commit/58bf8fd34be0300) bsorrentino *2021-01-03 17:12:21*
+
+**update deploy.yaml**
+
+
+[fae49d9c13aadc9](https://github.com/bsorrentino/maven-confluence-plugin/commit/fae49d9c13aadc9) bsorrentino *2021-01-03 17:04:20*
+
+**update deploy.yaml**
+
+
+[d26c1cecf2996a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/d26c1cecf2996a5) bsorrentino *2021-01-03 17:00:41*
+
+**update deploy.yaml**
+
+
+[815ec06f0809840](https://github.com/bsorrentino/maven-confluence-plugin/commit/815ec06f0809840) bsorrentino *2021-01-03 16:51:22*
+
+**Merge pull request #237 from bsorrentino/bsorrentino-patch-1**
+
+ * update deploy.yaml
+
+[5e587b9a7bba55f](https://github.com/bsorrentino/maven-confluence-plugin/commit/5e587b9a7bba55f) bsorrentino *2021-01-03 16:47:16*
+
+**update deploy.yaml**
+
+
+[7c4804db8e30d8e](https://github.com/bsorrentino/maven-confluence-plugin/commit/7c4804db8e30d8e) bsorrentino *2021-01-03 16:43:09*
+
+**moved to next developer release**
+
+
+[7e1409d99f2c410](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e1409d99f2c410) bsorrentino *2021-01-03 16:29:54*
+
+**Merge tag 'v7.0-beta1' into develop**
+
+ * new candidate release
+
+[858bb2fce522525](https://github.com/bsorrentino/maven-confluence-plugin/commit/858bb2fce522525) bsorrentino *2021-01-03 16:28:58*
 
 
 ## v7.0-beta1
 ### Generic changes
 
+**Merge branch 'release/7.0-beta1'**
+
+
+[5f8388cbdc7ae15](https://github.com/bsorrentino/maven-confluence-plugin/commit/5f8388cbdc7ae15) bsorrentino *2021-01-03 16:28:41*
+
 **update changelog**
 
 
-[01ce7a875a5539e](https://github.com/bsorrentino/maven-confluence-plugin/commit/01ce7a875a5539e) bsorrentino *2020-01-03 16:28:12*
+[01ce7a875a5539e](https://github.com/bsorrentino/maven-confluence-plugin/commit/01ce7a875a5539e) bsorrentino *2021-01-03 16:28:12*
 
 **updated documentation**
 
 
-[6177b384190b04e](https://github.com/bsorrentino/maven-confluence-plugin/commit/6177b384190b04e) bsorrentino *2020-01-03 16:27:47*
+[6177b384190b04e](https://github.com/bsorrentino/maven-confluence-plugin/commit/6177b384190b04e) bsorrentino *2021-01-03 16:27:47*
 
 **add action for deploy new version to sonatype server**
 
 
-[f0af742eded5f48](https://github.com/bsorrentino/maven-confluence-plugin/commit/f0af742eded5f48) bsorrentino *2020-01-03 16:27:25*
+[f0af742eded5f48](https://github.com/bsorrentino/maven-confluence-plugin/commit/f0af742eded5f48) bsorrentino *2021-01-03 16:27:25*
 
 **add action for deploy new version to sonatype server**
 
 
-[d62168c8eea976b](https://github.com/bsorrentino/maven-confluence-plugin/commit/d62168c8eea976b) bsorrentino *2020-01-03 14:04:29*
+[d62168c8eea976b](https://github.com/bsorrentino/maven-confluence-plugin/commit/d62168c8eea976b) bsorrentino *2021-01-03 14:04:29*
 
 **updated version to the next release**
 
 
-[01fb3e278f6a71a](https://github.com/bsorrentino/maven-confluence-plugin/commit/01fb3e278f6a71a) bsorrentino *2020-01-03 13:50:30*
+[01fb3e278f6a71a](https://github.com/bsorrentino/maven-confluence-plugin/commit/01fb3e278f6a71a) bsorrentino *2021-01-03 13:50:30*
 
 **clean code**
 
@@ -726,6 +1038,11 @@
 
 
 [b648dd0507f3db0](https://github.com/bsorrentino/maven-confluence-plugin/commit/b648dd0507f3db0) bsorrentino *2020-12-14 18:55:44*
+
+**issue #224 - fixed load markdown processor lifecycle**
+
+
+[d3958c3ad9a0547](https://github.com/bsorrentino/maven-confluence-plugin/commit/d3958c3ad9a0547) bsorrentino *2020-12-14 10:04:15*
 
 **added: action compiles on jdk 9**
 
@@ -778,38 +1095,15 @@
 
 [b53c05a073451ff](https://github.com/bsorrentino/maven-confluence-plugin/commit/b53c05a073451ff) bsorrentino *2020-12-13 21:33:29*
 
+**Merge branch 'feature/issue224' into develop**
+
+
+[f1bca73df88a025](https://github.com/bsorrentino/maven-confluence-plugin/commit/f1bca73df88a025) bsorrentino *2020-12-13 21:23:01*
+
 **clean code**
 
 
 [7e1917a0471cd6a](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e1917a0471cd6a) bsorrentino *2020-12-13 21:22:55*
-
-**fixed problem on delete when home.name attribute in site is not set**
-
-
-[1680a5dc0527eb1](https://github.com/bsorrentino/maven-confluence-plugin/commit/1680a5dc0527eb1) bsorrentino *2020-12-13 19:30:04*
-
-**pegdown processor is removed by build - end of support**
-
-
-[829fc2da16510ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/829fc2da16510ed) bsorrentino *2020-12-12 11:43:23*
-
-**update changelog**
-
-
-[e5567affd120a1c](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5567affd120a1c) bsorrentino *2020-12-11 19:56:45*
-
-**move to next development version**
-
-
-[23de6c44ec10aeb](https://github.com/bsorrentino/maven-confluence-plugin/commit/23de6c44ec10aeb) bsorrentino *2020-12-11 19:25:22*
-
-
-###  [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224) make java.util.ServiceLoader works properly in Java9    *bug*  
-
-**issue #224 - fixed load markdown processor lifecycle**
-
-
-[d3958c3ad9a0547](https://github.com/bsorrentino/maven-confluence-plugin/commit/d3958c3ad9a0547) bsorrentino *2020-12-14 10:04:15*
 
 **issue #224 - Removed jaxb-xml-impl in favour of jackson-xml-impl**
 
@@ -821,19 +1115,60 @@
 
 [40a402a072dc73d](https://github.com/bsorrentino/maven-confluence-plugin/commit/40a402a072dc73d) bsorrentino *2020-12-13 19:33:16*
 
+**fixed problem on delete when home.name attribute in site is not set**
+
+
+[1680a5dc0527eb1](https://github.com/bsorrentino/maven-confluence-plugin/commit/1680a5dc0527eb1) bsorrentino *2020-12-13 19:30:04*
+
 **issue #224 - Added support for java9 module**
 
 
 [229cbc511025784](https://github.com/bsorrentino/maven-confluence-plugin/commit/229cbc511025784) bsorrentino *2020-12-12 14:48:56*
+
+**pegdown processor is removed by build - end of support**
+
+
+[829fc2da16510ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/829fc2da16510ed) bsorrentino *2020-12-12 11:43:23*
 
 **issue #224 - Added support of java9 module**
 
 
 [88fb15d1fd52087](https://github.com/bsorrentino/maven-confluence-plugin/commit/88fb15d1fd52087) bsorrentino *2020-12-12 11:38:17*
 
+**Merge branch 'master' into develop**
+
+
+[92557b8c61811ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/92557b8c61811ec) bsorrentino *2020-12-11 19:56:58*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[4f234a8c71efac9](https://github.com/bsorrentino/maven-confluence-plugin/commit/4f234a8c71efac9) bsorrentino *2020-12-11 19:56:55*
+
+**update changelog**
+
+
+[e5567affd120a1c](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5567affd120a1c) bsorrentino *2020-12-11 19:56:45*
+
+**move to next development version**
+
+
+[23de6c44ec10aeb](https://github.com/bsorrentino/maven-confluence-plugin/commit/23de6c44ec10aeb) bsorrentino *2020-12-11 19:25:22*
+
+**Merge tag 'v6.20' into develop**
+
+ * new release 6.20
+
+[436d2f39f315428](https://github.com/bsorrentino/maven-confluence-plugin/commit/436d2f39f315428) bsorrentino *2020-12-11 19:21:42*
+
 
 ## v6.20
 ### Generic changes
+
+**Merge branch 'release/6.20'**
+
+
+[97ca7a83d23b4b5](https://github.com/bsorrentino/maven-confluence-plugin/commit/97ca7a83d23b4b5) bsorrentino *2020-12-11 19:21:28*
 
 **update site publish message**
 
@@ -845,11 +1180,51 @@
 
 [ce66f9024e2fb92](https://github.com/bsorrentino/maven-confluence-plugin/commit/ce66f9024e2fb92) bsorrentino *2020-12-11 18:52:21*
 
+**issue #235 - update site documentation**
+
+
+[67c687bc064425d](https://github.com/bsorrentino/maven-confluence-plugin/commit/67c687bc064425d) bsorrentino *2020-12-11 18:40:44*
+
+**issue #235 - fix problem with indented macro**
+
+
+[d4f9253a5aafe7f](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4f9253a5aafe7f) bsorrentino *2020-12-11 17:19:14*
+
+**issue #235 - unit test refinements**
+
+
+[4381bc94014cb86](https://github.com/bsorrentino/maven-confluence-plugin/commit/4381bc94014cb86) bsorrentino *2020-12-11 16:31:59*
+
+**Merge branch 'feature/issue235' into develop**
+
+
+[1ca53d8ef6025bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/1ca53d8ef6025bb) bsorrentino *2020-12-11 14:12:44*
+
+**Merge branch 'develop' into feature/issue235**
+
+
+[d306781cce04ac3](https://github.com/bsorrentino/maven-confluence-plugin/commit/d306781cce04ac3) bsorrentino *2020-12-11 14:09:52*
+
+**Merge branch 'master' into develop**
+
+
+[63644f7658d9af6](https://github.com/bsorrentino/maven-confluence-plugin/commit/63644f7658d9af6) bsorrentino *2020-12-11 14:08:36*
+
+**Merge branch 'hotfix/doc'**
+
+
+[c5b5fef8a56facf](https://github.com/bsorrentino/maven-confluence-plugin/commit/c5b5fef8a56facf) bsorrentino *2020-12-11 14:08:33*
+
 **updated changelog**
 
  * updated readme
 
 [2ca1d0dcfb98fa8](https://github.com/bsorrentino/maven-confluence-plugin/commit/2ca1d0dcfb98fa8) bsorrentino *2020-12-11 14:08:01*
+
+**issue #235 - added support of declaring confluence macro inside html comment. Removed confluence macro detection skipping the escaping of markdown text**
+
+
+[957a048c046c94b](https://github.com/bsorrentino/maven-confluence-plugin/commit/957a048c046c94b) bsorrentino *2020-12-11 14:01:55*
 
 **add confluence {chidren} macro support**
 
@@ -906,6 +1281,11 @@
 
 [85a8b170bbadf96](https://github.com/bsorrentino/maven-confluence-plugin/commit/85a8b170bbadf96) bsorrentino *2020-11-26 16:59:38*
 
+**Merge branch 'feature/newlayout' into develop**
+
+
+[09d87b5425841ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/09d87b5425841ec) bsorrentino *2020-11-26 16:34:34*
+
 **update pipeline**
 
 
@@ -942,37 +1322,40 @@
 
 [ae08d17763354d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/ae08d17763354d3) bsorrentino *2020-11-03 10:06:33*
 
+**Merge tag 'v6.11' into develop**
 
-###  [#235](https://github.com/bsorrentino/maven-confluence-plugin/issues/235) Find a consistent way to add &quot;confluence macro&quot; to markdown     *enhancement*  
+ * merge PR #230 #231 #232
 
-**issue #235 - update site documentation**
-
-
-[67c687bc064425d](https://github.com/bsorrentino/maven-confluence-plugin/commit/67c687bc064425d) bsorrentino *2020-12-11 18:40:44*
-
-**issue #235 - fix problem with indented macro**
-
-
-[d4f9253a5aafe7f](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4f9253a5aafe7f) bsorrentino *2020-12-11 17:19:14*
-
-**issue #235 - unit test refinements**
-
-
-[4381bc94014cb86](https://github.com/bsorrentino/maven-confluence-plugin/commit/4381bc94014cb86) bsorrentino *2020-12-11 16:31:59*
-
-**issue #235 - added support of declaring confluence macro inside html comment. Removed confluence macro detection skipping the escaping of markdown text**
-
-
-[957a048c046c94b](https://github.com/bsorrentino/maven-confluence-plugin/commit/957a048c046c94b) bsorrentino *2020-12-11 14:01:55*
+[3a35f3773b1696d](https://github.com/bsorrentino/maven-confluence-plugin/commit/3a35f3773b1696d) bartolomeo sorrentino *2020-11-02 10:36:59*
 
 
 ## v6.11
 ### Generic changes
 
+**Merge branch 'release/6.11'**
+
+
+[961c57c3da75228](https://github.com/bsorrentino/maven-confluence-plugin/commit/961c57c3da75228) bartolomeo sorrentino *2020-11-02 10:36:29*
+
 **move to next release**
 
 
 [7f3eca2a2197142](https://github.com/bsorrentino/maven-confluence-plugin/commit/7f3eca2a2197142) bartolomeo sorrentino *2020-11-02 10:34:32*
+
+**Merge branch 'dependabot/maven/junit-junit-4.13.1' into release/6.11**
+
+
+[ae3afeeabea367d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ae3afeeabea367d) bartolomeo sorrentino *2020-11-02 10:25:00*
+
+**Merge branch 'dependabot/maven/maven-confluence-itest/src/test/resources/simple-plugin-project/junit-junit-4.13.1' into release/6.11**
+
+
+[52b9bbb9c67658b](https://github.com/bsorrentino/maven-confluence-plugin/commit/52b9bbb9c67658b) bartolomeo sorrentino *2020-11-02 10:24:04*
+
+**Merge branch 'dependabot/maven/maven-confluence-itest/src/test/resources/plugin-project-goals-in-subpage/junit-junit-4.13.1' into release/6.11**
+
+
+[8afb392a2b87420](https://github.com/bsorrentino/maven-confluence-plugin/commit/8afb392a2b87420) bartolomeo sorrentino *2020-11-02 10:22:57*
 
 **Bump junit from 4.12 to 4.13.1**
 
@@ -1004,22 +1387,45 @@
 
 [c8c7efeab6bae49](https://github.com/bsorrentino/maven-confluence-plugin/commit/c8c7efeab6bae49) dependabot[bot] *2020-10-12 17:51:36*
 
-**update changelog**
+**Merge remote-tracking branch 'origin/develop' into develop**
 
 
-[df7b5ce5b1ee24e](https://github.com/bsorrentino/maven-confluence-plugin/commit/df7b5ce5b1ee24e) bsorrentino *2020-09-25 18:22:27*
-
-
-###  [#227](https://github.com/bsorrentino/maven-confluence-plugin/issues/227) relative link breaks deployment on Confluence Cloud    *bug*  *under verification*  *wait for feedback*  
+[dbf22cbe711812c](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbf22cbe711812c) bartolomeo sorrentino *2020-10-06 09:36:57*
 
 **verified issue #227**
 
 
 [91a1d4555ae2e41](https://github.com/bsorrentino/maven-confluence-plugin/commit/91a1d4555ae2e41) bartolomeo sorrentino *2020-10-06 09:36:13*
 
+**Merge branch 'master' into develop**
+
+
+[a3b08507759dc5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/a3b08507759dc5b) bsorrentino *2020-09-25 18:22:40*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[6c553d15ddaf063](https://github.com/bsorrentino/maven-confluence-plugin/commit/6c553d15ddaf063) bsorrentino *2020-09-25 18:22:37*
+
+**update changelog**
+
+
+[df7b5ce5b1ee24e](https://github.com/bsorrentino/maven-confluence-plugin/commit/df7b5ce5b1ee24e) bsorrentino *2020-09-25 18:22:27*
+
+**Merge tag 'v6.10' into develop**
+
+ * fix issue #229
+
+[e54c04f1b9ecc9f](https://github.com/bsorrentino/maven-confluence-plugin/commit/e54c04f1b9ecc9f) bartolomeo sorrentino *2020-09-25 18:06:23*
+
 
 ## v6.10
 ### Generic changes
+
+**Merge branch 'release/6.10'**
+
+
+[66fdc36852092fe](https://github.com/bsorrentino/maven-confluence-plugin/commit/66fdc36852092fe) bartolomeo sorrentino *2020-09-25 18:06:04*
 
 **update readme**
 
@@ -1031,15 +1437,36 @@
 
 [8b7996a20f3367d](https://github.com/bsorrentino/maven-confluence-plugin/commit/8b7996a20f3367d) bartolomeo sorrentino *2020-09-25 17:16:01*
 
+**#229 - fix storage format extension name**
+
+
+[ed270f5de9afe15](https://github.com/bsorrentino/maven-confluence-plugin/commit/ed270f5de9afe15) bartolomeo sorrentino *2020-09-25 17:12:58*
+
 **move to next development version**
 
 
 [0dfd70e94e8d08c](https://github.com/bsorrentino/maven-confluence-plugin/commit/0dfd70e94e8d08c) bsorrentino *2020-09-23 09:33:24*
 
+**Merge branch 'master' into develop**
+
+
+[2df75e4eb3ebcd1](https://github.com/bsorrentino/maven-confluence-plugin/commit/2df75e4eb3ebcd1) bsorrentino *2020-09-19 20:13:52*
+
+**Merge branch 'hotfix/doc'**
+
+
+[0cc33ae62526e68](https://github.com/bsorrentino/maven-confluence-plugin/commit/0cc33ae62526e68) bsorrentino *2020-09-19 20:13:49*
+
 **update changelog**
 
 
 [925ba432a77c557](https://github.com/bsorrentino/maven-confluence-plugin/commit/925ba432a77c557) bsorrentino *2020-09-19 20:13:38*
+
+**Merge tag 'v6.9.1' into develop**
+
+ * new release
+
+[d7cf412af0c5d49](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7cf412af0c5d49) bsorrentino *2020-09-19 20:08:48*
 
 **move to next development version**
 
@@ -1047,16 +1474,13 @@
 [c464f8c0d626aac](https://github.com/bsorrentino/maven-confluence-plugin/commit/c464f8c0d626aac) bsorrentino *2020-08-20 08:42:46*
 
 
-###  [#229](https://github.com/bsorrentino/maven-confluence-plugin/issues/229) Storage format (.xhtml) are not correctly rendered     *bug*  *under working*  
-
-**#229 - fix storage format extension name**
-
-
-[ed270f5de9afe15](https://github.com/bsorrentino/maven-confluence-plugin/commit/ed270f5de9afe15) bartolomeo sorrentino *2020-09-25 17:12:58*
-
-
 ## v6.9.1
 ### Generic changes
+
+**Merge branch 'release/6.9.1'**
+
+
+[8128f1530c42037](https://github.com/bsorrentino/maven-confluence-plugin/commit/8128f1530c42037) bsorrentino *2020-09-19 20:05:35*
 
 **update changelog**
 
@@ -1073,28 +1497,10 @@
 
 [7749f60f448dd2c](https://github.com/bsorrentino/maven-confluence-plugin/commit/7749f60f448dd2c) bartolomeo sorrentino *2020-09-18 12:42:54*
 
-**clean code**
+**Merge branch 'feature/issue226' into develop**
 
 
-[2b943e409b02ac6](https://github.com/bsorrentino/maven-confluence-plugin/commit/2b943e409b02ac6) bartolomeo sorrentino *2020-09-15 19:30:39*
-
-**move to next developer version**
-
-
-[9f822b01392899b](https://github.com/bsorrentino/maven-confluence-plugin/commit/9f822b01392899b) bartolomeo sorrentino *2020-09-15 18:38:55*
-
-**update readme**
-
-
-[25e09f337afdd24](https://github.com/bsorrentino/maven-confluence-plugin/commit/25e09f337afdd24) bsorrentino *2020-08-05 17:19:15*
-
-**update readme**
-
-
-[0e76d6cc28896bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/0e76d6cc28896bd) bsorrentino *2020-08-05 17:05:07*
-
-
-###  [#226](https://github.com/bsorrentino/maven-confluence-plugin/issues/226) links are not rendered correctly when link name contains []    *bug*  *under working*  
+[354ca265cd7e592](https://github.com/bsorrentino/maven-confluence-plugin/commit/354ca265cd7e592) bartolomeo sorrentino *2020-09-18 12:16:41*
 
 **#226 refine unit test and integration test**
 
@@ -1116,14 +1522,65 @@
 
 [38a0122fab44402](https://github.com/bsorrentino/maven-confluence-plugin/commit/38a0122fab44402) bartolomeo sorrentino *2020-09-15 19:31:11*
 
+**clean code**
+
+
+[2b943e409b02ac6](https://github.com/bsorrentino/maven-confluence-plugin/commit/2b943e409b02ac6) bartolomeo sorrentino *2020-09-15 19:30:39*
+
+**move to next developer version**
+
+
+[9f822b01392899b](https://github.com/bsorrentino/maven-confluence-plugin/commit/9f822b01392899b) bartolomeo sorrentino *2020-09-15 18:38:55*
+
 **#226 - add escaping method 'escapeMarkdownText' and add related unit tests**
 
 
 [b8c49ca37c612c2](https://github.com/bsorrentino/maven-confluence-plugin/commit/b8c49ca37c612c2) bartolomeo sorrentino *2020-09-15 18:35:57*
 
+**Merge branch 'master' into develop**
+
+
+[d88f9de043b9074](https://github.com/bsorrentino/maven-confluence-plugin/commit/d88f9de043b9074) bsorrentino *2020-08-05 17:19:28*
+
+**Merge branch 'hotfix/doc'**
+
+
+[3a122f806b6a870](https://github.com/bsorrentino/maven-confluence-plugin/commit/3a122f806b6a870) bsorrentino *2020-08-05 17:19:25*
+
+**update readme**
+
+
+[25e09f337afdd24](https://github.com/bsorrentino/maven-confluence-plugin/commit/25e09f337afdd24) bsorrentino *2020-08-05 17:19:15*
+
+**Merge branch 'master' into develop**
+
+
+[f470a61e30da27c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f470a61e30da27c) bsorrentino *2020-08-05 17:05:23*
+
+**Merge branch 'hotfix/doc'**
+
+
+[720ff5d8a5d5fde](https://github.com/bsorrentino/maven-confluence-plugin/commit/720ff5d8a5d5fde) bsorrentino *2020-08-05 17:05:20*
+
+**update readme**
+
+
+[0e76d6cc28896bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/0e76d6cc28896bd) bsorrentino *2020-08-05 17:05:07*
+
+**Merge tag 'v6.9' into develop**
+
+ * new release 6.9
+
+[0609d36989dc41e](https://github.com/bsorrentino/maven-confluence-plugin/commit/0609d36989dc41e) bsorrentino *2020-08-05 16:58:52*
+
 
 ## v6.9
 ### Generic changes
+
+**Merge branch 'release/6.9'**
+
+
+[c490a431c4569d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/c490a431c4569d1) bsorrentino *2020-08-05 16:58:22*
 
 **update changelog**
 
@@ -1134,6 +1591,21 @@
 
 
 [8123a1d1d9a6d14](https://github.com/bsorrentino/maven-confluence-plugin/commit/8123a1d1d9a6d14) bsorrentino *2020-08-05 16:51:59*
+
+**Merge branch 'feature/issue223' into develop**
+
+
+[0c6543ae238c6a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/0c6543ae238c6a4) bartolomeo sorrentino *2020-08-04 15:07:04*
+
+**issue #223 - add tests**
+
+
+[81ed60d94219067](https://github.com/bsorrentino/maven-confluence-plugin/commit/81ed60d94219067) bartolomeo sorrentino *2020-08-04 15:00:33*
+
+**issue #223 - fix scrollversions creation page flow**
+
+
+[174fabf94fbe574](https://github.com/bsorrentino/maven-confluence-plugin/commit/174fabf94fbe574) bartolomeo sorrentino *2020-08-04 15:00:13*
 
 **clean code**
 
@@ -1170,27 +1642,30 @@
 
 [9a20cd5666f551d](https://github.com/bsorrentino/maven-confluence-plugin/commit/9a20cd5666f551d) bartolomeo sorrentino *2020-07-05 15:01:42*
 
+**Merge remote-tracking branch 'origin/develop' into develop**
+
+
+[c466295c7f48d60](https://github.com/bsorrentino/maven-confluence-plugin/commit/c466295c7f48d60) bartolomeo sorrentino *2020-07-05 14:58:09*
+
 **update plugin tools version**
 
 
 [923315ddb03bcf0](https://github.com/bsorrentino/maven-confluence-plugin/commit/923315ddb03bcf0) bartolomeo sorrentino *2020-07-05 14:57:59*
 
+**Merge tag 'v6.9-rc2' into develop**
 
-###  [#223](https://github.com/bsorrentino/maven-confluence-plugin/issues/223) Failure to publish page with Scroll Versions if page doesn&#39;t exist yet    *bug*  
+ * release version 6.9-rc2
 
-**issue #223 - add tests**
-
-
-[81ed60d94219067](https://github.com/bsorrentino/maven-confluence-plugin/commit/81ed60d94219067) bartolomeo sorrentino *2020-08-04 15:00:33*
-
-**issue #223 - fix scrollversions creation page flow**
-
-
-[174fabf94fbe574](https://github.com/bsorrentino/maven-confluence-plugin/commit/174fabf94fbe574) bartolomeo sorrentino *2020-08-04 15:00:13*
+[4dc506a5c613c2b](https://github.com/bsorrentino/maven-confluence-plugin/commit/4dc506a5c613c2b) bsorrentino *2020-07-05 14:56:27*
 
 
 ## v6.9-rc2
 ### Generic changes
+
+**Merge branch 'release/6.9-rc2'**
+
+
+[dcc060e399f1783](https://github.com/bsorrentino/maven-confluence-plugin/commit/dcc060e399f1783) bsorrentino *2020-07-05 14:55:55*
 
 **update for new release**
 
@@ -1201,6 +1676,11 @@
 
 
 [6b754fd2b45f948](https://github.com/bsorrentino/maven-confluence-plugin/commit/6b754fd2b45f948) bartolomeo sorrentino *2020-07-05 13:56:43*
+
+**Merge branch 'feature/rest_improvement' into develop**
+
+
+[0995000fd0329fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/0995000fd0329fd) bartolomeo sorrentino *2020-07-05 13:50:43*
 
 **update test**
 
@@ -1232,11 +1712,26 @@
 
 [42482138af885b8](https://github.com/bsorrentino/maven-confluence-plugin/commit/42482138af885b8) bartolomeo sorrentino *2020-06-29 22:31:54*
 
+**Merge branch 'mr-corso-master' into develop**
+
+
+[4c7d5ac790d8a34](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c7d5ac790d8a34) bartolomeo sorrentino *2020-06-29 15:49:21*
+
 **Update markdown_processor_guide.md**
 
  * fix plugin example formatting
 
 [f1c7b9b7c39f80d](https://github.com/bsorrentino/maven-confluence-plugin/commit/f1c7b9b7c39f80d) Busygin Andrey *2020-06-25 16:20:53*
+
+**merge PR #220**
+
+
+[f3d59e9e042ee9c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f3d59e9e042ee9c) bartolomeo sorrentino *2020-06-21 11:30:19*
+
+**Merge branch 'dependabot/maven/maven-confluence-core/com.fasterxml.jackson.core-jackson-databind-2.10.0.pr1' into develop**
+
+
+[469ec493546eae2](https://github.com/bsorrentino/maven-confluence-plugin/commit/469ec493546eae2) bartolomeo sorrentino *2020-06-21 11:15:05*
 
 **move to next development version**
 
@@ -1251,6 +1746,12 @@
  * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
 
 [bcb35dfd3a3fdd1](https://github.com/bsorrentino/maven-confluence-plugin/commit/bcb35dfd3a3fdd1) dependabot[bot] *2020-06-19 15:31:08*
+
+**Merge tag 'v6.9-rc1' into develop**
+
+ * release candidate 1
+
+[76f1473d566ced6](https://github.com/bsorrentino/maven-confluence-plugin/commit/76f1473d566ced6) bartolomeo sorrentino *2020-06-19 15:29:56*
 
 **clean code**
 
@@ -1292,68 +1793,15 @@
 
 [983eb1664c44eac](https://github.com/bsorrentino/maven-confluence-plugin/commit/983eb1664c44eac) bartolomeo sorrentino *2020-06-15 22:04:31*
 
-**enable kotlin compiler for source code**
-
-
-[7d2798f3dedef50](https://github.com/bsorrentino/maven-confluence-plugin/commit/7d2798f3dedef50) bartolomeo sorrentino *2020-06-10 07:43:59*
-
-**clean code**
-
-
-[3c7e72600033a3c](https://github.com/bsorrentino/maven-confluence-plugin/commit/3c7e72600033a3c) bartolomeo sorrentino *2020-06-09 18:58:56*
-
-**remove deprecated getSource() method**
-
-
-[651d8b9d03591fc](https://github.com/bsorrentino/maven-confluence-plugin/commit/651d8b9d03591fc) bartolomeo sorrentino *2020-06-09 12:25:53*
-
-**clean code**
-
-
-[1f5e3e0c21ffdbd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1f5e3e0c21ffdbd) bartolomeo sorrentino *2020-05-27 15:02:07*
-
-**move unit test to kotlin**
-
-
-[236ce3ab9e8c292](https://github.com/bsorrentino/maven-confluence-plugin/commit/236ce3ab9e8c292) bartolomeo sorrentino *2020-05-16 14:16:24*
-
-**define a new ID class to uniform confluence ID type**
-
-
-[5156acb7cd4646e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5156acb7cd4646e) bartolomeo sorrentino *2020-05-16 13:56:21*
-
-**unit test to kotlin**
-
-
-[b796cc29a8b0460](https://github.com/bsorrentino/maven-confluence-plugin/commit/b796cc29a8b0460) bartolomeo sorrentino *2020-05-16 10:46:41*
-
-**move unit test to kotlin**
-
-
-[50e5702eab2b6b7](https://github.com/bsorrentino/maven-confluence-plugin/commit/50e5702eab2b6b7) bartolomeo sorrentino *2020-05-11 18:51:38*
-
-**remove Tuple2 replaced by specific class**
-
-
-[4db4fe785464f14](https://github.com/bsorrentino/maven-confluence-plugin/commit/4db4fe785464f14) bartolomeo sorrentino *2020-05-11 18:51:01*
-
-**move unit test to kotlin**
-
-
-[2706da0d61d1b87](https://github.com/bsorrentino/maven-confluence-plugin/commit/2706da0d61d1b87) bsorrentino *2020-05-09 11:39:27*
-
-**update development version**
-
-
-[1172c2288c2e2a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/1172c2288c2e2a5) bartolomeo sorrentino *2020-05-05 16:29:47*
-
-
-###  [#219](https://github.com/bsorrentino/maven-confluence-plugin/issues/219) Can&#39;t create a blogpost    *enhancement*  
-
 **issue #219 - allow blog pubblication from the maven cli**
 
 
 [d295ff7ce7d2d23](https://github.com/bsorrentino/maven-confluence-plugin/commit/d295ff7ce7d2d23) bartolomeo sorrentino *2020-06-15 21:48:10*
+
+**Merge branch 'feature/issue219' into develop**
+
+
+[249ce8c7ec03197](https://github.com/bsorrentino/maven-confluence-plugin/commit/249ce8c7ec03197) bartolomeo sorrentino *2020-06-15 18:00:54*
 
 **issue #219 - finalize implementation**
 
@@ -1395,6 +1843,16 @@
 
 [7ac839d62972716](https://github.com/bsorrentino/maven-confluence-plugin/commit/7ac839d62972716) bartolomeo sorrentino *2020-06-10 14:20:49*
 
+**Merge branch 'develop' into feature/issue219**
+
+
+[76e30041bcd89ad](https://github.com/bsorrentino/maven-confluence-plugin/commit/76e30041bcd89ad) bartolomeo sorrentino *2020-06-10 07:44:19*
+
+**enable kotlin compiler for source code**
+
+
+[7d2798f3dedef50](https://github.com/bsorrentino/maven-confluence-plugin/commit/7d2798f3dedef50) bartolomeo sorrentino *2020-06-10 07:43:59*
+
 **issue #219 - fix compiler error**
 
 
@@ -1405,17 +1863,75 @@
 
 [ccd0ff1ef02dd80](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccd0ff1ef02dd80) bartolomeo sorrentino *2020-06-09 21:14:21*
 
-
-###  [#220](https://github.com/bsorrentino/maven-confluence-plugin/pull/220) Bump jackson-databind from 2.9.10.4 to 2.10.0.pr1 in /maven-confluence-core    *dependencies*  
-
-**merge PR #220**
+**clean code**
 
 
-[f3d59e9e042ee9c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f3d59e9e042ee9c) bartolomeo sorrentino *2020-06-21 11:30:19*
+[3c7e72600033a3c](https://github.com/bsorrentino/maven-confluence-plugin/commit/3c7e72600033a3c) bartolomeo sorrentino *2020-06-09 18:58:56*
+
+**remove deprecated getSource() method**
+
+
+[651d8b9d03591fc](https://github.com/bsorrentino/maven-confluence-plugin/commit/651d8b9d03591fc) bartolomeo sorrentino *2020-06-09 12:25:53*
+
+**clean code**
+
+
+[1f5e3e0c21ffdbd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1f5e3e0c21ffdbd) bartolomeo sorrentino *2020-05-27 15:02:07*
+
+**Merge branch 'master' into develop**
+
+
+[e1fd35b8951f552](https://github.com/bsorrentino/maven-confluence-plugin/commit/e1fd35b8951f552) bartolomeo sorrentino *2020-05-27 13:34:39*
+
+**move unit test to kotlin**
+
+
+[236ce3ab9e8c292](https://github.com/bsorrentino/maven-confluence-plugin/commit/236ce3ab9e8c292) bartolomeo sorrentino *2020-05-16 14:16:24*
+
+**define a new ID class to uniform confluence ID type**
+
+
+[5156acb7cd4646e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5156acb7cd4646e) bartolomeo sorrentino *2020-05-16 13:56:21*
+
+**unit test to kotlin**
+
+
+[b796cc29a8b0460](https://github.com/bsorrentino/maven-confluence-plugin/commit/b796cc29a8b0460) bartolomeo sorrentino *2020-05-16 10:46:41*
+
+**move unit test to kotlin**
+
+
+[50e5702eab2b6b7](https://github.com/bsorrentino/maven-confluence-plugin/commit/50e5702eab2b6b7) bartolomeo sorrentino *2020-05-11 18:51:38*
+
+**remove Tuple2 replaced by specific class**
+
+
+[4db4fe785464f14](https://github.com/bsorrentino/maven-confluence-plugin/commit/4db4fe785464f14) bartolomeo sorrentino *2020-05-11 18:51:01*
+
+**move unit test to kotlin**
+
+
+[2706da0d61d1b87](https://github.com/bsorrentino/maven-confluence-plugin/commit/2706da0d61d1b87) bsorrentino *2020-05-09 11:39:27*
+
+**update development version**
+
+
+[1172c2288c2e2a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/1172c2288c2e2a5) bartolomeo sorrentino *2020-05-05 16:29:47*
+
+**Merge tag 'v6.9-beta1' into develop**
+
+ * release 6.9-beta1
+
+[bfe191fd9d8fa7b](https://github.com/bsorrentino/maven-confluence-plugin/commit/bfe191fd9d8fa7b) bartolomeo sorrentino *2020-05-05 16:28:42*
 
 
 ## v6.9-rc1
 ### Generic changes
+
+**Merge branch 'release/6.9-rc1'**
+
+
+[c9a80f50929c621](https://github.com/bsorrentino/maven-confluence-plugin/commit/c9a80f50929c621) bartolomeo sorrentino *2020-06-19 15:29:31*
 
 **update changelog**
 
@@ -1496,6 +2012,11 @@
 ## v6.9-beta1
 ### Generic changes
 
+**Merge branch 'release/6.9-beta1'**
+
+
+[e552170ee5d7f0f](https://github.com/bsorrentino/maven-confluence-plugin/commit/e552170ee5d7f0f) bartolomeo sorrentino *2020-05-05 16:28:29*
+
 **update documentation**
 
 
@@ -1532,10 +2053,57 @@
 
 [a167e13da508072](https://github.com/bsorrentino/maven-confluence-plugin/commit/a167e13da508072) bartolomeo sorrentino *2020-05-03 21:13:07*
 
+**Merge branch 'feature/issue#217' into develop**
+
+
+[5c14295fd3705ef](https://github.com/bsorrentino/maven-confluence-plugin/commit/5c14295fd3705ef) bartolomeo sorrentino *2020-05-03 18:47:47*
+
 **clean code**
 
 
 [3d85611c7432780](https://github.com/bsorrentino/maven-confluence-plugin/commit/3d85611c7432780) bartolomeo sorrentino *2020-05-03 18:45:38*
+
+**issue #217 - update test**
+
+
+[42e1a3c2915aa77](https://github.com/bsorrentino/maven-confluence-plugin/commit/42e1a3c2915aa77) bartolomeo sorrentino *2020-05-03 18:45:21*
+
+**issue #217 - add remove page implementation**
+
+
+[2740f59c44924b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/2740f59c44924b0) bartolomeo sorrentino *2020-05-03 18:44:32*
+
+**issue #217 - update integration test**
+
+
+[14ecb6d0d3d67ca](https://github.com/bsorrentino/maven-confluence-plugin/commit/14ecb6d0d3d67ca) bartolomeo sorrentino *2020-05-03 11:45:31*
+
+**issue #217 - change ScrollVersions implementation**
+
+
+[7acdad3fb5ef3f6](https://github.com/bsorrentino/maven-confluence-plugin/commit/7acdad3fb5ef3f6) bartolomeo sorrentino *2020-05-03 11:44:53*
+
+**issue #217 - xml schema updated**
+
+
+[25049f9be6e69b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/25049f9be6e69b0) bartolomeo sorrentino *2020-05-03 11:43:37*
+
+**issue #217 - xml schema updated**
+
+ * - deprecated &#x27;parent-page&#x27; added &#x27;parentPage&#x27; instead
+ * - deprecated &#x27;parent-page-id&#x27; added &#x27;parentPageId&#x27; instead
+
+[e6bd05ea91bd7a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/e6bd05ea91bd7a5) bartolomeo sorrentino *2020-05-03 11:42:32*
+
+**issue #217 - xml schema updated - deprecated 'ignore-variables' added 'ignoreVariables' instead**
+
+
+[869d0973d9dd9d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/869d0973d9dd9d0) bartolomeo sorrentino *2020-05-03 11:27:36*
+
+**issue #217 refactor scrollversions addon implementation**
+
+
+[b42494b2b9a1c78](https://github.com/bsorrentino/maven-confluence-plugin/commit/b42494b2b9a1c78) bartolomeo sorrentino *2020-05-02 08:07:30*
 
 **continue to move toward CompletableFuture**
 
@@ -1602,6 +2170,16 @@
 
 [f4b28b9d06b6d4f](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4b28b9d06b6d4f) bartolomeo sorrentino *2020-04-27 14:04:33*
 
+**Merge branch 'master' into develop**
+
+
+[3813bcf7d378f6a](https://github.com/bsorrentino/maven-confluence-plugin/commit/3813bcf7d378f6a) bartolomeo sorrentino *2020-04-27 10:53:06*
+
+**Merge branch 'hotfix/doc'**
+
+
+[ea0d2b6d57978e5](https://github.com/bsorrentino/maven-confluence-plugin/commit/ea0d2b6d57978e5) bartolomeo sorrentino *2020-04-27 10:53:02*
+
 **update readme**
 
 
@@ -1627,54 +2205,20 @@
 
 [2fd87f8ce6581ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/2fd87f8ce6581ed) bsorrentino *2020-04-26 18:16:48*
 
+**Merge tag 'v6.8' into develop**
 
-###  [#217](https://github.com/bsorrentino/maven-confluence-plugin/issues/217) try to improve the scroll-versions addon performance    *enhancement*  
+ * release 6.8 - markdown processor support
 
-**issue #217 - update test**
-
-
-[42e1a3c2915aa77](https://github.com/bsorrentino/maven-confluence-plugin/commit/42e1a3c2915aa77) bartolomeo sorrentino *2020-05-03 18:45:21*
-
-**issue #217 - add remove page implementation**
-
-
-[2740f59c44924b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/2740f59c44924b0) bartolomeo sorrentino *2020-05-03 18:44:32*
-
-**issue #217 - update integration test**
-
-
-[14ecb6d0d3d67ca](https://github.com/bsorrentino/maven-confluence-plugin/commit/14ecb6d0d3d67ca) bartolomeo sorrentino *2020-05-03 11:45:31*
-
-**issue #217 - change ScrollVersions implementation**
-
-
-[7acdad3fb5ef3f6](https://github.com/bsorrentino/maven-confluence-plugin/commit/7acdad3fb5ef3f6) bartolomeo sorrentino *2020-05-03 11:44:53*
-
-**issue #217 - xml schema updated**
-
-
-[25049f9be6e69b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/25049f9be6e69b0) bartolomeo sorrentino *2020-05-03 11:43:37*
-
-**issue #217 - xml schema updated**
-
- * - deprecated &#39;parent-page&#39; added &#39;parentPage&#39; instead
- * - deprecated &#39;parent-page-id&#39; added &#39;parentPageId&#39; instead
-
-[e6bd05ea91bd7a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/e6bd05ea91bd7a5) bartolomeo sorrentino *2020-05-03 11:42:32*
-
-**issue #217 - xml schema updated - deprecated 'ignore-variables' added 'ignoreVariables' instead**
-
-
-[869d0973d9dd9d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/869d0973d9dd9d0) bartolomeo sorrentino *2020-05-03 11:27:36*
-
-**issue #217 refactor scrollversions addon implementation**
-
-
-[b42494b2b9a1c78](https://github.com/bsorrentino/maven-confluence-plugin/commit/b42494b2b9a1c78) bartolomeo sorrentino *2020-05-02 08:07:30*
+[5c65964fccc4a84](https://github.com/bsorrentino/maven-confluence-plugin/commit/5c65964fccc4a84) bsorrentino *2020-04-26 10:01:39*
 
 
 ## v6.8
 ### Generic changes
+
+**Merge branch 'release/6.8'**
+
+
+[3008d948a307e89](https://github.com/bsorrentino/maven-confluence-plugin/commit/3008d948a307e89) bsorrentino *2020-04-26 10:01:15*
 
 **upgrade version, update documentation and changelog**
 
@@ -1686,217 +2230,10 @@
 
 [4e2ec2204b1b7a1](https://github.com/bsorrentino/maven-confluence-plugin/commit/4e2ec2204b1b7a1) bartolomeo sorrentino *2020-04-25 17:49:35*
 
-**update markdown doc**
+**Merge branch 'feature/issue#215' into develop**
 
 
-[08bca6adec04aa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/08bca6adec04aa9) bartolomeo sorrentino *2020-04-25 17:28:33*
-
-**clean code**
-
-
-[73d0931ed13fbde](https://github.com/bsorrentino/maven-confluence-plugin/commit/73d0931ed13fbde) bartolomeo sorrentino *2020-04-24 18:46:55*
-
-**charset refinements**
-
-
-[96d93947845019f](https://github.com/bsorrentino/maven-confluence-plugin/commit/96d93947845019f) bartolomeo sorrentino *2020-04-24 18:08:01*
-
-**merge pom from develop**
-
-
-[25d2245136080c6](https://github.com/bsorrentino/maven-confluence-plugin/commit/25d2245136080c6) bartolomeo sorrentino *2020-04-24 13:17:30*
-
-**move plugin-test project in the root directory**
-
-
-[1b66eb08486a13f](https://github.com/bsorrentino/maven-confluence-plugin/commit/1b66eb08486a13f) bartolomeo sorrentino *2020-04-23 14:47:10*
-
-**move plugin-test project in the root directory**
-
-
-[4d2ab56bc8f8cca](https://github.com/bsorrentino/maven-confluence-plugin/commit/4d2ab56bc8f8cca) bartolomeo sorrentino *2020-04-23 14:46:34*
-
-**refactor package layout**
-
-
-[400a0ecfca757fa](https://github.com/bsorrentino/maven-confluence-plugin/commit/400a0ecfca757fa) bartolomeo sorrentino *2020-04-23 14:42:37*
-
-**package refactor**
-
-
-[f02491ab7a602d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/f02491ab7a602d1) bartolomeo sorrentino *2020-04-22 16:24:01*
-
-**update kotlin configuration**
-
-
-[c5d99c43791d658](https://github.com/bsorrentino/maven-confluence-plugin/commit/c5d99c43791d658) bartolomeo sorrentino *2020-04-20 21:35:45*
-
-**move unit test to kotlin**
-
-
-[81f2334c537967f](https://github.com/bsorrentino/maven-confluence-plugin/commit/81f2334c537967f) bartolomeo sorrentino *2020-04-20 21:10:56*
-
-**rename project**
-
-
-[a497b04a907fdad](https://github.com/bsorrentino/maven-confluence-plugin/commit/a497b04a907fdad) bartolomeo sorrentino *2020-03-21 12:13:09*
-
-
-###  [#154](https://github.com/bsorrentino/maven-confluence-plugin/issues/154) Replace deprecated dependency Pegdown    *enhancement*  
-
-**issue #154**
-
- * update documentation
- * improve test over images
-
-[6be66a95b634338](https://github.com/bsorrentino/maven-confluence-plugin/commit/6be66a95b634338) bartolomeo sorrentino *2020-04-24 11:33:31*
-
-**issue #154 - fix image conversion using macro**
-
-
-[e4dcb6ca95278d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/e4dcb6ca95278d8) bsorrentino *2020-04-24 00:09:22*
-
-**issue #154 - update documentation**
-
-
-[c092becb31e7240](https://github.com/bsorrentino/maven-confluence-plugin/commit/c092becb31e7240) bartolomeo sorrentino *2020-04-23 20:25:53*
-
-**issue #154 - add markdown test**
-
-
-[528d098f7f56b72](https://github.com/bsorrentino/maven-confluence-plugin/commit/528d098f7f56b72) bartolomeo sorrentino *2020-04-23 18:26:36*
-
-**issue #154 - remove deprecated method**
-
-
-[60b040f35a8dd7f](https://github.com/bsorrentino/maven-confluence-plugin/commit/60b040f35a8dd7f) bartolomeo sorrentino *2020-04-23 14:29:06*
-
-**issue #154 - remove deprecated method**
-
-
-[0fdd587deab1954](https://github.com/bsorrentino/maven-confluence-plugin/commit/0fdd587deab1954) bartolomeo sorrentino *2020-04-23 14:28:30*
-
-**issue #154 - remove deprecated method**
-
-
-[d1d33b07b8d76e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1d33b07b8d76e3) bartolomeo sorrentino *2020-04-23 14:27:32*
-
-**issue #154 - add MarkdownProcessorInfo to the plugin configuration**
-
-
-[8ad6c62f7899647](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ad6c62f7899647) bartolomeo sorrentino *2020-04-22 21:48:48*
-
-**issue #154 - add support of "Markdown Processor Provider"**
-
-
-[e81706476cdcf3a](https://github.com/bsorrentino/maven-confluence-plugin/commit/e81706476cdcf3a) bartolomeo sorrentino *2020-04-22 16:15:31*
-
-**issue #154 - clean code**
-
-
-[d19536d7b458f02](https://github.com/bsorrentino/maven-confluence-plugin/commit/d19536d7b458f02) bartolomeo sorrentino *2020-04-22 11:08:26*
-
-**issue #154 - add common interface MarkdownParserContext**
-
-
-[6f7802cecfdd5f2](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f7802cecfdd5f2) bartolomeo sorrentino *2020-04-21 22:08:03*
-
-**issue #154 - update documentation**
-
-
-[c7da7a8fce372dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/c7da7a8fce372dc) bartolomeo sorrentino *2020-04-21 20:39:30*
-
-**issue #154 - add commonmark extension to support Notice Block syntax**
-
-
-[8ca2613ca6337a3](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ca2613ca6337a3) bartolomeo sorrentino *2020-04-21 20:34:42*
-
-**issue #154 clean code**
-
-
-[533e919bf35a8f1](https://github.com/bsorrentino/maven-confluence-plugin/commit/533e919bf35a8f1) bartolomeo sorrentino *2020-04-20 21:51:54*
-
-**issue #154 - add commonmark tests for tables, code, horizontalrule**
-
-
-[13e21f2dba2aa9d](https://github.com/bsorrentino/maven-confluence-plugin/commit/13e21f2dba2aa9d) bartolomeo sorrentino *2020-04-10 21:32:12*
-
-**issue #154 - commonmark add support for: images, blockquote, links**
-
-
-[4ed78b8dca6a4ee](https://github.com/bsorrentino/maven-confluence-plugin/commit/4ed78b8dca6a4ee) bartolomeo sorrentino *2020-04-08 23:47:21*
-
-**issue #154 - commonmark add support for: headers, emphasis and lists**
-
-
-[0ec82ef7a9c4c19](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ec82ef7a9c4c19) bartolomeo sorrentino *2020-04-07 22:08:44*
-
-**issue #154 - update commonmark implememntation**
-
-
-[25d5428def56910](https://github.com/bsorrentino/maven-confluence-plugin/commit/25d5428def56910) bartolomeo sorrentino *2020-03-23 23:57:26*
-
-**issue #154 - start implementation of markdown processor  using either flexmark and commonmark**
-
-
-[715ccf861725349](https://github.com/bsorrentino/maven-confluence-plugin/commit/715ccf861725349) bartolomeo sorrentino *2020-03-21 16:36:20*
-
-**issue #154 - move test resources in markdown processor module**
-
-
-[634e011fb105745](https://github.com/bsorrentino/maven-confluence-plugin/commit/634e011fb105745) bartolomeo sorrentino *2020-03-21 12:03:23*
-
-**issue #154 - create a module with markdown processor implementation**
-
-
-[f747fa8f5b65c71](https://github.com/bsorrentino/maven-confluence-plugin/commit/f747fa8f5b65c71) bartolomeo sorrentino *2020-03-21 12:02:22*
-
-
-###  [#212](https://github.com/bsorrentino/maven-confluence-plugin/issues/212) link in markdown is not correctly resolved when using relative paths    *bug*  
-
-**issue #215 #212 update unit tests**
-
-
-[b205384c7aeec6e](https://github.com/bsorrentino/maven-confluence-plugin/commit/b205384c7aeec6e) bartolomeo sorrentino *2020-04-25 17:40:03*
-
-**issue #215 #212 update flexmark implementation**
-
-
-[a34b5d743101165](https://github.com/bsorrentino/maven-confluence-plugin/commit/a34b5d743101165) bartolomeo sorrentino *2020-04-25 17:39:26*
-
-**issue #215 #212 update pegdown implementation**
-
-
-[899496b745a7eb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/899496b745a7eb2) bartolomeo sorrentino *2020-04-25 17:38:58*
-
-**issue #215 #212 update the commonmark implementation**
-
-
-[98106ce4b2fdd57](https://github.com/bsorrentino/maven-confluence-plugin/commit/98106ce4b2fdd57) bartolomeo sorrentino *2020-04-25 17:38:26*
-
-**issue #215 #212 add pagePrefixToApply as optional, add page in MarkdownParserContext**
-
-
-[063d7e68ed2fab0](https://github.com/bsorrentino/maven-confluence-plugin/commit/063d7e68ed2fab0) bartolomeo sorrentino *2020-04-25 17:36:57*
-
-**issue #215 #212 add processLinkUrl helper**
-
-
-[124cd0062112ebf](https://github.com/bsorrentino/maven-confluence-plugin/commit/124cd0062112ebf) bartolomeo sorrentino *2020-04-25 17:32:06*
-
-**issue #215 #212 add integration test**
-
-
-[707fb0a1f256e97](https://github.com/bsorrentino/maven-confluence-plugin/commit/707fb0a1f256e97) bartolomeo sorrentino *2020-04-25 17:27:47*
-
-**issue #212**
-
- * add test stuff
-
-[0ac7916ca147756](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ac7916ca147756) bartolomeo sorrentino *2020-04-24 18:04:57*
-
-
-###  [#215](https://github.com/bsorrentino/maven-confluence-plugin/issues/215) seems that the parameter childrenTitlesPrefixed=false is ignored on links processing    *bug*  
+[17f6a00b52512e5](https://github.com/bsorrentino/maven-confluence-plugin/commit/17f6a00b52512e5) bartolomeo sorrentino *2020-04-25 17:42:39*
 
 **issue #215 #212 update unit tests**
 
@@ -1933,33 +2270,248 @@
 
 [a95ebdd5b35879c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a95ebdd5b35879c) bartolomeo sorrentino *2020-04-25 17:31:02*
 
+**update markdown doc**
+
+
+[08bca6adec04aa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/08bca6adec04aa9) bartolomeo sorrentino *2020-04-25 17:28:33*
+
 **issue #215 #212 add integration test**
 
 
 [707fb0a1f256e97](https://github.com/bsorrentino/maven-confluence-plugin/commit/707fb0a1f256e97) bartolomeo sorrentino *2020-04-25 17:27:47*
 
+**clean code**
+
+
+[73d0931ed13fbde](https://github.com/bsorrentino/maven-confluence-plugin/commit/73d0931ed13fbde) bartolomeo sorrentino *2020-04-24 18:46:55*
+
+**charset refinements**
+
+
+[96d93947845019f](https://github.com/bsorrentino/maven-confluence-plugin/commit/96d93947845019f) bartolomeo sorrentino *2020-04-24 18:08:01*
+
+**issue #212**
+
+ * add test stuff
+
+[0ac7916ca147756](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ac7916ca147756) bartolomeo sorrentino *2020-04-24 18:04:57*
+
+**Merge branch 'feature/issue#154' into develop**
+
+
+[7610cd2dbe9e515](https://github.com/bsorrentino/maven-confluence-plugin/commit/7610cd2dbe9e515) bartolomeo sorrentino *2020-04-24 14:33:46*
+
+**merge pom from develop**
+
+
+[25d2245136080c6](https://github.com/bsorrentino/maven-confluence-plugin/commit/25d2245136080c6) bartolomeo sorrentino *2020-04-24 13:17:30*
+
+**Merge branch 'develop' into feature/issue#154**
+
+
+[65439baea3ec8bf](https://github.com/bsorrentino/maven-confluence-plugin/commit/65439baea3ec8bf) bartolomeo sorrentino *2020-04-24 13:17:00*
+
+**issue #154**
+
+ * update documentation
+ * improve test over images
+
+[6be66a95b634338](https://github.com/bsorrentino/maven-confluence-plugin/commit/6be66a95b634338) bartolomeo sorrentino *2020-04-24 11:33:31*
+
+**issue #154 - fix image conversion using macro**
+
+
+[e4dcb6ca95278d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/e4dcb6ca95278d8) bsorrentino *2020-04-24 00:09:22*
+
+**Merge tag 'v6.7.3' into develop**
+
+ * new minor release
+
+[5040651dc0e2fc3](https://github.com/bsorrentino/maven-confluence-plugin/commit/5040651dc0e2fc3) bsorrentino *2020-04-23 22:08:48*
+
+**issue #154 - update documentation**
+
+
+[c092becb31e7240](https://github.com/bsorrentino/maven-confluence-plugin/commit/c092becb31e7240) bartolomeo sorrentino *2020-04-23 20:25:53*
+
+**issue #154 - add markdown test**
+
+
+[528d098f7f56b72](https://github.com/bsorrentino/maven-confluence-plugin/commit/528d098f7f56b72) bartolomeo sorrentino *2020-04-23 18:26:36*
+
+**move plugin-test project in the root directory**
+
+
+[1b66eb08486a13f](https://github.com/bsorrentino/maven-confluence-plugin/commit/1b66eb08486a13f) bartolomeo sorrentino *2020-04-23 14:47:10*
+
+**move plugin-test project in the root directory**
+
+
+[4d2ab56bc8f8cca](https://github.com/bsorrentino/maven-confluence-plugin/commit/4d2ab56bc8f8cca) bartolomeo sorrentino *2020-04-23 14:46:34*
+
+**refactor package layout**
+
+
+[400a0ecfca757fa](https://github.com/bsorrentino/maven-confluence-plugin/commit/400a0ecfca757fa) bartolomeo sorrentino *2020-04-23 14:42:37*
+
+**issue #154 - remove deprecated method**
+
+
+[60b040f35a8dd7f](https://github.com/bsorrentino/maven-confluence-plugin/commit/60b040f35a8dd7f) bartolomeo sorrentino *2020-04-23 14:29:06*
+
+**issue #154 - remove deprecated method**
+
+
+[0fdd587deab1954](https://github.com/bsorrentino/maven-confluence-plugin/commit/0fdd587deab1954) bartolomeo sorrentino *2020-04-23 14:28:30*
+
+**issue #154 - remove deprecated method**
+
+
+[d1d33b07b8d76e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1d33b07b8d76e3) bartolomeo sorrentino *2020-04-23 14:27:32*
+
+**issue #154 - add MarkdownProcessorInfo to the plugin configuration**
+
+
+[8ad6c62f7899647](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ad6c62f7899647) bartolomeo sorrentino *2020-04-22 21:48:48*
+
+**package refactor**
+
+
+[f02491ab7a602d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/f02491ab7a602d1) bartolomeo sorrentino *2020-04-22 16:24:01*
+
+**issue #154 - add support of "Markdown Processor Provider"**
+
+
+[e81706476cdcf3a](https://github.com/bsorrentino/maven-confluence-plugin/commit/e81706476cdcf3a) bartolomeo sorrentino *2020-04-22 16:15:31*
+
+**issue #154 - clean code**
+
+
+[d19536d7b458f02](https://github.com/bsorrentino/maven-confluence-plugin/commit/d19536d7b458f02) bartolomeo sorrentino *2020-04-22 11:08:26*
+
+**issue #154 - add common interface MarkdownParserContext**
+
+
+[6f7802cecfdd5f2](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f7802cecfdd5f2) bartolomeo sorrentino *2020-04-21 22:08:03*
+
+**issue #154 - update documentation**
+
+
+[c7da7a8fce372dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/c7da7a8fce372dc) bartolomeo sorrentino *2020-04-21 20:39:30*
+
+**issue #154 - add commonmark extension to support Notice Block syntax**
+
+
+[8ca2613ca6337a3](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ca2613ca6337a3) bartolomeo sorrentino *2020-04-21 20:34:42*
+
+**issue #154 clean code**
+
+
+[533e919bf35a8f1](https://github.com/bsorrentino/maven-confluence-plugin/commit/533e919bf35a8f1) bartolomeo sorrentino *2020-04-20 21:51:54*
+
+**update kotlin configuration**
+
+
+[c5d99c43791d658](https://github.com/bsorrentino/maven-confluence-plugin/commit/c5d99c43791d658) bartolomeo sorrentino *2020-04-20 21:35:45*
+
+**move unit test to kotlin**
+
+
+[81f2334c537967f](https://github.com/bsorrentino/maven-confluence-plugin/commit/81f2334c537967f) bartolomeo sorrentino *2020-04-20 21:10:56*
+
+**issue #154 - add commonmark tests for tables, code, horizontalrule**
+
+
+[13e21f2dba2aa9d](https://github.com/bsorrentino/maven-confluence-plugin/commit/13e21f2dba2aa9d) bartolomeo sorrentino *2020-04-10 21:32:12*
+
+**issue #154 - commonmark add support for: images, blockquote, links**
+
+
+[4ed78b8dca6a4ee](https://github.com/bsorrentino/maven-confluence-plugin/commit/4ed78b8dca6a4ee) bartolomeo sorrentino *2020-04-08 23:47:21*
+
+**issue #154 - commonmark add support for: headers, emphasis and lists**
+
+
+[0ec82ef7a9c4c19](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ec82ef7a9c4c19) bartolomeo sorrentino *2020-04-07 22:08:44*
+
+**issue #154 - update commonmark implememntation**
+
+
+[25d5428def56910](https://github.com/bsorrentino/maven-confluence-plugin/commit/25d5428def56910) bartolomeo sorrentino *2020-03-23 23:57:26*
+
+**issue #154 - start implementation of markdown processor  using either flexmark and commonmark**
+
+
+[715ccf861725349](https://github.com/bsorrentino/maven-confluence-plugin/commit/715ccf861725349) bartolomeo sorrentino *2020-03-21 16:36:20*
+
+**rename project**
+
+
+[a497b04a907fdad](https://github.com/bsorrentino/maven-confluence-plugin/commit/a497b04a907fdad) bartolomeo sorrentino *2020-03-21 12:13:09*
+
+**issue #154 - move test resources in markdown processor module**
+
+
+[634e011fb105745](https://github.com/bsorrentino/maven-confluence-plugin/commit/634e011fb105745) bartolomeo sorrentino *2020-03-21 12:03:23*
+
+**issue #154 - create a module with markdown processor implementation**
+
+
+[f747fa8f5b65c71](https://github.com/bsorrentino/maven-confluence-plugin/commit/f747fa8f5b65c71) bartolomeo sorrentino *2020-03-21 12:02:22*
+
 
 ## v6.7.3
 ### Generic changes
+
+**Merge branch 'release/6.7.3'**
+
+
+[8f6e889257b0ffe](https://github.com/bsorrentino/maven-confluence-plugin/commit/8f6e889257b0ffe) bsorrentino *2020-04-23 22:08:34*
 
 **move to next release**
 
 
 [75811b79bbc8bfa](https://github.com/bsorrentino/maven-confluence-plugin/commit/75811b79bbc8bfa) bsorrentino *2020-04-23 21:58:50*
 
+**fix security issue PR #214**
+
+
+[5be4a8e69c81e92](https://github.com/bsorrentino/maven-confluence-plugin/commit/5be4a8e69c81e92) bsorrentino *2020-04-23 21:43:46*
+
+**Merge branch 'feature/issue#213' into develop**
+
+
+[80918006203e287](https://github.com/bsorrentino/maven-confluence-plugin/commit/80918006203e287) bsorrentino *2020-04-23 21:41:39*
+
 **move to next develop version**
 
 
 [e973e49e077ef63](https://github.com/bsorrentino/maven-confluence-plugin/commit/e973e49e077ef63) bsorrentino *2020-04-23 21:40:20*
+
+**issue #213 - move from int to long**
+
+
+[5a4b965da3fbfdb](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a4b965da3fbfdb) bsorrentino *2020-04-23 21:39:50*
 
 **update changelog**
 
 
 [0dd3fe25a0a777d](https://github.com/bsorrentino/maven-confluence-plugin/commit/0dd3fe25a0a777d) bsorrentino *2020-03-11 20:15:50*
 
+**Merge tag 'v6.7.2' into develop**
+
+ * release 6.7.2
+
+[b265c006c6917c4](https://github.com/bsorrentino/maven-confluence-plugin/commit/b265c006c6917c4) bsorrentino *2020-03-11 19:16:17*
+
+**fix security #211**
+
+
+[ddf9bcb0530c00b](https://github.com/bsorrentino/maven-confluence-plugin/commit/ddf9bcb0530c00b) bsorrentino *2020-03-11 15:54:25*
+
 **add new module 'scrollversions-addon' to separate such implementation**
 
- * rename directory from &#39;maven-confluence-processor-freemaker&#39; to &#39;site-processor-freemaker&#39;
+ * rename directory from &#x27;maven-confluence-processor-freemaker&#x27; to &#x27;site-processor-freemaker&#x27;
 
 [600aa442c5bab26](https://github.com/bsorrentino/maven-confluence-plugin/commit/600aa442c5bab26) bsorrentino *2020-03-11 15:32:13*
 
@@ -1967,6 +2519,16 @@
 
 
 [214a935b9d5cfa0](https://github.com/bsorrentino/maven-confluence-plugin/commit/214a935b9d5cfa0) bsorrentino *2020-02-10 16:16:32*
+
+**Merge branch 'release/6.7.1' into develop**
+
+
+[3b844225b0b55d9](https://github.com/bsorrentino/maven-confluence-plugin/commit/3b844225b0b55d9) bsorrentino *2019-11-13 19:17:08*
+
+**Merge branch 'feature/PR#210' into develop**
+
+
+[954ee385cd5fa83](https://github.com/bsorrentino/maven-confluence-plugin/commit/954ee385cd5fa83) bsorrentino *2019-11-13 11:27:51*
 
 **update a next development version**
 
@@ -1983,6 +2545,22 @@
 
 [f30bb09ad50788a](https://github.com/bsorrentino/maven-confluence-plugin/commit/f30bb09ad50788a) bartolomeo sorrentino *2019-11-02 20:43:16*
 
+**Merge branch 'release/6.7' into develop**
+
+
+[d5b29dca5d705b2](https://github.com/bsorrentino/maven-confluence-plugin/commit/d5b29dca5d705b2) bartolomeo sorrentino *2019-11-02 20:23:19*
+
+**Merge branch 'feature/issue#202' into develop**
+
+
+[fdadcd49b8b531a](https://github.com/bsorrentino/maven-confluence-plugin/commit/fdadcd49b8b531a) bartolomeo sorrentino *2019-11-02 19:22:48*
+
+**issue #202**
+
+ * add site processor usage documentation
+
+[4bbc7baf85a37b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/4bbc7baf85a37b3) bartolomeo sorrentino *2019-11-02 19:22:19*
+
 **move to next developer version**
 
 
@@ -1992,204 +2570,6 @@
 
 
 [222e158df5f5dd1](https://github.com/bsorrentino/maven-confluence-plugin/commit/222e158df5f5dd1) bartolomeo sorrentino *2019-11-02 17:36:06*
-
-**align commons logging default level to maven logging level**
-
-
-[5a38a327d26c5d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a38a327d26c5d0) bartolomeo sorrentino *2019-11-02 11:19:16*
-
-**configure commons logging to SimpleLog**
-
-
-[850235ed1ab764d](https://github.com/bsorrentino/maven-confluence-plugin/commit/850235ed1ab764d) bartolomeo sorrentino *2019-11-02 11:16:24*
-
-**fix security vulnerability #com.fasterxml.jackson.core:jackson-databind**
-
-
-[8db6f3176abb4d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/8db6f3176abb4d1) bartolomeo sorrentino *2019-11-02 10:10:33*
-
-**remove useless stuff**
-
-
-[a7a22467bcefa8c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a7a22467bcefa8c) bsorrentino *2019-11-01 20:36:27*
-
-**move to next developer version**
-
-
-[c30d4f25a0863d4](https://github.com/bsorrentino/maven-confluence-plugin/commit/c30d4f25a0863d4) bsorrentino *2019-11-01 20:15:08*
-
-**use hashtable as map implementation, change illegal character in file path, add children pages to webserver mock**
-
-
-[de3174dce71f7a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/de3174dce71f7a4) Nicola Lagnena *2019-10-05 12:03:17*
-
-**use mutable list**
-
-
-[ea290121703174d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ea290121703174d) Nicola Lagnena *2019-10-05 08:27:47*
-
-**update doc**
-
-
-[c79afa3f3d845dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/c79afa3f3d845dc) bsorrentino *2019-08-02 16:14:38*
-
-**update version to next release**
-
-
-[ccb00a101a70b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccb00a101a70b17) bsorrentino *2019-08-02 15:59:24*
-
-**update changelog**
-
-
-[06cd6a2ea7b179c](https://github.com/bsorrentino/maven-confluence-plugin/commit/06cd6a2ea7b179c) bsorrentino *2019-08-02 15:57:46*
-
-**update changelog**
-
-
-[38411400703c8e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/38411400703c8e3) bsorrentino *2019-08-02 15:56:27*
-
-**clean code**
-
-
-[ee14d2879b6c3d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/ee14d2879b6c3d3) bsorrentino *2019-08-02 08:53:14*
-
-**clean code**
-
-
-[a25bd78e645021f](https://github.com/bsorrentino/maven-confluence-plugin/commit/a25bd78e645021f) bsorrentino *2019-08-01 23:02:40*
-
-**move to next developer version**
-
-
-[886d4f116648c7e](https://github.com/bsorrentino/maven-confluence-plugin/commit/886d4f116648c7e) bsorrentino *2019-07-31 22:19:23*
-
-**clean code**
-
-
-[7025aad615755ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/7025aad615755ec) bsorrentino *2019-07-31 21:56:17*
-
-**clean code**
-
-
-[0af6bd6ed081614](https://github.com/bsorrentino/maven-confluence-plugin/commit/0af6bd6ed081614) bsorrentino *2019-07-31 21:39:04*
-
-**fix - stop ignoring unit test**
-
-
-[75d3d462e7ce815](https://github.com/bsorrentino/maven-confluence-plugin/commit/75d3d462e7ce815) bsorrentino *2019-07-31 04:37:57*
-
-**clean code**
-
-
-[ed62181b39e3f8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/ed62181b39e3f8b) bsorrentino *2019-07-31 04:37:14*
-
-**update ignore**
-
-
-[24e0e0c0a1ec3f3](https://github.com/bsorrentino/maven-confluence-plugin/commit/24e0e0c0a1ec3f3) bartolomeo sorrentino *2019-07-26 13:13:48*
-
-**move to next developer version**
-
-
-[f1a008cb77aed41](https://github.com/bsorrentino/maven-confluence-plugin/commit/f1a008cb77aed41) bartolomeo sorrentino *2019-07-26 13:09:53*
-
-**remove deprecated method**
-
-
-[9e029b782ace0c9](https://github.com/bsorrentino/maven-confluence-plugin/commit/9e029b782ace0c9) bsorrentino *2019-07-17 13:25:38*
-
-**add lombok support**
-
-
-[c0972df6937b53f](https://github.com/bsorrentino/maven-confluence-plugin/commit/c0972df6937b53f) bsorrentino *2019-07-17 13:18:56*
-
-
-###  [#188](https://github.com/bsorrentino/maven-confluence-plugin/issues/188) delete goal has to use site descriptor    *enhancement*  
-
-**issue #188 - clean code**
-
-
-[41afb70a1caa81d](https://github.com/bsorrentino/maven-confluence-plugin/commit/41afb70a1caa81d) bsorrentino *2019-08-02 08:59:05*
-
-**issue #188 - use site descriptor for identify start page for deletion**
-
-
-[98d3a92c03a12b8](https://github.com/bsorrentino/maven-confluence-plugin/commit/98d3a92c03a12b8) bsorrentino *2019-08-02 08:52:46*
-
-**issue #188 - add support of site descriptor to delete mojo**
-
-
-[f4419e3daf6db1e](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4419e3daf6db1e) bsorrentino *2019-08-01 15:31:42*
-
-**issue #188 - add support of site descriptor to delete mojo**
-
-
-[f325421c47160a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/f325421c47160a4) bsorrentino *2019-08-01 15:30:35*
-
-
-###  [#192](https://github.com/bsorrentino/maven-confluence-plugin/issues/192) Improve debug logging to view generated ID of attachments    *enhancement*  *wait for feedback*  
-
-**issue #192 - improve generate attachment logging**
-
-
-[f49ffd2984a3fa0](https://github.com/bsorrentino/maven-confluence-plugin/commit/f49ffd2984a3fa0) bartolomeo sorrentino *2019-07-26 13:14:23*
-
-
-###  [#193](https://github.com/bsorrentino/maven-confluence-plugin/issues/193) Markdown: RefLink doesn&#39;t allow portability between confluence and github/bitbucket     *enhancement*  
-
-**issue #193 add unit test**
-
-
-[aca906c5b3b78c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/aca906c5b3b78c5) bsorrentino *2019-07-31 21:56:35*
-
-**issue #193 handle relative page link in visit(ExpLinkNode)**
-
-
-[9653ef7c16bf63b](https://github.com/bsorrentino/maven-confluence-plugin/commit/9653ef7c16bf63b) bsorrentino *2019-07-31 21:55:57*
-
-**issue #193 add getRelativeUri() method**
-
-
-[a9c3d2fd2216a4c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a9c3d2fd2216a4c) bsorrentino *2019-07-31 21:53:44*
-
-**issue #193**
-
- * prepare unit test
-
-[894c9c2bd80324e](https://github.com/bsorrentino/maven-confluence-plugin/commit/894c9c2bd80324e) bsorrentino *2019-07-31 04:41:21*
-
-**issue #193**
-
- * move site from property to supplier method
-
-[ea1a531725f128d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ea1a531725f128d) bsorrentino *2019-07-31 04:40:58*
-
-**issue #193 - move site from property to supplier methos**
-
-
-[4af2696c38f12c0](https://github.com/bsorrentino/maven-confluence-plugin/commit/4af2696c38f12c0) bsorrentino *2019-07-31 04:38:52*
-
-**issue #193 - add site model to ToConfluenceProcessor**
-
-
-[5766b99a0833c01](https://github.com/bsorrentino/maven-confluence-plugin/commit/5766b99a0833c01) bsorrentino *2019-07-31 03:22:34*
-
-
-###  [#195](https://github.com/bsorrentino/maven-confluence-plugin/issues/195) Two JUnit tests fail on Windows for path issues  
-
-**fix issue #195**
-
-
-[b55e70da0ee4fd5](https://github.com/bsorrentino/maven-confluence-plugin/commit/b55e70da0ee4fd5) Nicola Lagnena *2019-09-28 10:44:29*
-
-
-###  [#202](https://github.com/bsorrentino/maven-confluence-plugin/issues/202) Add possibility to use markup in the site definition    *enhancement*  
-
-**issue #202**
-
- * add site processor usage documentation
-
-[4bbc7baf85a37b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/4bbc7baf85a37b3) bartolomeo sorrentino *2019-11-02 19:22:19*
 
 **issue #202**
 
@@ -2216,6 +2596,21 @@
 
 [814d4151ee19652](https://github.com/bsorrentino/maven-confluence-plugin/commit/814d4151ee19652) bartolomeo sorrentino *2019-11-02 11:21:22*
 
+**align commons logging default level to maven logging level**
+
+
+[5a38a327d26c5d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a38a327d26c5d0) bartolomeo sorrentino *2019-11-02 11:19:16*
+
+**configure commons logging to SimpleLog**
+
+
+[850235ed1ab764d](https://github.com/bsorrentino/maven-confluence-plugin/commit/850235ed1ab764d) bartolomeo sorrentino *2019-11-02 11:16:24*
+
+**fix security vulnerability #com.fasterxml.jackson.core:jackson-databind**
+
+
+[8db6f3176abb4d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/8db6f3176abb4d1) bartolomeo sorrentino *2019-11-02 10:10:33*
+
 **issue #202**
 
  * rename Preprocessor to PreprocessorService
@@ -2229,32 +2624,30 @@
 
 [e766c4d70d6cdb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/e766c4d70d6cdb2) bsorrentino *2019-11-01 22:07:16*
 
-
-###  [#211](https://github.com/bsorrentino/maven-confluence-plugin/pull/211) Bump jackson-databind from 2.9.10.1 to 2.9.10.3 in /maven-confluence-core    *dependencies*  
-
-**fix security #211**
+**remove useless stuff**
 
 
-[ddf9bcb0530c00b](https://github.com/bsorrentino/maven-confluence-plugin/commit/ddf9bcb0530c00b) bsorrentino *2020-03-11 15:54:25*
+[a7a22467bcefa8c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a7a22467bcefa8c) bsorrentino *2019-11-01 20:36:27*
+
+**Merge branch 'feature/GH-202_add-markup-to-site-definitions' of https://github.com/LZaruba/maven-confluence-plugin into develop**
 
 
-###  [#213](https://github.com/bsorrentino/maven-confluence-plugin/issues/213) Problem with big ID of a parent page    *bug*  
+[a4bd55f02ddd158](https://github.com/bsorrentino/maven-confluence-plugin/commit/a4bd55f02ddd158) bsorrentino *2019-11-01 20:15:47*
 
-**issue #213 - move from int to long**
-
-
-[5a4b965da3fbfdb](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a4b965da3fbfdb) bsorrentino *2020-04-23 21:39:50*
+**move to next developer version**
 
 
-###  [#214](https://github.com/bsorrentino/maven-confluence-plugin/pull/214) Bump jackson-databind from 2.9.10.3 to 2.9.10.4 in /maven-confluence-core    *dependencies*  
+[c30d4f25a0863d4](https://github.com/bsorrentino/maven-confluence-plugin/commit/c30d4f25a0863d4) bsorrentino *2019-11-01 20:15:08*
 
-**fix security issue PR #214**
-
-
-[5be4a8e69c81e92](https://github.com/bsorrentino/maven-confluence-plugin/commit/5be4a8e69c81e92) bsorrentino *2020-04-23 21:43:46*
+**Merge branch 'feature/fix-integration-tests' into develop**
 
 
-### Jira GH-202   
+[63d710292d7d600](https://github.com/bsorrentino/maven-confluence-plugin/commit/63d710292d7d600) bsorrentino *2019-10-31 16:34:46*
+
+**Merge branch 'bugfix/fix-integration-tests' of https://github.com/neko-gg/maven-confluence-plugin into neko-gg-bugfix/fix-integration-tests**
+
+
+[886af1e65605e78](https://github.com/bsorrentino/maven-confluence-plugin/commit/886af1e65605e78) bsorrentino *2019-10-31 16:32:35*
 
 **GH-202 Add possibility to use markup in the site definition**
 
@@ -2262,15 +2655,220 @@
 
 [0ef5166558b32ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ef5166558b32ec) Lukas Zaruba *2019-10-31 09:43:37*
 
+**Merge branch 'master' into feature/GH-202_add-markup-to-site-definitions**
+
+ * # Conflicts:
+ * #	maven-confluence-core/src/test/java/org/bsc/confluence/model/SiteTest.java
+ * #	maven-confluence-reporting-plugin/src/main/java/org/bsc/maven/confluence/plugin/ConfluenceDeployMojo.java
+
+[c0791fb57d3ce37](https://github.com/bsorrentino/maven-confluence-plugin/commit/c0791fb57d3ce37) Lukas Zaruba *2019-10-31 09:41:06*
+
+**Merge branch 'master' into develop**
+
+
+[cb9841c78816a5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/cb9841c78816a5b) bsorrentino *2019-10-30 23:04:22*
+
+**Merge branch 'release/6.6' into develop**
+
+
+[637af64ea7ff06e](https://github.com/bsorrentino/maven-confluence-plugin/commit/637af64ea7ff06e) bsorrentino *2019-10-30 22:47:31*
+
 **GH-202 Add possibility to use markup in the site definition**
 
  * Added freemarker capability to the site definition, tests, documentation
 
 [952c03196ca6a8d](https://github.com/bsorrentino/maven-confluence-plugin/commit/952c03196ca6a8d) Lukas Zaruba *2019-10-20 16:30:45*
 
+**use hashtable as map implementation, change illegal character in file path, add children pages to webserver mock**
+
+
+[de3174dce71f7a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/de3174dce71f7a4) Nicola Lagnena *2019-10-05 12:03:17*
+
+**use mutable list**
+
+
+[ea290121703174d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ea290121703174d) Nicola Lagnena *2019-10-05 08:27:47*
+
+**Merge branch 'feature/#195-fix-junit-tests-on-windows' into develop**
+
+
+[ad77cb5374a504d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ad77cb5374a504d) bartolomeo sorrentino *2019-09-29 15:02:24*
+
+**fix issue #195**
+
+
+[b55e70da0ee4fd5](https://github.com/bsorrentino/maven-confluence-plugin/commit/b55e70da0ee4fd5) Nicola Lagnena *2019-09-28 10:44:29*
+
+**Merge branch 'release/6.4' into develop**
+
+
+[bbccfc20fd0d65f](https://github.com/bsorrentino/maven-confluence-plugin/commit/bbccfc20fd0d65f) bsorrentino *2019-08-02 16:15:50*
+
+**update doc**
+
+
+[c79afa3f3d845dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/c79afa3f3d845dc) bsorrentino *2019-08-02 16:14:38*
+
+**update version to next release**
+
+
+[ccb00a101a70b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccb00a101a70b17) bsorrentino *2019-08-02 15:59:24*
+
+**update changelog**
+
+
+[06cd6a2ea7b179c](https://github.com/bsorrentino/maven-confluence-plugin/commit/06cd6a2ea7b179c) bsorrentino *2019-08-02 15:57:46*
+
+**update changelog**
+
+
+[38411400703c8e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/38411400703c8e3) bsorrentino *2019-08-02 15:56:27*
+
+**Merge branch 'feature/issue#188' into develop**
+
+
+[1999c2b1348c28a](https://github.com/bsorrentino/maven-confluence-plugin/commit/1999c2b1348c28a) bsorrentino *2019-08-02 15:42:53*
+
+**issue #188 - clean code**
+
+
+[41afb70a1caa81d](https://github.com/bsorrentino/maven-confluence-plugin/commit/41afb70a1caa81d) bsorrentino *2019-08-02 08:59:05*
+
+**clean code**
+
+
+[ee14d2879b6c3d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/ee14d2879b6c3d3) bsorrentino *2019-08-02 08:53:14*
+
+**issue #188 - use site descriptor for identify start page for deletion**
+
+
+[98d3a92c03a12b8](https://github.com/bsorrentino/maven-confluence-plugin/commit/98d3a92c03a12b8) bsorrentino *2019-08-02 08:52:46*
+
+**clean code**
+
+
+[a25bd78e645021f](https://github.com/bsorrentino/maven-confluence-plugin/commit/a25bd78e645021f) bsorrentino *2019-08-01 23:02:40*
+
+**issue #188 - add support of site descriptor to delete mojo**
+
+
+[f4419e3daf6db1e](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4419e3daf6db1e) bsorrentino *2019-08-01 15:31:42*
+
+**issue #188 - add support of site descriptor to delete mojo**
+
+
+[f325421c47160a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/f325421c47160a4) bsorrentino *2019-08-01 15:30:35*
+
+**Merge branch 'feature/issue#193' into develop**
+
+
+[b4708e76a8f61b4](https://github.com/bsorrentino/maven-confluence-plugin/commit/b4708e76a8f61b4) bsorrentino *2019-08-01 14:39:31*
+
+**move to next developer version**
+
+
+[886d4f116648c7e](https://github.com/bsorrentino/maven-confluence-plugin/commit/886d4f116648c7e) bsorrentino *2019-07-31 22:19:23*
+
+**issue #193 add unit test**
+
+
+[aca906c5b3b78c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/aca906c5b3b78c5) bsorrentino *2019-07-31 21:56:35*
+
+**clean code**
+
+
+[7025aad615755ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/7025aad615755ec) bsorrentino *2019-07-31 21:56:17*
+
+**issue #193 handle relative page link in visit(ExpLinkNode)**
+
+
+[9653ef7c16bf63b](https://github.com/bsorrentino/maven-confluence-plugin/commit/9653ef7c16bf63b) bsorrentino *2019-07-31 21:55:57*
+
+**issue #193 add getRelativeUri() method**
+
+
+[a9c3d2fd2216a4c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a9c3d2fd2216a4c) bsorrentino *2019-07-31 21:53:44*
+
+**clean code**
+
+
+[0af6bd6ed081614](https://github.com/bsorrentino/maven-confluence-plugin/commit/0af6bd6ed081614) bsorrentino *2019-07-31 21:39:04*
+
+**Merge branch 'feature/issue#192' into develop**
+
+
+[5eb1933dfb5ba00](https://github.com/bsorrentino/maven-confluence-plugin/commit/5eb1933dfb5ba00) bsorrentino *2019-07-31 14:51:14*
+
+**issue #193**
+
+ * prepare unit test
+
+[894c9c2bd80324e](https://github.com/bsorrentino/maven-confluence-plugin/commit/894c9c2bd80324e) bsorrentino *2019-07-31 04:41:21*
+
+**issue #193**
+
+ * move site from property to supplier method
+
+[ea1a531725f128d](https://github.com/bsorrentino/maven-confluence-plugin/commit/ea1a531725f128d) bsorrentino *2019-07-31 04:40:58*
+
+**issue #193 - move site from property to supplier methos**
+
+
+[4af2696c38f12c0](https://github.com/bsorrentino/maven-confluence-plugin/commit/4af2696c38f12c0) bsorrentino *2019-07-31 04:38:52*
+
+**fix - stop ignoring unit test**
+
+
+[75d3d462e7ce815](https://github.com/bsorrentino/maven-confluence-plugin/commit/75d3d462e7ce815) bsorrentino *2019-07-31 04:37:57*
+
+**clean code**
+
+
+[ed62181b39e3f8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/ed62181b39e3f8b) bsorrentino *2019-07-31 04:37:14*
+
+**issue #193 - add site model to ToConfluenceProcessor**
+
+
+[5766b99a0833c01](https://github.com/bsorrentino/maven-confluence-plugin/commit/5766b99a0833c01) bsorrentino *2019-07-31 03:22:34*
+
+**issue #192 - improve generate attachment logging**
+
+
+[f49ffd2984a3fa0](https://github.com/bsorrentino/maven-confluence-plugin/commit/f49ffd2984a3fa0) bartolomeo sorrentino *2019-07-26 13:14:23*
+
+**update ignore**
+
+
+[24e0e0c0a1ec3f3](https://github.com/bsorrentino/maven-confluence-plugin/commit/24e0e0c0a1ec3f3) bartolomeo sorrentino *2019-07-26 13:13:48*
+
+**move to next developer version**
+
+
+[f1a008cb77aed41](https://github.com/bsorrentino/maven-confluence-plugin/commit/f1a008cb77aed41) bartolomeo sorrentino *2019-07-26 13:09:53*
+
+**remove deprecated method**
+
+
+[9e029b782ace0c9](https://github.com/bsorrentino/maven-confluence-plugin/commit/9e029b782ace0c9) bsorrentino *2019-07-17 13:25:38*
+
+**add lombok support**
+
+
+[c0972df6937b53f](https://github.com/bsorrentino/maven-confluence-plugin/commit/c0972df6937b53f) bsorrentino *2019-07-17 13:18:56*
+
+**Merge branch 'hotfix/docs' into develop**
+
+
+[7382c8e4ccaa00e](https://github.com/bsorrentino/maven-confluence-plugin/commit/7382c8e4ccaa00e) bsorrentino *2019-07-16 14:15:56*
+
 
 ## v6.7.2
 ### Generic changes
+
+**Merge branch 'release/6.7.2'**
+
+
+[18d4f07084856ba](https://github.com/bsorrentino/maven-confluence-plugin/commit/18d4f07084856ba) bsorrentino *2020-03-11 19:16:02*
 
 **update readme**
 
@@ -2291,6 +2889,11 @@
 ## v6.7.1
 ### Generic changes
 
+**Merge branch 'release/6.7.1'**
+
+
+[511debfee64cce2](https://github.com/bsorrentino/maven-confluence-plugin/commit/511debfee64cce2) bsorrentino *2019-11-13 19:16:39*
+
 **update readme**
 
 
@@ -2309,6 +2912,11 @@
 
 ## v6.7
 ### Generic changes
+
+**Merge branch 'release/6.7'**
+
+
+[a973d939e3d2e82](https://github.com/bsorrentino/maven-confluence-plugin/commit/a973d939e3d2e82) bartolomeo sorrentino *2019-11-02 20:21:35*
 
 **update readme**
 
@@ -2334,6 +2942,11 @@
 ## v6.6
 ### Generic changes
 
+**Merge branch 'release/6.6'**
+
+
+[518a3edbd70070a](https://github.com/bsorrentino/maven-confluence-plugin/commit/518a3edbd70070a) bsorrentino *2019-10-30 22:47:05*
+
 **update readme**
 
 
@@ -2349,40 +2962,65 @@
 
 [7d2dcf2504a96fb](https://github.com/bsorrentino/maven-confluence-plugin/commit/7d2dcf2504a96fb) bsorrentino *2019-10-30 22:38:53*
 
+**Merge branch 'feature/GH-206_Add-possibility-to-disable-url-properties-resolving' into develop**
+
+
+[b0112cba3dcec87](https://github.com/bsorrentino/maven-confluence-plugin/commit/b0112cba3dcec87) bsorrentino *2019-10-30 22:27:19*
+
 **update javadoc version of processProperties parameter**
 
 
 [f7b7e852f4b0c73](https://github.com/bsorrentino/maven-confluence-plugin/commit/f7b7e852f4b0c73) bsorrentino *2019-10-30 22:22:18*
+
+**Merge branch 'develop' into feature/GH-206_Add-possibility-to-disable-url-properties-resolving**
+
+
+[7edfae82e75309e](https://github.com/bsorrentino/maven-confluence-plugin/commit/7edfae82e75309e) bsorrentino *2019-10-30 22:13:52*
+
+**Merge branch 'feature/GH-206_Add-possibility-to-disable-url-properties-resolving' of https://github.com/LZaruba/maven-confluence-plugin into LZaruba-feature/GH-206_Add-possibility-to-disable-url-properties-resolving**
+
+
+[e25c85ef55e6422](https://github.com/bsorrentino/maven-confluence-plugin/commit/e25c85ef55e6422) bsorrentino *2019-10-30 22:12:55*
+
+**Merge branch 'feature/GH-204_Replace-invalid-characters-in-labels' into develop**
+
+
+[f5cbd46c0f43be4](https://github.com/bsorrentino/maven-confluence-plugin/commit/f5cbd46c0f43be4) bsorrentino *2019-10-30 22:02:23*
+
+**Merge branch 'develop' into feature/GH-204_Replace-invalid-characters-in-labels**
+
+
+[3f8096e717fc7f1](https://github.com/bsorrentino/maven-confluence-plugin/commit/3f8096e717fc7f1) bsorrentino *2019-10-30 21:56:47*
+
+**Merge branch 'feature/GH-204_Replace-invalid-characters-in-labels' of https://github.com/LZaruba/maven-confluence-plugin into LZaruba-feature/GH-204_Replace-invalid-characters-in-labels**
+
+
+[e239f122470b5aa](https://github.com/bsorrentino/maven-confluence-plugin/commit/e239f122470b5aa) bsorrentino *2019-10-30 21:48:07*
 
 **move to next developer version**
 
 
 [3e58683b704fab5](https://github.com/bsorrentino/maven-confluence-plugin/commit/3e58683b704fab5) bsorrentino *2019-10-30 21:42:36*
 
+**Merge branch 'feature/GH-200_add-locale-configuration' into develop**
+
+
+[ef91be131ea20c8](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef91be131ea20c8) bsorrentino *2019-10-30 21:40:32*
+
 **update javadoc version of locale**
 
 
 [4b50d93b4eb6d75](https://github.com/bsorrentino/maven-confluence-plugin/commit/4b50d93b4eb6d75) bsorrentino *2019-10-30 21:36:44*
 
-
-### Jira GH-200   
-
-**GH-200 Added locale configuration option**
+**Merge branch 'feature/GH-200_add-locale-configuration' of https://github.com/LZaruba/maven-confluence-plugin into LZaruba-feature/GH-200_add-locale-configuration**
 
 
-[6e38ba972878b1a](https://github.com/bsorrentino/maven-confluence-plugin/commit/6e38ba972878b1a) Lukas Zaruba *2019-10-20 11:12:36*
+[5b27949d3f307de](https://github.com/bsorrentino/maven-confluence-plugin/commit/5b27949d3f307de) bsorrentino *2019-10-30 17:53:28*
+
+**Merge branch 'release/6.5' into develop**
 
 
-### Jira GH-204   
-
-**GH-204 Replace invalid characters in labels**
-
- * Added replacing of invalid characters in labels and tests
-
-[1a0702083713f55](https://github.com/bsorrentino/maven-confluence-plugin/commit/1a0702083713f55) Lukas Zaruba *2019-10-20 16:57:54*
-
-
-### Jira GH-206   
+[1297731f5a9d195](https://github.com/bsorrentino/maven-confluence-plugin/commit/1297731f5a9d195) bsorrentino *2019-10-29 10:39:40*
 
 **GH-206 Add possibility to disable url properties resolving**
 
@@ -2390,9 +3028,25 @@
 
 [c6a71ff8556f0ec](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6a71ff8556f0ec) Lukas Zaruba *2019-10-20 17:50:46*
 
+**GH-204 Replace invalid characters in labels**
+
+ * Added replacing of invalid characters in labels and tests
+
+[1a0702083713f55](https://github.com/bsorrentino/maven-confluence-plugin/commit/1a0702083713f55) Lukas Zaruba *2019-10-20 16:57:54*
+
+**GH-200 Added locale configuration option**
+
+
+[6e38ba972878b1a](https://github.com/bsorrentino/maven-confluence-plugin/commit/6e38ba972878b1a) Lukas Zaruba *2019-10-20 11:12:36*
+
 
 ## v6.5
 ### Generic changes
+
+**Merge branch 'release/6.5'**
+
+
+[aeaaed650ca5964](https://github.com/bsorrentino/maven-confluence-plugin/commit/aeaaed650ca5964) bsorrentino *2019-10-29 10:39:00*
 
 **update changelog**
 
@@ -2413,6 +3067,30 @@
 
 
 [5f1703755f208ee](https://github.com/bsorrentino/maven-confluence-plugin/commit/5f1703755f208ee) bsorrentino *2019-10-29 10:32:24*
+
+**Merge branch 'feature/issue#208' into develop**
+
+
+[16c343452615d07](https://github.com/bsorrentino/maven-confluence-plugin/commit/16c343452615d07) bsorrentino *2019-10-28 10:18:49*
+
+**issue #208**
+
+ * add current Site.Page in processing markdown to understand if
+ * ignore-variables has been set
+
+[5c79c9326b16192](https://github.com/bsorrentino/maven-confluence-plugin/commit/5c79c9326b16192) bsorrentino *2019-10-26 09:17:01*
+
+**issue #208**
+
+ * update Site unit test
+
+[eccb84c01cafc1f](https://github.com/bsorrentino/maven-confluence-plugin/commit/eccb84c01cafc1f) bsorrentino *2019-10-26 09:14:54*
+
+**issue #208**
+
+ * add user driven test to verify correct behaviour
+
+[e2bdb10bd15cf93](https://github.com/bsorrentino/maven-confluence-plugin/commit/e2bdb10bd15cf93) bsorrentino *2019-10-26 09:13:01*
 
 **clean code**
 
@@ -2439,31 +3117,19 @@
 
 [b7aa74ca2bf02b7](https://github.com/bsorrentino/maven-confluence-plugin/commit/b7aa74ca2bf02b7) bsorrentino *2019-10-25 22:17:43*
 
+**Merge branch 'release/6.5-beta2' into develop**
 
-###  [#208](https://github.com/bsorrentino/maven-confluence-plugin/issues/208) Confluence respond with error &quot;the macro &#39;page.title&#39; is unknown&quot; when trying to create child page with attachment reference and and ignore-variables=&quot;true&quot; setting    *bug*  
 
-**issue #208**
-
- * add current Site.Page in processing markdown to understand if
- * ignore-variables has been set
-
-[5c79c9326b16192](https://github.com/bsorrentino/maven-confluence-plugin/commit/5c79c9326b16192) bsorrentino *2019-10-26 09:17:01*
-
-**issue #208**
-
- * update Site unit test
-
-[eccb84c01cafc1f](https://github.com/bsorrentino/maven-confluence-plugin/commit/eccb84c01cafc1f) bsorrentino *2019-10-26 09:14:54*
-
-**issue #208**
-
- * add user driven test to verify correct behaviour
-
-[e2bdb10bd15cf93](https://github.com/bsorrentino/maven-confluence-plugin/commit/e2bdb10bd15cf93) bsorrentino *2019-10-26 09:13:01*
+[f0e2ad35ac3d1ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/f0e2ad35ac3d1ed) bsorrentino *2019-10-22 08:28:10*
 
 
 ## v6.5-beta2
 ### Generic changes
+
+**Merge branch 'release/6.5-beta2'**
+
+
+[5dcd2c045e21f2a](https://github.com/bsorrentino/maven-confluence-plugin/commit/5dcd2c045e21f2a) bsorrentino *2019-10-22 08:27:51*
 
 **update changelog**
 
@@ -2485,6 +3151,11 @@
 
 [4df8a59b7c490fb](https://github.com/bsorrentino/maven-confluence-plugin/commit/4df8a59b7c490fb) bsorrentino *2019-10-21 08:02:53*
 
+**issue #199**
+
+
+[de75cbf14b13cf7](https://github.com/bsorrentino/maven-confluence-plugin/commit/de75cbf14b13cf7) bsorrentino *2019-10-17 18:39:00*
+
 **update changelog**
 
 
@@ -2494,6 +3165,16 @@
 
 
 [9cdbc301969a1f6](https://github.com/bsorrentino/maven-confluence-plugin/commit/9cdbc301969a1f6) bsorrentino *2019-10-16 10:46:49*
+
+**Merge branch 'hotfix/doc' into develop**
+
+
+[06de7c25fa499c8](https://github.com/bsorrentino/maven-confluence-plugin/commit/06de7c25fa499c8) bsorrentino *2019-10-14 20:47:24*
+
+**Merge branch 'hotfix/doc'**
+
+
+[85fb5ddc4123c28](https://github.com/bsorrentino/maven-confluence-plugin/commit/85fb5ddc4123c28) bsorrentino *2019-10-14 20:47:22*
 
 **update documentation**
 
@@ -2505,43 +3186,15 @@
 
 [ab853448b55e005](https://github.com/bsorrentino/maven-confluence-plugin/commit/ab853448b55e005) bsorrentino *2019-10-14 20:15:15*
 
-**move to next developer version**
+**Merge branch 'release/6.5-beta1' into develop**
 
 
-[8edd1dc6b9cf5fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/8edd1dc6b9cf5fd) bsorrentino *2019-10-09 00:29:41*
+[8a0ba5a44e7fc5f](https://github.com/bsorrentino/maven-confluence-plugin/commit/8a0ba5a44e7fc5f) bsorrentino *2019-10-14 20:14:06*
 
-**add retry**
-
-
-[aebd1a76016e8a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/aebd1a76016e8a7) bsorrentino *2019-10-08 10:08:01*
-
-**add fromRequestAsync**
+**Merge branch 'feature/issue#194' into develop**
 
 
-[7b588cc2f242efa](https://github.com/bsorrentino/maven-confluence-plugin/commit/7b588cc2f242efa) bsorrentino *2019-10-08 10:07:47*
-
-**clean code**
-
-
-[180a4505e83d2a2](https://github.com/bsorrentino/maven-confluence-plugin/commit/180a4505e83d2a2) bsorrentino *2019-10-08 10:07:04*
-
-**add docker compose file**
-
-
-[c2fc9e797a7652d](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2fc9e797a7652d) bsorrentino *2019-10-07 16:26:10*
-
-**scroll version distribution**
-
-
-[2e8af193d4734de](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e8af193d4734de) bartolomeo sorrentino *2019-10-01 09:01:23*
-
-**add scroll versions confluence service via rest api**
-
-
-[d74aded3a980190](https://github.com/bsorrentino/maven-confluence-plugin/commit/d74aded3a980190) Nicola Lagnena *2019-09-29 19:55:40*
-
-
-###  [#194](https://github.com/bsorrentino/maven-confluence-plugin/issues/194) Add Scroll Versions for Confluence plugin support    *enhancement*  
+[bc80ff8f3c36dd3](https://github.com/bsorrentino/maven-confluence-plugin/commit/bc80ff8f3c36dd3) bsorrentino *2019-10-11 16:05:44*
 
 **issue #194 add fallback strategy on page creation**
 
@@ -2583,18 +3236,15 @@
 
 [7ce1309009fcbe8](https://github.com/bsorrentino/maven-confluence-plugin/commit/7ce1309009fcbe8) bsorrentino *2019-10-09 09:59:58*
 
+**move to next developer version**
+
+
+[8edd1dc6b9cf5fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/8edd1dc6b9cf5fd) bsorrentino *2019-10-09 00:29:41*
+
 **issue #194 clean code**
 
 
 [677a831dfe6f37b](https://github.com/bsorrentino/maven-confluence-plugin/commit/677a831dfe6f37b) bsorrentino *2019-10-09 00:29:22*
-
-**issue #194 merge and review PR #197**
-
-
-[050fe86a2bc2fa7](https://github.com/bsorrentino/maven-confluence-plugin/commit/050fe86a2bc2fa7) bsorrentino *2019-10-09 00:19:49*
-
-
-###  [#197](https://github.com/bsorrentino/maven-confluence-plugin/pull/197) add scroll versions confluence service via rest api  
 
 **issue #194 merge and review PR #197**
 
@@ -2612,17 +3262,64 @@
 
 [043cabc70aa34b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/043cabc70aa34b3) bsorrentino *2019-10-08 10:18:26*
 
-
-###  [#199](https://github.com/bsorrentino/maven-confluence-plugin/issues/199) Using ScrollVersions we got java.lang.IllegalArgumentException: unexpected port: -1    *bug*  
-
-**issue #199**
+**Merge branch 'feature/scroll-versions-integration' into feature/issue#194**
 
 
-[de75cbf14b13cf7](https://github.com/bsorrentino/maven-confluence-plugin/commit/de75cbf14b13cf7) bsorrentino *2019-10-17 18:39:00*
+[349971be46b340d](https://github.com/bsorrentino/maven-confluence-plugin/commit/349971be46b340d) bsorrentino *2019-10-08 10:10:26*
+
+**add retry**
+
+
+[aebd1a76016e8a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/aebd1a76016e8a7) bsorrentino *2019-10-08 10:08:01*
+
+**add fromRequestAsync**
+
+
+[7b588cc2f242efa](https://github.com/bsorrentino/maven-confluence-plugin/commit/7b588cc2f242efa) bsorrentino *2019-10-08 10:07:47*
+
+**clean code**
+
+
+[180a4505e83d2a2](https://github.com/bsorrentino/maven-confluence-plugin/commit/180a4505e83d2a2) bsorrentino *2019-10-08 10:07:04*
+
+**add docker compose file**
+
+
+[c2fc9e797a7652d](https://github.com/bsorrentino/maven-confluence-plugin/commit/c2fc9e797a7652d) bsorrentino *2019-10-07 16:26:10*
+
+**Merge branch 'feature/scroll-versions-integration' of https://github.com/neko-gg/maven-confluence-plugin into neko-gg-feature/scroll-versions-integration**
+
+
+[c88bca376eee6bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/c88bca376eee6bd) bsorrentino *2019-10-06 14:04:21*
+
+**Merge branch 'hotfix/changelog' into develop**
+
+
+[3661d9880bef42f](https://github.com/bsorrentino/maven-confluence-plugin/commit/3661d9880bef42f) bsorrentino *2019-10-01 09:43:32*
+
+**Merge branch 'release/6.4.1' into develop**
+
+
+[ac2b7b14e627097](https://github.com/bsorrentino/maven-confluence-plugin/commit/ac2b7b14e627097) bsorrentino *2019-10-01 09:35:36*
+
+**scroll version distribution**
+
+
+[2e8af193d4734de](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e8af193d4734de) bartolomeo sorrentino *2019-10-01 09:01:23*
+
+**add scroll versions confluence service via rest api**
+
+
+[d74aded3a980190](https://github.com/bsorrentino/maven-confluence-plugin/commit/d74aded3a980190) Nicola Lagnena *2019-09-29 19:55:40*
 
 
 ## v6.5-beta1
 ### Generic changes
+
+**Merge branch 'release/6.5-beta1'**
+
+
+[084f028ad1f7e6b](https://github.com/bsorrentino/maven-confluence-plugin/commit/084f028ad1f7e6b) bsorrentino *2019-10-14 20:13:37*
 
 **update changelog**
 
@@ -2639,29 +3336,6 @@
 
 [9b200600f3081b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/9b200600f3081b1) bsorrentino *2019-10-11 18:56:07*
 
-**remove deprecated**
-
-
-[2543b9c78722fe4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2543b9c78722fe4) bsorrentino *2019-10-11 18:34:48*
-
-**remove deprecated**
-
-
-[acc5495484b4860](https://github.com/bsorrentino/maven-confluence-plugin/commit/acc5495484b4860) bsorrentino *2019-10-11 18:34:39*
-
-**move to next release**
-
-
-[dd751d1c16f9266](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd751d1c16f9266) bsorrentino *2019-10-11 17:03:58*
-
-**update documentation**
-
-
-[2f8cbdd7ab78965](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8cbdd7ab78965) bsorrentino *2019-10-01 09:43:24*
-
-
-###  [#194](https://github.com/bsorrentino/maven-confluence-plugin/issues/194) Add Scroll Versions for Confluence plugin support    *enhancement*  
-
 **issue #194 update javadoc**
 
 
@@ -2677,9 +3351,39 @@
 
 [1dccae737f09ffd](https://github.com/bsorrentino/maven-confluence-plugin/commit/1dccae737f09ffd) bsorrentino *2019-10-11 18:35:59*
 
+**remove deprecated**
+
+
+[2543b9c78722fe4](https://github.com/bsorrentino/maven-confluence-plugin/commit/2543b9c78722fe4) bsorrentino *2019-10-11 18:34:48*
+
+**remove deprecated**
+
+
+[acc5495484b4860](https://github.com/bsorrentino/maven-confluence-plugin/commit/acc5495484b4860) bsorrentino *2019-10-11 18:34:39*
+
+**move to next release**
+
+
+[dd751d1c16f9266](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd751d1c16f9266) bsorrentino *2019-10-11 17:03:58*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[79285dd8030766c](https://github.com/bsorrentino/maven-confluence-plugin/commit/79285dd8030766c) bsorrentino *2019-10-01 09:43:29*
+
+**update documentation**
+
+
+[2f8cbdd7ab78965](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8cbdd7ab78965) bsorrentino *2019-10-01 09:43:24*
+
 
 ## v6.4.1
 ### Generic changes
+
+**Merge branch 'release/6.4.1'**
+
+
+[6e51be8e905b8fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/6e51be8e905b8fd) bsorrentino *2019-10-01 09:35:09*
 
 **update changelog**
 
@@ -2705,24 +3409,59 @@
 ## v6.4
 ### Generic changes
 
+**Merge branch 'release/6.4'**
+
+
+[c15e149b82e253c](https://github.com/bsorrentino/maven-confluence-plugin/commit/c15e149b82e253c) bsorrentino *2019-08-02 16:15:24*
+
+**Merge branch 'hotfix/docs'**
+
+
+[68fe35851a8947e](https://github.com/bsorrentino/maven-confluence-plugin/commit/68fe35851a8947e) bsorrentino *2019-07-16 14:15:53*
+
 **update readme**
 
 
 [34e063a08bcc3ae](https://github.com/bsorrentino/maven-confluence-plugin/commit/34e063a08bcc3ae) bsorrentino *2019-07-16 14:15:49*
+
+**Merge branch 'develop'**
+
+
+[7e02408af647c35](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e02408af647c35) bsorrentino *2019-07-15 19:57:38*
 
 **update changelog**
 
 
 [cb2a9bb83169ec6](https://github.com/bsorrentino/maven-confluence-plugin/commit/cb2a9bb83169ec6) bsorrentino *2019-07-15 19:57:06*
 
+**Merge branch 'release/6.3.2' into develop**
+
+
+[e63d9352613dce8](https://github.com/bsorrentino/maven-confluence-plugin/commit/e63d9352613dce8) bsorrentino *2019-07-15 19:54:05*
+
 
 ## v6.3.2
 ### Generic changes
+
+**Merge branch 'release/6.3.2'**
+
+
+[eeb9182fba410ff](https://github.com/bsorrentino/maven-confluence-plugin/commit/eeb9182fba410ff) bsorrentino *2019-07-15 19:53:53*
 
 **move to next prod version**
 
 
 [18f87e9bd08f12a](https://github.com/bsorrentino/maven-confluence-plugin/commit/18f87e9bd08f12a) bsorrentino *2019-07-15 19:38:40*
+
+**Merge branch 'feature/issue#191' into develop**
+
+
+[bea49be8d57cb49](https://github.com/bsorrentino/maven-confluence-plugin/commit/bea49be8d57cb49) bsorrentino *2019-07-15 07:47:50*
+
+**fix issue #191**
+
+
+[f3f2397c47dc2c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/f3f2397c47dc2c5) bsorrentino *2019-07-12 15:26:43*
 
 **move to next develop version**
 
@@ -2733,6 +3472,11 @@
 
 
 [a6de091b6cba4d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/a6de091b6cba4d2) bsorrentino *2019-07-12 13:11:17*
+
+**update test to verify #191**
+
+
+[8582b97232df30c](https://github.com/bsorrentino/maven-confluence-plugin/commit/8582b97232df30c) bsorrentino *2019-07-10 16:02:56*
 
 **update doc**
 
@@ -2759,32 +3503,49 @@
 
 [26dee555c4c43ad](https://github.com/bsorrentino/maven-confluence-plugin/commit/26dee555c4c43ad) bsorrentino *2019-06-12 12:37:44*
 
+**Merge branch 'hotfix/docs' into develop**
+
+
+[0e9a5a6917b960e](https://github.com/bsorrentino/maven-confluence-plugin/commit/0e9a5a6917b960e) bsorrentino *2019-06-12 10:34:42*
+
+**Merge branch 'hotfix/docs'**
+
+
+[f92eb7b426e6937](https://github.com/bsorrentino/maven-confluence-plugin/commit/f92eb7b426e6937) bsorrentino *2019-06-12 10:34:40*
+
 **update readme**
 
 
 [40a6fe7d1c7b787](https://github.com/bsorrentino/maven-confluence-plugin/commit/40a6fe7d1c7b787) bsorrentino *2019-06-12 10:33:59*
+
+**Merge branch 'hotfix/changelog' into develop**
+
+
+[a2b274d9a783106](https://github.com/bsorrentino/maven-confluence-plugin/commit/a2b274d9a783106) bsorrentino *2019-06-12 08:56:50*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[4e379a63fbd3ccc](https://github.com/bsorrentino/maven-confluence-plugin/commit/4e379a63fbd3ccc) bsorrentino *2019-06-12 08:56:48*
 
 **update changelog**
 
 
 [c496bea1bd57fa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/c496bea1bd57fa9) bsorrentino *2019-06-12 08:56:32*
 
-
-###  [#191](https://github.com/bsorrentino/maven-confluence-plugin/issues/191) Markdown image link to Attlasian wiki format wrong conversion in case of page titles with uncommon chars like square braces    *under verification*  
-
-**fix issue #191**
+**Merge branch 'release/6.3.1' into develop**
 
 
-[f3f2397c47dc2c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/f3f2397c47dc2c5) bsorrentino *2019-07-12 15:26:43*
-
-**update test to verify #191**
-
-
-[8582b97232df30c](https://github.com/bsorrentino/maven-confluence-plugin/commit/8582b97232df30c) bsorrentino *2019-07-10 16:02:56*
+[0c99c795b6e106f](https://github.com/bsorrentino/maven-confluence-plugin/commit/0c99c795b6e106f) bsorrentino *2019-06-12 08:54:22*
 
 
 ## v6.3.1
 ### Generic changes
+
+**Merge branch 'release/6.3.1'**
+
+
+[5b1bdf4a8fc2fa9](https://github.com/bsorrentino/maven-confluence-plugin/commit/5b1bdf4a8fc2fa9) bsorrentino *2019-06-12 08:54:08*
 
 **update CHANGELOG**
 
@@ -2801,19 +3562,49 @@
 
 [fc9dbdca2ded886](https://github.com/bsorrentino/maven-confluence-plugin/commit/fc9dbdca2ded886) bsorrentino *2019-06-12 08:35:25*
 
+**Merge branch 'hotfix/readme' into develop**
+
+
+[fb1ba4e4e591b5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/fb1ba4e4e591b5b) bsorrentino *2019-03-28 16:22:13*
+
+**Merge branch 'hotfix/readme'**
+
+
+[3cfead61cfd2cfc](https://github.com/bsorrentino/maven-confluence-plugin/commit/3cfead61cfd2cfc) bsorrentino *2019-03-28 16:22:10*
+
 **update readme**
 
 
 [f94d8dfac9cadb7](https://github.com/bsorrentino/maven-confluence-plugin/commit/f94d8dfac9cadb7) bsorrentino *2019-03-28 16:22:05*
+
+**Merge branch 'hotfix/changelog' into develop**
+
+
+[3cff4ecdc072ff7](https://github.com/bsorrentino/maven-confluence-plugin/commit/3cff4ecdc072ff7) bsorrentino *2019-03-28 15:47:18*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[0a70657875cf5a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/0a70657875cf5a5) bsorrentino *2019-03-28 15:47:16*
 
 **update changelog**
 
 
 [2fe8de8bec7b582](https://github.com/bsorrentino/maven-confluence-plugin/commit/2fe8de8bec7b582) bsorrentino *2019-03-28 15:47:06*
 
+**Merge branch 'release/6.3' into develop**
+
+
+[654457a8110114b](https://github.com/bsorrentino/maven-confluence-plugin/commit/654457a8110114b) bsorrentino *2019-03-28 15:44:38*
+
 
 ## v6.3
 ### Generic changes
+
+**Merge branch 'release/6.3'**
+
+
+[54039a294bce7c3](https://github.com/bsorrentino/maven-confluence-plugin/commit/54039a294bce7c3) bsorrentino *2019-03-28 15:44:27*
 
 **move to next version**
 
@@ -2824,6 +3615,41 @@
 
 
 [fcdb726e4cbe50b](https://github.com/bsorrentino/maven-confluence-plugin/commit/fcdb726e4cbe50b) bsorrentino *2019-03-26 19:57:02*
+
+**Merge branch 'feature/issue#189' into develop**
+
+
+[a35a485dc5d6c21](https://github.com/bsorrentino/maven-confluence-plugin/commit/a35a485dc5d6c21) bsorrentino *2019-03-26 19:51:50*
+
+**issue #189**
+
+
+[fe0642f3ba1548c](https://github.com/bsorrentino/maven-confluence-plugin/commit/fe0642f3ba1548c) bsorrentino *2019-03-26 19:46:19*
+
+**issue #189**
+
+
+[29e6f9ce768c457](https://github.com/bsorrentino/maven-confluence-plugin/commit/29e6f9ce768c457) bsorrentino *2019-03-26 19:46:05*
+
+**Merge branch 'hotfix/fix_doc_issue#187' into develop**
+
+
+[cd413d357ab9a3f](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd413d357ab9a3f) bsorrentino *2019-03-22 09:05:00*
+
+**Merge branch 'hotfix/fix_doc_issue#187'**
+
+
+[6b8f9ad112cbbf4](https://github.com/bsorrentino/maven-confluence-plugin/commit/6b8f9ad112cbbf4) bsorrentino *2019-03-22 09:04:57*
+
+**update documentation - fix #187**
+
+
+[21f90a0ce7ec9c9](https://github.com/bsorrentino/maven-confluence-plugin/commit/21f90a0ce7ec9c9) bsorrentino *2019-03-22 09:01:07*
+
+**#187 add test to verify issue**
+
+
+[1ce5e41f65d6871](https://github.com/bsorrentino/maven-confluence-plugin/commit/1ce5e41f65d6871) bsorrentino *2019-03-21 16:17:16*
 
 **update doc**
 
@@ -2845,35 +3671,19 @@
 
 [715064c9a913869](https://github.com/bsorrentino/maven-confluence-plugin/commit/715064c9a913869) bsorrentino *2019-02-07 17:03:43*
 
-
-###  [#187](https://github.com/bsorrentino/maven-confluence-plugin/issues/187) Image Markdown does not work correctly    *under verification*  
-
-**update documentation - fix #187**
+**Merge branch 'release/6.2' into develop**
 
 
-[21f90a0ce7ec9c9](https://github.com/bsorrentino/maven-confluence-plugin/commit/21f90a0ce7ec9c9) bsorrentino *2019-03-22 09:01:07*
-
-**#187 add test to verify issue**
-
-
-[1ce5e41f65d6871](https://github.com/bsorrentino/maven-confluence-plugin/commit/1ce5e41f65d6871) bsorrentino *2019-03-21 16:17:16*
-
-
-###  [#189](https://github.com/bsorrentino/maven-confluence-plugin/issues/189) Markdown portable image format doesn&#39;t work    *bug*  
-
-**issue #189**
-
-
-[fe0642f3ba1548c](https://github.com/bsorrentino/maven-confluence-plugin/commit/fe0642f3ba1548c) bsorrentino *2019-03-26 19:46:19*
-
-**issue #189**
-
-
-[29e6f9ce768c457](https://github.com/bsorrentino/maven-confluence-plugin/commit/29e6f9ce768c457) bsorrentino *2019-03-26 19:46:05*
+[dbc9419599445fa](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbc9419599445fa) bsorrentino *2019-02-07 17:01:23*
 
 
 ## v6.2
 ### Generic changes
+
+**Merge branch 'release/6.2'**
+
+
+[91648e499b5fb5d](https://github.com/bsorrentino/maven-confluence-plugin/commit/91648e499b5fb5d) bsorrentino *2019-02-07 17:01:12*
 
 **update ignore**
 
@@ -2997,14 +3807,34 @@
 
 [2dc0c9fb7cb7256](https://github.com/bsorrentino/maven-confluence-plugin/commit/2dc0c9fb7cb7256) bsorrentino *2019-02-01 10:15:01*
 
+**Merge branch 'hotfix/changelog' into develop**
+
+
+[dcb57ae245406ce](https://github.com/bsorrentino/maven-confluence-plugin/commit/dcb57ae245406ce) bsorrentino *2019-01-16 11:43:17*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[46b393f6d9e103f](https://github.com/bsorrentino/maven-confluence-plugin/commit/46b393f6d9e103f) bsorrentino *2019-01-16 11:43:14*
+
 **update changelog**
 
 
 [49287762f3703b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/49287762f3703b0) bsorrentino *2019-01-16 11:43:04*
 
+**Merge branch 'release/6.1' into develop**
+
+
+[07fda207b883cf5](https://github.com/bsorrentino/maven-confluence-plugin/commit/07fda207b883cf5) bsorrentino *2019-01-16 11:39:05*
+
 
 ## v6.1
 ### Generic changes
+
+**Merge branch 'release/6.1'**
+
+
+[ab294f345cd9e47](https://github.com/bsorrentino/maven-confluence-plugin/commit/ab294f345cd9e47) bsorrentino *2019-01-16 11:38:55*
 
 **update readme**
 
@@ -3016,27 +3846,59 @@
 
 [5e730dbfd5978a9](https://github.com/bsorrentino/maven-confluence-plugin/commit/5e730dbfd5978a9) bsorrentino *2019-01-16 11:30:48*
 
-**update readme**
-
-
-[906ad52e9b9934c](https://github.com/bsorrentino/maven-confluence-plugin/commit/906ad52e9b9934c) bsorrentino *2019-01-14 18:29:46*
-
-
-###  [#186](https://github.com/bsorrentino/maven-confluence-plugin/issues/186) downgrade maven prerequisites from 3.5.0 to 3.3.1    *Task*  
-
 **fix issue #186 move to next developer version**
 
 
 [d8a9853f38dadae](https://github.com/bsorrentino/maven-confluence-plugin/commit/d8a9853f38dadae) bsorrentino *2019-01-16 11:22:27*
 
+**Merge branch 'hotfix/new' into develop**
+
+
+[0c01dfef83f6fc0](https://github.com/bsorrentino/maven-confluence-plugin/commit/0c01dfef83f6fc0) bsorrentino *2019-01-14 18:30:57*
+
+**Merge branch 'hotfix/new'**
+
+
+[c5fd3998130e097](https://github.com/bsorrentino/maven-confluence-plugin/commit/c5fd3998130e097) bsorrentino *2019-01-14 18:30:54*
+
+**update readme**
+
+
+[906ad52e9b9934c](https://github.com/bsorrentino/maven-confluence-plugin/commit/906ad52e9b9934c) bsorrentino *2019-01-14 18:29:46*
+
+**Merge branch 'hotfix/changelog' into develop**
+
+
+[8b16744a9c7a28d](https://github.com/bsorrentino/maven-confluence-plugin/commit/8b16744a9c7a28d) bsorrentino *2019-01-09 17:19:13*
+
+**Merge branch 'release/6.0' into develop**
+
+
+[34c30e69c00bb9c](https://github.com/bsorrentino/maven-confluence-plugin/commit/34c30e69c00bb9c) bsorrentino *2019-01-09 17:10:15*
+
 
 ## v6.0
 ### Generic changes
+
+**Merge branch 'hotfix/changelog'**
+
+
+[434aaf861e1c650](https://github.com/bsorrentino/maven-confluence-plugin/commit/434aaf861e1c650) bsorrentino *2019-01-09 17:19:11*
 
 **update changelog config**
 
 
 [9155dbb9eaa1050](https://github.com/bsorrentino/maven-confluence-plugin/commit/9155dbb9eaa1050) bsorrentino *2019-01-09 17:19:02*
+
+**Merge remote-tracking branch 'origin/master'**
+
+
+[ce7555feb897bf6](https://github.com/bsorrentino/maven-confluence-plugin/commit/ce7555feb897bf6) bsorrentino *2019-01-09 17:12:38*
+
+**Merge branch 'release/6.0'**
+
+
+[9525f580892d3e7](https://github.com/bsorrentino/maven-confluence-plugin/commit/9525f580892d3e7) bsorrentino *2019-01-09 17:10:02*
 
 **prepare release 6.0**
 
@@ -3053,10 +3915,25 @@
 
 [ca520fecf2df5bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/ca520fecf2df5bb) bsorrentino *2019-01-08 21:43:58*
 
+**Merge branch feature/issue#183 into develop**
+
+
+[9dfc2805c784d11](https://github.com/bsorrentino/maven-confluence-plugin/commit/9dfc2805c784d11) Bartolomeo Sorrentino *2019-01-05 20:27:03*
+
+**Merge branch 'hotfix/security_alert'**
+
+
+[dd14a8aa1c2095c](https://github.com/bsorrentino/maven-confluence-plugin/commit/dd14a8aa1c2095c) Bartolomeo Sorrentino *2019-01-05 20:24:17*
+
 **fix security alert**
 
 
 [11e6f4e94d434d8](https://github.com/bsorrentino/maven-confluence-plugin/commit/11e6f4e94d434d8) Bartolomeo Sorrentino *2019-01-05 20:23:00*
+
+**Merge branch 'feature/issue#183' into develop**
+
+
+[a35fe349c9ace20](https://github.com/bsorrentino/maven-confluence-plugin/commit/a35fe349c9ace20) Bartolomeo Sorrentino *2019-01-05 20:10:33*
 
 **add maven prerequisites**
 
@@ -3068,6 +3945,16 @@
 
 [d92a4ea2b1d518a](https://github.com/bsorrentino/maven-confluence-plugin/commit/d92a4ea2b1d518a) Bartolomeo Sorrentino *2019-01-05 18:44:57*
 
+**Merge branch 'hotfix/readme' into develop**
+
+
+[a2edc284f88812c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a2edc284f88812c) bsorrentino *2018-11-26 23:14:14*
+
+**Merge branch 'hotfix/readme'**
+
+
+[f8c11b1320399a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/f8c11b1320399a4) bsorrentino *2018-11-26 23:14:12*
+
 **update readme**
 
 
@@ -3078,59 +3965,15 @@
 
 [9281e4a7bb4bf81](https://github.com/bsorrentino/maven-confluence-plugin/commit/9281e4a7bb4bf81) bsorrentino *2018-11-26 22:58:41*
 
+**Merge branch 'feature/issue#182' into develop**
+
+
+[9a7d656c03f4fdc](https://github.com/bsorrentino/maven-confluence-plugin/commit/9a7d656c03f4fdc) bsorrentino *2018-11-25 20:02:14*
+
 **update changelog**
 
 
 [c1efd3ba10366da](https://github.com/bsorrentino/maven-confluence-plugin/commit/c1efd3ba10366da) bsorrentino *2018-11-25 20:01:55*
-
-**clean code**
-
-
-[d1031aaafe8ce04](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1031aaafe8ce04) bsorrentino *2018-11-23 13:08:56*
-
-**clean code**
-
-
-[37abf19602cd962](https://github.com/bsorrentino/maven-confluence-plugin/commit/37abf19602cd962) bsorrentino *2018-10-29 16:04:18*
-
-**clean code**
-
-
-[4eb40ca92ff42d5](https://github.com/bsorrentino/maven-confluence-plugin/commit/4eb40ca92ff42d5) bsorrentino *2018-10-29 15:04:17*
-
-**update submodule**
-
-
-[ff2475099b79702](https://github.com/bsorrentino/maven-confluence-plugin/commit/ff2475099b79702) bsorrentino *2018-10-23 10:46:01*
-
-**update changelog template**
-
-
-[0eb13d12db88490](https://github.com/bsorrentino/maven-confluence-plugin/commit/0eb13d12db88490) bsorrentino *2018-09-26 15:26:31*
-
-**move to next developer version**
-
-
-[4b12184ad37a078](https://github.com/bsorrentino/maven-confluence-plugin/commit/4b12184ad37a078) bsorrentino *2018-09-26 15:20:10*
-
-
-###  [#178](https://github.com/bsorrentino/maven-confluence-plugin/issues/178) Reuse session in XMLRPC protocol    *enhancement*  
-
-**issue #178 - reuse token in XMLRPC protocol**
-
-
-[c8ca5c1e5c09b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/c8ca5c1e5c09b17) bsorrentino *2018-10-26 16:13:12*
-
-
-###  [#179](https://github.com/bsorrentino/maven-confluence-plugin/issues/179) Log full REST API Conflunce response in case of REST API invocation error    *enhancement*  
-
-**fix issue #179**
-
-
-[d656f720d181af4](https://github.com/bsorrentino/maven-confluence-plugin/commit/d656f720d181af4) bsorrentino *2018-10-29 15:28:21*
-
-
-###  [#182](https://github.com/bsorrentino/maven-confluence-plugin/issues/182) Warn about trailing space in page names    *enhancement*  
 
 **#182 - add check on name**
 
@@ -3142,9 +3985,75 @@
 
 [9e178bfe1d43171](https://github.com/bsorrentino/maven-confluence-plugin/commit/9e178bfe1d43171) bsorrentino *2018-11-25 20:00:46*
 
+**clean code**
+
+
+[d1031aaafe8ce04](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1031aaafe8ce04) bsorrentino *2018-11-23 13:08:56*
+
+**Merge pull request #181 from qwazer/maven-confluence-plugin-180**
+
+ * Encoding of special chars in confluence page title
+
+[848e2b3d6b6b47f](https://github.com/bsorrentino/maven-confluence-plugin/commit/848e2b3d6b6b47f) bsorrentino *2018-10-30 21:35:29*
+
+**clean code**
+
+
+[37abf19602cd962](https://github.com/bsorrentino/maven-confluence-plugin/commit/37abf19602cd962) bsorrentino *2018-10-29 16:04:18*
+
+**Merge branch 'feature/issue#179' into develop**
+
+
+[cd20ada9cfcb6ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd20ada9cfcb6ed) bsorrentino *2018-10-29 15:28:45*
+
+**fix issue #179**
+
+
+[d656f720d181af4](https://github.com/bsorrentino/maven-confluence-plugin/commit/d656f720d181af4) bsorrentino *2018-10-29 15:28:21*
+
+**clean code**
+
+
+[4eb40ca92ff42d5](https://github.com/bsorrentino/maven-confluence-plugin/commit/4eb40ca92ff42d5) bsorrentino *2018-10-29 15:04:17*
+
+**issue #178 - reuse token in XMLRPC protocol**
+
+
+[c8ca5c1e5c09b17](https://github.com/bsorrentino/maven-confluence-plugin/commit/c8ca5c1e5c09b17) bsorrentino *2018-10-26 16:13:12*
+
+**update submodule**
+
+
+[ff2475099b79702](https://github.com/bsorrentino/maven-confluence-plugin/commit/ff2475099b79702) bsorrentino *2018-10-23 10:46:01*
+
+**Merge branch 'hotfix/docs' into develop**
+
+
+[34d764aaf499d7f](https://github.com/bsorrentino/maven-confluence-plugin/commit/34d764aaf499d7f) bsorrentino *2018-10-12 20:39:48*
+
+**update changelog template**
+
+
+[0eb13d12db88490](https://github.com/bsorrentino/maven-confluence-plugin/commit/0eb13d12db88490) bsorrentino *2018-09-26 15:26:31*
+
+**move to next developer version**
+
+
+[4b12184ad37a078](https://github.com/bsorrentino/maven-confluence-plugin/commit/4b12184ad37a078) bsorrentino *2018-09-26 15:20:10*
+
+**Merge branch 'release/6.0-rc3' into develop**
+
+
+[ec27e3770b29fa7](https://github.com/bsorrentino/maven-confluence-plugin/commit/ec27e3770b29fa7) bsorrentino *2018-09-26 15:17:27*
+
 
 ## v6.0-rc4
 ### Generic changes
+
+**Merge branch 'release/6.0-rc4'**
+
+
+[446bc3a0577034d](https://github.com/bsorrentino/maven-confluence-plugin/commit/446bc3a0577034d) bsorrentino *2018-11-26 22:55:39*
 
 **update gcp plugin**
 
@@ -3156,10 +4065,20 @@
 
 [62fde8a4275a7f4](https://github.com/bsorrentino/maven-confluence-plugin/commit/62fde8a4275a7f4) bsorrentino *2018-11-25 20:49:32*
 
+**#182 - add unit tests**
+
+
+[8596b2545495fae](https://github.com/bsorrentino/maven-confluence-plugin/commit/8596b2545495fae) bsorrentino *2018-11-25 20:45:29*
+
 **update changelog**
 
 
 [78b33e2b5d01606](https://github.com/bsorrentino/maven-confluence-plugin/commit/78b33e2b5d01606) bsorrentino *2018-11-25 20:45:29*
+
+**#182 - add check on name**
+
+
+[2eed4ba59dfd2a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/2eed4ba59dfd2a7) bsorrentino *2018-11-25 20:45:29*
 
 **clean code**
 
@@ -3171,6 +4090,11 @@
  * update version of squareup okhttp3
 
 [c82f69d678fc80a](https://github.com/bsorrentino/maven-confluence-plugin/commit/c82f69d678fc80a) qwazer *2018-10-30 09:24:01*
+
+**Merge branch 'hotfix/docs'**
+
+
+[10772913e6560c0](https://github.com/bsorrentino/maven-confluence-plugin/commit/10772913e6560c0) bsorrentino *2018-10-12 20:39:44*
 
 **update documentation**
 
@@ -3188,21 +4112,13 @@
 [3aeb3f10496afdc](https://github.com/bsorrentino/maven-confluence-plugin/commit/3aeb3f10496afdc) bsorrentino *2018-09-26 15:19:11*
 
 
-###  [#182](https://github.com/bsorrentino/maven-confluence-plugin/issues/182) Warn about trailing space in page names    *enhancement*  
-
-**#182 - add unit tests**
-
-
-[8596b2545495fae](https://github.com/bsorrentino/maven-confluence-plugin/commit/8596b2545495fae) bsorrentino *2018-11-25 20:45:29*
-
-**#182 - add check on name**
-
-
-[2eed4ba59dfd2a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/2eed4ba59dfd2a7) bsorrentino *2018-11-25 20:45:29*
-
-
 ## v6.0-rc3
 ### Generic changes
+
+**Merge branch 'release/6.0-rc3'**
+
+
+[509b5b571d39b62](https://github.com/bsorrentino/maven-confluence-plugin/commit/509b5b571d39b62) bsorrentino *2018-09-26 15:17:26*
 
 **move to release 6.0-rc3**
 
@@ -3219,20 +4135,55 @@
 
 [911dd1563584ce2](https://github.com/bsorrentino/maven-confluence-plugin/commit/911dd1563584ce2) bsorrentino *2018-09-26 13:44:05*
 
+**Merge branch 'feature/gitchangelog' into develop**
+
+
+[2e1e8554f80990f](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e1e8554f80990f) bsorrentino *2018-09-26 13:27:34*
+
 **add support for git-changelog-maven-plugin**
 
 
 [95d240f04734eae](https://github.com/bsorrentino/maven-confluence-plugin/commit/95d240f04734eae) bsorrentino *2018-09-26 13:27:23*
+
+**Merge branch 'develop' into feature/gitchangelog**
+
+ * # Conflicts:
+ * #	.gitignore
+
+[b833c6103ec4ab2](https://github.com/bsorrentino/maven-confluence-plugin/commit/b833c6103ec4ab2) bsorrentino *2018-09-26 13:26:36*
 
 **add deploystate for internal deployment**
 
 
 [e03f887c5e6b343](https://github.com/bsorrentino/maven-confluence-plugin/commit/e03f887c5e6b343) bsorrentino *2018-09-04 16:43:58*
 
+**Merge branch 'develop' into qwazer-maven-confluence-plugin-167**
+
+
+[8ef6249b3121c54](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ef6249b3121c54) bsorrentino *2018-09-04 16:37:54*
+
+**Merge branch 'feature/issue#170' into develop**
+
+
+[0f5c724abf82af1](https://github.com/bsorrentino/maven-confluence-plugin/commit/0f5c724abf82af1) bsorrentino *2018-09-04 16:36:42*
+
+**issue #170 -**
+
+ * remove the processor methods from Site to SiteProcessor
+ * remove the print methods from Site to SitePrinter
+ * refactor usage
+
+[1480fda8bf3add5](https://github.com/bsorrentino/maven-confluence-plugin/commit/1480fda8bf3add5) bsorrentino *2018-09-04 16:28:40*
+
 **remove warning**
 
 
 [2c379f919d55fcb](https://github.com/bsorrentino/maven-confluence-plugin/commit/2c379f919d55fcb) bsorrentino *2018-09-04 16:25:42*
+
+**Merge branch 'develop' into qwazer-maven-confluence-plugin-167**
+
+
+[ffe4954a5c2dea4](https://github.com/bsorrentino/maven-confluence-plugin/commit/ffe4954a5c2dea4) bsorrentino *2018-09-02 14:10:58*
 
 **update ignore**
 
@@ -3249,6 +4200,21 @@
 
 [f9d392fcef36dea](https://github.com/bsorrentino/maven-confluence-plugin/commit/f9d392fcef36dea) bsorrentino *2018-09-02 14:08:36*
 
+**Merge branch 'feature/issue#169' into develop**
+
+
+[716fec5ffc658e2](https://github.com/bsorrentino/maven-confluence-plugin/commit/716fec5ffc658e2) bsorrentino *2018-08-31 17:28:07*
+
+**issue #169 - implementation using jackson**
+
+
+[2a9dcb51c3be4bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/2a9dcb51c3be4bb) bsorrentino *2018-08-31 17:27:49*
+
+**issue #169 - unit tests**
+
+
+[5c1e4775bd26cb0](https://github.com/bsorrentino/maven-confluence-plugin/commit/5c1e4775bd26cb0) bsorrentino *2018-08-31 17:27:07*
+
 **setup json pretty printing**
 
 
@@ -3264,87 +4230,6 @@
 
 [84a1ce5f934eedf](https://github.com/bsorrentino/maven-confluence-plugin/commit/84a1ce5f934eedf) areshetnikov *2018-08-31 08:51:52*
 
-**remove vscode stuff**
-
-
-[2e50fe58eab6e97](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e50fe58eab6e97) bsorrentino *2018-08-28 16:32:09*
-
-**remove vscode stuff**
-
-
-[5163d596db9beba](https://github.com/bsorrentino/maven-confluence-plugin/commit/5163d596db9beba) bsorrentino *2018-08-28 16:31:24*
-
-**move to next developer version**
-
-
-[921379decb8a49e](https://github.com/bsorrentino/maven-confluence-plugin/commit/921379decb8a49e) bsorrentino *2018-08-28 14:38:54*
-
-**remove .vscode from distribution**
-
-
-[cad499deb734b83](https://github.com/bsorrentino/maven-confluence-plugin/commit/cad499deb734b83) bsorrentino *2018-08-23 09:05:57*
-
-**update ignore**
-
-
-[e07e96b28f2fca3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e07e96b28f2fca3) bsorrentino *2018-08-23 09:05:09*
-
-
-###  [#162](https://github.com/bsorrentino/maven-confluence-plugin/issues/162) Make parameter &#39;ignore-variables&#39; in xsd optional    *enhancement*  
-
-**issue #162 - update schema to 6.0**
-
-
-[1a51c934a8b6e32](https://github.com/bsorrentino/maven-confluence-plugin/commit/1a51c934a8b6e32) bsorrentino *2018-08-25 18:33:38*
-
-**issue #162 - add new site schema 6.0**
-
-
-[f4ac79f3c57fff9](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4ac79f3c57fff9) bsorrentino *2018-08-25 18:11:42*
-
-**issue #162 - fix 'ignore-variables' schema generation**
-
-
-[67a031038e44da2](https://github.com/bsorrentino/maven-confluence-plugin/commit/67a031038e44da2) bsorrentino *2018-08-25 18:08:40*
-
-
-###  [#164](https://github.com/bsorrentino/maven-confluence-plugin/issues/164) Add parent-page attribute on home tag    *enhancement*  
-
-**issue #164**
-
- * add support on tag site of otional attribute &#39;space-key&#39;
- * add attribute on home of optional attributes &#39;parent-page&#39; and
- * &#39;parent-page-id&#39;
-
-[93f8dab4fe97062](https://github.com/bsorrentino/maven-confluence-plugin/commit/93f8dab4fe97062) bsorrentino *2018-08-28 14:41:26*
-
-
-###  [#169](https://github.com/bsorrentino/maven-confluence-plugin/issues/169) support YAML to define site     *enhancement*  
-
-**issue #169 - implementation using jackson**
-
-
-[2a9dcb51c3be4bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/2a9dcb51c3be4bb) bsorrentino *2018-08-31 17:27:49*
-
-**issue #169 - unit tests**
-
-
-[5c1e4775bd26cb0](https://github.com/bsorrentino/maven-confluence-plugin/commit/5c1e4775bd26cb0) bsorrentino *2018-08-31 17:27:07*
-
-
-###  [#170](https://github.com/bsorrentino/maven-confluence-plugin/issues/170) Separate model from operations on it    *enhancement*  
-
-**issue #170 -**
-
- * remove the processor methods from Site to SiteProcessor
- * remove the print methods from Site to SitePrinter
- * refactor usage
-
-[1480fda8bf3add5](https://github.com/bsorrentino/maven-confluence-plugin/commit/1480fda8bf3add5) bsorrentino *2018-09-04 16:28:40*
-
-
-### Jira plugin-167   
-
 **maven-confluence-plugin-167 Comparing by content md5 hash in DeployStateManager.isUpdated**
 
  * implement, use Use DigestUtils from Apache Commons Codec library to calculate md5
@@ -3357,19 +4242,122 @@
 
 [2159d908d0bd082](https://github.com/bsorrentino/maven-confluence-plugin/commit/2159d908d0bd082) areshetnikov *2018-08-31 07:30:37*
 
+**Merge branch 'hotfix/remove_vscode' into develop**
+
+
+[a5961faff183daa](https://github.com/bsorrentino/maven-confluence-plugin/commit/a5961faff183daa) bsorrentino *2018-08-28 16:32:46*
+
+**Merge branch 'hotfix/remove_vscode'**
+
+
+[503f3e6720366be](https://github.com/bsorrentino/maven-confluence-plugin/commit/503f3e6720366be) bsorrentino *2018-08-28 16:32:16*
+
+**remove vscode stuff**
+
+
+[2e50fe58eab6e97](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e50fe58eab6e97) bsorrentino *2018-08-28 16:32:09*
+
+**remove vscode stuff**
+
+
+[5163d596db9beba](https://github.com/bsorrentino/maven-confluence-plugin/commit/5163d596db9beba) bsorrentino *2018-08-28 16:31:24*
+
+**Merge branch 'feature/#164' into develop**
+
+
+[e8506c9dd37fbb8](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8506c9dd37fbb8) bsorrentino *2018-08-28 14:41:42*
+
+**issue #164**
+
+ * add support on tag site of otional attribute &#x27;space-key&#x27;
+ * add attribute on home of optional attributes &#x27;parent-page&#x27; and
+ * &#x27;parent-page-id&#x27;
+
+[93f8dab4fe97062](https://github.com/bsorrentino/maven-confluence-plugin/commit/93f8dab4fe97062) bsorrentino *2018-08-28 14:41:26*
+
+**move to next developer version**
+
+
+[921379decb8a49e](https://github.com/bsorrentino/maven-confluence-plugin/commit/921379decb8a49e) bsorrentino *2018-08-28 14:38:54*
+
+**Merge branch 'hotfix/update_xsd' into develop**
+
+
+[944ddd581a65068](https://github.com/bsorrentino/maven-confluence-plugin/commit/944ddd581a65068) bsorrentino *2018-08-25 18:34:00*
+
+**Merge branch 'hotfix/update_xsd'**
+
+
+[e152b10c4f1332f](https://github.com/bsorrentino/maven-confluence-plugin/commit/e152b10c4f1332f) bsorrentino *2018-08-25 18:33:58*
+
+**issue #162 - update schema to 6.0**
+
+
+[1a51c934a8b6e32](https://github.com/bsorrentino/maven-confluence-plugin/commit/1a51c934a8b6e32) bsorrentino *2018-08-25 18:33:38*
+
+**Merge branch 'hotfix/xsd' into develop**
+
+
+[d76fcbeac23722b](https://github.com/bsorrentino/maven-confluence-plugin/commit/d76fcbeac23722b) bsorrentino *2018-08-25 18:12:02*
+
+**Merge branch 'hotfix/xsd'**
+
+
+[c58e4ec46e0da1e](https://github.com/bsorrentino/maven-confluence-plugin/commit/c58e4ec46e0da1e) bsorrentino *2018-08-25 18:11:55*
+
+**issue #162 - add new site schema 6.0**
+
+
+[f4ac79f3c57fff9](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4ac79f3c57fff9) bsorrentino *2018-08-25 18:11:42*
+
+**issue #162 - fix 'ignore-variables' schema generation**
+
+
+[67a031038e44da2](https://github.com/bsorrentino/maven-confluence-plugin/commit/67a031038e44da2) bsorrentino *2018-08-25 18:08:40*
+
+**remove .vscode from distribution**
+
+
+[cad499deb734b83](https://github.com/bsorrentino/maven-confluence-plugin/commit/cad499deb734b83) bsorrentino *2018-08-23 09:05:57*
+
+**update ignore**
+
+
+[e07e96b28f2fca3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e07e96b28f2fca3) bsorrentino *2018-08-23 09:05:09*
+
+**Merge branch 'release/6.0-rc2' into develop**
+
+
+[7bd18c747fed1cc](https://github.com/bsorrentino/maven-confluence-plugin/commit/7bd18c747fed1cc) bsorrentino *2018-08-14 09:52:50*
+
 
 ## v6.0-rc2
 ### Generic changes
+
+**Merge branch 'release/6.0-rc2'**
+
+
+[0225e7e06ae2584](https://github.com/bsorrentino/maven-confluence-plugin/commit/0225e7e06ae2584) bsorrentino *2018-08-14 09:52:37*
 
 **release 6.0-rc2**
 
 
 [98a6270ab29f420](https://github.com/bsorrentino/maven-confluence-plugin/commit/98a6270ab29f420) bsorrentino *2018-08-14 09:52:19*
 
+**Merge branch 'feature/issue#160' into develop**
+
+
+[db5d216aba7e633](https://github.com/bsorrentino/maven-confluence-plugin/commit/db5d216aba7e633) bsorrentino *2018-08-14 09:43:53*
+
 **remove warning**
 
 
 [470c5beaab6ac96](https://github.com/bsorrentino/maven-confluence-plugin/commit/470c5beaab6ac96) bsorrentino *2018-08-13 15:12:01*
+
+**issue #160 - mapToArray 2 mapToStream checking if it is an array o single object**
+
+
+[187e432e6dc7c65](https://github.com/bsorrentino/maven-confluence-plugin/commit/187e432e6dc7c65) bsorrentino *2018-08-13 14:51:34*
 
 **move to next development version**
 
@@ -3381,43 +4369,29 @@
 
 [46e4e1c1bfd4eed](https://github.com/bsorrentino/maven-confluence-plugin/commit/46e4e1c1bfd4eed) bsorrentino *2018-08-12 17:29:35*
 
-
-###  [#160](https://github.com/bsorrentino/maven-confluence-plugin/issues/160) Attachments are not updated (wrong date format)    *bug*  *under verification*  
-
-**issue #160 - mapToArray 2 mapToStream checking if it is an array o single object**
+**Merge branch 'release/6.0-rc1' into develop**
 
 
-[187e432e6dc7c65](https://github.com/bsorrentino/maven-confluence-plugin/commit/187e432e6dc7c65) bsorrentino *2018-08-13 14:51:34*
+[f33e35e69eb54d0](https://github.com/bsorrentino/maven-confluence-plugin/commit/f33e35e69eb54d0) bsorrentino *2018-07-24 10:28:13*
 
 
 ## v6.0-rc1
 ### Generic changes
+
+**Merge branch 'release/6.0-rc1'**
+
+
+[592a3db7586231c](https://github.com/bsorrentino/maven-confluence-plugin/commit/592a3db7586231c) bsorrentino *2018-07-24 10:27:59*
 
 **prepare for release 6.0-rc1**
 
 
 [d9e491325f59d1d](https://github.com/bsorrentino/maven-confluence-plugin/commit/d9e491325f59d1d) bsorrentino *2018-07-24 10:27:39*
 
-**remove netbeans files**
+**Merge branch 'feature/issue#158' into develop**
 
 
-[9ac419911490aa2](https://github.com/bsorrentino/maven-confluence-plugin/commit/9ac419911490aa2) bsorrentino *2018-07-16 09:13:59*
-
-**test issue158**
-
-
-[8452558cf229bbe](https://github.com/bsorrentino/maven-confluence-plugin/commit/8452558cf229bbe) bsorrentino *2018-07-16 09:08:32*
-
-
-###  [#157](https://github.com/bsorrentino/maven-confluence-plugin/issues/157) unclear doc about deployState parameter  
-
-**issue #157 - update doc**
-
-
-[02e5b695b500dcf](https://github.com/bsorrentino/maven-confluence-plugin/commit/02e5b695b500dcf) bsorrentino *2018-07-10 23:32:20*
-
-
-###  [#158](https://github.com/bsorrentino/maven-confluence-plugin/issues/158) When publish markdown pages with 6.0-beta2 and active deployState parameter then pages are not published correctly    *bug*  *under verification*  
+[74d33a5993d36fb](https://github.com/bsorrentino/maven-confluence-plugin/commit/74d33a5993d36fb) bsorrentino *2018-07-24 09:53:55*
 
 **issue #158 - update test**
 
@@ -3429,31 +4403,73 @@
 
 [2567b2d24b6c4e1](https://github.com/bsorrentino/maven-confluence-plugin/commit/2567b2d24b6c4e1) bsorrentino *2018-07-22 21:01:45*
 
+**remove netbeans files**
+
+
+[9ac419911490aa2](https://github.com/bsorrentino/maven-confluence-plugin/commit/9ac419911490aa2) bsorrentino *2018-07-16 09:13:59*
+
+**test issue158**
+
+
+[8452558cf229bbe](https://github.com/bsorrentino/maven-confluence-plugin/commit/8452558cf229bbe) bsorrentino *2018-07-16 09:08:32*
+
+**Merge branch 'hotfix/#157' into develop**
+
+
+[a90d2fe602e4f81](https://github.com/bsorrentino/maven-confluence-plugin/commit/a90d2fe602e4f81) bsorrentino *2018-07-10 23:32:31*
+
+**Merge branch 'hotfix/#157'**
+
+
+[243b7d9b545e570](https://github.com/bsorrentino/maven-confluence-plugin/commit/243b7d9b545e570) bsorrentino *2018-07-10 23:32:30*
+
+**issue #157 - update doc**
+
+
+[02e5b695b500dcf](https://github.com/bsorrentino/maven-confluence-plugin/commit/02e5b695b500dcf) bsorrentino *2018-07-10 23:32:20*
+
+**Merge branch 'release/6.0-beta2' into develop**
+
+
+[ab159cb745407d4](https://github.com/bsorrentino/maven-confluence-plugin/commit/ab159cb745407d4) bsorrentino *2018-07-09 17:06:22*
+
 
 ## v6.0-beta2
 ### Generic changes
+
+**Merge branch 'release/6.0-beta2'**
+
+
+[2e2e38e05c644a2](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e2e38e05c644a2) bsorrentino *2018-07-09 17:06:21*
 
 **move to next release**
 
 
 [b8fb86dc202837c](https://github.com/bsorrentino/maven-confluence-plugin/commit/b8fb86dc202837c) bsorrentino *2018-07-09 17:05:59*
 
-**move to next developer version**
-
-
-[dbed3061afa6abd](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbed3061afa6abd) bsorrentino *2018-07-04 11:04:57*
-
-
-###  [#156](https://github.com/bsorrentino/maven-confluence-plugin/issues/156) 6.0-beta1 changes naming rules for nested childs pages     *bug*  
-
 **issue #156 - use home page title as child prefix**
 
 
 [170fb4adba031fe](https://github.com/bsorrentino/maven-confluence-plugin/commit/170fb4adba031fe) bsorrentino *2018-07-06 11:05:48*
 
+**move to next developer version**
+
+
+[dbed3061afa6abd](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbed3061afa6abd) bsorrentino *2018-07-04 11:04:57*
+
+**Merge branch 'release/6.0-beta1' into develop**
+
+
+[20f07c47be14dba](https://github.com/bsorrentino/maven-confluence-plugin/commit/20f07c47be14dba) bsorrentino *2018-07-04 10:58:29*
+
 
 ## v6.0-beta1
 ### Generic changes
+
+**Merge branch 'release/6.0-beta1'**
+
+
+[be02969cf1716af](https://github.com/bsorrentino/maven-confluence-plugin/commit/be02969cf1716af) bsorrentino *2018-07-04 10:58:20*
 
 **prepare for release**
 
@@ -3465,114 +4481,20 @@
 
 [b8bdb6eab03f5e9](https://github.com/bsorrentino/maven-confluence-plugin/commit/b8bdb6eab03f5e9) bsorrentino *2018-06-18 16:10:16*
 
-**add can update check**
+**Merge remote-tracking branch 'origin/develop' into develop**
 
 
-[59e5fe6bf072bba](https://github.com/bsorrentino/maven-confluence-plugin/commit/59e5fe6bf072bba) bsorrentino *2018-06-15 07:01:50*
+[eebc9498febf392](https://github.com/bsorrentino/maven-confluence-plugin/commit/eebc9498febf392) bsorrentino *2018-06-18 16:05:30*
 
-**rename package**
+**Merge branch 'feature/delta' into develop**
 
 
-[f26a05a34cfe224](https://github.com/bsorrentino/maven-confluence-plugin/commit/f26a05a34cfe224) bsorrentino *2018-06-10 20:53:29*
+[6903f4f0c310c43](https://github.com/bsorrentino/maven-confluence-plugin/commit/6903f4f0c310c43) bsorrentino *2018-06-18 11:17:52*
 
-**add api.rpc and api.rest properties**
+**- #153 getPage(id) return completablefuture**
 
 
-[dbc2ff9a7a21a59](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbc2ff9a7a21a59) bsorrentino *2018-04-15 10:14:09*
-
-**remove warning**
-
-
-[ebc09e1482f23cc](https://github.com/bsorrentino/maven-confluence-plugin/commit/ebc09e1482f23cc) bsorrentino *2018-04-15 10:13:32*
-
-**doesn't return null but error**
-
-
-[a6e1db42136aec0](https://github.com/bsorrentino/maven-confluence-plugin/commit/a6e1db42136aec0) bsorrentino *2018-04-15 10:13:20*
-
-**update exception description**
-
-
-[3084df2d2b720a6](https://github.com/bsorrentino/maven-confluence-plugin/commit/3084df2d2b720a6) bsorrentino *2018-04-15 10:12:09*
-
-**introduce Optional usage**
-
-
-[98e0ede2c3ead5d](https://github.com/bsorrentino/maven-confluence-plugin/commit/98e0ede2c3ead5d) bsorrentino *2018-04-10 18:16:07*
-
-**remove usage of rxjava**
-
- * use of java8 Stream
-
-[744b9890e699821](https://github.com/bsorrentino/maven-confluence-plugin/commit/744b9890e699821) bsorrentino *2018-04-09 23:24:33*
-
-**update doc**
-
-
-[dfebbee51d377fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/dfebbee51d377fd) bsorrentino *2018-02-24 19:49:32*
-
-**update forge module**
-
-
-[72d231e3d017d1e](https://github.com/bsorrentino/maven-confluence-plugin/commit/72d231e3d017d1e) bsorrentino *2018-02-24 19:48:40*
-
-**update forge module**
-
-
-[661c6d111aa758a](https://github.com/bsorrentino/maven-confluence-plugin/commit/661c6d111aa758a) bsorrentino *2018-02-24 19:46:53*
-
-**update docs**
-
-
-[afcf625b3188359](https://github.com/bsorrentino/maven-confluence-plugin/commit/afcf625b3188359) bsorrentino *2018-01-08 15:35:02*
-
-**update docs**
-
-
-[6d235639c682334](https://github.com/bsorrentino/maven-confluence-plugin/commit/6d235639c682334) bsorrentino *2018-01-08 15:34:20*
-
-**update docs**
-
-
-[c5e53272248b9d9](https://github.com/bsorrentino/maven-confluence-plugin/commit/c5e53272248b9d9) bsorrentino *2018-01-08 15:33:26*
-
-**update docs**
-
-
-[438604c9de8f000](https://github.com/bsorrentino/maven-confluence-plugin/commit/438604c9de8f000) bsorrentino *2018-01-08 15:31:57*
-
-**update docs**
-
-
-[c961f67ed67c9f9](https://github.com/bsorrentino/maven-confluence-plugin/commit/c961f67ed67c9f9) bsorrentino *2018-01-08 15:25:00*
-
-**disable dependencyLocations on site generation**
-
-
-[3cdbf492f337b22](https://github.com/bsorrentino/maven-confluence-plugin/commit/3cdbf492f337b22) bsorrentino *2018-01-08 15:19:26*
-
-**update docs**
-
-
-[d7d0114b087a0b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7d0114b087a0b1) bsorrentino *2018-01-08 15:18:48*
-
-**update docs**
-
-
-[f67cd56d9f1bc10](https://github.com/bsorrentino/maven-confluence-plugin/commit/f67cd56d9f1bc10) bsorrentino *2018-01-08 14:56:32*
-
-**update docs**
-
-
-[eaaa3c7b757e972](https://github.com/bsorrentino/maven-confluence-plugin/commit/eaaa3c7b757e972) bsorrentino *2018-01-08 14:55:04*
-
-**update readme**
-
-
-[6cfba6f8a4bc95b](https://github.com/bsorrentino/maven-confluence-plugin/commit/6cfba6f8a4bc95b) bsorrentino *2018-01-08 14:49:46*
-
-
-###  [#150](https://github.com/bsorrentino/maven-confluence-plugin/issues/150) Avoid republishing for confluence pages not changed    *enhancement*  
+[556055681f689d7](https://github.com/bsorrentino/maven-confluence-plugin/commit/556055681f689d7) bsorrentino *2018-06-17 20:43:38*
 
 **- #150 print skipped file**
 
@@ -3593,6 +4515,21 @@
 
 
 [1c6a98479a2c23f](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c6a98479a2c23f) bsorrentino *2018-06-16 21:44:44*
+
+**add can update check**
+
+
+[59e5fe6bf072bba](https://github.com/bsorrentino/maven-confluence-plugin/commit/59e5fe6bf072bba) bsorrentino *2018-06-15 07:01:50*
+
+**issue #153 - introduce use of CompletableFuture**
+
+
+[a16144ca0a7244e](https://github.com/bsorrentino/maven-confluence-plugin/commit/a16144ca0a7244e) bsorrentino *2018-06-10 20:57:31*
+
+**rename package**
+
+
+[f26a05a34cfe224](https://github.com/bsorrentino/maven-confluence-plugin/commit/f26a05a34cfe224) bsorrentino *2018-06-10 20:53:29*
 
 **add test for issue #150**
 
@@ -3654,19 +4591,6 @@
 
 [c6d7b8c08a35a54](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6d7b8c08a35a54) bsorrentino *2018-04-23 21:08:20*
 
-
-###  [#153](https://github.com/bsorrentino/maven-confluence-plugin/issues/153) move to jdk8    *enhancement*  
-
-**- #153 getPage(id) return completablefuture**
-
-
-[556055681f689d7](https://github.com/bsorrentino/maven-confluence-plugin/commit/556055681f689d7) bsorrentino *2018-06-17 20:43:38*
-
-**issue #153 - introduce use of CompletableFuture**
-
-
-[a16144ca0a7244e](https://github.com/bsorrentino/maven-confluence-plugin/commit/a16144ca0a7244e) bsorrentino *2018-06-10 20:57:31*
-
 **add Optional usage - #153**
 
 
@@ -3718,27 +4642,145 @@
 
 [1caeb5265fa9ee1](https://github.com/bsorrentino/maven-confluence-plugin/commit/1caeb5265fa9ee1) bsorrentino *2018-04-23 19:20:06*
 
+**add api.rpc and api.rest properties**
+
+
+[dbc2ff9a7a21a59](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbc2ff9a7a21a59) bsorrentino *2018-04-15 10:14:09*
+
+**remove warning**
+
+
+[ebc09e1482f23cc](https://github.com/bsorrentino/maven-confluence-plugin/commit/ebc09e1482f23cc) bsorrentino *2018-04-15 10:13:32*
+
+**doesn't return null but error**
+
+
+[a6e1db42136aec0](https://github.com/bsorrentino/maven-confluence-plugin/commit/a6e1db42136aec0) bsorrentino *2018-04-15 10:13:20*
+
+**update exception description**
+
+
+[3084df2d2b720a6](https://github.com/bsorrentino/maven-confluence-plugin/commit/3084df2d2b720a6) bsorrentino *2018-04-15 10:12:09*
+
+**introduce Optional usage**
+
+
+[98e0ede2c3ead5d](https://github.com/bsorrentino/maven-confluence-plugin/commit/98e0ede2c3ead5d) bsorrentino *2018-04-10 18:16:07*
+
+**remove usage of rxjava**
+
+ * use of java8 Stream
+
+[744b9890e699821](https://github.com/bsorrentino/maven-confluence-plugin/commit/744b9890e699821) bsorrentino *2018-04-09 23:24:33*
+
+**Merge branch 'hotfix/doc' into develop**
+
+
+[3f46874fd5fa094](https://github.com/bsorrentino/maven-confluence-plugin/commit/3f46874fd5fa094) bsorrentino *2018-02-24 19:49:56*
+
+**Merge branch 'hotfix/doc'**
+
+
+[880347d43906ba0](https://github.com/bsorrentino/maven-confluence-plugin/commit/880347d43906ba0) bsorrentino *2018-02-24 19:49:54*
+
+**update doc**
+
+
+[dfebbee51d377fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/dfebbee51d377fd) bsorrentino *2018-02-24 19:49:32*
+
+**update forge module**
+
+
+[72d231e3d017d1e](https://github.com/bsorrentino/maven-confluence-plugin/commit/72d231e3d017d1e) bsorrentino *2018-02-24 19:48:40*
+
+**update forge module**
+
+
+[661c6d111aa758a](https://github.com/bsorrentino/maven-confluence-plugin/commit/661c6d111aa758a) bsorrentino *2018-02-24 19:46:53*
+
+**Merge branch 'hotfix/docs' into develop**
+
+
+[5732e0b4ab61668](https://github.com/bsorrentino/maven-confluence-plugin/commit/5732e0b4ab61668) bsorrentino *2018-01-08 15:36:20*
+
+**Merge branch 'hotfix/docs'**
+
+
+[4aca3aefccdcddb](https://github.com/bsorrentino/maven-confluence-plugin/commit/4aca3aefccdcddb) bsorrentino *2018-01-08 15:36:18*
+
+**update docs**
+
+
+[afcf625b3188359](https://github.com/bsorrentino/maven-confluence-plugin/commit/afcf625b3188359) bsorrentino *2018-01-08 15:35:02*
+
+**update docs**
+
+
+[6d235639c682334](https://github.com/bsorrentino/maven-confluence-plugin/commit/6d235639c682334) bsorrentino *2018-01-08 15:34:20*
+
+**update docs**
+
+
+[c5e53272248b9d9](https://github.com/bsorrentino/maven-confluence-plugin/commit/c5e53272248b9d9) bsorrentino *2018-01-08 15:33:26*
+
+**update docs**
+
+
+[438604c9de8f000](https://github.com/bsorrentino/maven-confluence-plugin/commit/438604c9de8f000) bsorrentino *2018-01-08 15:31:57*
+
+**update docs**
+
+
+[c961f67ed67c9f9](https://github.com/bsorrentino/maven-confluence-plugin/commit/c961f67ed67c9f9) bsorrentino *2018-01-08 15:25:00*
+
+**disable dependencyLocations on site generation**
+
+
+[3cdbf492f337b22](https://github.com/bsorrentino/maven-confluence-plugin/commit/3cdbf492f337b22) bsorrentino *2018-01-08 15:19:26*
+
+**update docs**
+
+
+[d7d0114b087a0b1](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7d0114b087a0b1) bsorrentino *2018-01-08 15:18:48*
+
+**update docs**
+
+
+[f67cd56d9f1bc10](https://github.com/bsorrentino/maven-confluence-plugin/commit/f67cd56d9f1bc10) bsorrentino *2018-01-08 14:56:32*
+
+**update docs**
+
+
+[eaaa3c7b757e972](https://github.com/bsorrentino/maven-confluence-plugin/commit/eaaa3c7b757e972) bsorrentino *2018-01-08 14:55:04*
+
+**update readme**
+
+
+[6cfba6f8a4bc95b](https://github.com/bsorrentino/maven-confluence-plugin/commit/6cfba6f8a4bc95b) bsorrentino *2018-01-08 14:49:46*
+
+**Merge branch 'release/5.1.1' into develop**
+
+
+[e5e572156e847ee](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5e572156e847ee) bsorrentino *2018-01-04 14:58:08*
+
 
 ## v5.1.1
 ### Generic changes
+
+**Merge branch 'release/5.1.1'**
+
+
+[9fbe6068899d591](https://github.com/bsorrentino/maven-confluence-plugin/commit/9fbe6068899d591) bsorrentino *2018-01-04 14:57:58*
 
 **new release**
 
 
 [b8e97d0e1a81764](https://github.com/bsorrentino/maven-confluence-plugin/commit/b8e97d0e1a81764) bsorrentino *2018-01-04 14:55:10*
 
-**update submodule**
+**Merge branch 'feature/issue#148' into develop**
 
 
-[ef97b2c3c9f5afe](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef97b2c3c9f5afe) bsorrentino *2017-11-30 20:39:24*
-
-**update submodules**
-
-
-[12eaa1f7f232d01](https://github.com/bsorrentino/maven-confluence-plugin/commit/12eaa1f7f232d01) bsorrentino *2017-11-30 16:41:21*
-
-
-###  [#148](https://github.com/bsorrentino/maven-confluence-plugin/issues/148) Goal confluence-reporting:export leads to &#39;host parameter is null&#39; exception    *bug*  
+[7a27377e638f478](https://github.com/bsorrentino/maven-confluence-plugin/commit/7a27377e638f478) bsorrentino *2018-01-04 10:49:31*
 
 **fix #148**
 
@@ -3750,14 +4792,49 @@
 
 [e6b7ef5b0b3b826](https://github.com/bsorrentino/maven-confluence-plugin/commit/e6b7ef5b0b3b826) bsorrentino *2017-12-21 22:12:11*
 
+**update submodule**
+
+
+[ef97b2c3c9f5afe](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef97b2c3c9f5afe) bsorrentino *2017-11-30 20:39:24*
+
+**update submodules**
+
+
+[12eaa1f7f232d01](https://github.com/bsorrentino/maven-confluence-plugin/commit/12eaa1f7f232d01) bsorrentino *2017-11-30 16:41:21*
+
+**Merge branch 'release/5.1' into develop**
+
+
+[6fbfe4c639b5cb9](https://github.com/bsorrentino/maven-confluence-plugin/commit/6fbfe4c639b5cb9) bsorrentino *2017-11-29 19:35:14*
+
 
 ## v5.1
 ### Generic changes
+
+**Merge branch 'release/5.1'**
+
+
+[e95a4a8af7aa3d6](https://github.com/bsorrentino/maven-confluence-plugin/commit/e95a4a8af7aa3d6) bsorrentino *2017-11-29 19:35:03*
 
 **new release**
 
 
 [2acc24aee73b174](https://github.com/bsorrentino/maven-confluence-plugin/commit/2acc24aee73b174) bsorrentino *2017-11-29 19:34:25*
+
+**add skip execution #147**
+
+
+[b8f39aa1bfff9bf](https://github.com/bsorrentino/maven-confluence-plugin/commit/b8f39aa1bfff9bf) bsorrentino *2017-11-28 16:28:45*
+
+**Merge branch 'release/5.0' into develop**
+
+
+[ae9f9a17877c24f](https://github.com/bsorrentino/maven-confluence-plugin/commit/ae9f9a17877c24f) bsorrentino *2017-08-24 10:18:29*
+
+**fix #96 - complete REST API implementation**
+
+
+[2aa60fb825db4cf](https://github.com/bsorrentino/maven-confluence-plugin/commit/2aa60fb825db4cf) bsorrentino *2017-08-14 12:43:26*
 
 **implement exportPage**
 
@@ -3779,10 +4856,20 @@
 
 [9e7ffcdbd66aa1d](https://github.com/bsorrentino/maven-confluence-plugin/commit/9e7ffcdbd66aa1d) bsorrentino *2017-08-13 11:15:23*
 
+**fix #141**
+
+
+[17acea20ebb27bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/17acea20ebb27bb) bsorrentino *2017-08-12 21:19:39*
+
 **update readme**
 
 
 [6dc9fed4ca5472c](https://github.com/bsorrentino/maven-confluence-plugin/commit/6dc9fed4ca5472c) bsorrentino *2017-05-01 14:07:54*
+
+**fix #138**
+
+
+[870d0c7cd4b1bda](https://github.com/bsorrentino/maven-confluence-plugin/commit/870d0c7cd4b1bda) bsorrentino *2017-05-01 14:04:16*
 
 **update readme**
 
@@ -3794,41 +4881,19 @@
 
 [08026d6f148c88e](https://github.com/bsorrentino/maven-confluence-plugin/commit/08026d6f148c88e) bsorrentino *2017-04-26 20:58:04*
 
-
-###  [#138](https://github.com/bsorrentino/maven-confluence-plugin/issues/138) Incorrect line print in log for confluence-reporting:deploy goal     *enhancement*  
-
-**fix #138**
+**Merge branch 'release/5.0-rc5' into develop**
 
 
-[870d0c7cd4b1bda](https://github.com/bsorrentino/maven-confluence-plugin/commit/870d0c7cd4b1bda) bsorrentino *2017-05-01 14:04:16*
-
-
-###  [#141](https://github.com/bsorrentino/maven-confluence-plugin/issues/141) No single first level heading for scm section    *bug*  *question*  
-
-**fix #141**
-
-
-[17acea20ebb27bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/17acea20ebb27bb) bsorrentino *2017-08-12 21:19:39*
-
-
-###  [#147](https://github.com/bsorrentino/maven-confluence-plugin/issues/147) add skip support    *enhancement*  
-
-**add skip execution #147**
-
-
-[b8f39aa1bfff9bf](https://github.com/bsorrentino/maven-confluence-plugin/commit/b8f39aa1bfff9bf) bsorrentino *2017-11-28 16:28:45*
-
-
-###  [#96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) Support of Confluence REST API    *enhancement*  
-
-**fix #96 - complete REST API implementation**
-
-
-[2aa60fb825db4cf](https://github.com/bsorrentino/maven-confluence-plugin/commit/2aa60fb825db4cf) bsorrentino *2017-08-14 12:43:26*
+[a8235e447d221d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/a8235e447d221d2) bsorrentino *2017-04-26 20:52:00*
 
 
 ## v5.0
 ### Generic changes
+
+**Merge branch 'release/5.0'**
+
+
+[43586baf28fd036](https://github.com/bsorrentino/maven-confluence-plugin/commit/43586baf28fd036) bsorrentino *2017-08-24 10:18:17*
 
 **update javadoc**
 
@@ -3865,6 +4930,11 @@
 
 [d404378c5ff0f29](https://github.com/bsorrentino/maven-confluence-plugin/commit/d404378c5ff0f29) bsorrentino *2017-08-21 22:16:18*
 
+**verified fix #142**
+
+
+[067be8f4b12124d](https://github.com/bsorrentino/maven-confluence-plugin/commit/067be8f4b12124d) bsorrentino *2017-08-21 22:15:48*
+
 **update README**
 
 
@@ -3885,6 +4955,11 @@
 
 [c3a6be564aae70e](https://github.com/bsorrentino/maven-confluence-plugin/commit/c3a6be564aae70e) bsorrentino *2017-08-21 10:05:00*
 
+**#96 add full support of rest api**
+
+
+[6f01eb685711084](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f01eb685711084) bsorrentino *2017-08-21 09:52:04*
+
 **minor refactoring**
 
 
@@ -3895,35 +4970,29 @@
 
 [420a65cbd761f8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/420a65cbd761f8b) bsorrentino *2017-08-18 16:53:45*
 
-
-###  [#142](https://github.com/bsorrentino/maven-confluence-plugin/issues/142) Attachment creation fails if storage format is used for page definition    *under verification*  
-
-**verified fix #142**
-
-
-[067be8f4b12124d](https://github.com/bsorrentino/maven-confluence-plugin/commit/067be8f4b12124d) bsorrentino *2017-08-21 22:15:48*
-
 **#142 - remove cast on add attachment**
 
 
 [d7ade3799bf2165](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7ade3799bf2165) bsorrentino *2017-08-17 23:36:20*
 
 
-###  [#96](https://github.com/bsorrentino/maven-confluence-plugin/issues/96) Support of Confluence REST API    *enhancement*  
-
-**#96 add full support of rest api**
-
-
-[6f01eb685711084](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f01eb685711084) bsorrentino *2017-08-21 09:52:04*
-
-
 ## v5.0-rc5
 ### Generic changes
+
+**Merge branch 'release/5.0-rc5'**
+
+
+[bb9571711e42372](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb9571711e42372) bsorrentino *2017-04-26 20:51:53*
 
 **move to next version**
 
 
 [644b3c06593c2a4](https://github.com/bsorrentino/maven-confluence-plugin/commit/644b3c06593c2a4) bsorrentino *2017-04-26 20:51:40*
+
+**fix issue #108**
+
+
+[4e05072a815c38d](https://github.com/bsorrentino/maven-confluence-plugin/commit/4e05072a815c38d) bsorrentino *2017-04-22 14:00:54*
 
 **update doc**
 
@@ -3935,6 +5004,11 @@
 
 [8dafe3124e65d5e](https://github.com/bsorrentino/maven-confluence-plugin/commit/8dafe3124e65d5e) bsorrentino *2017-04-20 20:41:09*
 
+**Merge branch 'hotfix/readme'**
+
+
+[aed2b43d9c6a6d5](https://github.com/bsorrentino/maven-confluence-plugin/commit/aed2b43d9c6a6d5) bsorrentino *2017-04-20 20:40:24*
+
 **update readme**
 
 
@@ -3945,17 +5019,19 @@
 
 [5a6fd4a4eea4e65](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a6fd4a4eea4e65) bsorrentino *2017-04-20 20:39:19*
 
-
-###  [#108](https://github.com/bsorrentino/maven-confluence-plugin/issues/108) StorageFormat    *enhancement*  *under verification*  
-
-**fix issue #108**
+**Merge branch 'release/5.0-rc4' into develop**
 
 
-[4e05072a815c38d](https://github.com/bsorrentino/maven-confluence-plugin/commit/4e05072a815c38d) bsorrentino *2017-04-22 14:00:54*
+[a78efe70e40fa12](https://github.com/bsorrentino/maven-confluence-plugin/commit/a78efe70e40fa12) bsorrentino *2017-04-20 20:34:02*
 
 
 ## v5.0-rc4
 ### Generic changes
+
+**Merge branch 'release/5.0-rc4'**
+
+
+[c9db7295683e242](https://github.com/bsorrentino/maven-confluence-plugin/commit/c9db7295683e242) bsorrentino *2017-04-20 20:33:54*
 
 **update doc**
 
@@ -3972,10 +5048,25 @@
 
 [b104f67e31825da](https://github.com/bsorrentino/maven-confluence-plugin/commit/b104f67e31825da) bsorrentino *2017-04-20 20:17:31*
 
+**Merge branch 'feature/pull#137' into develop**
+
+
+[26079fe090e23a5](https://github.com/bsorrentino/maven-confluence-plugin/commit/26079fe090e23a5) bsorrentino *2017-04-20 19:50:41*
+
 **add support for  DirectoryStream<Path>**
 
 
 [211548b71227ca2](https://github.com/bsorrentino/maven-confluence-plugin/commit/211548b71227ca2) bsorrentino *2017-04-20 19:49:11*
+
+**merge pull #137**
+
+
+[7fce099772aa1e2](https://github.com/bsorrentino/maven-confluence-plugin/commit/7fce099772aa1e2) bsorrentino *2017-04-20 12:35:13*
+
+**Merge branch 'master-clean' of https://github.com/jprafael/maven-confluence-plugin into feature/pull#137**
+
+
+[268e24f12a2ef39](https://github.com/bsorrentino/maven-confluence-plugin/commit/268e24f12a2ef39) bsorrentino *2017-04-20 12:23:30*
 
 **Allow for attachments to include all files in a directory**
 
@@ -3992,17 +5083,19 @@
 
 [eb44db543a06762](https://github.com/bsorrentino/maven-confluence-plugin/commit/eb44db543a06762) bsorrentino *2017-02-20 17:12:00*
 
-
-###  [#137](https://github.com/bsorrentino/maven-confluence-plugin/pull/137) Allow for attachments to include all files in a directory    *enhancement*  
-
-**merge pull #137**
+**Merge branch 'release/5.0-rc3' into develop**
 
 
-[7fce099772aa1e2](https://github.com/bsorrentino/maven-confluence-plugin/commit/7fce099772aa1e2) bsorrentino *2017-04-20 12:35:13*
+[7b7cd0d99a8273d](https://github.com/bsorrentino/maven-confluence-plugin/commit/7b7cd0d99a8273d) bsorrentino *2017-02-20 17:01:42*
 
 
 ## v5.0-rc3
 ### Generic changes
+
+**Merge branch 'release/5.0-rc3'**
+
+
+[5df7a5275f948e0](https://github.com/bsorrentino/maven-confluence-plugin/commit/5df7a5275f948e0) bsorrentino *2017-02-20 17:01:22*
 
 **prepare for release 5.0-rc3**
 
@@ -4014,10 +5107,21 @@
 
 [69dc8afb6a4a23a](https://github.com/bsorrentino/maven-confluence-plugin/commit/69dc8afb6a4a23a) bsorrentino *2017-02-18 16:19:20*
 
+**Merge branch 'develop' into wattazoum-118-pluginsGoalsAschild-5.0**
+
+
+[12a715aba5fb52a](https://github.com/bsorrentino/maven-confluence-plugin/commit/12a715aba5fb52a) bsorrentino *2017-02-18 15:25:20*
+
 **update guide**
 
 
 [c6024a12bece9ae](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6024a12bece9ae) bsorrentino *2017-02-18 15:22:05*
+
+**add project to test the plugin documentation against a live confluence instance**
+
+ * generated fresh schema named &#x27;site-schema-5.0&#x27;
+
+[3cdb9f9f1ebe839](https://github.com/bsorrentino/maven-confluence-plugin/commit/3cdb9f9f1ebe839) bsorrentino *2017-02-18 15:06:01*
 
 **remove unused import**
 
@@ -4034,6 +5138,11 @@
 
 [0a5a0c6b956ea8a](https://github.com/bsorrentino/maven-confluence-plugin/commit/0a5a0c6b956ea8a) bsorrentino *2017-02-16 23:09:23*
 
+**Merge branch '118-goalsAsChildren' into 118-pluginsGoalsAschild-5.0**
+
+
+[54ac88fac82e23b](https://github.com/bsorrentino/maven-confluence-plugin/commit/54ac88fac82e23b) wattazoum *2017-02-15 19:56:15*
+
 **Keep the old title of the goal pages**
 
 
@@ -4048,6 +5157,16 @@
 
 
 [fea41cb73078915](https://github.com/bsorrentino/maven-confluence-plugin/commit/fea41cb73078915) bsorrentino *2017-02-11 14:09:51*
+
+**Merge branch 'hotfix/doc' into develop**
+
+
+[a4c98d5f35a4d01](https://github.com/bsorrentino/maven-confluence-plugin/commit/a4c98d5f35a4d01) bsorrentino *2017-02-11 14:07:08*
+
+**Merge branch 'hotfix/doc'**
+
+
+[8e18e952a1fd8e6](https://github.com/bsorrentino/maven-confluence-plugin/commit/8e18e952a1fd8e6) bsorrentino *2017-02-11 14:07:08*
 
 **update**
 
@@ -4079,6 +5198,16 @@
 
 [9cb58bbd0bd55b8](https://github.com/bsorrentino/maven-confluence-plugin/commit/9cb58bbd0bd55b8) bsorrentino *2017-01-18 17:58:45*
 
+**test and fix for issue #133**
+
+
+[8917204534fa173](https://github.com/bsorrentino/maven-confluence-plugin/commit/8917204534fa173) bsorrentino *2017-01-18 17:58:38*
+
+**test for issue #131**
+
+
+[d5f6ce9a4d403ac](https://github.com/bsorrentino/maven-confluence-plugin/commit/d5f6ce9a4d403ac) bsorrentino *2017-01-18 17:58:31*
+
 **update plugin usage doc**
 
 
@@ -4099,10 +5228,25 @@
 
 [083e154127f38e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/083e154127f38e3) bsorrentino *2017-01-18 17:57:06*
 
+**test and fix for issue #133**
+
+
+[8ddef76107bc786](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ddef76107bc786) bsorrentino *2017-01-18 17:56:58*
+
+**test for issue #131**
+
+
+[5821d56edbf7c14](https://github.com/bsorrentino/maven-confluence-plugin/commit/5821d56edbf7c14) bsorrentino *2017-01-18 17:56:48*
+
 **move to next version**
 
 
 [dbde3c7ae871a95](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbde3c7ae871a95) bsorrentino *2016-12-06 19:20:00*
+
+**Merge branch 'hotfix/doc' into develop**
+
+
+[16e9f1494d7533c](https://github.com/bsorrentino/maven-confluence-plugin/commit/16e9f1494d7533c) bsorrentino *2016-12-06 19:09:21*
 
 **update readme**
 
@@ -4118,6 +5262,11 @@
 
 
 [094a9ca4fd90012](https://github.com/bsorrentino/maven-confluence-plugin/commit/094a9ca4fd90012) bsorrentino *2016-12-06 16:29:44*
+
+**Merge branch 'feature/issue110' into develop**
+
+
+[a8ace1515716429](https://github.com/bsorrentino/maven-confluence-plugin/commit/a8ace1515716429) bsorrentino *2016-12-06 15:43:34*
 
 **finalize implementation of issue110**
 
@@ -4149,6 +5298,11 @@
 
 [32db30877d80d7b](https://github.com/bsorrentino/maven-confluence-plugin/commit/32db30877d80d7b) bsorrentino *2016-11-22 22:46:01*
 
+**Merge branch 'feature/issue#130' into develop**
+
+
+[905864549d7ae01](https://github.com/bsorrentino/maven-confluence-plugin/commit/905864549d7ae01) bsorrentino *2016-11-22 22:39:29*
+
 **fix unit & integration tests**
 
 
@@ -4179,6 +5333,11 @@
 
 [0666a5c84972de7](https://github.com/bsorrentino/maven-confluence-plugin/commit/0666a5c84972de7) bsorrentino *2016-09-28 10:35:32*
 
+**issue#129**
+
+
+[2b3b59bc161bfba](https://github.com/bsorrentino/maven-confluence-plugin/commit/2b3b59bc161bfba) bsorrentino *2016-09-28 10:09:35*
+
 **update documentation**
 
 
@@ -4194,6 +5353,11 @@
 
 [49f3a77eff2e0d3](https://github.com/bsorrentino/maven-confluence-plugin/commit/49f3a77eff2e0d3) bsorrentino *2016-09-24 10:22:22*
 
+**Merge branch 'master' into develop**
+
+
+[bca8499202cf21e](https://github.com/bsorrentino/maven-confluence-plugin/commit/bca8499202cf21e) bsorrentino *2016-09-24 10:04:35*
+
 **Updating develop poms back to pre merge state**
 
 
@@ -4203,6 +5367,11 @@
 
 
 [0071d1701033eca](https://github.com/bsorrentino/maven-confluence-plugin/commit/0071d1701033eca) bsorrentino *2016-09-24 10:04:34*
+
+**Add some integration testing to test #124**
+
+
+[5fb9c6e9ebdcf8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/5fb9c6e9ebdcf8b) wattazoum *2016-09-04 07:25:27*
 
 **fix issue 124 - to test**
 
@@ -4214,10 +5383,25 @@
 
 [eeafbae3992f0bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/eeafbae3992f0bb) bsorrentino *2016-08-26 09:16:13*
 
+**Merge branch 'wattazoum-issue-122' into support/4.x**
+
+
+[a0bbd9dc835659f](https://github.com/bsorrentino/maven-confluence-plugin/commit/a0bbd9dc835659f) bsorrentino *2016-08-26 09:06:42*
+
+**Add some line breaks (fixes #122)**
+
+
+[371e55020e8f1c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/371e55020e8f1c5) wattazoum *2016-08-15 12:27:28*
+
 **move to next version**
 
 
 [955630bcd5cef03](https://github.com/bsorrentino/maven-confluence-plugin/commit/955630bcd5cef03) bsorrentino *2016-08-11 10:41:23*
+
+**Merge branch 'master' into support/4.x**
+
+
+[22d65514d507510](https://github.com/bsorrentino/maven-confluence-plugin/commit/22d65514d507510) bsorrentino *2016-08-11 10:38:20*
 
 **prepare for release**
 
@@ -4249,64 +5433,10 @@
 
 [4ad228d8c0c567b](https://github.com/bsorrentino/maven-confluence-plugin/commit/4ad228d8c0c567b) bsorrentino *2016-08-11 09:20:16*
 
-
-###  [#122](https://github.com/bsorrentino/maven-confluence-plugin/issues/122) Table not generated correctly    *bug*  
-
-**Add some line breaks (fixes #122)**
+**Merge branch 'wattazoum-goals-pages-styling' into support/4.x**
 
 
-[371e55020e8f1c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/371e55020e8f1c5) wattazoum *2016-08-15 12:27:28*
-
-
-###  [#124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) [REQUEST] Render templates variables in any page    *enhancement*  
-
-**Add some integration testing to test #124**
-
-
-[5fb9c6e9ebdcf8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/5fb9c6e9ebdcf8b) wattazoum *2016-09-04 07:25:27*
-
-
-###  [#129](https://github.com/bsorrentino/maven-confluence-plugin/issues/129) The macro &#39;plugin.dependencies&#39; is unknown    *question*  
-
-**issue#129**
-
-
-[2b3b59bc161bfba](https://github.com/bsorrentino/maven-confluence-plugin/commit/2b3b59bc161bfba) bsorrentino *2016-09-28 10:09:35*
-
-
-###  [#131](https://github.com/bsorrentino/maven-confluence-plugin/issues/131) Storage Format XHTML for home    *under verification*  
-
-**test for issue #131**
-
-
-[d5f6ce9a4d403ac](https://github.com/bsorrentino/maven-confluence-plugin/commit/d5f6ce9a4d403ac) bsorrentino *2017-01-18 17:58:31*
-
-**test for issue #131**
-
-
-[5821d56edbf7c14](https://github.com/bsorrentino/maven-confluence-plugin/commit/5821d56edbf7c14) bsorrentino *2017-01-18 17:56:48*
-
-
-###  [#133](https://github.com/bsorrentino/maven-confluence-plugin/issues/133) Storage Format -  &quot;error generating report: unexpected port: -1&quot;    *bug*  
-
-**test and fix for issue #133**
-
-
-[8917204534fa173](https://github.com/bsorrentino/maven-confluence-plugin/commit/8917204534fa173) bsorrentino *2017-01-18 17:58:38*
-
-**test and fix for issue #133**
-
-
-[8ddef76107bc786](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ddef76107bc786) bsorrentino *2017-01-18 17:56:58*
-
-
-### Jira schema-5   
-
-**add project to test the plugin documentation against a live confluence instance**
-
- * generated fresh schema named &#39;site-schema-5.0&#39;
-
-[3cdb9f9f1ebe839](https://github.com/bsorrentino/maven-confluence-plugin/commit/3cdb9f9f1ebe839) bsorrentino *2017-02-18 15:06:01*
+[3d44336b9379a97](https://github.com/bsorrentino/maven-confluence-plugin/commit/3d44336b9379a97) bsorrentino *2016-08-11 09:18:37*
 
 
 ## v5.0-beta2
@@ -4341,6 +5471,11 @@
 ## v5.0-beta1
 ### Generic changes
 
+**Merge branch 'release/5.0-beta1'**
+
+
+[10355e1e9924856](https://github.com/bsorrentino/maven-confluence-plugin/commit/10355e1e9924856) bsorrentino *2016-09-24 10:04:32*
+
 **updating poms for branch'release/5.0-beta1' with non-snapshot versions**
 
 
@@ -4356,10 +5491,20 @@
 
 [9ff5805a4ad862b](https://github.com/bsorrentino/maven-confluence-plugin/commit/9ff5805a4ad862b) bsorrentino *2016-09-23 22:43:42*
 
+**fix merge with issue#124**
+
+
+[8d1bdd7aee76082](https://github.com/bsorrentino/maven-confluence-plugin/commit/8d1bdd7aee76082) bsorrentino *2016-09-05 16:40:22*
+
 **merged with 4.13 version from master**
 
 
 [2fd2624ad98eba1](https://github.com/bsorrentino/maven-confluence-plugin/commit/2fd2624ad98eba1) bsorrentino *2016-09-05 16:22:28*
+
+**Merge branch 'feature/issue#122' into develop**
+
+
+[0f36d05c7697a36](https://github.com/bsorrentino/maven-confluence-plugin/commit/0f36d05c7697a36) bsorrentino *2016-08-26 09:35:04*
 
 **resolve conflicts**
 
@@ -4370,6 +5515,11 @@
 
 
 [a08a962164293f6](https://github.com/bsorrentino/maven-confluence-plugin/commit/a08a962164293f6) bsorrentino *2016-08-11 10:45:29*
+
+**merged PR#121**
+
+
+[a71f83770fbda99](https://github.com/bsorrentino/maven-confluence-plugin/commit/a71f83770fbda99) bsorrentino *2016-08-11 09:38:03*
 
 *** add anchors to parameters details**
 
@@ -4387,25 +5537,96 @@
 
 [1b164f230e69b00](https://github.com/bsorrentino/maven-confluence-plugin/commit/1b164f230e69b00) bsorrentino *2016-08-09 13:22:40*
 
+**Merge branch 'feature/pr#115' into develop**
+
+
+[5e01ad93c42eb9f](https://github.com/bsorrentino/maven-confluence-plugin/commit/5e01ad93c42eb9f) bsorrentino *2016-08-09 09:14:50*
+
+**merge PR#115**
+
+
+[604345e6bfd9b26](https://github.com/bsorrentino/maven-confluence-plugin/commit/604345e6bfd9b26) bsorrentino *2016-08-09 09:14:31*
+
 **update README**
 
 
 [aba22affa0133bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/aba22affa0133bd) bsorrentino *2016-08-09 08:38:32*
+
+**Merge branch 'wattazoum-plugin-doc-more-tags' into support/4.x**
+
+
+[5a21f36c3514853](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a21f36c3514853) bsorrentino *2016-08-09 08:38:11*
+
+**Merge branch 'plugin-doc-more-tags' of https://github.com/wattazoum/maven-confluence-plugin into wattazoum-plugin-doc-more-tags**
+
+
+[af5e6c221dccb16](https://github.com/bsorrentino/maven-confluence-plugin/commit/af5e6c221dccb16) bsorrentino *2016-08-09 08:19:36*
+
+**Merge branch 'feature/pr#113' into develop**
+
+
+[ba131aa4e22a5c4](https://github.com/bsorrentino/maven-confluence-plugin/commit/ba131aa4e22a5c4) bsorrentino *2016-08-09 08:16:57*
+
+**Merge branch 'wattazoum-more-flexibility-to-panels' into feature/pr#113**
+
+
+[9d7ad8f92bf1890](https://github.com/bsorrentino/maven-confluence-plugin/commit/9d7ad8f92bf1890) bsorrentino *2016-08-09 08:15:29*
 
 **update readme**
 
 
 [0bc0386e5246788](https://github.com/bsorrentino/maven-confluence-plugin/commit/0bc0386e5246788) bsorrentino *2016-08-08 22:12:11*
 
+**Merge branch 'wattazoum-more-flexibility-to-panels' into support/4.x**
+
+ * t push origin support/4.x
+
+[954212b8d97bd4f](https://github.com/bsorrentino/maven-confluence-plugin/commit/954212b8d97bd4f) bsorrentino *2016-08-08 22:08:15*
+
+**Merge branch 'more-flexibility-to-panels' of https://github.com/wattazoum/maven-confluence-plugin into wattazoum-more-flexibility-to-panels**
+
+ * # fix Conflicts:
+ * #	maven-confluence-reporting-plugin/src/test/java/org/bsc/maven/reporting/model/SiteTest.java
+
+[f028be945a81dae](https://github.com/bsorrentino/maven-confluence-plugin/commit/f028be945a81dae) bsorrentino *2016-08-08 22:07:50*
+
+**Merge branch 'feature/issue#119' into develop**
+
+
+[739b6be4c7d74a6](https://github.com/bsorrentino/maven-confluence-plugin/commit/739b6be4c7d74a6) bsorrentino *2016-08-08 21:57:44*
+
+**Merge branch 'wattazoum-support-for-simplenode' into feature/issue#119**
+
+
+[eb9cd67736da18f](https://github.com/bsorrentino/maven-confluence-plugin/commit/eb9cd67736da18f) bsorrentino *2016-08-08 21:55:11*
+
+**Merge branch 'wattazoum-support-for-simplenode' into feature/issue#119**
+
+
+[6f3e947213a659e](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f3e947213a659e) bsorrentino *2016-08-08 21:54:20*
+
 **update README**
 
 
 [b90704116a81f54](https://github.com/bsorrentino/maven-confluence-plugin/commit/b90704116a81f54) bsorrentino *2016-08-08 21:40:38*
 
+**Merge branch 'wattazoum-support-for-simplenode' into support/4.x**
+
+ * t push origin support/4.x
+
+[9ca258cca6aeaa2](https://github.com/bsorrentino/maven-confluence-plugin/commit/9ca258cca6aeaa2) bsorrentino *2016-08-08 21:33:04*
+
 **Support simpleNode (Horizontal rules + forced line breaks)**
 
 
 [1d608da808bddb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/1d608da808bddb2) wattazoum *2016-08-07 22:33:16*
+
+**Merge branch 'upstream/4.x' into plugin-doc-more-tags**
+
+ * # Conflicts:
+ * #	maven-confluence-reporting-plugin/src/main/java/org/bsc/maven/confluence/plugin/ConfluenceDeployMojo.java
+
+[02e444a41508034](https://github.com/bsorrentino/maven-confluence-plugin/commit/02e444a41508034) wattazoum *2016-08-07 20:02:56*
 
 **add integration test profile**
 
@@ -4417,15 +5638,35 @@
 
 [a1594993b383cb7](https://github.com/bsorrentino/maven-confluence-plugin/commit/a1594993b383cb7) bsorrentino *2016-08-07 18:00:05*
 
+**merged PR#117**
+
+
+[e8fc0d9dfa7b606](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8fc0d9dfa7b606) bsorrentino *2016-08-07 17:56:01*
+
+**Merge branch 'wattazoum-fix-attachements-on-homepage' into support/4.x**
+
+
+[2a5908f76bad386](https://github.com/bsorrentino/maven-confluence-plugin/commit/2a5908f76bad386) bsorrentino *2016-08-07 17:16:33*
+
 **update README**
 
 
 [fd2033e245b45c0](https://github.com/bsorrentino/maven-confluence-plugin/commit/fd2033e245b45c0) bsorrentino *2016-08-07 17:15:40*
 
+**Merge branch 'fix-attachements-on-homepage' of https://github.com/wattazoum/maven-confluence-plugin into wattazoum-fix-attachements-on-homepage**
+
+
+[a7005e585c55db3](https://github.com/bsorrentino/maven-confluence-plugin/commit/a7005e585c55db3) bsorrentino *2016-08-07 17:11:05*
+
 **update README**
 
 
 [f686e9f4cd0c0ab](https://github.com/bsorrentino/maven-confluence-plugin/commit/f686e9f4cd0c0ab) bsorrentino *2016-08-07 17:10:14*
+
+**resolve conflict after merge issue#114**
+
+
+[cd7150d5933d1e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd7150d5933d1e3) bsorrentino *2016-08-07 16:51:39*
 
 **don't modify the parent page. Add the labels and the attachements to the homepage.**
 
@@ -4451,6 +5692,11 @@
 
 [96bb83e653ce9b6](https://github.com/bsorrentino/maven-confluence-plugin/commit/96bb83e653ce9b6) bsorrentino *2016-08-05 22:11:51*
 
+**Merge branch 'feature/pr#112' into develop**
+
+
+[1a64722f77abeda](https://github.com/bsorrentino/maven-confluence-plugin/commit/1a64722f77abeda) bsorrentino *2016-08-05 13:45:54*
+
 **merge from PR112**
 
 
@@ -4460,6 +5706,16 @@
 
 
 [026b3d75cb4c696](https://github.com/bsorrentino/maven-confluence-plugin/commit/026b3d75cb4c696) wattazoum *2016-08-05 13:14:11*
+
+**fix issue#111**
+
+
+[dad53978f03726f](https://github.com/bsorrentino/maven-confluence-plugin/commit/dad53978f03726f) bsorrentino *2016-08-05 12:17:46*
+
+**Merge branch 'feature/issue#108' into develop**
+
+
+[66aa936b147ae0f](https://github.com/bsorrentino/maven-confluence-plugin/commit/66aa936b147ae0f) bsorrentino *2016-07-28 23:26:24*
 
 **update readme**
 
@@ -4582,61 +5838,28 @@
 [78d7e5d5f2f297c](https://github.com/bsorrentino/maven-confluence-plugin/commit/78d7e5d5f2f297c) bsorrentino *2016-06-22 14:14:37*
 
 
-###  [#111](https://github.com/bsorrentino/maven-confluence-plugin/issues/111) Confluence macro syntax is getting interpreted in MD files  
-
-**fix issue#111**
-
-
-[dad53978f03726f](https://github.com/bsorrentino/maven-confluence-plugin/commit/dad53978f03726f) bsorrentino *2016-08-05 12:17:46*
-
-
-###  [#114](https://github.com/bsorrentino/maven-confluence-plugin/issues/114) Generation plugin doc ignores home page from site    *bug*  
-
-**resolve conflict after merge issue#114**
-
-
-[cd7150d5933d1e3](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd7150d5933d1e3) bsorrentino *2016-08-07 16:51:39*
-
-
-###  [#115](https://github.com/bsorrentino/maven-confluence-plugin/pull/115) support more tags in the plugin doc generation  
-
-**merge PR#115**
-
-
-[604345e6bfd9b26](https://github.com/bsorrentino/maven-confluence-plugin/commit/604345e6bfd9b26) bsorrentino *2016-08-09 09:14:31*
-
-
-###  [#117](https://github.com/bsorrentino/maven-confluence-plugin/pull/117) Fix attachements on homepage  
-
-**merged PR#117**
-
-
-[e8fc0d9dfa7b606](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8fc0d9dfa7b606) bsorrentino *2016-08-07 17:56:01*
-
-
-###  [#121](https://github.com/bsorrentino/maven-confluence-plugin/pull/121) Some small improvement to the plugin goal page  
-
-**merged PR#121**
-
-
-[a71f83770fbda99](https://github.com/bsorrentino/maven-confluence-plugin/commit/a71f83770fbda99) bsorrentino *2016-08-11 09:38:03*
-
-
-###  [#124](https://github.com/bsorrentino/maven-confluence-plugin/issues/124) [REQUEST] Render templates variables in any page    *enhancement*  
-
-**fix merge with issue#124**
-
-
-[8d1bdd7aee76082](https://github.com/bsorrentino/maven-confluence-plugin/commit/8d1bdd7aee76082) bsorrentino *2016-09-05 16:40:22*
-
-
 ## v4.13
 ### Generic changes
+
+**Merge branch 'support/4.x'**
+
+
+[de08d6487ab0865](https://github.com/bsorrentino/maven-confluence-plugin/commit/de08d6487ab0865) bsorrentino *2016-09-05 15:55:36*
+
+**Merge branch 'release/4.13' into support/4.x**
+
+
+[1c38c4028f887ab](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c38c4028f887ab) bsorrentino *2016-09-05 15:54:25*
 
 **prepare for release**
 
 
 [ccf801032a16fff](https://github.com/bsorrentino/maven-confluence-plugin/commit/ccf801032a16fff) bsorrentino *2016-09-05 15:53:14*
+
+**Merge branch 'feature/issue#124' into support/4.x**
+
+
+[f24fd4bdb82a84b](https://github.com/bsorrentino/maven-confluence-plugin/commit/f24fd4bdb82a84b) bsorrentino *2016-09-05 14:58:06*
 
 **update readme**
 
@@ -4657,6 +5880,11 @@
 
 [4cc74f7b782054c](https://github.com/bsorrentino/maven-confluence-plugin/commit/4cc74f7b782054c) bsorrentino *2016-08-11 09:48:01*
 
+**Merge branch 'support/4.x'**
+
+
+[2f8d8a21a411a3a](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f8d8a21a411a3a) bsorrentino *2016-08-11 09:44:51*
+
 
 ## v4.11
 ### Generic changes
@@ -4671,10 +5899,25 @@
 
 [1c4d7c81ee21d24](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c4d7c81ee21d24) bsorrentino *2016-08-05 13:09:06*
 
+**Merge branch 'wattazoum-support-referencenode' into support/4.x**
+
+
+[dcf1cb7a6aa3d79](https://github.com/bsorrentino/maven-confluence-plugin/commit/dcf1cb7a6aa3d79) bsorrentino *2016-08-05 12:51:54*
+
 **update documentation. update test project**
 
 
 [7627366a34493cc](https://github.com/bsorrentino/maven-confluence-plugin/commit/7627366a34493cc) bsorrentino *2016-08-05 12:50:49*
+
+**Merge branch 'support-referencenode' of https://github.com/wattazoum/maven-confluence-plugin into wattazoum-support-referencenode**
+
+
+[d7b954849aefee1](https://github.com/bsorrentino/maven-confluence-plugin/commit/d7b954849aefee1) bsorrentino *2016-08-05 12:25:32*
+
+**fix issue#111**
+
+
+[615bec73a392eb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/615bec73a392eb2) bsorrentino *2016-08-05 12:15:06*
 
 **Support RefImageLink**
 
@@ -4685,6 +5928,11 @@
 
 
 [2d40f1d60a8a64e](https://github.com/bsorrentino/maven-confluence-plugin/commit/2d40f1d60a8a64e) wattazoum *2016-08-05 00:54:23*
+
+**Merge branch 'master' into develop**
+
+
+[5b9afd680e3e21e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5b9afd680e3e21e) bsorrentino *2016-07-01 09:57:34*
 
 **Updating develop poms back to pre merge state**
 
@@ -4700,6 +5948,11 @@
 
 
 [a55ac23490c6b69](https://github.com/bsorrentino/maven-confluence-plugin/commit/a55ac23490c6b69) bsorrentino *2016-07-01 09:49:57*
+
+**Merge branch 'feature/issue#107' into develop**
+
+
+[407a3bf9f87944a](https://github.com/bsorrentino/maven-confluence-plugin/commit/407a3bf9f87944a) bsorrentino *2016-06-26 19:58:56*
 
 **move spaceKey argument to optional**
 
@@ -4717,10 +5970,20 @@
 
 [c313bd28efb14e5](https://github.com/bsorrentino/maven-confluence-plugin/commit/c313bd28efb14e5) bsorrentino *2016-06-23 09:44:31*
 
+**issue#109 - apply patch, test and update doc**
+
+
+[4c700b943610fe9](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c700b943610fe9) bsorrentino *2016-06-23 09:39:58*
+
 **Updating develop poms back to pre merge state**
 
 
 [afa8d3fe85f1600](https://github.com/bsorrentino/maven-confluence-plugin/commit/afa8d3fe85f1600) bsorrentino *2016-06-21 08:40:15*
+
+**Merge branch 'master' into develop**
+
+
+[138739449ade2dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/138739449ade2dc) bsorrentino *2016-06-21 08:40:15*
 
 **Updating develop poms to hotfix version to avoid merge conflicts**
 
@@ -4731,6 +5994,11 @@
 
 
 [9276a6c4dafe7c0](https://github.com/bsorrentino/maven-confluence-plugin/commit/9276a6c4dafe7c0) bsorrentino *2016-06-14 10:31:44*
+
+**Merge branch 'master' into develop**
+
+
+[e933599d124284d](https://github.com/bsorrentino/maven-confluence-plugin/commit/e933599d124284d) bsorrentino *2016-06-14 10:31:43*
 
 **updating develop poms to master versions to avoid merge conflicts**
 
@@ -4743,24 +6011,13 @@
 [034b0029a68e906](https://github.com/bsorrentino/maven-confluence-plugin/commit/034b0029a68e906) bsorrentino *2016-06-14 10:00:47*
 
 
-###  [#109](https://github.com/bsorrentino/maven-confluence-plugin/issues/109) Sublist support    *enhancement*  
-
-**issue#109 - apply patch, test and update doc**
-
-
-[4c700b943610fe9](https://github.com/bsorrentino/maven-confluence-plugin/commit/4c700b943610fe9) bsorrentino *2016-06-23 09:39:58*
-
-
-###  [#111](https://github.com/bsorrentino/maven-confluence-plugin/issues/111) Confluence macro syntax is getting interpreted in MD files  
-
-**fix issue#111**
-
-
-[615bec73a392eb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/615bec73a392eb2) bsorrentino *2016-08-05 12:15:06*
-
-
 ## v4.10
 ### Generic changes
+
+**Merge branch 'release/4.10'**
+
+
+[eb8ed01506e48bc](https://github.com/bsorrentino/maven-confluence-plugin/commit/eb8ed01506e48bc) bsorrentino *2016-07-01 09:57:31*
 
 **updating poms for branch'release/4.10' with non-snapshot versions**
 
@@ -4776,6 +6033,11 @@
 ## v4.9.1
 ### Generic changes
 
+**Merge branch 'hotfix/4.9.1'**
+
+
+[582e2a14a63307c](https://github.com/bsorrentino/maven-confluence-plugin/commit/582e2a14a63307c) bsorrentino *2016-06-21 08:40:13*
+
 **updating poms for branch'hotfix/4.9.1' with non-snapshot versions**
 
 
@@ -4786,22 +6048,24 @@
 
 [d79e178e4b76879](https://github.com/bsorrentino/maven-confluence-plugin/commit/d79e178e4b76879) bsorrentino *2016-06-21 08:22:35*
 
+**hotfix issue#99**
+
+
+[433498930515595](https://github.com/bsorrentino/maven-confluence-plugin/commit/433498930515595) bsorrentino *2016-06-15 13:23:12*
+
 **updating poms for 4.9.1 branch with snapshot versions**
 
 
 [5ab6ec04776872f](https://github.com/bsorrentino/maven-confluence-plugin/commit/5ab6ec04776872f) bsorrentino *2016-06-15 13:17:46*
 
 
-###  [#99](https://github.com/bsorrentino/maven-confluence-plugin/issues/99) Allow additional tags in comments `&lt;b&gt;&lt;p&gt;&lt;li&gt;&lt;ul&gt;`    *enhancement*  
-
-**hotfix issue#99**
-
-
-[433498930515595](https://github.com/bsorrentino/maven-confluence-plugin/commit/433498930515595) bsorrentino *2016-06-15 13:23:12*
-
-
 ## v4.9
 ### Generic changes
+
+**Merge branch 'release/4.9'**
+
+
+[523ad9c1e2d8ae3](https://github.com/bsorrentino/maven-confluence-plugin/commit/523ad9c1e2d8ae3) bsorrentino *2016-06-14 10:30:30*
 
 **updating poms for branch'release/4.9' with non-snapshot versions**
 
@@ -4817,6 +6081,16 @@
 
 
 [a43b6f3189223cf](https://github.com/bsorrentino/maven-confluence-plugin/commit/a43b6f3189223cf) bsorrentino *2016-06-12 21:08:30*
+
+**Merge branch 'PR#105' into develop**
+
+
+[0259d720fff2abd](https://github.com/bsorrentino/maven-confluence-plugin/commit/0259d720fff2abd) bsorrentino *2016-06-12 18:55:48*
+
+**Merge branch 'master' of https://github.com/pbaris/maven-confluence-plugin into PR#105**
+
+
+[82b46b2cd788979](https://github.com/bsorrentino/maven-confluence-plugin/commit/82b46b2cd788979) bsorrentino *2016-06-12 18:53:37*
 
 **update comment**
 
@@ -4843,14 +6117,29 @@
 
 [1bc0105d4d4320a](https://github.com/bsorrentino/maven-confluence-plugin/commit/1bc0105d4d4320a) panos *2016-06-10 07:00:34*
 
+**Merge branch 'release/4.8' into develop**
+
+
+[ef4a08a9d7d0d72](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef4a08a9d7d0d72) bsorrentino *2016-05-21 07:25:05*
+
 
 ## v4.8
 ### Generic changes
+
+**Merge branch 'release/4.8'**
+
+
+[c6590450ec9968e](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6590450ec9968e) bsorrentino *2016-05-21 07:24:57*
 
 **update doc for release 4.8**
 
 
 [7223d910635847b](https://github.com/bsorrentino/maven-confluence-plugin/commit/7223d910635847b) bsorrentino *2016-05-21 07:24:44*
+
+**Merge branch 'feature/issue#102' into develop**
+
+
+[508752534ad0d5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/508752534ad0d5b) bsorrentino *2016-05-19 15:10:38*
 
 **remove banner**
 
@@ -4867,15 +6156,35 @@
 
 [edd7c0db2386aa8](https://github.com/bsorrentino/maven-confluence-plugin/commit/edd7c0db2386aa8) bsorrentino *2016-05-19 13:41:37*
 
+**Merge branch 'feature/issue#100' into develop**
+
+
+[3341d4fc3634a1a](https://github.com/bsorrentino/maven-confluence-plugin/commit/3341d4fc3634a1a) bsorrentino *2016-05-16 09:45:56*
+
 **reuse 'project vars translation' also for 'plugin doc generation'**
 
 
 [97e4456e4dd4b6b](https://github.com/bsorrentino/maven-confluence-plugin/commit/97e4456e4dd4b6b) bsorrentino *2016-05-16 09:44:18*
 
+**Merge branch 'hotfix/readme' into develop**
+
+
+[86eba5297b441e2](https://github.com/bsorrentino/maven-confluence-plugin/commit/86eba5297b441e2) bsorrentino *2016-05-09 14:53:21*
+
+**Merge branch 'hotfix/readme'**
+
+
+[4006d2f08d24b5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/4006d2f08d24b5b) bsorrentino *2016-05-09 14:53:19*
+
 **update doc**
 
 
 [f5924116cc7ad14](https://github.com/bsorrentino/maven-confluence-plugin/commit/f5924116cc7ad14) bsorrentino *2016-05-09 14:52:49*
+
+**Merge branch 'master' into develop**
+
+
+[70f21c8f4e20759](https://github.com/bsorrentino/maven-confluence-plugin/commit/70f21c8f4e20759) bsorrentino *2016-05-09 14:02:40*
 
 **Updating develop poms back to pre merge state**
 
@@ -4901,10 +6210,20 @@
 ## v4.7
 ### Generic changes
 
+**Merge branch 'release/4.7'**
+
+
+[cc711277a64ff36](https://github.com/bsorrentino/maven-confluence-plugin/commit/cc711277a64ff36) bsorrentino *2016-05-09 14:02:37*
+
 **updating poms for branch'release/4.7' with non-snapshot versions**
 
 
 [34e35c5a9bbbfe6](https://github.com/bsorrentino/maven-confluence-plugin/commit/34e35c5a9bbbfe6) bsorrentino *2016-05-09 14:01:59*
+
+**Merge branch 'feature/issue#98' into develop**
+
+
+[a064152a3ea72c3](https://github.com/bsorrentino/maven-confluence-plugin/commit/a064152a3ea72c3) bsorrentino *2016-05-04 16:06:31*
 
 **add support to "homePageTitle" in markdown serialization process**
 
@@ -4931,9 +6250,19 @@
 
 [c1411daccac907c](https://github.com/bsorrentino/maven-confluence-plugin/commit/c1411daccac907c) bsorrentino *2016-04-06 13:52:07*
 
+**Merge branch 'release/4.6' into develop**
+
+
+[358f1512cb85597](https://github.com/bsorrentino/maven-confluence-plugin/commit/358f1512cb85597) bsorrentino *2016-04-06 13:47:20*
+
 
 ## v4.6
 ### Generic changes
+
+**Merge branch 'release/4.6'**
+
+
+[e69dec655464e8f](https://github.com/bsorrentino/maven-confluence-plugin/commit/e69dec655464e8f) bsorrentino *2016-04-06 13:47:09*
 
 **update doc**
 
@@ -4944,6 +6273,11 @@
 
 
 [f9e3a073e5e313b](https://github.com/bsorrentino/maven-confluence-plugin/commit/f9e3a073e5e313b) bsorrentino *2016-04-06 12:52:48*
+
+**Merge branch 'feature/issue#93' into develop**
+
+
+[17e5c2dd5f2e05c](https://github.com/bsorrentino/maven-confluence-plugin/commit/17e5c2dd5f2e05c) bsorrentino *2016-03-31 21:31:56*
 
 **finalize team render support**
 
@@ -4959,6 +6293,16 @@
 
 
 [5fd176e8804233c](https://github.com/bsorrentino/maven-confluence-plugin/commit/5fd176e8804233c) bsorrentino *2016-03-31 20:39:36*
+
+**Merge branch 'hotfix/doc' into develop**
+
+
+[16d0f10af08fffd](https://github.com/bsorrentino/maven-confluence-plugin/commit/16d0f10af08fffd) bsorrentino *2016-03-31 15:16:51*
+
+**Merge branch 'hotfix/doc'**
+
+
+[35129b2d213a96c](https://github.com/bsorrentino/maven-confluence-plugin/commit/35129b2d213a96c) bsorrentino *2016-03-31 15:16:48*
 
 **update doc**
 
@@ -4980,47 +6324,78 @@
 
 [4d45ebf55bcb8bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/4d45ebf55bcb8bb) bsorrentino *2016-02-11 23:01:08*
 
+**Merge branch 'release/4.5' into develop**
+
+
+[7a5dacafd4c4c89](https://github.com/bsorrentino/maven-confluence-plugin/commit/7a5dacafd4c4c89) bsorrentino *2016-02-11 22:52:22*
+
 
 ## v4.5
 ### Generic changes
+
+**Merge branch 'release/4.5'**
+
+
+[db883b34c1bd2a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/db883b34c1bd2a7) bsorrentino *2016-02-11 22:52:05*
 
 **arranged release 4.5**
 
 
 [466e318256ca822](https://github.com/bsorrentino/maven-confluence-plugin/commit/466e318256ca822) bsorrentino *2016-02-11 22:51:47*
 
-**update readme**
+**fix issue#91**
 
- * Merge branch &#39;hotfix/docs&#39; into develop
+ * update scmRenderer
 
-[e8f43d417b43194](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8f43d417b43194) bsorrentino *2015-01-03 15:53:40*
-
-**update readme**
-
-
-[87052fb55686ddf](https://github.com/bsorrentino/maven-confluence-plugin/commit/87052fb55686ddf) bsorrentino *2015-01-03 15:53:32*
+[772eecb2d39cb6e](https://github.com/bsorrentino/maven-confluence-plugin/commit/772eecb2d39cb6e) bsorrentino *2016-02-10 20:39:13*
 
 **update readme**
 
- * Merge branch &#39;hotfix/docs&#39; into develop
+ * Merge branch &#x27;hotfix/docs&#x27; into develop
 
-[d4e6418c313e408](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4e6418c313e408) bsorrentino *2015-01-03 15:51:02*
+[e8f43d417b43194](https://github.com/bsorrentino/maven-confluence-plugin/commit/e8f43d417b43194) bsorrentino *2016-01-03 15:53:40*
+
+**Merge branch 'hotfix/docs'**
+
+
+[85621fa7d5d2b40](https://github.com/bsorrentino/maven-confluence-plugin/commit/85621fa7d5d2b40) bsorrentino *2016-01-03 15:53:37*
 
 **update readme**
 
 
-[ac36b5bb60526a8](https://github.com/bsorrentino/maven-confluence-plugin/commit/ac36b5bb60526a8) bsorrentino *2015-01-03 15:50:56*
+[87052fb55686ddf](https://github.com/bsorrentino/maven-confluence-plugin/commit/87052fb55686ddf) bsorrentino *2016-01-03 15:53:32*
+
+**update readme**
+
+ * Merge branch &#x27;hotfix/docs&#x27; into develop
+
+[d4e6418c313e408](https://github.com/bsorrentino/maven-confluence-plugin/commit/d4e6418c313e408) bsorrentino *2016-01-03 15:51:02*
+
+**Merge branch 'hotfix/docs'**
+
+
+[fd8a12daf50b8e2](https://github.com/bsorrentino/maven-confluence-plugin/commit/fd8a12daf50b8e2) bsorrentino *2016-01-03 15:50:59*
+
+**update readme**
+
+
+[ac36b5bb60526a8](https://github.com/bsorrentino/maven-confluence-plugin/commit/ac36b5bb60526a8) bsorrentino *2016-01-03 15:50:56*
 
 **update docs**
 
- * Merge branch &#39;hotfix/docs&#39; into develop
+ * Merge branch &#x27;hotfix/docs&#x27; into develop
 
-[1c9f82e6824d982](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c9f82e6824d982) bsorrentino *2015-01-03 15:48:05*
+[1c9f82e6824d982](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c9f82e6824d982) bsorrentino *2016-01-03 15:48:05*
+
+**Merge branch 'hotfix/docs'**
+
+
+[4aa7bdefa735142](https://github.com/bsorrentino/maven-confluence-plugin/commit/4aa7bdefa735142) bsorrentino *2016-01-03 15:48:01*
 
 **update docs**
 
 
-[17e8a130780646e](https://github.com/bsorrentino/maven-confluence-plugin/commit/17e8a130780646e) bsorrentino *2015-01-03 15:47:18*
+[17e8a130780646e](https://github.com/bsorrentino/maven-confluence-plugin/commit/17e8a130780646e) bsorrentino *2016-01-03 15:47:18*
 
 **merged from release 4.4.3**
 
@@ -5033,22 +6408,29 @@
 [18200679cd172fd](https://github.com/bsorrentino/maven-confluence-plugin/commit/18200679cd172fd) bsorrentino *2015-12-29 13:43:33*
 
 
-###  [#91](https://github.com/bsorrentino/maven-confluence-plugin/issues/91) scm web access not shown as actual link    *bug*  
-
-**fix issue#91**
-
- * update scmRenderer
-
-[772eecb2d39cb6e](https://github.com/bsorrentino/maven-confluence-plugin/commit/772eecb2d39cb6e) bsorrentino *2016-02-10 20:39:13*
-
-
 ## v4.4.3
 ### Generic changes
+
+**Merge branch 'release/4.4.3'**
+
+
+[89a8cbd7213ab7c](https://github.com/bsorrentino/maven-confluence-plugin/commit/89a8cbd7213ab7c) bsorrentino *2015-12-29 13:55:01*
 
 **update version**
 
 
 [8497e119b267dc2](https://github.com/bsorrentino/maven-confluence-plugin/commit/8497e119b267dc2) bsorrentino *2015-12-29 13:53:13*
+
+**Merge branch 'feature/pull90' into develop**
+
+ * Merged pull request https://github.com/bsorrentino/maven-confluence-plugin/pull/90 from https://github.com/gmuecke
+
+[f82f02c98955c12](https://github.com/bsorrentino/maven-confluence-plugin/commit/f82f02c98955c12) bsorrentino *2015-12-21 09:40:47*
+
+**Merge branch 'master' of https://github.com/devcon5io/maven-confluence-plugin into feature/pull90**
+
+
+[e647042aa2e198c](https://github.com/bsorrentino/maven-confluence-plugin/commit/e647042aa2e198c) bsorrentino *2015-12-21 09:37:03*
 
 **update forge module**
 
@@ -5067,6 +6449,16 @@
 
 [d76f262e16afe6f](https://github.com/bsorrentino/maven-confluence-plugin/commit/d76f262e16afe6f) Gerald Mücke *2015-12-19 19:39:29*
 
+**Merge branch 'hotfix/site' into develop**
+
+
+[6f6ac2e1a2278a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f6ac2e1a2278a7) bsorrentino *2015-12-01 23:52:09*
+
+**Merge branch 'hotfix/site'**
+
+
+[7dadd090130fe60](https://github.com/bsorrentino/maven-confluence-plugin/commit/7dadd090130fe60) bsorrentino *2015-12-01 23:52:03*
+
 **add confluence notation guide to site**
 
 
@@ -5082,6 +6474,11 @@
 
 [5fda013d01dc9f5](https://github.com/bsorrentino/maven-confluence-plugin/commit/5fda013d01dc9f5) bsorrentino *2015-11-21 09:37:10*
 
+**Merge branch 'master' into develop**
+
+
+[753ffed3a408cd8](https://github.com/bsorrentino/maven-confluence-plugin/commit/753ffed3a408cd8) bsorrentino *2015-11-21 09:37:09*
+
 **updating develop poms to master versions to avoid merge conflicts**
 
 
@@ -5095,6 +6492,11 @@
 
 ## v4.4.2
 ### Generic changes
+
+**Merge branch 'release/4.4.2'**
+
+
+[ce18028bda8a8c5](https://github.com/bsorrentino/maven-confluence-plugin/commit/ce18028bda8a8c5) bsorrentino *2015-11-21 09:38:05*
 
 **updating poms for branch'release/4.4.2' with non-snapshot versions**
 
@@ -5110,6 +6512,11 @@
 
 
 [ef0b7396ec97e29](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef0b7396ec97e29) bsorrentino *2015-10-12 21:31:21*
+
+**Merge remote-tracking branch 'origin/develop' into develop**
+
+
+[c19fc7bc8617ba1](https://github.com/bsorrentino/maven-confluence-plugin/commit/c19fc7bc8617ba1) bsorrentino *2015-10-11 13:45:07*
 
 **fix style**
 
@@ -5166,6 +6573,11 @@
 
 [19b075fa1d0ea5f](https://github.com/bsorrentino/maven-confluence-plugin/commit/19b075fa1d0ea5f) bsorrentino *2015-10-11 13:26:06*
 
+**Merge branch 'hotfix/fix-doc'**
+
+
+[4950f56b7b02229](https://github.com/bsorrentino/maven-confluence-plugin/commit/4950f56b7b02229) bsorrentino *2015-10-11 13:24:37*
+
 **update readme**
 
 
@@ -5181,10 +6593,21 @@
 
 [d1e7b8ce27a98b6](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1e7b8ce27a98b6) bsorrentino *2015-10-10 19:53:55*
 
+**Merge pull request #87 from gitter-badger/gitter-badge**
+
+ * Add a Gitter chat badge to README.md
+
+[e57a0a88064e9e8](https://github.com/bsorrentino/maven-confluence-plugin/commit/e57a0a88064e9e8) bsorrentino *2015-10-08 10:20:00*
+
 **Add Gitter badge**
 
 
 [ac39d286ee459a8](https://github.com/bsorrentino/maven-confluence-plugin/commit/ac39d286ee459a8) The Gitter Badger *2015-10-07 20:04:34*
+
+**Merge branch 'release/4.4.1'**
+
+
+[9927bccb13e07f3](https://github.com/bsorrentino/maven-confluence-plugin/commit/9927bccb13e07f3) bsorrentino *2015-10-03 13:57:50*
 
 **updating poms for branch'release/4.4.1' with non-snapshot versions**
 
@@ -5238,6 +6661,16 @@
 
 [715b740962bd8eb](https://github.com/bsorrentino/maven-confluence-plugin/commit/715b740962bd8eb) bsorrentino *2015-09-18 13:09:45*
 
+**Merge branch 'hotfix/4.4-fix-report' into develop**
+
+
+[673ffd00d5bb162](https://github.com/bsorrentino/maven-confluence-plugin/commit/673ffd00d5bb162) bsorrentino *2015-09-16 13:55:09*
+
+**Merge branch 'hotfix/confluence-report' into develop**
+
+
+[892d889db7cd21c](https://github.com/bsorrentino/maven-confluence-plugin/commit/892d889db7cd21c) bsorrentino *2015-09-16 13:29:12*
+
 **remove eclipse files**
 
 
@@ -5263,6 +6696,11 @@
 
 [3a784fd6132b08e](https://github.com/bsorrentino/maven-confluence-plugin/commit/3a784fd6132b08e) bsorrentino *2015-09-04 20:22:41*
 
+**Merge branch 'release/4.5' into develop**
+
+
+[2bdef630b12c93c](https://github.com/bsorrentino/maven-confluence-plugin/commit/2bdef630b12c93c) bsorrentino *2015-09-04 20:17:14*
+
 
 ## v4.4.1
 ### Generic changes
@@ -5277,6 +6715,11 @@
 
 [fea1bea965dc0bd](https://github.com/bsorrentino/maven-confluence-plugin/commit/fea1bea965dc0bd) bsorrentino *2015-10-03 13:57:57*
 
+**Merge branch 'master' into develop**
+
+
+[98bc78a30c7a92e](https://github.com/bsorrentino/maven-confluence-plugin/commit/98bc78a30c7a92e) bsorrentino *2015-10-03 13:57:57*
+
 **updating poms for 4.4.2-SNAPSHOT development**
 
 
@@ -5286,10 +6729,20 @@
 ## v4.4-fix-report
 ### Generic changes
 
+**Merge branch 'hotfix/4.4-fix-report'**
+
+
+[583abe65c8cbf1f](https://github.com/bsorrentino/maven-confluence-plugin/commit/583abe65c8cbf1f) bsorrentino *2015-09-16 13:54:44*
+
 **redirect confluence docs**
 
 
 [541fbe04d3c7d5c](https://github.com/bsorrentino/maven-confluence-plugin/commit/541fbe04d3c7d5c) bsorrentino *2015-09-16 13:54:22*
+
+**Merge branch 'hotfix/confluence-report'**
+
+
+[979e156ba52d775](https://github.com/bsorrentino/maven-confluence-plugin/commit/979e156ba52d775) bsorrentino *2015-09-16 13:28:53*
 
 **publish confluence site to softphone**
 
@@ -5299,6 +6752,11 @@
 
 ## v4.4
 ### Generic changes
+
+**Merge branch 'release/4.5'**
+
+
+[65be420f93e28e9](https://github.com/bsorrentino/maven-confluence-plugin/commit/65be420f93e28e9) bsorrentino *2015-09-04 20:16:10*
 
 **update release**
 
@@ -5310,10 +6768,40 @@
 
 [64f2f5ddf215045](https://github.com/bsorrentino/maven-confluence-plugin/commit/64f2f5ddf215045) bsorrentino *2015-09-04 20:02:09*
 
+**Merge remote-tracking branch 'origin/master'**
+
+
+[cca311f457460d9](https://github.com/bsorrentino/maven-confluence-plugin/commit/cca311f457460d9) bsorrentino *2015-09-03 17:13:38*
+
+**Merge branch 'feature/qwazer-gitlog-fixes' into develop**
+
+
+[07c7e50c88ae518](https://github.com/bsorrentino/maven-confluence-plugin/commit/07c7e50c88ae518) bsorrentino *2015-09-03 17:11:20*
+
+**Merge branch 'gitlog-fixes' of https://github.com/qwazer/maven-confluence-plugin into feature/qwazer-gitlog-fixes**
+
+
+[8fd9e19bd02e274](https://github.com/bsorrentino/maven-confluence-plugin/commit/8fd9e19bd02e274) bsorrentino *2015-09-03 17:11:00*
+
+**Merge remote-tracking branch 'origin/develop' into develop**
+
+
+[15c192aac159cbf](https://github.com/bsorrentino/maven-confluence-plugin/commit/15c192aac159cbf) bsorrentino *2015-09-03 17:08:43*
+
+**Merge branch 'feature/#84' into develop**
+
+
+[d1f26d124016284](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1f26d124016284) bsorrentino *2015-09-03 17:07:38*
+
 **move ssl implementation to core module**
 
 
 [1e6028c6a60c5a3](https://github.com/bsorrentino/maven-confluence-plugin/commit/1e6028c6a60c5a3) bsorrentino *2015-09-03 17:03:00*
+
+**Merge branch 'feature/#84' into develop**
+
+
+[6665eeace76ce83](https://github.com/bsorrentino/maven-confluence-plugin/commit/6665eeace76ce83) bsorrentino *2015-08-28 20:44:50*
 
 **finalize markdown support**
 
@@ -5370,6 +6858,11 @@
 
 [0a34af0f82383f3](https://github.com/bsorrentino/maven-confluence-plugin/commit/0a34af0f82383f3) bsorrentino *2015-08-21 11:01:14*
 
+**Merge branches 'gh-pages' and 'master' of https://github.com/bsorrentino/maven-confluence-plugin**
+
+
+[be769f91c8fbf8b](https://github.com/bsorrentino/maven-confluence-plugin/commit/be769f91c8fbf8b) bsorrentino *2015-08-18 08:15:41*
+
 **fix logic for calculating since tag name for CURRENT_MAJOR_VERSION && CURRENT_MINOR_VERSION rules.**
 
  * some polishing of ode and tests
@@ -5416,6 +6909,16 @@
 
 
 [43e0275f9c1a28b](https://github.com/bsorrentino/maven-confluence-plugin/commit/43e0275f9c1a28b) bsorrentino *2015-08-13 09:52:31*
+
+**Merge branch 'qwazer-gitlog-improvements' into develop**
+
+
+[c3a019312eced2a](https://github.com/bsorrentino/maven-confluence-plugin/commit/c3a019312eced2a) bsorrentino *2015-08-13 08:44:37*
+
+**Merge branch 'gitlog-improvements' of https://github.com/qwazer/maven-confluence-plugin into qwazer-gitlog-improvements**
+
+
+[ed216298c656da1](https://github.com/bsorrentino/maven-confluence-plugin/commit/ed216298c656da1) bsorrentino *2015-08-13 08:43:41*
 
 **add notation guide**
 
@@ -5467,6 +6970,17 @@
 
 [1cbc454e5cc4a57](https://github.com/bsorrentino/maven-confluence-plugin/commit/1cbc454e5cc4a57) bsorrentino *2015-07-18 17:51:09*
 
+**issue#82**
+
+ * fix nonProxyHosts issue
+
+[3e89e71cc621d76](https://github.com/bsorrentino/maven-confluence-plugin/commit/3e89e71cc621d76) bsorrentino *2015-07-13 16:46:12*
+
+**issue#82 add test to parse nonProxyHosts**
+
+
+[14f293014e3ee3f](https://github.com/bsorrentino/maven-confluence-plugin/commit/14f293014e3ee3f) bsorrentino *2015-07-12 21:46:34*
+
 **Exclude current version when calculate since tag name by rule.**
 
  * It can be useful with some cobinations of maven-release-plugin &amp;  confluence-reporting-maven-plugin.
@@ -5484,6 +6998,25 @@
 
 
 [b343695c0906030](https://github.com/bsorrentino/maven-confluence-plugin/commit/b343695c0906030) bsorrentino *2015-07-03 21:48:38*
+
+**issue#88**
+
+ * update docs
+
+[3a8e494751a947c](https://github.com/bsorrentino/maven-confluence-plugin/commit/3a8e494751a947c) bsorrentino *2015-07-03 21:00:53*
+
+**issue#88**
+
+ * update docs
+
+[39e9ef1e6758c02](https://github.com/bsorrentino/maven-confluence-plugin/commit/39e9ef1e6758c02) bsorrentino *2015-07-03 10:43:16*
+
+**issue#88**
+
+ * add ${childTitle} variable to child page
+ * need to be tested
+
+[0895bc23b827513](https://github.com/bsorrentino/maven-confluence-plugin/commit/0895bc23b827513) bsorrentino *2015-07-02 15:10:53*
 
 **update README**
 
@@ -5589,44 +7122,14 @@
 [2f14178ea40d508](https://github.com/bsorrentino/maven-confluence-plugin/commit/2f14178ea40d508) bsorrentino *2014-03-07 21:16:26*
 
 
-###  [#82](https://github.com/bsorrentino/maven-confluence-plugin/issues/82) Proxy Settings not respected  
-
-**issue#82**
-
- * fix nonProxyHosts issue
-
-[3e89e71cc621d76](https://github.com/bsorrentino/maven-confluence-plugin/commit/3e89e71cc621d76) bsorrentino *2015-07-13 16:46:12*
-
-**issue#82 add test to parse nonProxyHosts**
-
-
-[14f293014e3ee3f](https://github.com/bsorrentino/maven-confluence-plugin/commit/14f293014e3ee3f) bsorrentino *2015-07-12 21:46:34*
-
-
-###  [#88](https://github.com/bsorrentino/maven-confluence-plugin/issues/88) NPE in gitlog for partialy checkouted repos, that doesn&#39;t contain ref to &quot;refs/remotes/origin/master&quot;    *bug*  
-
-**issue#88**
-
- * update docs
-
-[3a8e494751a947c](https://github.com/bsorrentino/maven-confluence-plugin/commit/3a8e494751a947c) bsorrentino *2015-07-03 21:00:53*
-
-**issue#88**
-
- * update docs
-
-[39e9ef1e6758c02](https://github.com/bsorrentino/maven-confluence-plugin/commit/39e9ef1e6758c02) bsorrentino *2015-07-03 10:43:16*
-
-**issue#88**
-
- * add ${childTitle} variable to child page
- * need to be tested
-
-[0895bc23b827513](https://github.com/bsorrentino/maven-confluence-plugin/commit/0895bc23b827513) bsorrentino *2015-07-02 15:10:53*
-
-
 ## maven-confluence-parent-4.2
 ### Generic changes
+
+**merge pull request #76**
+
+ * update site (apt) documentation
+
+[a1f2efd49d75dbd](https://github.com/bsorrentino/maven-confluence-plugin/commit/a1f2efd49d75dbd) bsorrentino *2015-05-18 10:36:35*
 
 **[minor] .gitignore**
 
@@ -5858,10 +7361,30 @@
 
 [a09a150b5586cc5](https://github.com/bsorrentino/maven-confluence-plugin/commit/a09a150b5586cc5) bsorrentino *2015-03-19 16:07:52*
 
+**Merge branch 'release4.1.1' into v4**
+
+
+[005f6b6381352c2](https://github.com/bsorrentino/maven-confluence-plugin/commit/005f6b6381352c2) bsorrentino *2015-01-19 23:00:49*
+
 **update github plugin**
 
 
 [5f6383522f8394a](https://github.com/bsorrentino/maven-confluence-plugin/commit/5f6383522f8394a) bsorrentino *2015-01-19 23:00:36*
+
+**Merge branch 'release4.1.1' into v4**
+
+
+[0dda106e2424427](https://github.com/bsorrentino/maven-confluence-plugin/commit/0dda106e2424427) bsorrentino *2015-01-19 22:35:50*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[f75e2736d9f0b77](https://github.com/bsorrentino/maven-confluence-plugin/commit/f75e2736d9f0b77) bsorrentino *2015-01-19 22:00:47*
+
+**[maven-release-plugin] prepare release 4.1.1**
+
+
+[50ff5155abf947c](https://github.com/bsorrentino/maven-confluence-plugin/commit/50ff5155abf947c) bsorrentino *2015-01-19 21:59:32*
 
 **excluse forge from build**
 
@@ -5893,10 +7416,20 @@
 
 [ec72c355313fd7e](https://github.com/bsorrentino/maven-confluence-plugin/commit/ec72c355313fd7e) bsorrentino *2014-10-23 10:25:45*
 
+**Merge branch 'v4' of https://github.com/bsorrentino/maven-confluence-reporting-plugin into v4**
+
+
+[94ef2eb0ca5374b](https://github.com/bsorrentino/maven-confluence-plugin/commit/94ef2eb0ca5374b) bsorrentino *2014-10-20 09:49:37*
+
 **update docs**
 
 
 [6904e74835a14ea](https://github.com/bsorrentino/maven-confluence-plugin/commit/6904e74835a14ea) bsorrentino *2014-10-20 09:48:26*
+
+**Merge branch 'v4' of https://github.com/bsorrentino/maven-confluence-reporting-plugin into v4**
+
+
+[738d32e4cc280ad](https://github.com/bsorrentino/maven-confluence-plugin/commit/738d32e4cc280ad) bsorrentino *2014-08-04 10:02:07*
 
 **update doc**
 
@@ -5913,6 +7446,16 @@
 
 [8ee32eb4169b52a](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ee32eb4169b52a) bsorrentino *2014-07-08 18:44:15*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[80b7fc4fba3c04c](https://github.com/bsorrentino/maven-confluence-plugin/commit/80b7fc4fba3c04c) bsorrentino *2014-07-08 17:43:27*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-4.1.0-SNAPSHOT**
+
+
+[beb03efce84742b](https://github.com/bsorrentino/maven-confluence-plugin/commit/beb03efce84742b) bsorrentino *2014-07-08 17:39:23*
+
 **remove dynjs dep**
 
 
@@ -5922,6 +7465,11 @@
 
 
 [6b34ebe3ecbe5dc](https://github.com/bsorrentino/maven-confluence-plugin/commit/6b34ebe3ecbe5dc) bsorrentino *2014-07-08 17:34:23*
+
+**Merge branch 'rmannibucau-v4' into v4**
+
+
+[f00981acb99701d](https://github.com/bsorrentino/maven-confluence-plugin/commit/f00981acb99701d) bsorrentino *2014-07-08 00:30:35*
 
 **merge pull request**
 
@@ -5978,6 +7526,16 @@
 
 [1dba562249d99e7](https://github.com/bsorrentino/maven-confluence-plugin/commit/1dba562249d99e7) bsorrentino *2014-05-20 11:10:20*
 
+**Merge branch 'issue#67' into v4**
+
+ * Conflicts:
+ * maven-confluence-core/pom.xml
+ * maven-confluence-reporting-plugin/pom.xml
+ * maven-confluence-test/pom.xml
+ * pom.xml
+
+[a23e2e35def88be](https://github.com/bsorrentino/maven-confluence-plugin/commit/a23e2e35def88be) bsorrentino *2014-05-18 17:33:31*
+
 **prepare for release**
 
 
@@ -5992,6 +7550,11 @@
 
 
 [008731af5ac5d90](https://github.com/bsorrentino/maven-confluence-plugin/commit/008731af5ac5d90) bsorrentino *2014-05-18 16:46:12*
+
+**Merge remote-tracking branch 'origin/issue#67' into issue#67**
+
+
+[f5560ad27ed5f9f](https://github.com/bsorrentino/maven-confluence-plugin/commit/f5560ad27ed5f9f) bsorrentino *2014-05-12 11:18:18*
 
 **Implement download-page goal**
 
@@ -6037,6 +7600,16 @@
 
 
 [0e54ed1e8401549](https://github.com/bsorrentino/maven-confluence-plugin/commit/0e54ed1e8401549) bsorrentino *2014-04-12 14:07:55*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[3380b1eb7f6096e](https://github.com/bsorrentino/maven-confluence-plugin/commit/3380b1eb7f6096e) bsorrentino *2014-03-28 16:37:59*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-4.0.0-SNAPSHOT**
+
+
+[6033f9172a72167](https://github.com/bsorrentino/maven-confluence-plugin/commit/6033f9172a72167) bsorrentino *2014-03-28 16:36:11*
 
 **issue 66**
 
@@ -6093,6 +7666,16 @@
 
 [987da8ac68e430d](https://github.com/bsorrentino/maven-confluence-plugin/commit/987da8ac68e430d) bsorrentino *2014-03-07 22:28:02*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[7003e93199b9806](https://github.com/bsorrentino/maven-confluence-plugin/commit/7003e93199b9806) bsorrentino *2014-03-07 21:44:47*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-4.0.0-SNAPSHOT**
+
+
+[1c3f0c08c546e5e](https://github.com/bsorrentino/maven-confluence-plugin/commit/1c3f0c08c546e5e) bsorrentino *2014-03-07 21:44:18*
+
 **update minitemplator-repackaged version**
 
 
@@ -6143,18 +7726,19 @@
 
 [5110ec41ad7bb1e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5110ec41ad7bb1e) bsorrentino *2014-01-26 18:46:10*
 
+**[maven-release-plugin] prepare for next development iteration**
 
-###  [#76](https://github.com/bsorrentino/maven-confluence-plugin/pull/76) gitlog.jiraIssues &amp; gitlog.sinceTagName  
 
-**merge pull request #76**
-
- * update site (apt) documentation
-
-[a1f2efd49d75dbd](https://github.com/bsorrentino/maven-confluence-plugin/commit/a1f2efd49d75dbd) bsorrentino *2015-05-18 10:36:35*
+[630dbf4ed25aea4](https://github.com/bsorrentino/maven-confluence-plugin/commit/630dbf4ed25aea4) bsorrentino *2014-01-26 17:47:29*
 
 
 ## v3.4.4-rc1
 ### Generic changes
+
+**[maven-release-plugin] prepare release v3.4.4-rc1**
+
+
+[dda6a23657d73a9](https://github.com/bsorrentino/maven-confluence-plugin/commit/dda6a23657d73a9) bsorrentino *2014-01-26 17:47:16*
 
 **issue 63**
 
@@ -6176,9 +7760,19 @@
 
 [8ff58fc7fa49a6d](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ff58fc7fa49a6d) bsorrentino *2013-12-17 17:48:03*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[125dc031f5bcfd6](https://github.com/bsorrentino/maven-confluence-plugin/commit/125dc031f5bcfd6) bsorrentino *2013-12-17 17:05:38*
+
 
 ## maven-confluence-parent-3.4.3-SNAPSHOT
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.4.3-SNAPSHOT**
+
+
+[56cfc8f95d051c6](https://github.com/bsorrentino/maven-confluence-plugin/commit/56cfc8f95d051c6) bsorrentino *2013-12-17 17:05:26*
 
 **issue62 resolved**
 
@@ -6210,9 +7804,19 @@
 
 [953e610f169352b](https://github.com/bsorrentino/maven-confluence-plugin/commit/953e610f169352b) bsorrentino *2013-12-15 23:52:11*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[0c0f85949dc294f](https://github.com/bsorrentino/maven-confluence-plugin/commit/0c0f85949dc294f) bsorrentino *2013-09-11 18:54:53*
+
 
 ## maven-confluence-parent-3.4.2-SNAPSHOT
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.4.2-SNAPSHOT**
+
+
+[73fa3ab087beeb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/73fa3ab087beeb2) bsorrentino *2013-09-11 18:54:43*
 
 **Issue 59**
 
@@ -6224,9 +7828,24 @@
 
 [65f318d96bcd2d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/65f318d96bcd2d2) softphone *2013-09-05 19:24:20*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[962f954afdb840a](https://github.com/bsorrentino/maven-confluence-plugin/commit/962f954afdb840a) bsorrentino *2013-09-05 18:22:59*
+
 
 ## maven-confluence-parent-3.4.1
 ### Generic changes
+
+**Merge branch 'master' of https://code.google.com/p/maven-confluence-plugin**
+
+
+[f9ddffeae2e0797](https://github.com/bsorrentino/maven-confluence-plugin/commit/f9ddffeae2e0797) bsorrentino *2013-09-05 18:22:07*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.4.1-SNAPSHOT**
+
+
+[d184a8b67acb66c](https://github.com/bsorrentino/maven-confluence-plugin/commit/d184a8b67acb66c) bsorrentino *2013-09-05 18:21:23*
 
 **issue 57**
 
@@ -6243,6 +7862,11 @@
 
 [b7be8c1f942c7cb](https://github.com/bsorrentino/maven-confluence-plugin/commit/b7be8c1f942c7cb) bsorrentino *2013-08-17 08:45:06*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[eeb4155fe6552e8](https://github.com/bsorrentino/maven-confluence-plugin/commit/eeb4155fe6552e8) bsorrentino *2013-08-14 14:56:49*
+
 **add schemas**
 
 
@@ -6257,6 +7881,16 @@
 
 
 [4b66c83e44f2b73](https://github.com/bsorrentino/maven-confluence-plugin/commit/4b66c83e44f2b73) bsorrentino *2013-08-06 18:19:38*
+
+**Merge branch '3.4.0'**
+
+
+[e5d2ee33f19bf11](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5d2ee33f19bf11) bsorrentino *2013-07-27 17:50:35*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[dbac9ee0a95fffa](https://github.com/bsorrentino/maven-confluence-plugin/commit/dbac9ee0a95fffa) bsorrentino *2013-07-27 17:14:52*
 
 **merge after pull**
 
@@ -6288,6 +7922,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@642 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [d09a54976a6fe41](https://github.com/bsorrentino/maven-confluence-plugin/commit/d09a54976a6fe41) bartolomeo.sorrentino *2012-10-08 18:38:50*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@637 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[2bd88421167c1c7](https://github.com/bsorrentino/maven-confluence-plugin/commit/2bd88421167c1c7) bartolomeo.sorrentino *2012-10-08 16:25:58*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.2.4-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@635 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[00a71da061ed2b8](https://github.com/bsorrentino/maven-confluence-plugin/commit/00a71da061ed2b8) bartolomeo.sorrentino *2012-10-08 16:25:29*
 
 **bug fix on message format**
 
@@ -6326,6 +7972,18 @@
 
 [5b20750e94ea7cf](https://github.com/bsorrentino/maven-confluence-plugin/commit/5b20750e94ea7cf) bartolomeo.sorrentino *2012-08-22 14:55:11*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@622 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[260958cdcb58c07](https://github.com/bsorrentino/maven-confluence-plugin/commit/260958cdcb58c07) bartolomeo.sorrentino *2012-08-22 10:39:34*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.2.3-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@620 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[8ff9de27121bce6](https://github.com/bsorrentino/maven-confluence-plugin/commit/8ff9de27121bce6) bartolomeo.sorrentino *2012-08-22 10:39:12*
+
 **Issue 44**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@619 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6337,6 +7995,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@618 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [5f6338e3e72c256](https://github.com/bsorrentino/maven-confluence-plugin/commit/5f6338e3e72c256) bartolomeo.sorrentino *2012-08-17 21:55:19*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@613 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[2ae2136837b47a3](https://github.com/bsorrentino/maven-confluence-plugin/commit/2ae2136837b47a3) bartolomeo.sorrentino *2012-07-30 18:18:23*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.2.2-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@611 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[af31b8559cf457d](https://github.com/bsorrentino/maven-confluence-plugin/commit/af31b8559cf457d) bartolomeo.sorrentino *2012-07-30 18:18:02*
 
 **Issue 39**
 
@@ -6355,6 +8025,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@605 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [71dbbf435235e74](https://github.com/bsorrentino/maven-confluence-plugin/commit/71dbbf435235e74) bartolomeo.sorrentino *2012-07-18 22:53:13*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@604 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[676bfcea0718255](https://github.com/bsorrentino/maven-confluence-plugin/commit/676bfcea0718255) bartolomeo.sorrentino *2012-07-18 22:35:01*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.2.1-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@602 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[b6acdf255bcef7e](https://github.com/bsorrentino/maven-confluence-plugin/commit/b6acdf255bcef7e) bartolomeo.sorrentino *2012-07-18 22:34:34*
 
 **prepare for release**
 
@@ -6422,6 +8104,18 @@
 
 [a57d0a29851bc87](https://github.com/bsorrentino/maven-confluence-plugin/commit/a57d0a29851bc87) bartolomeo.sorrentino@gmail.com *2012-06-21 09:58:08*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@586 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[5b06ecbaecda77c](https://github.com/bsorrentino/maven-confluence-plugin/commit/5b06ecbaecda77c) bartolomeo.sorrentino *2012-05-25 08:48:47*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.2.0-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@584 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[8691b46b8274be3](https://github.com/bsorrentino/maven-confluence-plugin/commit/8691b46b8274be3) bartolomeo.sorrentino *2012-05-25 08:48:27*
+
 **Issue 36**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@583 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6446,6 +8140,18 @@
 
 [b26beca37275e3e](https://github.com/bsorrentino/maven-confluence-plugin/commit/b26beca37275e3e) bartolomeo.sorrentino@gmail.com *2012-05-24 20:05:05*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@574 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[a1a03ac2b697de1](https://github.com/bsorrentino/maven-confluence-plugin/commit/a1a03ac2b697de1) bartolomeo.sorrentino *2012-05-03 11:06:09*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.1.5-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@572 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[f5f6cbf136ee9f2](https://github.com/bsorrentino/maven-confluence-plugin/commit/f5f6cbf136ee9f2) bartolomeo.sorrentino *2012-05-03 11:05:54*
+
 **Issue 35**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@571 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6464,6 +8170,18 @@
 
 [5f24e99b326b534](https://github.com/bsorrentino/maven-confluence-plugin/commit/5f24e99b326b534) bartolomeo.sorrentino@gmail.com *2012-04-30 11:03:04*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@564 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[4221c4f5e9fd18d](https://github.com/bsorrentino/maven-confluence-plugin/commit/4221c4f5e9fd18d) bartolomeo.sorrentino *2012-03-16 22:45:20*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.1.4-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@562 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[7e968970beac2d6](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e968970beac2d6) bartolomeo.sorrentino *2012-03-16 22:45:06*
+
 **Issue 27**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@561 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6481,6 +8199,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@559 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [811d16a1ffa4835](https://github.com/bsorrentino/maven-confluence-plugin/commit/811d16a1ffa4835) bartolomeo.sorrentino *2012-01-10 07:38:23*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@557 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[b04d348de1856a6](https://github.com/bsorrentino/maven-confluence-plugin/commit/b04d348de1856a6) bartolomeo.sorrentino *2011-12-28 17:37:10*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.1.3-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@555 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[5263a9c78e82f90](https://github.com/bsorrentino/maven-confluence-plugin/commit/5263a9c78e82f90) bartolomeo.sorrentino *2011-12-28 17:36:56*
 
 **update documentation**
 
@@ -6518,6 +8248,18 @@
 
 [2e63719977565cb](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e63719977565cb) bartolomeo.sorrentino *2011-12-17 16:07:52*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@537 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[188a95f48d18c1a](https://github.com/bsorrentino/maven-confluence-plugin/commit/188a95f48d18c1a) bartolomeo.sorrentino *2011-12-09 16:07:38*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.1.2-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@535 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[e38c647ca3cf5e4](https://github.com/bsorrentino/maven-confluence-plugin/commit/e38c647ca3cf5e4) bartolomeo.sorrentino *2011-12-09 16:07:24*
+
 **Issue 29**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@534 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6536,6 +8278,18 @@
 
 [7a65bda957d3bb2](https://github.com/bsorrentino/maven-confluence-plugin/commit/7a65bda957d3bb2) bartolomeo.sorrentino *2011-11-22 10:19:40*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@530 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[cded2c7964279d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/cded2c7964279d2) bartolomeo.sorrentino *2011-11-21 16:28:00*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.1.1-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@528 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[81733f1744b1f31](https://github.com/bsorrentino/maven-confluence-plugin/commit/81733f1744b1f31) bartolomeo.sorrentino *2011-11-21 16:27:39*
+
 **Issue 26**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@527 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6547,6 +8301,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@526 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [91ef515a8f4daec](https://github.com/bsorrentino/maven-confluence-plugin/commit/91ef515a8f4daec) bartolomeo.sorrentino@gmail.com *2011-10-20 14:18:59*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@523 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[a421a027000f063](https://github.com/bsorrentino/maven-confluence-plugin/commit/a421a027000f063) bartolomeo.sorrentino@gmail.com *2011-10-20 13:43:24*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.0.5-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@521 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[54bacdc959b56e9](https://github.com/bsorrentino/maven-confluence-plugin/commit/54bacdc959b56e9) bartolomeo.sorrentino@gmail.com *2011-10-20 13:43:08*
 
 **print confluence version**
 
@@ -6634,11 +8400,35 @@
 
 [905b300f51d7fde](https://github.com/bsorrentino/maven-confluence-plugin/commit/905b300f51d7fde) bartolomeo.sorrentino@gmail.com *2011-10-14 16:40:18*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@502 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[fc8ed3c583a795f](https://github.com/bsorrentino/maven-confluence-plugin/commit/fc8ed3c583a795f) bartolomeo.sorrentino@gmail.com *2011-10-05 13:44:56*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.0.4-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@500 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[e442025c61a56b3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e442025c61a56b3) bartolomeo.sorrentino@gmail.com *2011-10-05 13:43:58*
+
 **Issue 23 - Fixed**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@499 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [7300a494fef5e8c](https://github.com/bsorrentino/maven-confluence-plugin/commit/7300a494fef5e8c) bartolomeo.sorrentino@gmail.com *2011-10-04 16:55:51*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@492 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[2625d95d62a1824](https://github.com/bsorrentino/maven-confluence-plugin/commit/2625d95d62a1824) bartolomeo.sorrentino *2011-09-29 21:28:55*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.0.3-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@490 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[2187c6126c98298](https://github.com/bsorrentino/maven-confluence-plugin/commit/2187c6126c98298) bartolomeo.sorrentino *2011-09-29 21:27:17*
 
 **Issue 22**
 
@@ -6658,6 +8448,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@484 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [7a90d3dff2fde26](https://github.com/bsorrentino/maven-confluence-plugin/commit/7a90d3dff2fde26) bartolomeo.sorrentino *2011-08-16 09:45:21*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@483 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[d31c8c80be20cc5](https://github.com/bsorrentino/maven-confluence-plugin/commit/d31c8c80be20cc5) bartolomeo.sorrentino@gmail.com *2011-08-05 17:23:07*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.0.2-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@481 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[f73a488331e1dcf](https://github.com/bsorrentino/maven-confluence-plugin/commit/f73a488331e1dcf) bartolomeo.sorrentino@gmail.com *2011-08-05 17:22:47*
 
 **update project classpath**
 
@@ -6707,6 +8509,18 @@
 
 [4ff796d10560806](https://github.com/bsorrentino/maven-confluence-plugin/commit/4ff796d10560806) bartolomeo.sorrentino@gmail.com *2011-06-18 11:23:45*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@457 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[ace9eef08fcafdf](https://github.com/bsorrentino/maven-confluence-plugin/commit/ace9eef08fcafdf) bartolomeo.sorrentino *2011-06-18 10:44:59*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.0.1-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@455 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[7d4c692be41e27d](https://github.com/bsorrentino/maven-confluence-plugin/commit/7d4c692be41e27d) bartolomeo.sorrentino *2011-06-18 10:44:38*
+
 **fix issue 18**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@454 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6730,6 +8544,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@448 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [90ada39fbf30bc6](https://github.com/bsorrentino/maven-confluence-plugin/commit/90ada39fbf30bc6) bartolomeo.sorrentino@gmail.com *2011-06-17 19:49:49*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@447 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[96ecda7349fc932](https://github.com/bsorrentino/maven-confluence-plugin/commit/96ecda7349fc932) bartolomeo.sorrentino@gmail.com *2011-06-17 17:19:50*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.0.0-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@445 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[fced6b67fce846a](https://github.com/bsorrentino/maven-confluence-plugin/commit/fced6b67fce846a) bartolomeo.sorrentino@gmail.com *2011-06-17 17:19:30*
 
 **add project infos**
 
@@ -6772,6 +8598,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@369 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [70d7d9b068dba1c](https://github.com/bsorrentino/maven-confluence-plugin/commit/70d7d9b068dba1c) bartolomeo.sorrentino *2011-02-12 15:10:24*
+
+**[maven-release-plugin] prepare release maven-confluence-1.3.x**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@368 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[4d0ad7e4613fb15](https://github.com/bsorrentino/maven-confluence-plugin/commit/4d0ad7e4613fb15) bartolomeo.sorrentino *2011-02-10 00:44:48*
+
+**[maven-release-plugin] prepare branch maven-confluence-1.3.x**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@366 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[32fe5f32c1f3fa1](https://github.com/bsorrentino/maven-confluence-plugin/commit/32fe5f32c1f3fa1) bartolomeo.sorrentino *2011-02-10 00:44:29*
 
 **prepare for branch**
 
@@ -6833,6 +8671,18 @@
 
 [ef04f33dcfb4a45](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef04f33dcfb4a45) bartolomeo.sorrentino *2010-10-16 18:27:35*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@263 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[04393e5334e7176](https://github.com/bsorrentino/maven-confluence-plugin/commit/04393e5334e7176) bartolomeo.sorrentino *2010-08-11 10:54:08*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-1.3.1-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@261 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[f31e45698c3026c](https://github.com/bsorrentino/maven-confluence-plugin/commit/f31e45698c3026c) bartolomeo.sorrentino *2010-08-11 10:52:44*
+
 **http://code.google.com/p/maven-confluence-plugin/issues/detail?id=14**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@258 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6844,6 +8694,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@256 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [906d488417bf78c](https://github.com/bsorrentino/maven-confluence-plugin/commit/906d488417bf78c) bartolomeo.sorrentino *2010-08-11 10:21:28*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@252 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[8fbeb1aee4094ea](https://github.com/bsorrentino/maven-confluence-plugin/commit/8fbeb1aee4094ea) bartolomeo.sorrentino *2010-06-02 13:51:53*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-1.3-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@250 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[40c4dfc5e02431c](https://github.com/bsorrentino/maven-confluence-plugin/commit/40c4dfc5e02431c) bartolomeo.sorrentino *2010-06-02 13:48:40*
 
 **http://code.google.com/p/maven-confluence-plugin/issues/detail?id=11**
 
@@ -6876,6 +8738,18 @@
 
 
 [a243216afc73b7d](https://github.com/bsorrentino/maven-confluence-plugin/commit/a243216afc73b7d) bartolomeo.sorrentino *2010-05-27 18:39:37*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@242 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[5a122b94948a3ff](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a122b94948a3ff) bartolomeo.sorrentino *2010-05-20 09:41:22*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-1.2.1-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@240 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[a31a598b2f07297](https://github.com/bsorrentino/maven-confluence-plugin/commit/a31a598b2f07297) bartolomeo.sorrentino *2010-05-20 09:40:04*
 
 **fix scm url**
 
@@ -6913,6 +8787,18 @@
 
 [90e4dc817363f99](https://github.com/bsorrentino/maven-confluence-plugin/commit/90e4dc817363f99) bartolomeo.sorrentino *2010-05-20 09:26:24*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@200 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[528aee18d744e24](https://github.com/bsorrentino/maven-confluence-plugin/commit/528aee18d744e24) bartolomeo.sorrentino *2010-03-31 15:51:07*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-1.2**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@198 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[f5650c1f030bb92](https://github.com/bsorrentino/maven-confluence-plugin/commit/f5650c1f030bb92) bartolomeo.sorrentino *2010-03-31 15:49:36*
+
 **update**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@184 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6930,6 +8816,18 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@182 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [5f11691519124d4](https://github.com/bsorrentino/maven-confluence-plugin/commit/5f11691519124d4) bartolomeo.sorrentino *2010-03-31 15:27:39*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@176 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[7f2c120a98ff5a6](https://github.com/bsorrentino/maven-confluence-plugin/commit/7f2c120a98ff5a6) bartolomeo.sorrentino *2009-12-22 17:32:50*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-1.1-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@174 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[484b0131c65b118](https://github.com/bsorrentino/maven-confluence-plugin/commit/484b0131c65b118) bartolomeo.sorrentino *2009-12-22 17:32:22*
 
 **upgrade**
 
@@ -6967,6 +8865,12 @@
 
 [24c3566392384e6](https://github.com/bsorrentino/maven-confluence-plugin/commit/24c3566392384e6) bartolomeo.sorrentino *2009-11-29 16:09:39*
 
+**[maven-release-plugin] prepare release maven-confluence-reporting-plugin-plugin-1.0.0-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@152 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[88594a302caa51d](https://github.com/bsorrentino/maven-confluence-plugin/commit/88594a302caa51d) bartolomeo.sorrentino *2009-11-29 14:06:07*
+
 **change release of core dependency**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@145 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -6992,6 +8896,18 @@
 
 [ad3d6c3cc9382ad](https://github.com/bsorrentino/maven-confluence-plugin/commit/ad3d6c3cc9382ad) bartolomeo.sorrentino *2009-11-29 11:00:50*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@141 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[eeb0a52f399106a](https://github.com/bsorrentino/maven-confluence-plugin/commit/eeb0a52f399106a) bartolomeo.sorrentino *2009-11-28 16:02:49*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-1.0-SNAPSHOT**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@139 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[fe1a2e226d5b3f7](https://github.com/bsorrentino/maven-confluence-plugin/commit/fe1a2e226d5b3f7) bartolomeo.sorrentino *2009-11-28 16:00:02*
+
 **prepare for release**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@138 6a545194-3771-11de-8a2e-13aa1706fec1
@@ -7007,6 +8923,12 @@
 
 
 [28d5f5fa8332f51](https://github.com/bsorrentino/maven-confluence-plugin/commit/28d5f5fa8332f51) bartolomeo.sorrentino@gmail.com *2009-11-28 15:50:07*
+
+**[maven-release-plugin] prepare release maven-confluence-parent-1.0**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@135 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[d82298083f748ac](https://github.com/bsorrentino/maven-confluence-plugin/commit/d82298083f748ac) bartolomeo.sorrentino *2009-11-28 15:48:18*
 
 **git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@134 6a545194-3771-11de-8a2e-13aa1706fec1**
 
@@ -7069,11 +8991,29 @@
 
 [586f3096d6065d4](https://github.com/bsorrentino/maven-confluence-plugin/commit/586f3096d6065d4) bartolomeo.sorrentino *2009-11-28 15:28:19*
 
+**[maven-release-plugin] prepare release confluence-mojo-1.0**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@122 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[52dff04a3e4f716](https://github.com/bsorrentino/maven-confluence-plugin/commit/52dff04a3e4f716) bartolomeo.sorrentino *2009-11-28 15:08:39*
+
 **changed core depenency**
 
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@121 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [9a02295ada555e0](https://github.com/bsorrentino/maven-confluence-plugin/commit/9a02295ada555e0) bartolomeo.sorrentino *2009-11-28 15:08:09*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@120 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[c6071b335993e98](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6071b335993e98) bartolomeo.sorrentino *2009-11-28 15:06:46*
+
+**[maven-release-plugin] prepare release confluence-mojo-1.0**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@118 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[b7f265e944fd664](https://github.com/bsorrentino/maven-confluence-plugin/commit/b7f265e944fd664) bartolomeo.sorrentino *2009-11-28 15:06:28*
 
 **before release**
 
@@ -7103,6 +9043,12 @@
  * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@113 6a545194-3771-11de-8a2e-13aa1706fec1
 
 [512306f7e677c3a](https://github.com/bsorrentino/maven-confluence-plugin/commit/512306f7e677c3a) bartolomeo.sorrentino *2009-11-28 14:12:59*
+
+**[maven-release-plugin] prepare release confluence-mojo-1.0**
+
+ * git-svn-id: https://maven-confluence-plugin.googlecode.com/svn/trunk@112 6a545194-3771-11de-8a2e-13aa1706fec1
+
+[1e966183388d15f](https://github.com/bsorrentino/maven-confluence-plugin/commit/1e966183388d15f) bartolomeo.sorrentino *2009-11-28 14:05:19*
 
 **add scm info**
 
@@ -7302,8 +9248,41 @@
 [1f0bf8e740c663d](https://github.com/bsorrentino/maven-confluence-plugin/commit/1f0bf8e740c663d) bartolomeo.sorrentino *2009-05-02 23:41:16*
 
 
+## maven-confluence-parent-3.4.0
+### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.4.0**
+
+
+[9752a5d5414f419](https://github.com/bsorrentino/maven-confluence-plugin/commit/9752a5d5414f419) bsorrentino *2013-08-14 14:56:41*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[1a0568ff2e7c114](https://github.com/bsorrentino/maven-confluence-plugin/commit/1a0568ff2e7c114) bsorrentino *2013-08-14 14:46:58*
+
+
+## maven-confluence-parent-3.4.0-rc1
+### Generic changes
+
+**[maven-release-plugin] prepare release 3.4.0-rc1**
+
+
+[2136f08fa60a0bb](https://github.com/bsorrentino/maven-confluence-plugin/commit/2136f08fa60a0bb) bsorrentino *2013-08-14 14:45:38*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[c890bfa6831f9b6](https://github.com/bsorrentino/maven-confluence-plugin/commit/c890bfa6831f9b6) bsorrentino *2013-08-14 14:43:18*
+
+
 ## v3.4.0-rc1
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.4.0-SNAPSHOT**
+
+
+[a7c79c73be31848](https://github.com/bsorrentino/maven-confluence-plugin/commit/a7c79c73be31848) bsorrentino *2013-08-14 14:41:29*
 
 **issue 56**
 
@@ -7313,6 +9292,11 @@
 
 ## maven-confluence-parent-3.4.0-SNAPSHOT
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.4.0-SNAPSHOT**
+
+
+[ec721b9a4079c30](https://github.com/bsorrentino/maven-confluence-plugin/commit/ec721b9a4079c30) bsorrentino *2013-07-27 17:14:41*
 
 **issue 55**
 
@@ -7326,19 +9310,19 @@
 
 **issue 55**
 
- * add detect &#39;plugin project&#39;
+ * add detect &#x27;plugin project&#x27;
 
 [96ac8e3a5ffc40e](https://github.com/bsorrentino/maven-confluence-plugin/commit/96ac8e3a5ffc40e) softphone *2013-07-27 00:38:00*
 
 **issue 55**
 
- * add detect &#39;plugin project&#39;
+ * add detect &#x27;plugin project&#x27;
 
 [e82aa6fb7372524](https://github.com/bsorrentino/maven-confluence-plugin/commit/e82aa6fb7372524) softphone *2013-07-27 00:33:49*
 
 **issue 55**
 
- * add detect &#39;plugin project&#39;
+ * add detect &#x27;plugin project&#x27;
 
 [373d3118573778e](https://github.com/bsorrentino/maven-confluence-plugin/commit/373d3118573778e) softphone *2013-07-27 00:30:45*
 
@@ -7367,18 +9351,43 @@
 
 [5747b2ac8ac7d43](https://github.com/bsorrentino/maven-confluence-plugin/commit/5747b2ac8ac7d43) bsorrentino *2013-06-14 21:39:43*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[f6339228a46ba59](https://github.com/bsorrentino/maven-confluence-plugin/commit/f6339228a46ba59) bsorrentino *2013-05-28 19:55:48*
+
 
 ## maven-confluence-parent-3.3.0-rc1
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-rc1**
+
+
+[68596fa1d2e207f](https://github.com/bsorrentino/maven-confluence-plugin/commit/68596fa1d2e207f) bsorrentino *2013-05-28 19:55:39*
 
 **update version**
 
 
 [52c0dd0b1cd1b87](https://github.com/bsorrentino/maven-confluence-plugin/commit/52c0dd0b1cd1b87) bsorrentino *2013-05-28 19:55:05*
 
+**[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-SNAPSHOT**
+
+
+[cd9efc66d9cc937](https://github.com/bsorrentino/maven-confluence-plugin/commit/cd9efc66d9cc937) bsorrentino *2013-05-28 19:47:07*
+
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[ffc3fbb300bc602](https://github.com/bsorrentino/maven-confluence-plugin/commit/ffc3fbb300bc602) bsorrentino *2013-05-28 19:31:13*
+
 
 ## maven-confluence-parent-3.3.0-beta4-SNAPSHOT
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-beta4-SNAPSHOT**
+
+
+[bb2f0af6848d7ac](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb2f0af6848d7ac) bsorrentino *2013-05-28 19:31:03*
 
 **update doc url**
 
@@ -7400,18 +9409,38 @@
 
 [5bd0fa55e1f8e80](https://github.com/bsorrentino/maven-confluence-plugin/commit/5bd0fa55e1f8e80) bsorrentino *2013-05-28 15:26:55*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[48cddf528a78318](https://github.com/bsorrentino/maven-confluence-plugin/commit/48cddf528a78318) bsorrentino *2013-02-15 10:42:58*
+
 
 ## maven-confluence-parent-3.3.0-beta3-SNAPSHOT
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-beta3-SNAPSHOT**
+
+
+[6eb7eb79dedc0a7](https://github.com/bsorrentino/maven-confluence-plugin/commit/6eb7eb79dedc0a7) bsorrentino *2013-02-15 10:42:54*
 
 **Issue 51**
 
 
 [415d6507cf69f18](https://github.com/bsorrentino/maven-confluence-plugin/commit/415d6507cf69f18) softphone *2013-02-15 10:39:33*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[aec36dd797034be](https://github.com/bsorrentino/maven-confluence-plugin/commit/aec36dd797034be) bsorrentino *2012-12-22 15:01:53*
+
 
 ## maven-confluence-parent-3.3.0-beta2-SNAPSHOT
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-beta2-SNAPSHOT**
+
+
+[22fa226010d8505](https://github.com/bsorrentino/maven-confluence-plugin/commit/22fa226010d8505) bsorrentino *2012-12-22 15:01:47*
 
 **directory layout refactoring**
 
@@ -7449,9 +9478,19 @@
 
 [ecbb7e694e43ba5](https://github.com/bsorrentino/maven-confluence-plugin/commit/ecbb7e694e43ba5) softphone *2012-12-18 01:11:27*
 
+**[maven-release-plugin] prepare for next development iteration**
+
+
+[7dd884251b8fdbf](https://github.com/bsorrentino/maven-confluence-plugin/commit/7dd884251b8fdbf) bsorrentino *2012-12-16 15:57:56*
+
 
 ## maven-confluence-parent-3.3.0-SNAPSHOT
 ### Generic changes
+
+**[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-SNAPSHOT**
+
+
+[383f9ebad2ecd85](https://github.com/bsorrentino/maven-confluence-plugin/commit/383f9ebad2ecd85) bsorrentino *2012-12-16 15:57:50*
 
 **add siteDescriptor parameter**
 
