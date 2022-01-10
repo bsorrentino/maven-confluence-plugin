@@ -148,7 +148,7 @@
             <dependency>
                 <groupId>org.bsc.util</groupId>
                 <artifactId>minitemplator-repackaged</artifactId>
-                <version>1.4-SNAPSHOT</version>
+                <version>1.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.plugin-testing</groupId>
