@@ -1,5 +1,22 @@
 # Release History
 
+## 2020
+
+Date  | Release | Info
+--- | --- | ---
+
+**Dec 11, 2020** | [Release 6.20](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.20) | Fix issue [#235](https://github.com/bsorrentino/maven-confluence-plugin/issues/235), see section **Include custom macro(s)** in [Markdown Syntax Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html) for details
+**Nov 02, 2020** | [Release 6.11](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.11) | Bump junit from 4.12 to 4.13.1
+**Sep 25, 2020** | [Release 6.10](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.10) | Fix issue [#229](https://github.com/bsorrentino/maven-confluence-plugin/issues/229) .
+**Sep 18, 2020** | [Release 6.9.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9.1) | Fix issue [#226](https://github.com/bsorrentino/maven-confluence-plugin/issues/226) .
+**Aug 05, 2020** | [Release 6.9](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9) | Fix issue [#223](https://github.com/bsorrentino/maven-confluence-plugin/issues/223) .
+**Jul 05, 2020** | [Release 6.9-rc2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-rc2) | publication performance improvements.
+**Jun 18, 2020** | [Release 6.9-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-rc1) | add support for [blogbost goal](http://bsorrentino.github.io/maven-confluence-plugin/blogpost-mojo.html).
+**May 05, 2020** | [Release 6.9-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.9-beta1) | improved support of  [Scroll Versions Addon](https://marketplace.atlassian.com/apps/1210818/scroll-versions-for-confluence?hosting=server&tab=overview) .
+**Apr 26, 2020** | [Release 6.8](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.8) | Added [markdown processor](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html) to support future removal of **deprecated** [Pegdown](https://github.com/sirthias/pegdown) implementation.
+**Mar 23, 2020** | [Release 6.7.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.3) |
+**Mar 11, 2020** | [Release 6.7.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.7.2) |
+
 ## 2019
 
 Date  | Release | Info
