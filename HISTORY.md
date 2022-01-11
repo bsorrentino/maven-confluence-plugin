@@ -4,7 +4,6 @@
 
 Date  | Release | Info
 --- | --- | ---
-
 **Dec 11, 2020** | [Release 6.20](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.20) | Fix issue [#235](https://github.com/bsorrentino/maven-confluence-plugin/issues/235), see section **Include custom macro(s)** in [Markdown Syntax Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html) for details
 **Nov 02, 2020** | [Release 6.11](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.11) | Bump junit from 4.12 to 4.13.1
 **Sep 25, 2020** | [Release 6.10](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v6.10) | Fix issue [#229](https://github.com/bsorrentino/maven-confluence-plugin/issues/229) .
