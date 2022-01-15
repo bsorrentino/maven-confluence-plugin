@@ -21,7 +21,11 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > * [Site Processor Usage](http://bsorrentino.github.io/maven-confluence-plugin/site_processor_guide.html)
 > * [Markdown Processor usage](http://bsorrentino.github.io/maven-confluence-plugin/markdown_processor_guide.html)
 
-### News
+## Examples
+
+For pratical samples refer to folder/module [test-publishing](https://github.com/bsorrentino/maven-confluence-plugin/tree/master/test-publishing)
+
+## News
 
  Date  | Release | Info   
 --- | --- | ---
