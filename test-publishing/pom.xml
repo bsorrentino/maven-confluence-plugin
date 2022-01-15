@@ -342,6 +342,7 @@
                         <configuration>
                             <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
                             <deployState/>
+                            <!--childrenTitlesPrefixed>false</childrenTitlesPrefixed-->
                         </configuration>
                     </execution>
                     <!--
