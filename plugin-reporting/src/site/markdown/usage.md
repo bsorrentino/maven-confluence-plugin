@@ -3,7 +3,7 @@
 ### Maven Repository
 
 From Release 3.0.1 this plugin is available from [MAVEN CENTRAL REPO](http://repo2.maven.org/maven2/)
-If you want stay tune over modification, includes the following repository declaration in your POM
+If you would like download & test the latest SNAPSHOT, includes the following repository declaration in your POM
 
 ```xml
 
@@ -125,13 +125,17 @@ Given value will be parsed according to the following [specification](https://do
 
 ## Authentication Tip
 
-Put yours confluence credential within settings.xml as server
+Put yours confluence credential within `settings.xml` as server.
 
+** Note: <u>Personal Access Token</u>**
+> When required, **instead of password** you've to specify your **personal access token**
+
+### Template
 ```xml
     <server>
         <id>my_confluence_server</id>
         <username>my_user</username>
-        <password>my_password</password>
+        <password>my_password or my_personal_access_token</password>
     </server>
 ```
 
