@@ -22,4 +22,7 @@ open module maven.confluence.core {
 
     exports org.bsc.markdown;
     exports org.bsc.preprocessor;
+    exports org.bsc.confluence;
+    exports org.bsc.confluence.model;
+    exports org.bsc.ssl;
 }
