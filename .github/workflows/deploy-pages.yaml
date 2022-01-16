@@ -27,6 +27,7 @@ jobs:
         run: |
           mvn -B install --file pom.xml -s settings-template.xml
           mvn -B --projects plugin-reporting site --file pom.xml -s settings-template.xml
+          cp -R core/target/site plugin-reporting/target/site/core
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
