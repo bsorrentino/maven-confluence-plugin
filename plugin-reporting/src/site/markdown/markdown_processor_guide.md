@@ -16,6 +16,7 @@ Currently the available Markdown processors compliant with plugin are:
 To plug a **markdown processor** you have to declare library **as plugin's dependency**. 
 
 #### Plug `commonmark` implementation
+
 ```xml
 <plugin>
     <groupId>org.bsc.maven</groupId>
@@ -61,6 +62,7 @@ Create a simple java library project maven compliant
 ### 3. Implement the interface `org.bsc.markdown.MarkdownProcessor`       
 
 **MarkdownProcessor.java**
+
 ```java
 /**
  * Markdown Processor interface
@@ -87,6 +89,7 @@ public interface MarkdownProcessor {
 ```
 
 **MarkdownParserContext.java**
+
 ```java
 public interface MarkdownParserContext {
 
