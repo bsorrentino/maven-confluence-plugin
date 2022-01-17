@@ -1,8 +1,8 @@
 || wiki || result ||
-| \*strong\*	| Makes text *strong*. |
-| \_emphasis_	 | Makes text _emphasis_. |
-| \??citation?? |	Makes text in ??citation??. |
-| \-strikethrough- |	Makes text as -strikethrough-. |
-| \+underlined+ |	Makes text as +underlined+. |
-| \^superscript^ |	Makes text in ^superscript^. |
-| \~subscript~ | Makes text in ~subscript~. |
+| \*strong\*	| *strong* |
+| \_emphasis_	 | _emphasis_ |
+| \^superscript^ | text ^superscript^ |
+| \~subscript~ | text ~subscript~ |
+| \??citation?? | ??citation?? |
+| \-strikethrough- | -strikethrough- |
+| \+underlined+ | +underlined+ |

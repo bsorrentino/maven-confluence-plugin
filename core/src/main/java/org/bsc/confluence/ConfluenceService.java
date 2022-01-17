@@ -87,12 +87,18 @@ public interface ConfluenceService extends Closeable{
     class Storage {
         
         public enum Representation {
-            STORAGE,
-            WIKI;
+            STORAGE("storage"),
+            WIKI("wiki");
+
+            public final String tag;
+
+            Representation( String tag ) {
+                this.tag = tag;
+            }
 
             @Override
             public String toString() {
-                return name().toLowerCase();
+                return tag;
             }
         }
         
