@@ -47,7 +47,8 @@ services:
 # -p 8091:8091
 # atlassian/confluence-server
   confluence:
-    image: atlassian/confluence-server:7.6
+    #image: atlassian/confluence-server:7.6
+    image: atlassian/confluence-server:7.15
     container_name: confluence
     ports:
       - "8090:8090"
