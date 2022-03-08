@@ -9,6 +9,13 @@
         <version>7.4.1-SNAPSHOT</version>
     </parent>
 
+    <!-- TEST ISSUE 263 -->
+    <scm>
+        <url>https://bitbucket.company.com/scm/team/project</url>
+        <connection>scm:git:ssh://git@bitbucket.compay.com:port/team/project.git</connection>
+        <developerConnection>scm:git:ssh://git@bitbucket.company.com:port/team/project.git</developerConnection>
+    </scm>
+
     <artifactId>maven-confluence-plugin-test</artifactId>
     <packaging>maven-plugin</packaging>
 
