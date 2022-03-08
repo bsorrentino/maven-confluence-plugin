@@ -3,28 +3,15 @@ version: '3.7'
 
 services:
   db:
-# docker run -d  -p 5432:5432 \
-# --name postgres \
-# -e POSTGRES_USER=postgres \
-# -e POSTGRES_PASSWORD=mysecretpassword \
-# -v postgresData:/var/lib/postgresql/data \
-# postgres:10
-    image: postgres:10
+    image: postgres:latest
     container_name: postgres
     ports:
       - "5432:5432"
     volumes:
-      - "~/confluence/data:/var/lib/postgresql/data"
+      - "pgdata:/var/lib/postgresql/data"
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
-# docker run -p 5050:80 \
-#   --name pgadmin \
-#   -e 'PGADMIN_DEFAULT_EMAIL=postgres' \
-#   -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' \
-#   -v pgadminData:/pgadmin4 \
-#   -v pgAdminApplicationData:/var/lib/pgadmin \
-#   -d dpage/pgadmin4
   pgadmin:
     depends_on:
       - db
@@ -34,28 +21,33 @@ services:
       - "5050:80"
     links:
       - "db:db"
-    # volumes:
-    #   - "~/confluence/pgadmin:/pgadmin4"
-    #   - "~/confluence/pgadmindata:/var/lib/pgadmin"
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@soul.it
       - PGADMIN_DEFAULT_PASSWORD=admin
-# docker run -d
-# -v /data/your-confluence-home:/var/atlassian/application-data/confluence
-# --name="confluence"
-# -p 8090:8090
-# -p 8091:8091
-# atlassian/confluence-server
   confluence:
-    #image: atlassian/confluence-server:7.6
-    image: atlassian/confluence-server:7.15
+    image: confluence-server:7.15.1
+    build:
+      context: .
+    #image: atlassian/confluence-server:7.15.1
     container_name: confluence
     ports:
       - "8090:8090"
       - "8091:8091"
     volumes:
-      - "~/confluence/home:/var/atlassian/application-data/confluence"
+      ##################################################
+      # define CONFLUENCE_FOLDER in local .env file
+      # Es.
+      # CONFLUENCE_FOLDER=/Users/bsorrentino/confluence
+      #
+      ##################################################
+      - $CONFLUENCE_FOLDER:/var/atlassian/application-data/confluence
     links:
       - "db:db"
     depends_on:
       - db
+    ulimits:
+      nofile:
+        soft: 5000
+        hard: 5000
+volumes:
+    pgdata: {}
