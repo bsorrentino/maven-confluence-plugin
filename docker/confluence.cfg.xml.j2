@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ref: https://github.com/pgjdbc/pgjdbc/issues/1102
+-->
+<confluence-configuration>
+
+  <setupStep>setupstart</setupStep>
+  <setupType>custom</setupType>
+  <buildNumber>0</buildNumber>
+
+  <properties>
+    <property name="confluence.database.connection.type">database-type-standard</property>
+    <property name="webwork.multipart.saveDir">${localHome}/temp</property>
+    <property name="attachments.dir">${confluenceHome}/attachments</property>
+
+    <property name="lucene.index.dir">{{ atl_lucene_index_dir | default('${confluenceHome}/index') }}</property>
+
+    {# We need mappings for "oracle12c" and "oracle" to remain backwards compatible with Confluence 7.3.0 and earlier. Oracle 19c support was added in Confluence 7.3.1 and changed the database type name for oracle databases from "oracle12c" to "oracle" #}
+    {% if atl_jdbc_url is defined %}
+      {% set databases =  {
+           "mysql": ["com.mysql.jdbc.Driver", "MySQLDialect"],
+           "postgresql": ["org.postgresql.Driver", "PostgreSQL9Dialect"],
+           "mssql": ["com.microsoft.sqlserver.jdbc.SQLServerDriver", "SQLServerDialect"],
+           "oracle12c": ["oracle.jdbc.driver.OracleDriver", "OracleDialect"],
+           "oracle": ["oracle.jdbc.driver.OracleDriver", "OracleDialect"]
+          } %}
+      <property name="confluence.database.choice">{{ atl_db_type }}</property>
+
+      <property name="hibernate.connection.url">{{ atl_jdbc_url }}</property>
+      <property name="hibernate.connection.username">{{ atl_jdbc_user }}</property>
+      <property name="hibernate.connection.password">{{ atl_jdbc_password }}</property>
+      <property name="hibernate.connection.driver_class">{{ databases[atl_db_type][0] }}</property>
+      <property name="hibernate.dialect">com.atlassian.confluence.impl.hibernate.dialect.{{ databases[atl_db_type][1] }}</property>
+      <property name="hibernate.jdbc.lob.non_contextual_creation">true</property>
+
+      <property name="hibernate.c3p0.min_size">{{ atl_db_poolminsize | default('20') }}</property>
+      <property name="hibernate.c3p0.max_size">{{ atl_db_poolmaxsize | default('100') }}</property>
+      <property name="hibernate.c3p0.timeout">{{ atl_db_timeout | default('30') }}</property>
+      <property name="hibernate.c3p0.idle_test_period">{{ atl_db_idletestperiod | default('100') }}</property>
+      <property name="hibernate.c3p0.max_statements">{{ atl_db_maxstatements | default('0') }}</property>
+      <property name="hibernate.c3p0.validate">{{ atl_db_validate | default('false') }}</property>
+      <property name="hibernate.c3p0.acquire_increment">{{ atl_db_acquireincrement | default('1') }}</property>
+      <property name="hibernate.c3p0.preferredTestQuery">{{ atl_db_validationquery | default('select 1') }}</property>
+    {% endif %}
+
+    {% if atl_cluster_type is defined %}
+      <property name="confluence.cluster">true</property>
+      <property name="confluence.cluster.name">{{ atl_cluster_name }}</property>
+      <property name="confluence.cluster.node.name">{{ atl_cluster_node_name }}</property>
+      <property name="confluence.cluster.home">{{ atl_product_home_shared | default(confluence_shared_home) | default('') }}</property>
+      <property name="shared-home">{{ atl_product_home_shared | default(confluence_shared_home) | default('') }}</property>
+
+      <property name="confluence.cluster.join.type">{{ atl_cluster_type }}</property>
+      {% if atl_cluster_type == 'aws' %}
+        <property name="confluence.cluster.aws.iam.role">{{ atl_hazelcast_network_aws_iam_role }}</property>
+        <property name="confluence.cluster.aws.region">{{ atl_hazelcast_network_aws_iam_region }}</property>
+        <property name="confluence.cluster.aws.host.header">{{ atl_hazelcast_network_aws_host_header }}</property>
+        <property name="confluence.cluster.aws.security.group.name">{{ atl_hazelcast_network_aws_security_group }}</property>
+        <property name="confluence.cluster.aws.tag.key">{{ atl_hazelcast_network_aws_tag_key }}</property>
+        <property name="confluence.cluster.aws.tag.value">{{ atl_hazelcast_network_aws_tag_value }}</property>
+        <property name="confluence.cluster.ttl">{{ atl_cluster_ttl }}</property>
+
+      {% elif atl_cluster_type == 'tcp_ip' %}
+        <property name="confluence.cluster.peers">{{ atl_cluster_peers }}</property>
+
+      {% elif atl_cluster_type == 'multicast' %}
+        <property name="confluence.cluster.address">{{ atl_cluster_address }}</property>
+        <property name="confluence.cluster.ttl">{{ atl_cluster_ttl }}</property>
+
+      {% endif %}
+
+    {% endif %}
+
+    {% if atl_license_key is defined %}
+      <property name="atlassian.license.message">{{ atl_license_key }}</property>
+    {% endif %}
+
+    {% if atl_tomcat_contextpath is defined and atl_tomcat_contextpath != '' %}
+      <property name="confluence.webapp.context.path">/{{ atl_tomcat_contextpath }}</property>
+    {% endif %}
+
+  </properties>
+</confluence-configuration>
