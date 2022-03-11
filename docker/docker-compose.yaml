@@ -50,7 +50,7 @@ services:
         soft: 5000
         hard: 5000
     environment:
-      - JVM_MINIMUM_MEMORY=2048m
+      - JVM_MINIMUM_MEMORY=4096m
       - JVM_MAXIMUM_MEMORY=4096m
 volumes:
     pgdata: {}
