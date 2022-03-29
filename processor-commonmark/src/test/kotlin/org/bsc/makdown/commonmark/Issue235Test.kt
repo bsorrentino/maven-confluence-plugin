@@ -65,7 +65,7 @@ class Issue235Test {
     fun `parse specific macros`() {
         val content =  parseResource( this.javaClass, "macro", this.site )
         assertEquals("""
-            {toc} 
+            {toc}
             
             h1. This is table of content
             {toc:minLevel=2} 
