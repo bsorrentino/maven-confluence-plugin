@@ -1,29 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.bsc.maven</groupId>
-		<artifactId>maven-confluence-parent</artifactId>
-		<version>7.4.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>maven-confluence-processor-freemarker</artifactId>
-	<name>CONFLUENCE-REPORTING::Freemaker::Processor</name>
-	<description>maven confluence plugin - site preprocessor based on freemaker</description>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.bsc.maven</groupId>
+        <artifactId>maven-confluence-parent</artifactId>
+        <version>7.4.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>maven-confluence-processor-freemarker</artifactId>
+    <name>CONFLUENCE-REPORTING::Freemaker::Processor</name>
+    <description>maven confluence plugin - site preprocessor based on freemaker</description>
 
-	<dependencies>
-		<!--
-		<dependency>
-			<groupId>org.kohsuke.metainf-services</groupId>
-			<artifactId>metainf-services</artifactId>
-			<optional>true</optional>
-		</dependency>
-		-->
-		<dependency>
-		    <groupId>org.freemarker</groupId>
-		    <artifactId>freemarker</artifactId>
-		    <version>2.3.29</version>
-		</dependency>
+    <dependencies>
+        <!--
+        <dependency>
+            <groupId>org.kohsuke.metainf-services</groupId>
+            <artifactId>metainf-services</artifactId>
+            <optional>true</optional>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.29</version>
+        </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -31,47 +31,70 @@
             <version>${project.version}</version>
         </dependency>
 
-	</dependencies>
+    </dependencies>
 
-	<build>
+    <build>
 
-		<plugins>
+        <plugins>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>compile-java-8</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<compileSourceRoots>
-								<compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
-							</compileSourceRoots>
-						</configuration>
-					</execution>
-					<execution>
-						<id>compile-java-9</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<release>9</release>
-							<compileSourceRoots>
-								<compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
-								<compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-							</compileSourceRoots>
-							<compilerArgs>
-							</compilerArgs>
-							<outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile-java-8</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                            </compileSourceRoots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-		</plugins>
-	</build>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>java9above</id>
+            <activation>
+                <jdk>[9,)</jdk><!-- java9 and above -->
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-java-9</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <release>9</release>
+                                    <compileSourceRoots>
+                                        <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                                        <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                                    </compileSourceRoots>
+                                    <compilerArgs>
+                                    </compilerArgs>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/versions/9
+                                    </outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+            </dependencies>
+        </profile>
+
+    </profiles>
 </project>
