@@ -2,7 +2,7 @@ package org.bsc.makdown.commonmark;
 
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.net.URI
 import java.nio.file.Paths

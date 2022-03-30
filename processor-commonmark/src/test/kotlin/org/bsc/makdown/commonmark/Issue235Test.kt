@@ -2,12 +2,10 @@ package org.bsc.makdown.commonmark
 
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor.parseHTMLComment
-import org.junit.Test
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.nio.file.Paths
-import java.util.regex.Pattern
 
 class Issue235Test {
 

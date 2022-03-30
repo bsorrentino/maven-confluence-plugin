@@ -4,7 +4,7 @@ import org.bsc.confluence.model.Site
 import org.hamcrest.core.IsEqual
 import org.hamcrest.core.IsNull
 import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions
 import java.net.URI
 import java.nio.file.Paths
