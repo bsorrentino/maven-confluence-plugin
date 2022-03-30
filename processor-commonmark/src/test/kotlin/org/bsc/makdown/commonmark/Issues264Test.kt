@@ -1,12 +1,12 @@
 package org.bsc.makdown.commonmark;
 
 import org.bsc.confluence.model.Site
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.net.URI
 import java.nio.file.Paths
 
-class Issue264Test {
+class Issues264Test {
 
     var site = Site().apply {
         basedir = Paths.get(System.getProperty("user.dir"))
@@ -21,9 +21,9 @@ class Issue264Test {
 
     private fun parseContent():String {
         val content = """            
-|Property                     | Default            | Description            |
-|-----------------------------|--------------------|--------------------------|  
-| A                           |                    | Desc01                 |
+| Property     | Default           | Description     |
+|--------------|-------------------|-----------------|
+| TestProperty |                   | TestDescription |
         """.trimIndent()
         return parseContent(this.site, content)
     }
@@ -34,7 +34,7 @@ class Issue264Test {
 
         assertEquals("""
 ||Property||Default||Description||
-|A||Desc01|
+|TestProperty| |TestDescription|
         """.trimIndent(), content)
     }
 
