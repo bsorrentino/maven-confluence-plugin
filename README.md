@@ -29,7 +29,8 @@ For pratical samples refer to folder/module [test-publishing](https://github.com
 
  Date  | Release | Info   
 --- | --- | ---
- **Jan 10, 2022** | [Release 7.4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v4) | Fix problem with **encoding**. Refer to [#261](https://github.com/bsorrentino/maven-confluence-plugin/issues/261).
+ **Apr 1, 2022** | [Release 7.5](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.5) | Fix empty table cell not handled properly. Refer to [#264](https://github.com/bsorrentino/maven-confluence-plugin/issues/264).
+ **Jan 10, 2022** | [Release 7.4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.4) | Fix problem with **encoding**. Refer to [#261](https://github.com/bsorrentino/maven-confluence-plugin/issues/261).
  **Aug 09, 2021** | [Release 7.3.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3.2) | Fix problem with **ReadTimeout** & **WriteTimeout**. Refer to [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256). see the PR [#257](https://github.com/bsorrentino/maven-confluence-plugin/pull/257) for details. Thanks to [qwazer](https://github.com/qwazer) for contribution
  **Aug 07, 2021** | [Release 7.3.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3.1) | Refer to  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) for details
  **Jul 31, 2021** | [Release 7.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3) | Refer to discussion [#247](https://github.com/bsorrentino/maven-confluence-plugin/discussions/247) for details
