@@ -5,6 +5,30 @@
 ## Next release
 ### Generic changes
 
+**Merge branch 'hotfix/docs'**
+
+
+[72789ec60aac667](https://github.com/bsorrentino/maven-confluence-plugin/commit/72789ec60aac667) bsorrentino *2022-04-01 11:05:39*
+
+**update readme**
+
+
+[8526cd456884e12](https://github.com/bsorrentino/maven-confluence-plugin/commit/8526cd456884e12) bsorrentino *2022-04-01 11:05:23*
+
+
+## v7.5
+### Generic changes
+
+**Merge branch 'release/7.5'**
+
+
+[65d6021096656d1](https://github.com/bsorrentino/maven-confluence-plugin/commit/65d6021096656d1) bsorrentino *2022-04-01 11:01:38*
+
+**uodate changelog**
+
+
+[79398e8547d73f4](https://github.com/bsorrentino/maven-confluence-plugin/commit/79398e8547d73f4) bsorrentino *2022-04-01 11:01:17*
+
 **upgrade it-changelog-maven-plugin version to 1.89**
 
 
@@ -257,25 +281,6 @@
 
 [c6da6ca472d0d83](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6da6ca472d0d83) Build Pipeline *2022-01-10 14:43:46*
 
-
-## v7.4
-### Generic changes
-
-**Merge branch 'release/7.4'**
-
-
-[35891a666918dc9](https://github.com/bsorrentino/maven-confluence-plugin/commit/35891a666918dc9) Build Pipeline *2022-01-10 14:43:38*
-
-**move to next release**
-
-
-[83f8aea3aa353ef](https://github.com/bsorrentino/maven-confluence-plugin/commit/83f8aea3aa353ef) Build Pipeline *2022-01-10 14:41:36*
-
-**update changelog plugin version**
-
-
-[814f3e14abd50b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/814f3e14abd50b0) Build Pipeline *2022-01-10 14:39:52*
-
 **Merge branch 'bugfix/issue261' into develop**
 
 
@@ -351,6 +356,25 @@
  * minor release 7.3.1
 
 [023018e74cccb69](https://github.com/bsorrentino/maven-confluence-plugin/commit/023018e74cccb69) Build Pipeline *2021-08-07 09:09:57*
+
+
+## v7.4
+### Generic changes
+
+**Merge branch 'release/7.4'**
+
+
+[35891a666918dc9](https://github.com/bsorrentino/maven-confluence-plugin/commit/35891a666918dc9) Build Pipeline *2022-01-10 14:43:38*
+
+**move to next release**
+
+
+[83f8aea3aa353ef](https://github.com/bsorrentino/maven-confluence-plugin/commit/83f8aea3aa353ef) Build Pipeline *2022-01-10 14:41:36*
+
+**update changelog plugin version**
+
+
+[814f3e14abd50b0](https://github.com/bsorrentino/maven-confluence-plugin/commit/814f3e14abd50b0) Build Pipeline *2022-01-10 14:39:52*
 
 
 ## v7.3.2
