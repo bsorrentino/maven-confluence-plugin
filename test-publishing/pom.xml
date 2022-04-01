@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.4</version>
+        <version>7.5-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -342,6 +342,8 @@
                         <configuration>
                             <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
                             <deployState/>
+                            <!--childrenTitlesPrefixed>false</childrenTitlesPrefixed-->
+                            <wikiFilesExt>wiki</wikiFilesExt>
                         </configuration>
                     </execution>
                     <!--
@@ -433,12 +435,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
 
         <profile>
             <id>freemarker</id>
@@ -491,6 +487,18 @@
                 <confluence.serverId>confluence-local</confluence.serverId>
                 <confluence.spaceKey>TEST</confluence.spaceKey>
                 <confluence.endPoint>http://localhost:8090/${api.rest}</confluence.endPoint>
+
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cloud</id>
+            <properties>
+
+                <confluence.parentPage>Home</confluence.parentPage>
+                <confluence.serverId>confluence-cloud</confluence.serverId>
+                <confluence.spaceKey>TEST</confluence.spaceKey>
+                <confluence.endPoint>https://bsorrentino.atlassian.net/wiki/${api.rest}</confluence.endPoint>
 
             </properties>
         </profile>

@@ -34,8 +34,9 @@ class DeployStateManagerTest {
     fun testIsNotUpdatedForExistingFile() {
         val dsm = DeployStateManager.load("http://localhost:8090/confluence", basedir)
         assertTrue(dsm.isUpdated(Paths.get("pom.xml"), null))
+
         val dsm2 = DeployStateManager.load("http://localhost:8090/confluence", basedir)
-        assertFalse(dsm2.isUpdated(Paths.get("pom.xml"), null))
+        assertTrue(dsm2.isUpdated(Paths.get("pom.xml"), null))
     }
 
     @Test

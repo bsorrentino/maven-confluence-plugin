@@ -5,7 +5,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.4</version>
+        <version>7.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
     <name>CONFLUENCE-REPORTING::Markdown::Commonmark::Processor</name>
 
     <properties>
-        <commonmark.version>0.17.0</commonmark.version>
+        <commonmark.version>0.18.2</commonmark.version>
     </properties>
 
     <dependencies>
@@ -47,12 +47,6 @@
             <version>${commonmark.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -72,22 +66,6 @@
                             </compileSourceRoots>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>compile-java-9</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <release>9</release>
-                            <compileSourceRoots>
-                                <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
-                                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-                            </compileSourceRoots>
-                            <compilerArgs/>
-                            <outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -105,4 +83,43 @@
         </plugins>
     </build>
 
+    <profiles>
+
+        <profile>
+            <id>java9above</id>
+            <activation>
+                <jdk>[9,)</jdk><!-- java9 and above -->
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-java-9</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <release>9</release>
+                                    <compileSourceRoots>
+                                        <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                                        <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                                    </compileSourceRoots>
+                                    <compilerArgs/>
+                                    <outputDirectory>${project.build.outputDirectory}/META-INF/versions/9
+                                    </outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

@@ -6,8 +6,15 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.4</version>
+        <version>7.5-SNAPSHOT</version>
     </parent>
+
+    <!-- TEST ISSUE 263 -->
+    <scm>
+        <url>https://bitbucket.company.com/scm/team/project</url>
+        <connection>scm:git:ssh://git@bitbucket.compay.com:port/team/project.git</connection>
+        <developerConnection>scm:git:ssh://git@bitbucket.company.com:port/team/project.git</developerConnection>
+    </scm>
 
     <artifactId>maven-confluence-plugin-test</artifactId>
     <packaging>maven-plugin</packaging>
@@ -17,6 +24,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <api.rpc>rpc/xmlrpc</api.rpc>
+        <api.rest>rest/api</api.rest>
     </properties>
 
     <dependencies>
@@ -64,11 +73,10 @@
                 <artifactId>confluence-reporting-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <configuration>
-                    <endPoint>http://localhost:8090/rpc/xmlrpc</endPoint>
+                    <endPoint>${confluence.endPoint}</endPoint>
                     <spaceKey>TEST</spaceKey>
                     <parentPageTitle>Home</parentPageTitle>
                     <title>Hello Plugin</title>
-                    <serverId>confluence-local</serverId>
                 </configuration>
 
                 <dependencies>
@@ -98,4 +106,35 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+
+                <confluence.parentPage>Home</confluence.parentPage>
+                <confluence.serverId>confluence-local</confluence.serverId>
+                <confluence.spaceKey>TEST</confluence.spaceKey>
+                <confluence.endPoint>http://localhost:8090/${api.rest}</confluence.endPoint>
+
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cloud</id>
+            <properties>
+
+                <confluence.parentPage>Home</confluence.parentPage>
+                <confluence.serverId>confluence-cloud</confluence.serverId>
+                <confluence.spaceKey>TEST</confluence.spaceKey>
+                <confluence.endPoint>https://bsorrentino.atlassian.net/wiki/${api.rest}</confluence.endPoint>
+
+            </properties>
+        </profile>
+
+    </profiles>
+
 </project>

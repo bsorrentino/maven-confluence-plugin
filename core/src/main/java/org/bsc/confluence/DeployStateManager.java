@@ -212,6 +212,7 @@ public class DeployStateManager {
         if (!Files.exists(file)) {
             try {
                 Files.createFile(file);
+                save();
             } catch (IOException e) {
                 // TODO
                 warn( format("error creating file '%s'", file),e );
@@ -241,12 +242,12 @@ public class DeployStateManager {
     /**
      *
      */
-    public void save() {
+    public DeployStateManager save() {
         synchronized (this) {
 
             final Path file = Paths.get(outdir.toString(), STORAGE_NAME);
 
-            if (!Files.exists(file)) return;
+            if (!Files.exists(file)) return this;
 
             final JsonObjectBuilder b = Json.createObjectBuilder();
 
@@ -263,9 +264,10 @@ public class DeployStateManager {
                 // TODD
                 warn( format("error saving file '%s'", file),ex );
             }
+
+            return this;
         }
     }
-
     /**
      *
      * @param uri
@@ -304,7 +306,6 @@ public class DeployStateManager {
             ofNullable(Paths.get(uri))
                     .flatMap( file -> ofNullable( String.valueOf(outdir.relativize(file.toAbsolutePath())) )) :
                 Optional.empty();
-
     }
     /**
      *
@@ -345,7 +346,6 @@ public class DeployStateManager {
         if( file == null ) return false;
 
         return ofNullable(storage.get(endpoint)).map( s -> {
-
             final String key = String.valueOf(outdir.relativize( file.toAbsolutePath() ));
 
             final String fileMd5Hash = md5Hash(file);

@@ -17,6 +17,8 @@ home:
       uri: cheatsheet/code.md
     - name: "emphasis"
       uri: cheatsheet/emphasis.md
+    - name: "emphasis wiki"
+      uri: cheatsheet/emphasis.wiki
     - name: "headers"
       uri: cheatsheet/headers.md
     - name: "horizontal rule"

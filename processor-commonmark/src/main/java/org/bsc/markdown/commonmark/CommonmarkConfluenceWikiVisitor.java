@@ -17,10 +17,12 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.bsc.markdown.MarkdownVisitorHelper.*;
 
@@ -294,27 +296,29 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     //@Custom
     public void visit( TableBody node ) {
-        processChildren(node).process();
+        processChildren(node)
+                .process();
     }
 
     //@Custom
     public void visit( TableRow node ) {
-        final ChildrenProcessor p = processChildren(node).pre("|");
-
-        if( node.getParent() instanceof  TableHead ) {
-            p.post( "|" );
-        }
-        p.process().nl();
+        processChildren(node)
+                .pre("|")
+                .post( () -> ( node.getParent() instanceof TableHead ) ? "|" : "" )
+                .process()
+                .nl();
     }
 
     //@Custom
     public void visit( TableCell node ) {
-        final ChildrenProcessor p = processChildren(node);
-
-        if( node.isHeader()) {
-            p.pre( "|");
-        }
-        p.post("|").process();
+        processChildren(node)
+                .captureOutput( ( value ) -> {
+                    // System.out.printf("\n\n===> TableCell [%s]\n\n", value);
+                    buffer().append( value.isEmpty() ? ' ' : value );
+                })
+                .pre( () -> ( node.isHeader()) ? "|" : "" )
+                .post( "|" )
+                .process();
     }
 
     @Override
@@ -420,9 +424,9 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     class ChildrenProcessor<T extends Node> {
         private final boolean debug;
 
-        Optional<String> pre = Optional.empty();
-        Optional<String> post = Optional.empty();
-        Optional<Consumer<Node>> forEach = Optional.empty();;
+        Optional<Supplier<String>> pre = Optional.empty();
+        Optional<Supplier<String>> post = Optional.empty();
+//        Optional<Consumer<Node>> forEach = Optional.empty();;
         Optional<Function<Node,String>> map = Optional.empty();;
         Optional<Consumer<String>> captureOutput = Optional.empty();;
 
@@ -440,14 +444,27 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             captureOutput = ofNullable(v);
             return this;
         }
+
         ChildrenProcessor<T> pre(String v, Object ...args) {
-            pre = ofNullable(format( v, args));
+            pre = of( () -> format( v, args));
             return this;
         }
+
+        ChildrenProcessor<T> pre( Supplier<String> supplier) {
+            pre = ofNullable( supplier );
+            return this;
+        }
+
         ChildrenProcessor<T> post(String v, Object ...args) {
-            post = ofNullable(format( v, args));
+            post = of( () -> format( v, args));
             return this;
         }
+
+        ChildrenProcessor<T> post(Supplier<String> supplier) {
+            post = ofNullable( supplier );
+            return this;
+        }
+
 //        ChildrenProcessor forEach(Consumer<Node> v ) {
 //            forEach = ofNullable(v);
 //            return this;
@@ -470,7 +487,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         ChildrenProcessor<T> process() {
 
             if(debug) buffer().append( format( "<%s>", parent.getClass().getSimpleName()) );
-            pre.ifPresent( v -> buffer().append(v) );
+            pre.ifPresent( v -> buffer().append(v.get()) );
 
             captureOutput.ifPresent(
                     consumer -> bufferStack.push( new StringBuilder() ) );
@@ -487,7 +504,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             captureOutput.ifPresent( consumer ->
                     consumer.accept(bufferStack.pop().toString()) );
 
-            post.ifPresent( v -> buffer().append(v) );
+            post.ifPresent( v -> buffer().append(v.get()) );
             if( debug ) buffer().append( format( "</%s>", parent.getClass().getSimpleName()) );
 
             return this;

@@ -1,0 +1,8 @@
+|| wiki || result ||
+| \*strong\*	| *strong* |
+| \_emphasis_	 | _emphasis_ |
+| \^superscript^ | text ^superscript^ |
+| \~subscript~ | text ~subscript~ |
+| \??citation?? | ??citation?? |
+| \-strikethrough- | -strikethrough- |
+| \+underlined+ | +underlined+ |
