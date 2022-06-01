@@ -109,6 +109,7 @@ class GitLogJiraIssuesRendererTest {
                     rule,
                     null,
                     null,
+                    null,
                     SilentLog())
         }
 

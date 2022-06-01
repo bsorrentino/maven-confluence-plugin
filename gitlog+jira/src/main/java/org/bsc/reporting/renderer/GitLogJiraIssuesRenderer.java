@@ -1,11 +1,18 @@
 package org.bsc.reporting.renderer;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.reporting.AbstractMavenReportRenderer;
 import org.eclipse.jgit.lib.Repository;
-
-import java.util.*;
 
 /**
  * @author ar
@@ -15,17 +22,18 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
 
     private final Log log;
     private String gitLogSinceTagName;
-    private String gitLogUntilTagName;
-    private CalculateRuleForSinceTagName calculateRuleForSinceTagName;
-    private String currentVersion;
-    private String gitLogTagNamesPattern;
-    private List<String> jiraProjectKeyList;
-    private Boolean gitLogGroupByVersions;
+    private final String gitLogUntilTagName;
+    private final CalculateRuleForSinceTagName calculateRuleForSinceTagName;
+    private final String currentVersion;
+    private final String gitLogTagNamesPattern;
+    private final List<String> jiraProjectKeyList;
+    private final Boolean gitLogGroupByVersions;
+    private final URL gitLogJiraInstanceBaseUrl;
 
     /**
      * Default constructor.
      *
-     * @param sink the sink to use.
+     * @param sink                      the sink to use.
      */
     public GitLogJiraIssuesRenderer(
             Sink sink,
@@ -36,6 +44,7 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
             CalculateRuleForSinceTagName calculateRuleForSinceTagName,
             String gitLogTagNamesPattern,
             Boolean gitLogGroupByVersions,
+            URL gitLogJiraInstanceBaseUrl,
             Log log)
     {
         super(sink);
@@ -46,21 +55,28 @@ public class GitLogJiraIssuesRenderer extends AbstractMavenReportRenderer {
         this.jiraProjectKeyList = jiraProjectKeyList;
         this.gitLogTagNamesPattern = gitLogTagNamesPattern;
         this.gitLogGroupByVersions = gitLogGroupByVersions;
+        this.gitLogJiraInstanceBaseUrl = gitLogJiraInstanceBaseUrl;
         this.log = log;
     }
 
-    public static String formatJiraIssuesToString(Collection<String> jiraIssues) {
+    public String formatJiraIssuesToString(Collection<String> jiraIssues) {
 
         StringBuilder output = new StringBuilder(100);
 
         for (String jiraIssueKey : jiraIssues) {
-            output.append("{jira:").append(jiraIssueKey).append("}\\\\\n");
+            output.append("{jira:").append(jiraIssueKey);
+
+            if (gitLogJiraInstanceBaseUrl != null) {
+                output.append("|url=").append(gitLogJiraInstanceBaseUrl).append("/browse/").append(jiraIssueKey);
+            }
+
+            output.append("}\\\\\n");
         }
         return output.toString();
 
     }
 
-    private static String formatJiraIssuesByVersionToString(LinkedHashMap<String, Set<String>> map) {
+    private String formatJiraIssuesByVersionToString(LinkedHashMap<String, Set<String>> map) {
         StringBuilder output = new StringBuilder(100);
         //print the keys in reverse insertion order
         ListIterator<String> iter =
