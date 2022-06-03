@@ -2,8 +2,23 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Next release
+## v7.6
 ### Generic changes
+
+**Merge branch 'release/7.6'**
+
+
+[bb7dc9275a7a027](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb7dc9275a7a027) bsorrentino *2022-06-03 15:30:02*
+
+**docs: update readme**
+
+
+[98d2acadcba21c1](https://github.com/bsorrentino/maven-confluence-plugin/commit/98d2acadcba21c1) bsorrentino *2022-06-03 15:29:26*
+
+**docs: update changelog**
+
+
+[c94c833d427774b](https://github.com/bsorrentino/maven-confluence-plugin/commit/c94c833d427774b) bsorrentino *2022-06-03 15:29:09*
 
 **build: set version to next release**
 
