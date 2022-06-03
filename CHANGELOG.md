@@ -5,6 +5,91 @@
 ## Next release
 ### Generic changes
 
+**build: set version to next release**
+
+
+[f6d7c5895144f96](https://github.com/bsorrentino/maven-confluence-plugin/commit/f6d7c5895144f96) bsorrentino *2022-06-03 15:25:39*
+
+**Merge branch 'feature/pr267' into develop**
+
+
+[a9413fb9d78e4be](https://github.com/bsorrentino/maven-confluence-plugin/commit/a9413fb9d78e4be) bsorrentino *2022-06-03 13:21:44*
+
+**Merge branch 'feature/multipleJiraInstances' of https://github.com/tspindler/maven-confluence-plugin into feature/pr267**
+
+
+[dfbbd1c66d45fba](https://github.com/bsorrentino/maven-confluence-plugin/commit/dfbbd1c66d45fba) bsorrentino *2022-06-03 13:20:46*
+
+**Merge branch 'feature/pr265' into develop**
+
+
+[f87fe0a07c9ffaa](https://github.com/bsorrentino/maven-confluence-plugin/commit/f87fe0a07c9ffaa) bsorrentino *2022-06-03 13:15:39*
+
+**fix(core): upgrade jackson from 2.12.0 to version 2.12.7 to fix security issue**
+
+ * fix PR #265
+
+[87210cc8ad24d50](https://github.com/bsorrentino/maven-confluence-plugin/commit/87210cc8ad24d50) bsorrentino *2022-06-03 13:15:21*
+
+**Merge remote-tracking branch 'origin/dependabot/maven/core/com.fasterxml.jackson.core-jackson-databind-2.12.6.1' into feature/pr265**
+
+
+[562a79aaf2963da](https://github.com/bsorrentino/maven-confluence-plugin/commit/562a79aaf2963da) bsorrentino *2022-06-03 13:05:20*
+
+**build: move to next development version**
+
+
+[2977d45b00956b7](https://github.com/bsorrentino/maven-confluence-plugin/commit/2977d45b00956b7) bsorrentino *2022-06-03 13:03:34*
+
+**added function to define jira instance baseurl bsorrentino#136**
+
+
+[ecea4d2b9767cc5](https://github.com/bsorrentino/maven-confluence-plugin/commit/ecea4d2b9767cc5) tspindler *2022-06-01 12:13:07*
+
+**Merge tag 'v7.5' into develop**
+
+ * new release
+
+[a37e81df195468e](https://github.com/bsorrentino/maven-confluence-plugin/commit/a37e81df195468e) bsorrentino *2022-04-01 11:24:23*
+
+**Bump jackson-databind from 2.12.0 to 2.12.6.1 in /core**
+
+ * Bumps [jackson-databind](https://github.com/FasterXML/jackson) from 2.12.0 to 2.12.6.1.
+ * - [Release notes](https://github.com/FasterXML/jackson/releases)
+ * - [Commits](https://github.com/FasterXML/jackson/commits)
+ * ---
+ * updated-dependencies:
+ * - dependency-name: com.fasterxml.jackson.core:jackson-databind
+ * dependency-type: direct:production
+ * ...
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[7df5e821ee91132](https://github.com/bsorrentino/maven-confluence-plugin/commit/7df5e821ee91132) dependabot[bot] *2022-04-01 11:06:28*
+
+
+## v7.5
+### Generic changes
+
+**Merge branch 'hotfix/7.5'**
+
+
+[038ffb96acf802f](https://github.com/bsorrentino/maven-confluence-plugin/commit/038ffb96acf802f) bsorrentino *2022-04-01 11:24:15*
+
+**update release version**
+
+
+[f7ee12eaf4bda15](https://github.com/bsorrentino/maven-confluence-plugin/commit/f7ee12eaf4bda15) bsorrentino *2022-04-01 11:24:06*
+
+**update changelog**
+
+
+[6097399e98bb019](https://github.com/bsorrentino/maven-confluence-plugin/commit/6097399e98bb019) bsorrentino *2022-04-01 11:09:57*
+
+**Merge branch 'master' into develop**
+
+
+[417cfcd604ba0f5](https://github.com/bsorrentino/maven-confluence-plugin/commit/417cfcd604ba0f5) bsorrentino *2022-04-01 11:05:41*
+
 **Merge branch 'hotfix/docs'**
 
 
@@ -15,9 +100,11 @@
 
 [8526cd456884e12](https://github.com/bsorrentino/maven-confluence-plugin/commit/8526cd456884e12) bsorrentino *2022-04-01 11:05:23*
 
+**Merge tag 'v7.5' into develop**
 
-## v7.5
-### Generic changes
+ * new release
+
+[9828cee1b4e44fe](https://github.com/bsorrentino/maven-confluence-plugin/commit/9828cee1b4e44fe) bsorrentino *2022-04-01 11:01:49*
 
 **Merge branch 'release/7.5'**
 
