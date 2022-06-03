@@ -1,7 +1,23 @@
 package org.bsc.mojo;
 
-import biz.source_code.miniTemplator.MiniTemplator;
-import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
+import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.bsc.confluence.model.SiteProcessor.processPageUri;
+
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -34,25 +50,21 @@ import org.bsc.confluence.ConfluenceService.Storage.Representation;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
-import org.bsc.markdown.MarkdownProcessor;
 import org.bsc.mojo.configuration.MarkdownProcessorInfo;
 import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
-import org.bsc.reporting.renderer.*;
+import org.bsc.reporting.renderer.CalculateRuleForSinceTagName;
+import org.bsc.reporting.renderer.DependenciesRenderer;
+import org.bsc.reporting.renderer.GitLogJiraIssuesRenderer;
+import org.bsc.reporting.renderer.ProjectSummaryRenderer;
+import org.bsc.reporting.renderer.ProjectTeamRenderer;
+import org.bsc.reporting.renderer.ReportingResolutionListener;
+import org.bsc.reporting.renderer.ScmRenderer;
 import org.bsc.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.i18n.I18N;
 
-import java.io.StringWriter;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.bsc.confluence.model.SitePrinter.print;
-import static org.bsc.confluence.model.SiteProcessor.processPageUri;
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 
 /**
  *
@@ -153,14 +165,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      *
      * @since 4.2
      */
-    @Parameter(defaultValue = "")
+    @Parameter
     private String gitLogSinceTagName;
     /**
      * Parse git log commits until first occurrence of specified tag name
      *
      * @since 4.2
      */
-    @Parameter(defaultValue = "")
+    @Parameter
     private String gitLogUntilTagName;
     /**
      * If specified, plugin will try to calculate and replace actual gitLogSinceTagName value
@@ -183,14 +195,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      *
      * @since 4.2
      */
-    @Parameter(defaultValue="")
+    @Parameter
     private List<String> gitLogJiraProjectKeyList;
     /**
      * The pattern to filter out tagName. Can be used for filter only version tags.
      *
      * @since 4.2
      */
-    @Parameter(defaultValue="")
+    @Parameter
     private String gitLogTagNamesPattern;
     /**
      * Enable grouping by versions tag
@@ -199,6 +211,13 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      */
     @Parameter(defaultValue="false")
     private Boolean gitLogGroupByVersions;
+
+    /**
+     * Sets baseurl for specific jira instance
+     */
+    @Parameter
+    private URL gitLogJiraInstanceBaseUrl;
+
     /**
      * Overrides system locale used for content generation
      *
@@ -414,6 +433,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                         gitLogCalculateRuleForSinceTagName,
                         gitLogTagNamesPattern,
                         gitLogGroupByVersions,
+                        gitLogJiraInstanceBaseUrl,
                         getLog());
                 gitLogJiraIssuesRenderer.render();
 
