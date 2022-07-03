@@ -1,19 +1,16 @@
 package org.bsc.confluence.model
 
-import com.fasterxml.jackson.databind.DeserializationConfig
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.xml.XmlFactory
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Paths
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule
-
-
 
 
 class SiteLoadTest {
@@ -32,6 +29,15 @@ class SiteLoadTest {
         mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         mapper.registerModule(JaxbAnnotationModule())
 
+        javaClass.classLoader.getResourceAsStream(resource).use { `is` ->
+            val site = mapper.readValue(`is`, Site::class.java)
+            assertNotNull(site)
+            c(site)
+        }
+    }
+
+    private fun loadFromJSON(resource: String, c: ( site:Site ) -> Unit = {})  {
+        val mapper = JsonMapper() //ObjectMapper(XmlFactory())
         javaClass.classLoader.getResourceAsStream(resource).use { `is` ->
             val site = mapper.readValue(`is`, Site::class.java)
             assertNotNull(site)
@@ -93,5 +99,27 @@ class SiteLoadTest {
         }
     }
 
+    @Test
+    fun testLoadFromJSON() {
+        val tempDirectory = Files.createTempDirectory(null)
 
+        loadFromJSON("site.json") { site ->
+
+            val basedir = Paths.get(tempDirectory.toString())
+            site.basedir = basedir
+
+            assertNotNull(site.home)
+            val uri = Paths.get(basedir.toString(), "encoding.confluence").toUri()
+            assertEquals( uri, site.home.uri)
+            val children = site.home.children
+            assertNotNull(children)
+            assertEquals(2, children.size)
+            val attachments = site.home.attachments
+            assertNotNull(attachments)
+            assertEquals(1, attachments.size)
+            val labels = site.labels
+            assertNotNull(labels)
+            assertEquals(2, labels.size)
+        }
+    }
 }
