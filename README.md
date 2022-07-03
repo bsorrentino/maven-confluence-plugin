@@ -13,6 +13,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
 > * [Use YAML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_yaml_guide.html)
 > * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
+> * [Use JSON Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_json_guide.html)
 ### Format
 > * [Markdown Syntax Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 > * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
@@ -29,7 +30,8 @@ For pratical samples refer to folder/module [test-publishing](https://github.com
 
  Date  | Release                                                                                             | Info   
 --- |-----------------------------------------------------------------------------------------------------| ---
- **Jun 3, 2022** | [Release 7.6](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.6)             | Merged PR [#201](https://github.com/bsorrentino/maven-confluence-plugin/pull/267) "**added function to define jira instance baseurl**", that fix issue [#136](https://github.com/bsorrentino/maven-confluence-plugin/issues/136). Thanks to [tspindler](https://github.com/tspindler) for contribution
+ **Jul 3, 2022** | [Release 7.7](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.7)             | Merged PR [#266](https://github.com/bsorrentino/maven-confluence-plugin/pull/266) "**Adding JSON Support**". Thanks to [jksevend](https://github.com/jksevend) for contribution.
+ **Jun 3, 2022** | [Release 7.6](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.6)             | Merged PR [#267](https://github.com/bsorrentino/maven-confluence-plugin/pull/267) "**added function to define jira instance baseurl**", that fix issue [#136](https://github.com/bsorrentino/maven-confluence-plugin/issues/136). Thanks to [tspindler](https://github.com/tspindler) for contribution
  **Apr 1, 2022** | [Release 7.5](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.5)             | Fix empty table cell not handled properly. Refer to [#264](https://github.com/bsorrentino/maven-confluence-plugin/issues/264).
  **Jan 10, 2022** | [Release 7.4](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.4)             | Fix problem with **encoding**. Refer to [#261](https://github.com/bsorrentino/maven-confluence-plugin/issues/261).
  **Aug 09, 2021** | [Release 7.3.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3.2)         | Fix problem with **ReadTimeout** & **WriteTimeout**. Refer to [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256). see the PR [#257](https://github.com/bsorrentino/maven-confluence-plugin/pull/257) for details. Thanks to [qwazer](https://github.com/qwazer) for contribution
