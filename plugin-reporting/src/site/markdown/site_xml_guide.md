@@ -1,9 +1,9 @@
 
 # Introduction
 
-From release 3.3.0 we can describe a complete site's layout using an xml file. Through site schema you can set root page (called home) its children's tree, add attachments and labels.
+From release 3.3.0 we can describe a complete site's layout using a **xml format**. Through site schema you can set root page (called home) its children's tree, add attachments and labels.
 
-Use it is pretty straightforward, put your **`site.xml`** in **`${basedir}/src/site/confluence`** folder and describe your preferred layout following the [site schema](https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-6.0.xsd).
+Use it is pretty straightforward, put your **`site.xml`** in **`${basedir}/src/site/confluence`** folder and describe your preferred layout following the [site schema](https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-6.9.xsd).
 
 ## Site template
 
