@@ -13,6 +13,7 @@ It is a **Maven plugin** that generates **project's documentation directly to co
 > * [Usage](http://bsorrentino.github.io/maven-confluence-plugin/usage.html)
 > * [Use YAML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_yaml_guide.html)
 > * [Use XML Site Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_xml_guide.html)
+> * [Use XML Json Definition](http://bsorrentino.github.io/maven-confluence-plugin/site_json_guide.html)
 ### Format
 > * [Markdown Syntax Support](http://bsorrentino.github.io/maven-confluence-plugin/markdown_guide.html)
 > * [Storage Format Support](http://bsorrentino.github.io/maven-confluence-plugin/storageformat_guide.html)
