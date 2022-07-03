@@ -88,17 +88,17 @@
         Use XML Site Definition</a>
             </li>
                 
-      <li class="active">
-  
-            <a href="#"><i class="none"></i>Use YAML Site Definition</a>
-          </li>
-                
       <li>
   
-                          <a href="site_json_guide.html" title="Use JSON Site Definition">
+                          <a href="site_yaml_guide.html" title="Use YAML Site Definition">
           <i class="none"></i>
-        Use JSON Site Definition</a>
+        Use YAML Site Definition</a>
             </li>
+                
+      <li class="active">
+  
+            <a href="#"><i class="none"></i>Use JSON Site Definition</a>
+          </li>
                               <li class="nav-header">Format</li>
                               
       <li>
@@ -181,39 +181,54 @@
         <div id="bodyColumn"  class="span9" >
                                   
             <h1>Introduction</h1>
-<p>From release 6.0-rc3 we can describe a complete site&#x2019;s layout using an yaml file. Through site schema you can set root page (called home) its children&#x2019;s tree, add attachments and labels.</p>
-<p>Use it is pretty straightforward, put your <b><tt>site.yaml</tt></b> in <b><tt>${basedir}/src/site/confluence</tt></b> folder and describe your preferred layout following the <a class="externalLink" href="https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-6.0.xsd">site schema</a>.</p>
+<p>From release 7.7 we can describe a complete site&#x2019;s layout using a <b>json format</b>. Through site schema you can set root page (called home) its children&#x2019;s tree, add attachments and labels.</p>
+<p>Use it is pretty straightforward, put your <b><tt>site.json</tt></b> in <b><tt>${basedir}/src/site/confluence</tt></b> folder and describe your preferred layout following the <a class="externalLink" href="https://raw.githubusercontent.com/bsorrentino/maven-confluence-plugin/master/schemas/site-schema-7.7.json">site schema</a>.</p>
 <div class="section">
 <h2><a name="Site_template"></a>Site template</h2>
-<p>To simplify understanding, below there is a simple site descriptor</p>
+<p>To simplify understanding, below there is a simple site descriptor template</p>
 
 <div class="source">
 <div class="source">
-<pre>home:
-  uri: encoding.confluence
-  children:
-    - name: &quot;page 1&quot;
-      uri: page1.md    
-    - name: &quot;page 2&quot;
-      uri: page2.md    
-      attachments:
-        - name: &quot;attach1.png&quot;
-          uri: attach1.png
-          comment: attach1_comment
-          contentType: &quot;image/png&quot;
-          version: 1  
-  attachments:
-    - name: &quot;home.png&quot;
-      uri: home.png
-      comment: home_comment
-      contentType: &quot;image/png&quot;
-      version: 1  
-labels:    
-  - encoding
-  - test
+<pre>{
+  &quot;home&quot;: {
+    &quot;uri&quot;: &quot;encoding.confluence&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;name&quot;: &quot;page 1&quot;,
+        &quot;uri&quot;: &quot;page1.md&quot;
+      },
+      {
+        &quot;name&quot;: &quot;page 2&quot;,
+        &quot;uri&quot;: &quot;page2.md&quot;,
+        &quot;attachments&quot;: [
+          {
+            &quot;name&quot;: &quot;attach1.png&quot;,
+            &quot;uri&quot;: &quot;attach1.png&quot;,
+            &quot;comment&quot;: &quot;attach1_comment&quot;,
+            &quot;contentType&quot;: &quot;image/png&quot;,
+            &quot;version&quot;: 1
+          }
+        ]
+      }
+    ],
+    &quot;attachments&quot;: [
+      {
+        &quot;name&quot;: &quot;home.png&quot;,
+        &quot;uri&quot;: &quot;home.png&quot;,
+        &quot;comment&quot;: &quot;home_comment&quot;,
+        &quot;contentType&quot;: &quot;image/png&quot;,
+        &quot;version&quot;: 1
+      }
+    ]
+  },
+  &quot;labels&quot;: [
+    &quot;encoding&quot;,
+    &quot;test&quot;
+  ]
+}
 </pre></div></div></div>
 <div class="section">
-<h2><a name="Tags_description"></a>Tags description</h2>
+<h2><a name="properties_description"></a>properties description</h2>
 <div class="section">
 <h3><a name="site"></a>site</h3>
 
@@ -305,7 +320,8 @@ labels:
   </tbody>
 </table></div>
 <div class="section">
-<h3><a name="child"></a>child</h3>
+<h3><a name="children_array"></a>children array</h3>
+<p><tt>children</tt> is an array of object with the following schema:</p>
 
 <table border="0" class="table table-striped">
   <thead>
@@ -341,6 +357,15 @@ labels:
     
 <tr class="b">
       
+<td>parentPage </td>
+      
+<td>parent page name (if set overrides the equivalent pom configuration) </td>
+      
+<td>no </td>
+    </tr>
+    
+<tr class="a">
+      
 <td>ignoreVariables </td>
       
 <td>if it is <tt>true</tt> the variables <tt>${...}</tt> are not injected during page processing </td>
@@ -350,7 +375,8 @@ labels:
   </tbody>
 </table></div>
 <div class="section">
-<h3><a name="attachment"></a>attachment</h3>
+<h3><a name="attachments_array"></a>attachments array</h3>
+<p><tt>attachments</tt> is an array of object with the following schema:</p>
 
 <table border="0" class="table table-striped">
   <thead>
@@ -414,80 +440,31 @@ labels:
 </table>
 <div class="section">
 <h4><a name="Directory_support"></a>Directory support</h4>
-<p>from version <tt>5.0-rc4</tt> the tag <tt>attachment</tt> supports also the file inclusion from directory</p>
+<p>from version <tt>5.0-rc4</tt> the <tt>attachment</tt> supports also the file inclusion from directory</p>
 <p><b>Example</b></p>
 
 <div class="source">
 <div class="source">
-<pre># include all png files from myfolder
-attachments:
-  - name: &quot;*.png&quot;
-    uri: myfolder
-    comment: file from myfolder
-    contentType: &quot;image/png&quot;
-    version: 1  
-
-# include all files from myfolder
-attachments:  
-  - uri: myfolder
-    comment: &quot;file from myfolder&quot;  
-    version: 1
+<pre>&quot;attachments&quot;: [
+    {
+        &quot;name&quot;: &quot;*.png&quot;,
+        &quot;uri&quot;: &quot;myfolder&quot;,
+        &quot;comment&quot;: &quot;file from myfolder&quot;,
+        &quot;contentType&quot;: &quot;image/png&quot;,
+        &quot;version&quot;: 1
+    },
+    {
+        &quot;uri&quot;: &quot;myfolder&quot;,
+        &quot;comment&quot;: &quot;file from myfolder&quot;,
+        &quot;contentType&quot;: &quot;image/png&quot;,
+        &quot;version&quot;: 1
+    }
+]
 
 </pre></div></div></div></div>
 <div class="section">
-<h3><a name="label"></a>label</h3>
-
-<blockquote>
-<p>The content of label&#x2019;s tag is the label&#x2019;s value</p>
-</blockquote></div>
-<div class="section">
-<h3><a name="generated"></a>generated</h3>
-
-<blockquote>
-<p>This tag has been added from version <b>5.0-rc3</b> and allows to choose where put the <b>built-in generated pages</b> Currently only <b>plugin.goals</b> is supported therefore such tag is useful when we are dealing with <b>Maven Plugin Documentation</b></p>
-</blockquote>
-
-<table border="0" class="table table-striped">
-  <thead>
-    
-<tr class="a">
-      
-<th align="left">Attribute</th>
-      
-<th align="left">Description </th>
-      
-<th align="left">mandatory </th>
-    </tr>
-  </thead>
-  <tbody>
-    
-<tr class="b">
-      
-<td align="left">ref </td>
-      
-<td align="left">built-in generated pages Id. Currently only <b>plugin.goals</b> is supported </td>
-      
-<td align="left">yes </td>
-    </tr>
-  </tbody>
-</table>
-<div class="section">
-<h4><a name="Usage_example"></a>Usage example</h4>
-
-<div class="source">
-<div class="source">
-<pre>home:
-  uri: index.confluence
-  children:
-    - name: Summary
-      uri: summary.confluence   
-    - name: Goals
-      uri: goals.confluence
-          generated:
-            ref: plugin.goals
-    - name: PluginsSummary
-      uri: plugins-summary.confluence
-</pre></div></div></div></div></div>
+<h3><a name="labels_array"></a>labels array</h3>
+<p><tt>labels</tt> is an array of string </p></div></div>
 <div class="section">
 <h2><a name="Note:"></a>Note:</h2>
 <div class="section">
@@ -519,47 +496,7 @@ attachments:
 </ul></div></div>
 <div class="section">
 <h2><a name="Using_Freemarker_in_the_Site_Definition"></a>Using Freemarker in the Site Definition</h2>
-<p>Since version 6.5 you can use <a class="externalLink" href="https://freemarker.apache.org/docs/dgui.html">Freemarker markup</a> inside the Site Definition.</p>
-<p>Following static Java classes are available in the model: * <tt>Paths</tt> (java.nio.Paths) * <tt>Files</tt> (java.nio.Files)</p>
-<p>Ex. <tt>Files.exists(Paths.get('src/docs/anyfile.txt'))</tt></p>
-<p>Following built-in Freemarker models are available: * <tt>statics</tt> (ex. <tt>${statics[&quot;java.lang.System&quot;].currentTimeMillis()}</tt>) * <tt>enums</tt> (ex. <tt>${enums[&quot;java.math.RoundingMode&quot;].UP}</tt>)</p>
-<p>Model of the Maven project is included as <tt>project</tt> variable. Ex. <tt>&lt;#assign tag = project.groupId + '-' + project.artifactId + '-' + project.version&gt;</tt>.</p>
-
-<div class="source">
-<div class="source">
-<pre>&lt;#assign tag = project.groupId + '-' + project.artifactId + '-' + project.version&gt;
-home:
-  uri: release-version.wiki
-  children:
-    - name: &quot;Dependencies&quot;
-      uri: dependencies.wiki
-  attachments:
-    - name: &quot;documentation-${tag}.pdf&quot;
-      uri: ../generated-docs/documentation.pdf
-      contentType: &quot;application/pdf&quot;
-      version: 1
-      comment: Documentation generated to PDF
-    - name: &quot;documentation-${tag}.html&quot;
-      uri: ../generated-docs/documentation.html
-      contentType: &quot;text/html&quot;
-      version: 1
-      comment: Single page HTML documentation&lt;#if Files.exists(Paths.get('target/generated-docs/openapi.json')) == true&gt;
-    - name: &quot;openapi-${tag}.json&quot;
-      uri: ../generated-docs/openapi.json
-      contentType: &quot;application/json&quot;
-      version: 1
-      comment: OpenAPIv3 JSON Documentation&lt;/#if&gt;&lt;#if Files.exists(Paths.get('target/generated-docs/openapi.yaml')) == true&gt;
-    - name: &quot;openapi-${tag}.yaml&quot;
-      uri: ../generated-docs/openapi.yaml
-      contentType: &quot;text/yaml&quot;
-      version: 1
-      comment: OpenAPIv3 YAML Documentation&lt;/#if&gt;&lt;#if Files.exists(Paths.get('target/generated-docs/generated-class-diagram.svg')) == true&gt;
-    - name: &quot;generated-class-diagram-${tag}.svg&quot;
-      uri: ../generated-docs/generated-class-diagram.svg
-      contentType: &quot;image/svg+xml&quot;
-      version: 1
-      comment: Generated UML class diagram&lt;/#if&gt;
-</pre></div></div></div>
+<p>See YAML definition for details. Freemarker is not dependent on the output format and can be used in the same fashion.</p></div>
                   </div>
             </div>
           </div>
