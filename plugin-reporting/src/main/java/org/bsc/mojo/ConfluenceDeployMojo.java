@@ -597,7 +597,12 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                                 artifactMetadataSource, null,
                                 Collections.singletonList(listener));
         } catch (Exception e) {
-            getLog().warn("An error occurred while resolving project dependencies.", e);
+            if( getLog().isDebugEnabled() ) {
+                getLog().warn("An error occurred while resolving project dependencies.", e);
+            }
+            else {
+                getLog().warn(format("An error occurred while resolving project dependencies.\n%s", e.getMessage()) );
+            }
         }
 
         return listener;
