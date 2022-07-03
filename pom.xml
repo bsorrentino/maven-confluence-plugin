@@ -5,7 +5,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>7.7-SNAPSHOT</version>
+    <version>7.7</version>
     <name>CONFLUENCE-REPORTING::Parent</name>
     <description>Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the
         same time, to keep in-sync both project &amp; documentation
