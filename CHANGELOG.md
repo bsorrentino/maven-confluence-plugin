@@ -2,28 +2,147 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## v7.6
+## v7.7
 ### Generic changes
 
-**Merge branch 'release/7.6'**
+**Merge branch 'release/7.7'**
 
 
-[bb7dc9275a7a027](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb7dc9275a7a027) bsorrentino *2022-06-03 15:30:02*
+[d9ebdd04542ff85](https://github.com/bsorrentino/maven-confluence-plugin/commit/d9ebdd04542ff85) bsorrentino *2022-07-03 09:36:47*
 
-**docs: update readme**
+**build: move to next release**
 
 
-[98d2acadcba21c1](https://github.com/bsorrentino/maven-confluence-plugin/commit/98d2acadcba21c1) bsorrentino *2022-06-03 15:29:26*
+[e592d4b897f1557](https://github.com/bsorrentino/maven-confluence-plugin/commit/e592d4b897f1557) bsorrentino *2022-07-03 09:36:32*
+
+**docs: update docs**
+
+
+[9663dc4f774d0eb](https://github.com/bsorrentino/maven-confluence-plugin/commit/9663dc4f774d0eb) bsorrentino *2022-07-03 09:33:37*
+
+**docs: update docs**
+
+
+[c3880713797ccb8](https://github.com/bsorrentino/maven-confluence-plugin/commit/c3880713797ccb8) bsorrentino *2022-07-03 09:30:00*
+
+**Merge branch 'feature/pr266' into develop**
+
+
+[4e0d10e1b60035c](https://github.com/bsorrentino/maven-confluence-plugin/commit/4e0d10e1b60035c) bsorrentino *2022-07-03 09:26:32*
+
+**docs: update documentation**
+
+ * #266
+
+[ee07c6456cc2a7a](https://github.com/bsorrentino/maven-confluence-plugin/commit/ee07c6456cc2a7a) bsorrentino *2022-07-03 09:26:04*
+
+**Merge branch 'jksevend-master' into feature/pr266**
+
+
+[c667787c446b76a](https://github.com/bsorrentino/maven-confluence-plugin/commit/c667787c446b76a) bsorrentino *2022-07-03 08:27:24*
+
+**Merge branch 'master' of https://github.com/jksevend/maven-confluence-plugin into jksevend-master**
+
+
+[8cbfd066cee4142](https://github.com/bsorrentino/maven-confluence-plugin/commit/8cbfd066cee4142) bsorrentino *2022-07-03 08:26:07*
+
+**refactor: log verbosity refinement**
+
+
+[13d514b15b621f9](https://github.com/bsorrentino/maven-confluence-plugin/commit/13d514b15b621f9) bsorrentino *2022-07-03 08:24:58*
+
+**Merge remote-tracking branch 'origin/dependabot/maven/deprecated/test-integration/src/test/resources/simple-plugin-project/org.codehaus.plexus-plexus-utils-3.0.16' into feature/pr266**
+
+
+[f58757339616dde](https://github.com/bsorrentino/maven-confluence-plugin/commit/f58757339616dde) bsorrentino *2022-07-03 08:20:56*
+
+**Merge remote-tracking branch 'origin/dependabot/maven/deprecated/test-integration/src/test/resources/plugin-project-goals-in-subpage/org.codehaus.plexus-plexus-utils-3.0.16' into feature/pr266**
+
+
+[d3440a2b3293ddc](https://github.com/bsorrentino/maven-confluence-plugin/commit/d3440a2b3293ddc) bsorrentino *2022-07-03 08:20:18*
+
+**Merge remote-tracking branch 'origin/dependabot/maven/org.codehaus.plexus-plexus-utils-3.0.16' into feature/pr266**
+
+
+[5e277506efa7059](https://github.com/bsorrentino/maven-confluence-plugin/commit/5e277506efa7059) bsorrentino *2022-07-03 08:19:43*
+
+**Merge remote-tracking branch 'origin/dependabot/maven/org.jetbrains.kotlin-kotlin-stdlib-1.6.0' into feature/pr266**
+
+
+[613d112a7675252](https://github.com/bsorrentino/maven-confluence-plugin/commit/613d112a7675252) bsorrentino *2022-07-03 08:18:58*
+
+**build: move to next developer version**
+
+
+[bd53b67a472273e](https://github.com/bsorrentino/maven-confluence-plugin/commit/bd53b67a472273e) bsorrentino *2022-07-03 08:18:53*
+
+**Bump plexus-utils**
+
+ * Bumps [plexus-utils](https://github.com/sonatype/plexus-utils) from 3.0.8 to 3.0.16.
+ * - [Release notes](https://github.com/sonatype/plexus-utils/releases)
+ * - [Commits](https://github.com/sonatype/plexus-utils/compare/plexus-utils-3.0.8...plexus-utils-3.0.16)
+ * ---
+ * updated-dependencies:
+ * - dependency-name: org.codehaus.plexus:plexus-utils
+ * dependency-type: direct:production
+ * ...
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[bd2984fc34e2937](https://github.com/bsorrentino/maven-confluence-plugin/commit/bd2984fc34e2937) dependabot[bot] *2022-07-01 22:19:12*
+
+**Bump plexus-utils**
+
+ * Bumps [plexus-utils](https://github.com/sonatype/plexus-utils) from 3.0.8 to 3.0.16.
+ * - [Release notes](https://github.com/sonatype/plexus-utils/releases)
+ * - [Commits](https://github.com/sonatype/plexus-utils/compare/plexus-utils-3.0.8...plexus-utils-3.0.16)
+ * ---
+ * updated-dependencies:
+ * - dependency-name: org.codehaus.plexus:plexus-utils
+ * dependency-type: direct:production
+ * ...
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[32f038b80bf006c](https://github.com/bsorrentino/maven-confluence-plugin/commit/32f038b80bf006c) dependabot[bot] *2022-07-01 22:19:01*
+
+**Bump plexus-utils from 3.0.8 to 3.0.16**
+
+ * Bumps [plexus-utils](https://github.com/sonatype/plexus-utils) from 3.0.8 to 3.0.16.
+ * - [Release notes](https://github.com/sonatype/plexus-utils/releases)
+ * - [Commits](https://github.com/sonatype/plexus-utils/compare/plexus-utils-3.0.8...plexus-utils-3.0.16)
+ * ---
+ * updated-dependencies:
+ * - dependency-name: org.codehaus.plexus:plexus-utils
+ * dependency-type: direct:production
+ * ...
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[c5bc6af344fd891](https://github.com/bsorrentino/maven-confluence-plugin/commit/c5bc6af344fd891) dependabot[bot] *2022-07-01 22:17:33*
+
+**Bump kotlin-stdlib from 1.5.20 to 1.6.0**
+
+ * Bumps [kotlin-stdlib](https://github.com/JetBrains/kotlin) from 1.5.20 to 1.6.0.
+ * - [Release notes](https://github.com/JetBrains/kotlin/releases)
+ * - [Changelog](https://github.com/JetBrains/kotlin/blob/v1.6.0/ChangeLog.md)
+ * - [Commits](https://github.com/JetBrains/kotlin/compare/v1.5.20...v1.6.0)
+ * ---
+ * updated-dependencies:
+ * - dependency-name: org.jetbrains.kotlin:kotlin-stdlib
+ * dependency-type: direct:development
+ * ...
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[f4407d6363f4172](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4407d6363f4172) dependabot[bot] *2022-06-20 22:47:41*
 
 **docs: update changelog**
 
 
-[c94c833d427774b](https://github.com/bsorrentino/maven-confluence-plugin/commit/c94c833d427774b) bsorrentino *2022-06-03 15:29:09*
+[e47e6c58cc4b02c](https://github.com/bsorrentino/maven-confluence-plugin/commit/e47e6c58cc4b02c) bsorrentino *2022-06-03 15:32:11*
 
-**build: set version to next release**
+**Merge tag 'v7.6' into develop**
 
+ * new release
 
-[f6d7c5895144f96](https://github.com/bsorrentino/maven-confluence-plugin/commit/f6d7c5895144f96) bsorrentino *2022-06-03 15:25:39*
+[61d1bdaece58241](https://github.com/bsorrentino/maven-confluence-plugin/commit/61d1bdaece58241) bsorrentino *2022-06-03 15:30:11*
 
 **Merge branch 'feature/pr267' into develop**
 
@@ -61,6 +180,12 @@
 
 [ecea4d2b9767cc5](https://github.com/bsorrentino/maven-confluence-plugin/commit/ecea4d2b9767cc5) tspindler *2022-06-01 12:13:07*
 
+**Adding JSON Support**
+
+ * - Tested
+
+[c1201ad21afbf54](https://github.com/bsorrentino/maven-confluence-plugin/commit/c1201ad21afbf54) Julian *2022-05-30 18:30:18*
+
 **Merge tag 'v7.5' into develop**
 
  * new release
@@ -80,6 +205,30 @@
  * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
 
 [7df5e821ee91132](https://github.com/bsorrentino/maven-confluence-plugin/commit/7df5e821ee91132) dependabot[bot] *2022-04-01 11:06:28*
+
+
+## v7.6
+### Generic changes
+
+**Merge branch 'release/7.6'**
+
+
+[bb7dc9275a7a027](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb7dc9275a7a027) bsorrentino *2022-06-03 15:30:02*
+
+**docs: update readme**
+
+
+[98d2acadcba21c1](https://github.com/bsorrentino/maven-confluence-plugin/commit/98d2acadcba21c1) bsorrentino *2022-06-03 15:29:26*
+
+**docs: update changelog**
+
+
+[c94c833d427774b](https://github.com/bsorrentino/maven-confluence-plugin/commit/c94c833d427774b) bsorrentino *2022-06-03 15:29:09*
+
+**build: set version to next release**
+
+
+[f6d7c5895144f96](https://github.com/bsorrentino/maven-confluence-plugin/commit/f6d7c5895144f96) bsorrentino *2022-06-03 15:25:39*
 
 
 ## v7.5
