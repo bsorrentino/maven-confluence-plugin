@@ -5,7 +5,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.7</version>
+        <version>7.7.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -37,7 +37,8 @@
     </licenses>
 
     <properties>
-        <jackson.version>2.12.7.1</jackson.version>
+        <jackson.version_1>2.12.7</jackson.version_1>
+        <jackson.version>2.14.0</jackson.version>
     </properties>
 
     <dependencies>
@@ -89,6 +90,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 

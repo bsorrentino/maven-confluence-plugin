@@ -8,7 +8,7 @@ target/
 .classpath
 .vscode/
 .factorypath
-
+.java-version
 maven-confluence-parent.iml
 maven-confluence-reporting-plugin/confluence-reporting-maven-plugin.iml
 ### JetBrains template
