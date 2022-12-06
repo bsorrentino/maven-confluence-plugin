@@ -5,6 +5,7 @@
 
 package org.bsc.confluence.xmlrpc;
 
+import static java.util.Collections.emptyMap;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
@@ -43,7 +44,7 @@ public class XMLRPCIntegrationTest {
         ConfluenceProxy proxyInfo = null;
         
         final ConfluenceService.Credentials credentials = 
-                new ConfluenceService.Credentials(USER, PASSWORD );
+                new ConfluenceService.Credentials(USER, PASSWORD, emptyMap() );
         
         final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
 

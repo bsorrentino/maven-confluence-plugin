@@ -6,7 +6,7 @@ import org.bsc.ssl.SSLCertificateInfo
 fun main() {
 
     val confluenceUrl = "http://localhost:8090"
-    val credentials  = Credentials("admin", "admin")
+    val credentials  = Credentials("admin", "admin", emptyMap())
     val sslInfo = SSLCertificateInfo()
 
     // Get Page by Id

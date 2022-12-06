@@ -14,20 +14,24 @@ import org.bsc.confluence.ConfluenceServiceFactory;
 import org.bsc.confluence.model.Site;
 import org.bsc.mojo.configuration.ScrollVersionsInfo;
 import org.bsc.ssl.SSLCertificateInfo;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
 import static java.lang.String.format;
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.stream.Collectors.toMap;
 
 /**
  *
@@ -92,6 +96,13 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements
      */
     @Parameter(property = "confluence.password", required = false)
     private String password;
+
+	/**
+	 * Additional HTTP headers for Confluence.
+	 */
+	@Parameter(property = "confluence.httpHeaders", required = false)
+	private Map<String, String> httpHeaders = new HashMap<>();
+
     /**
      * @parameter expression="${settings}"
      * @readonly
@@ -209,6 +220,10 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements
         return password;
     }
 
+	public final Map<String, String> getHttpHeaders() {
+		return httpHeaders;
+	}
+
     public final java.util.Map<String, String> getProperties() {
         if (null == properties) {
             properties = new java.util.HashMap<>(5);
@@ -303,6 +318,18 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements
                     throw new MojoExecutionException(e.getMessage());
                 }
             }
+
+			if (getHttpHeaders().isEmpty() && server.getConfiguration() != null) {
+				httpHeaders = stream(((Xpp3Dom) server.getConfiguration()).getChild("httpHeaders").getChildren())
+					.filter(child ->
+						child.getName().equals("property")
+						&& child.getChild("name") != null
+						&& child.getChild("value") != null
+					)
+					.collect(toMap(
+						property -> property.getChild("name").getValue(),
+						property -> property.getChild("value").getValue()));
+			}
         }
     }
 
@@ -339,7 +366,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements
             // Set Commons Logging debug level
             System.setProperty("org.apache.commons.logging.simplelog.defaultlog", "debug");
             // Set java logging debug level
-            Arrays.stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.FINE));
+            stream(LogManager.getLogManager().getLogger("").getHandlers()).forEach(h -> h.setLevel(Level.FINE));
         }
 
         if( skip ) {
@@ -359,7 +386,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements
                 ));
 
         final ConfluenceService.Credentials credentials =
-                new ConfluenceService.Credentials(getUsername(), getPassword());
+                new ConfluenceService.Credentials(getUsername(), getPassword(), getHttpHeaders());
 
         ConfluenceService.setConnectTimeouts( connectTimeoutInSeconds, TimeUnit.SECONDS );
         ConfluenceService.setReadTimeouts( readTimeoutInSeconds, TimeUnit.SECONDS );

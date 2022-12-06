@@ -7,6 +7,7 @@ package org.bsc.confluence.rest;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.rest.model.Attachment;
 import org.bsc.confluence.rest.model.Blogpost;
@@ -80,6 +81,20 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
                     .sslSocketFactory(sslInfo.getSSLSocketFactory(), sslInfo.getTrustManager())
             ;
         }
+
+		client.addInterceptor(chain -> {
+			Request.Builder requestBuilder = chain.request().newBuilder();
+			if (credentials.username != null) {
+				final String credential =
+					okhttp3.Credentials.basic(credentials.username, credentials.password);
+				requestBuilder.header("Authorization", credential);
+			}
+			if (!credentials.httpHeaders.isEmpty()) {
+				credentials.httpHeaders.entrySet().forEach(entry ->
+					requestBuilder.header(entry.getKey(), entry.getValue()));
+			}
+			return chain.proceed(requestBuilder.build());
+		});
 
     }
 

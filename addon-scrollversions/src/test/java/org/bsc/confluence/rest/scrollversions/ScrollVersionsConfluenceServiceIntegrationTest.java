@@ -5,6 +5,8 @@
  */
 package org.bsc.confluence.rest.scrollversions;
 
+import static java.util.Collections.emptyMap;
+
 import lombok.val;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.ssl.SSLCertificateInfo;
@@ -34,7 +36,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
         val service = new ScrollVersionsConfluenceService(
                 "http://localhost:8090/rest/api",
                 "alpha",
-                new ConfluenceService.Credentials( "admin", "admin"),
+                new ConfluenceService.Credentials( "admin", "admin", emptyMap()),
                 ssl);
 
         val space = "SVTS";
@@ -112,7 +114,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
         val service = new ScrollVersionsConfluenceService(
                 "http://localhost:8090/rest/api",
                 "alpha",
-                new ConfluenceService.Credentials( "admin", "admin"),
+                new ConfluenceService.Credentials( "admin", "admin", emptyMap()),
                 ssl);
 
         val space = "SVTS";

@@ -6,6 +6,7 @@
 package org.bsc.confluence;
 
 import java.io.Closeable;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -119,13 +120,12 @@ public interface ConfluenceService extends Closeable{
     
         public final String username;
         public final String password;
+		public final Map<String, String> httpHeaders;
 
-        public Credentials(String username, String password) {
-            if( username==null ) {
-                throw new IllegalArgumentException("username argument is null!");
-            }
+        public Credentials(String username, String password, Map<String, String> httpHeaders) {
             this.username = username;
             this.password = password;
+			this.httpHeaders = httpHeaders;
         }
         
     }   

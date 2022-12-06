@@ -107,11 +107,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
     }
 
     protected void fromUrlGET( final HttpUrl url, final String description, Consumer<Response> consumer ) {
-        final String credential =
-                okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
-
         final Request req = new Request.Builder()
-                .header("Authorization", credential)
                 .url( url )
                 .get()
                 .build();
@@ -120,11 +116,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
     }
 
     protected void fromUrlDELETE( final HttpUrl url, final String description, Consumer<Response> consumer ) {
-        final String credential =
-                okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
-
         final Request req = new Request.Builder()
-                .header("Authorization", credential)
                 .url( url )
                 .delete()
                 .build();
@@ -133,11 +125,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
     }
 
     protected void fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description, Consumer<Response> consumer  ) {
-        final String credential =
-                okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
-
         final Request req = new Request.Builder()
-                .header("Authorization", credential)
                 .header("X-Atlassian-Token","nocheck")
                 .url( url )
                 .post( inputBody)
@@ -147,11 +135,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
     }
 
     protected void fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description, Consumer<Response> consumer  ) {
-        final String credential =
-                okhttp3.Credentials.basic(getCredentials().username, getCredentials().password);
-
         final Request req = new Request.Builder()
-                .header("Authorization", credential)
                 .header("X-Atlassian-Token","nocheck")
                 .url( url )
                 .put( inputBody)
