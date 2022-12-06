@@ -82,19 +82,20 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
             ;
         }
 
-		client.addInterceptor(chain -> {
-			Request.Builder requestBuilder = chain.request().newBuilder();
-			if (credentials.username != null) {
-				final String credential =
-					okhttp3.Credentials.basic(credentials.username, credentials.password);
-				requestBuilder.header("Authorization", credential);
-			}
-			if (!credentials.httpHeaders.isEmpty()) {
-				credentials.httpHeaders.entrySet().forEach(entry ->
-					requestBuilder.header(entry.getKey(), entry.getValue()));
-			}
-			return chain.proceed(requestBuilder.build());
-		});
+        // Use interceptor which transparently adds credentials and HTTP headers for each request
+        client.addInterceptor(chain -> {
+            Request.Builder requestBuilder = chain.request().newBuilder();
+            if (credentials.username != null) {
+                final String credential =
+                    okhttp3.Credentials.basic(credentials.username, credentials.password);
+                requestBuilder.header("Authorization", credential);
+            }
+            if (!credentials.httpHeaders.isEmpty()) {
+                credentials.httpHeaders.entrySet().forEach(entry ->
+                    requestBuilder.header(entry.getKey(), entry.getValue()));
+            }
+            return chain.proceed(requestBuilder.build());
+        });
 
     }
 

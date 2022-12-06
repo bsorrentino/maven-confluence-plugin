@@ -101,7 +101,7 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements
 	 * Additional HTTP headers for Confluence.
 	 */
 	@Parameter(property = "confluence.httpHeaders", required = false)
-	private Map<String, String> httpHeaders = new HashMap<>();
+    private Map<String, String> httpHeaders = new HashMap<>();
 
     /**
      * @parameter expression="${settings}"
@@ -319,17 +319,17 @@ public abstract class AbstractBaseConfluenceMojo extends AbstractMojo implements
                 }
             }
 
-			if (getHttpHeaders().isEmpty() && server.getConfiguration() != null) {
-				httpHeaders = stream(((Xpp3Dom) server.getConfiguration()).getChild("httpHeaders").getChildren())
-					.filter(child ->
-						child.getName().equals("property")
-						&& child.getChild("name") != null
-						&& child.getChild("value") != null
-					)
-					.collect(toMap(
-						property -> property.getChild("name").getValue(),
-						property -> property.getChild("value").getValue()));
-			}
+            if (getHttpHeaders().isEmpty() && server.getConfiguration() != null) {
+                httpHeaders = stream(((Xpp3Dom) server.getConfiguration()).getChild("httpHeaders").getChildren())
+                    .filter(child ->
+                        child.getName().equals("property")
+                            && child.getChild("name") != null
+                            && child.getChild("value") != null
+                    )
+                    .collect(toMap(
+                        property -> property.getChild("name").getValue(),
+                        property -> property.getChild("value").getValue()));
+            }
         }
     }
 

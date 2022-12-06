@@ -120,12 +120,12 @@ public interface ConfluenceService extends Closeable{
     
         public final String username;
         public final String password;
-		public final Map<String, String> httpHeaders;
+        public final Map<String, String> httpHeaders;
 
         public Credentials(String username, String password, Map<String, String> httpHeaders) {
             this.username = username;
             this.password = password;
-			this.httpHeaders = httpHeaders;
+            this.httpHeaders = httpHeaders;
         }
         
     }   
