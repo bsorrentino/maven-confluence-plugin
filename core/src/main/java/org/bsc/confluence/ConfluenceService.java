@@ -6,6 +6,7 @@
 package org.bsc.confluence;
 
 import java.io.Closeable;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -14,6 +15,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
 /**
@@ -122,6 +124,11 @@ public interface ConfluenceService extends Closeable{
         public final String password;
         public final Map<String, String> httpHeaders;
 
+        public Credentials(String username, String password) {
+            this.username = username;
+            this.password = password;
+            this.httpHeaders = emptyMap();
+        }
         public Credentials(String username, String password, Map<String, String> httpHeaders) {
             this.username = username;
             this.password = password;
