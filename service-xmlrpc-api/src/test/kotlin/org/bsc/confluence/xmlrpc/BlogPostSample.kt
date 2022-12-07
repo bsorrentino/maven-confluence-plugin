@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter
 fun main() {
 
     val confluenceUrl = "http://localhost:8090"
-    val credentials  = ConfluenceService.Credentials("admin", "admin", emptyMap())
+    val credentials  = ConfluenceService.Credentials("admin", "admin")
     val sslInfo = SSLCertificateInfo()
 
     val spaceKey = "TEST"

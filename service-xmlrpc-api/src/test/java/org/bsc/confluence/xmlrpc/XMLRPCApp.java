@@ -5,8 +5,6 @@
  */
 package org.bsc.confluence.xmlrpc;
 
-import static java.util.Collections.emptyMap;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.apache.commons.codec.binary.Base64;
@@ -53,7 +51,7 @@ public class XMLRPCApp {
                
         ConfluenceProxy proxyInfo = null;
 
-        final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials(app.username,app.password,emptyMap());
+        final ConfluenceService.Credentials credentials = new ConfluenceService.Credentials(app.username,app.password);
         final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
         
         final XMLRPCConfluenceService confluence =
@@ -81,7 +79,7 @@ public class XMLRPCApp {
         ConfluenceProxy proxyInfo = null;
 
         final ConfluenceService.Credentials credentials = 
-                new ConfluenceService.Credentials(username /*args[1]*/,password/*args[2]*/,emptyMap());
+                new ConfluenceService.Credentials(username /*args[1]*/,password/*args[2]*/);
 
         final SSLCertificateInfo sslInfo = new SSLCertificateInfo();
 
