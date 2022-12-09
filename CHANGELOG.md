@@ -2,8 +2,72 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Next release
+## v7.8
 ### Generic changes
+
+**Merge branch 'release/7.8'**
+
+
+[5a323c9c160b9f2](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a323c9c160b9f2) Build Pipeline *2022-12-09 12:04:43*
+
+**build: update version to next release**
+
+
+[548da3f0e09bd90](https://github.com/bsorrentino/maven-confluence-plugin/commit/548da3f0e09bd90) Build Pipeline *2022-12-09 12:04:38*
+
+**docs: update documentation**
+
+
+[b2c477701450e30](https://github.com/bsorrentino/maven-confluence-plugin/commit/b2c477701450e30) Build Pipeline *2022-12-09 12:02:52*
+
+**docs(changelog): update changelog**
+
+
+[74c2b9f99b3e27d](https://github.com/bsorrentino/maven-confluence-plugin/commit/74c2b9f99b3e27d) Build Pipeline *2022-12-09 11:38:59*
+
+**Merge branch 'feature/pr281' into develop**
+
+
+[1abca3dbe6afae6](https://github.com/bsorrentino/maven-confluence-plugin/commit/1abca3dbe6afae6) Build Pipeline *2022-12-09 11:36:10*
+
+**refactor(ConfluenceService.Credentials): overload constructor to call the main one**
+
+ * pr #281
+
+[88842c23c756fe7](https://github.com/bsorrentino/maven-confluence-plugin/commit/88842c23c756fe7) Build Pipeline *2022-12-09 09:04:22*
+
+**test: update credentials invocation**
+
+ * PR #281
+
+[1cbdf716cd71094](https://github.com/bsorrentino/maven-confluence-plugin/commit/1cbdf716cd71094) Build Pipeline *2022-12-07 17:58:38*
+
+**refactor(ConflienceService): overload credentials constructor**
+
+ * PR #281
+
+[615eed43fc9f4e7](https://github.com/bsorrentino/maven-confluence-plugin/commit/615eed43fc9f4e7) Build Pipeline *2022-12-07 17:57:49*
+
+**build: move to next development version**
+
+
+[1714f231ba8fb82](https://github.com/bsorrentino/maven-confluence-plugin/commit/1714f231ba8fb82) Build Pipeline *2022-12-07 14:42:49*
+
+**#280 fixed indent**
+
+
+[6bdcdcb7843de54](https://github.com/bsorrentino/maven-confluence-plugin/commit/6bdcdcb7843de54) Dirk Mahler *2022-12-06 11:02:34*
+
+**#280 Allow token based authentication using customer HTTP headers (e.g. Bearer scheme)**
+
+
+[f87a94402062b71](https://github.com/bsorrentino/maven-confluence-plugin/commit/f87a94402062b71) Dirk Mahler *2022-12-06 10:49:26*
+
+**Merge tag 'v7.7.1' into develop**
+
+ * new minor version
+
+[225a47cd72b1a9d](https://github.com/bsorrentino/maven-confluence-plugin/commit/225a47cd72b1a9d) bsorrentino *2022-11-16 19:43:00*
 
 **Merge branch 'hotfix/7.7.1'**
 
@@ -25,10 +89,25 @@
 
 [5889ff3c17e160e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5889ff3c17e160e) bsorrentino *2022-11-16 19:39:15*
 
+**Merge branch 'master' into develop**
+
+
+[368a150f5e45e9a](https://github.com/bsorrentino/maven-confluence-plugin/commit/368a150f5e45e9a) bsorrentino *2022-11-16 19:12:42*
+
 **Merge branch 'hotfix/pr279'**
 
 
 [e5006a61bbccda5](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5006a61bbccda5) bsorrentino *2022-11-16 19:12:22*
+
+**Merge branch 'bugfix/pr279' into develop**
+
+
+[13904b6163dbc51](https://github.com/bsorrentino/maven-confluence-plugin/commit/13904b6163dbc51) bsorrentino *2022-11-16 19:10:57*
+
+**Merge remote-tracking branch 'origin/dependabot/maven/core/com.fasterxml.jackson.core-jackson-databind-2.12.7.1' into bugfix/pr279**
+
+
+[b5ee8537b0bcafe](https://github.com/bsorrentino/maven-confluence-plugin/commit/b5ee8537b0bcafe) bsorrentino *2022-11-16 19:10:17*
 
 **build(deps): bump jackson-databind from 2.12.7 to 2.12.7.1 in /core**
 
@@ -44,6 +123,11 @@
 
 [faacebdbfa0e682](https://github.com/bsorrentino/maven-confluence-plugin/commit/faacebdbfa0e682) dependabot[bot] *2022-11-16 03:17:00*
 
+**Merge branch 'master' into develop**
+
+
+[2b63e994334aeff](https://github.com/bsorrentino/maven-confluence-plugin/commit/2b63e994334aeff) bsorrentino *2022-07-03 09:38:49*
+
 **Merge branch 'hotfix/changelog'**
 
 
@@ -53,6 +137,12 @@
 
 
 [a0b7d62758f5c64](https://github.com/bsorrentino/maven-confluence-plugin/commit/a0b7d62758f5c64) bsorrentino *2022-07-03 09:38:32*
+
+**Merge tag 'v7.7' into develop**
+
+ * new release
+
+[bdb9dd2141340ab](https://github.com/bsorrentino/maven-confluence-plugin/commit/bdb9dd2141340ab) bsorrentino *2022-07-03 09:36:58*
 
 
 ## v7.7
