@@ -5,12 +5,6 @@
 
 package org.bsc.confluence.xmlrpc;
 
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
-
-import java.util.HashMap;
-import java.util.Optional;
-
 import org.bsc.confluence.ConfluenceProxy;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
@@ -19,11 +13,13 @@ import org.bsc.confluence.xmlrpc.model.ServerInfo;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+
+import java.util.HashMap;
+import java.util.Optional;
+
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 /**
  *
  * @author bsorrentino
