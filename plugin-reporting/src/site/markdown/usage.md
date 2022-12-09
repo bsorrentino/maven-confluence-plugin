@@ -141,6 +141,24 @@ Put yours confluence credential within `settings.xml` as server.
 
 Take note that also [maven encryption](http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords) is supported
 
+### Specifying additional HTTP headers
+
+If you are in a corporate environment **where server doesn't accept the basic auth scheme for tokens**  you can specify required custom authentication headers following the [standard maven approach](https://maven.apache.org/guides/mini/guide-http-settings.html#HTTP_Headers) .
+
+#### Example setting Bearer Scheme
+```xml
+    <server>
+      <id>confluence</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Authentication</name>
+            <value>Bearer xxxxxxx</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+```
 
 ## Use template variables
 
