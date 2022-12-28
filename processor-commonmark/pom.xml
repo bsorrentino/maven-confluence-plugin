@@ -13,7 +13,7 @@
     <name>CONFLUENCE-REPORTING::Markdown::Commonmark::Processor</name>
 
     <properties>
-        <commonmark.version>0.18.2</commonmark.version>
+        <commonmark.version>0.21.0</commonmark.version>
     </properties>
 
     <dependencies>
