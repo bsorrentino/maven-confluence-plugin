@@ -119,10 +119,10 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final ChildrenProcessor p = processChildren(node);
 
         if( isParentRoot(node) ) {
-            p.post("\n");
+            p.post(() -> "\n");
         }
         else if( node.getParent() instanceof ListBlock ) {
-            p.pre("\n");
+            p.pre(() -> "\n");
         }
 
         p.process().nl();
@@ -136,7 +136,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
      */
     @Override
     public void visit(HardLineBreak node) {
-        processChildren(node).pre("\\\\").process().nl();
+        processChildren(node).pre(() -> "\\\\").process().nl();
     }
 
     /**
@@ -156,14 +156,14 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     public void visit(Text node) {
         final String literal = escapeMarkdownText( node, node.getLiteral() );
         processChildren(node)
-                .pre( literal )
+                .pre( () -> literal )
                 .process();
     }
 
     @Override
     public void visit(Heading node) {
         processChildren(node)
-                .pre( format( "h%s. ", node.getLevel()) )
+                .pre( () -> format( "h%s. ", node.getLevel()) )
                 .process().nl();
     }
 
@@ -209,8 +209,8 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     public void visit(BlockQuote node) {
 
         processChildren(node)
-                .pre("{quote}\n")
-                .post("{quote}\n")
+                .pre(() -> "{quote}\n")
+                .post(() ->"{quote}\n")
                 .process()
                 .nl( isParentRoot(node) );
     }
@@ -220,7 +220,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final String literal = escapeMarkdownText( node, node.getLiteral());
 
         processChildren(node)
-                .pre( "{{%s}}", literal )
+                .pre(() -> format("{{%s}}", literal) )
                 .process();
     }
 
@@ -229,20 +229,20 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final Function<String,String> info = (v) -> (v==null || v.length()==0 ) ? "" : ":"+v ;
 
         processChildren(node)
-                .pre( "{code%s}\n%s", info.apply(node.getInfo()), node.getLiteral() )
-                .post("{code}")
+                .pre( () -> format("{code%s}\n%s", info.apply(node.getInfo()), node.getLiteral()) )
+                .post(() ->"{code}")
                 .process().nl();
     }
 
     @Override
     public void visit(Emphasis node) {
-        processChildren(node).pre("_").post("_").process();
+        processChildren(node).pre(() -> "_").post(() -> "_").process();
 
     }
 
     @Override
     public void visit(StrongEmphasis node) {
-        processChildren(node).pre("*").post("*").process();;
+        processChildren(node).pre(() -> "*").post(() -> "*").process();;
     }
 
     @Override
@@ -252,8 +252,8 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
         processChildren(node)
                 //.pre( format("<<IMG destination=[%s] title=[%s]>>", node.getDestination(), node.getTitle())).post("<</IMG>>")
-                .pre( "!%s|", destination, node.getTitle() )
-                .post("!")
+                .pre(() -> format("!%s|", destination, node.getTitle()) )
+                .post(() -> "!")
                 .process()
                 .nl( isParentRoot(node) );
     }
@@ -272,16 +272,16 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
         processChildren(node)
                 //.preAndPost("<<LNK>>")
-                .pre( "[" )
+                .pre(() -> "[" )
                 .captureOutput( v -> buffer().append(v) ) // ignore text
-                .post("|%s%s]", destination, ofNullable(node.getTitle()).map( v -> "|"+v ).orElse(""))
+                .post(() -> format("|%s%s]", destination, ofNullable(node.getTitle()).map( v -> "|"+v ).orElse("")) )
                 .process()
                 .nl(isParentRoot(node));
     }
 
     @Override
     public void visit(ThematicBreak node) {
-        processChildren(node).pre("----").process().nl();
+        processChildren(node).pre(() -> "----").process().nl();
     }
 
     //@Custom
@@ -303,7 +303,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     //@Custom
     public void visit( TableRow node ) {
         processChildren(node)
-                .pre("|")
+                .pre(() -> "|")
                 .post( () -> ( node.getParent() instanceof TableHead ) ? "|" : "" )
                 .process()
                 .nl();
@@ -317,7 +317,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
                     buffer().append( value.isEmpty() ? ' ' : value );
                 })
                 .pre( () -> ( node.isHeader()) ? "|" : "" )
-                .post( "|" )
+                .post( () -> "|" )
                 .process();
     }
 
@@ -328,14 +328,14 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final Matcher m = parseHTMLComment(literal);
         if( m.matches() && isConfluenceMacro( m.group(2) ) ) {
             processChildren(node)
-                    .pre(m.group(1))
-                    .post(m.group(2))
+                    .pre(() -> m.group(1))
+                    .post(() -> m.group(2))
                     .process().nl();
         }
         else {
             processChildren(node)
-                    .pre("{html}\n%s\n", literal)
-                    .post("{html}")
+                    .pre(() -> format("{html}\n%s\n", literal) )
+                    .post(() -> "{html}")
                     .process().nl();
         }
     }
@@ -349,7 +349,7 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     //@Custom
     public void visit( Strikethrough node ) {
-        processChildren(node).pre("-").post("-").process();
+        processChildren(node).pre(() -> "-").post(() -> "-").process();
     }
 
     //@custom
@@ -358,13 +358,13 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final ChildrenProcessor p = processChildren(node);
 
         if( node.getTitle().isPresent() ) {
-            p.pre( "{%s:title=%s}\n", type, node.getTitle().get());
+            p.pre(() -> format("{%s:title=%s}\n", type, node.getTitle().get()) );
         }
         else {
-            p.pre("{%s}\n", type);
+            p.pre(() -> format("{%s}\n", type));
         }
 
-        p.post("{%s}\n", type)
+        p.post(() -> format("{%s}\n", type))
                 .process()
                 .nl(isParentRoot(node));
     }
@@ -393,7 +393,11 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             return;
         }
 
-        processChildren(node).pre("<<CSTN type=\"%s\">>", node.getClass().getSimpleName()).post("<</CSTN>>").process().nl();
+        processChildren(node)
+            .pre(() -> format("<<CSTN type=\"%s\">>", node.getClass().getSimpleName()))
+            .post(() -> "<</CSTN>>")
+            .process()
+            .nl();
     }
 
     @Override
@@ -407,12 +411,16 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             visit( (NoticeBlock)node );
             return;
         }
-        processChildren(node).pre("<<CSTB type=\"%s\">>", node.getClass().getSimpleName()).post("<</CSTB>>").process().nl();
+        processChildren(node)
+            .pre(() -> format("<<CSTB type=\"%s\">>", node.getClass().getSimpleName()))
+            .post(() -> "<</CSTB>>")
+            .process()
+            .nl();
     }
 
     @Override
     public void visit(IndentedCodeBlock node) {
-        processChildren(node).pre("<<ICB>>").post("<</ICB>>").process().nl();
+        processChildren(node).pre(() -> "<<ICB>>").post(() -> "<</ICB>>").process().nl();
     }
 
     @Override
@@ -445,18 +453,8 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             return this;
         }
 
-        ChildrenProcessor<T> pre(String v, Object ...args) {
-            pre = of( () -> format( v, args));
-            return this;
-        }
-
         ChildrenProcessor<T> pre( Supplier<String> supplier) {
             pre = ofNullable( supplier );
-            return this;
-        }
-
-        ChildrenProcessor<T> post(String v, Object ...args) {
-            post = of( () -> format( v, args));
             return this;
         }
 
