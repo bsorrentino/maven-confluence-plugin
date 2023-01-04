@@ -5,7 +5,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.8</version>
+        <version>7.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
     <name>CONFLUENCE-REPORTING::Markdown::Commonmark::Processor</name>
 
     <properties>
-        <commonmark.version>0.18.2</commonmark.version>
+        <commonmark.version>0.21.0</commonmark.version>
     </properties>
 
     <dependencies>

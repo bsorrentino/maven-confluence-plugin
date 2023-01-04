@@ -4,6 +4,8 @@ import org.apache.commons.io.IOUtils
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.MarkdownParserContext
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.fail
 import java.nio.charset.Charset
 import java.util.*
 
@@ -34,7 +36,7 @@ fun parseResource(type: Class<*>, name: String, site: Site): String? =
                         parseContent(site, IOUtils.toString(it, Charset.defaultCharset()))
                 }
         } catch (e: Exception) {
-                //Assertions.fail()
+                fail( e )
                 null;
         }
 
