@@ -2,8 +2,58 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## v7.9
+### No issue
+
+**build: move to next developer version**
+
+
+[0755ff99058ef79](https://github.com/bsorrentino/maven-confluence-plugin/commit/0755ff99058ef79) Build Pipeline *2022-12-28 16:02:39*
+
+**Merge branch 'bugfix/issue282' into develop**
+
+
+[7d1814877053e21](https://github.com/bsorrentino/maven-confluence-plugin/commit/7d1814877053e21) Build Pipeline *2022-12-28 15:56:39*
+
+**test: markdown file to test the fix**
+
+ * issue #282
+
+[3d0af7544be5538](https://github.com/bsorrentino/maven-confluence-plugin/commit/3d0af7544be5538) Build Pipeline *2022-12-28 15:56:20*
+
+**fix(CommonmarkConfluenceWikiVisitor): avoid implicit use of String.format() in pre() and post() mothods of ChildrenProcessor class**
+
+ * issue #282
+
+[6c6a3b678221f79](https://github.com/bsorrentino/maven-confluence-plugin/commit/6c6a3b678221f79) Build Pipeline *2022-12-28 15:55:28*
+
+**build(pom.xml): upgrade commonmark version**
+
+ * upgrade commonmark version to 0.21.0
+ * issue #282
+
+[cb26a690c77dcac](https://github.com/bsorrentino/maven-confluence-plugin/commit/cb26a690c77dcac) Build Pipeline *2022-12-28 15:51:32*
+
+**test(commonmark): add test to verify issue 282**
+
+ * issue #282
+
+[26b2025ca03eaef](https://github.com/bsorrentino/maven-confluence-plugin/commit/26b2025ca03eaef) Build Pipeline *2022-12-27 17:22:04*
+
+**docs(changelog): update changelog**
+
+
+[10013a4db1c87f5](https://github.com/bsorrentino/maven-confluence-plugin/commit/10013a4db1c87f5) Build Pipeline *2022-12-09 12:07:00*
+
+**Merge tag 'v7.8' into develop**
+
+ * release 7.8
+
+[bb382a136fa4ef8](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb382a136fa4ef8) Build Pipeline *2022-12-09 12:04:56*
+
+
 ## v7.8
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.8'**
 
@@ -146,7 +196,7 @@
 
 
 ## v7.7
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.7'**
 
@@ -351,7 +401,7 @@
 
 
 ## v7.6
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.6'**
 
@@ -375,7 +425,7 @@
 
 
 ## v7.5
-### Generic changes
+### No issue
 
 **Merge branch 'hotfix/7.5'**
 
@@ -753,7 +803,7 @@
 
 
 ## v7.4
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.4'**
 
@@ -772,7 +822,7 @@
 
 
 ## v7.3.2
-### Generic changes
+### No issue
 
 **Merge branch 'hotfix/7.3.2'**
 
@@ -801,7 +851,7 @@
 
 
 ## v7.3.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.3.1'**
 
@@ -883,7 +933,7 @@
 
 
 ## v7.3
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.3'**
 
@@ -932,7 +982,7 @@
 
 
 ## v7.2.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.2.1'**
 
@@ -997,7 +1047,7 @@
 
 
 ## v7.2
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.2'**
 
@@ -1062,7 +1112,7 @@
 
 
 ## v7.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.1'**
 
@@ -1107,7 +1157,7 @@
 
 
 ## v7.0
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.0'**
 
@@ -1214,7 +1264,7 @@
 
 
 ## v7.0-rc2
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.0-rc2'**
 
@@ -1350,7 +1400,7 @@
 
 
 ## v7.0-rc1
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.0-rc1'**
 
@@ -1384,7 +1434,7 @@
 
 
 ## v7.0-beta2
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.0-beta2'**
 
@@ -1671,7 +1721,7 @@
 
 
 ## v7.0-beta1
-### Generic changes
+### No issue
 
 **Merge branch 'release/7.0-beta1'**
 
@@ -1837,7 +1887,7 @@
 
 
 ## v6.20
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.20'**
 
@@ -2004,7 +2054,7 @@
 
 
 ## v6.11
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.11'**
 
@@ -2094,7 +2144,7 @@
 
 
 ## v6.10
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.10'**
 
@@ -2149,7 +2199,7 @@
 
 
 ## v6.9.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.9.1'**
 
@@ -2249,7 +2299,7 @@
 
 
 ## v6.9
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.9'**
 
@@ -2334,7 +2384,7 @@
 
 
 ## v6.9-rc2
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.9-rc2'**
 
@@ -2600,7 +2650,7 @@
 
 
 ## v6.9-rc1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.9-rc1'**
 
@@ -2684,7 +2734,7 @@
 
 
 ## v6.9-beta1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.9-beta1'**
 
@@ -2887,7 +2937,7 @@
 
 
 ## v6.8
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.8'**
 
@@ -3135,7 +3185,7 @@
 
 
 ## v6.7.3
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.7.3'**
 
@@ -3537,7 +3587,7 @@
 
 
 ## v6.7.2
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.7.2'**
 
@@ -3561,7 +3611,7 @@
 
 
 ## v6.7.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.7.1'**
 
@@ -3585,7 +3635,7 @@
 
 
 ## v6.7
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.7'**
 
@@ -3614,7 +3664,7 @@
 
 
 ## v6.6
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.6'**
 
@@ -3715,7 +3765,7 @@
 
 
 ## v6.5
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.5'**
 
@@ -3798,7 +3848,7 @@
 
 
 ## v6.5-beta2
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.5-beta2'**
 
@@ -3988,7 +4038,7 @@
 
 
 ## v6.5-beta1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.5-beta1'**
 
@@ -4052,7 +4102,7 @@
 
 
 ## v6.4.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.4.1'**
 
@@ -4081,7 +4131,7 @@
 
 
 ## v6.4
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.4'**
 
@@ -4115,7 +4165,7 @@
 
 
 ## v6.3.2
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.3.2'**
 
@@ -4214,7 +4264,7 @@
 
 
 ## v6.3.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.3.1'**
 
@@ -4273,7 +4323,7 @@
 
 
 ## v6.3
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.3'**
 
@@ -4352,7 +4402,7 @@
 
 
 ## v6.2
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.2'**
 
@@ -4503,7 +4553,7 @@
 
 
 ## v6.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.1'**
 
@@ -4552,7 +4602,7 @@
 
 
 ## v6.0
-### Generic changes
+### No issue
 
 **Merge branch 'hotfix/changelog'**
 
@@ -4722,7 +4772,7 @@
 
 
 ## v6.0-rc4
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.0-rc4'**
 
@@ -4787,7 +4837,7 @@
 
 
 ## v6.0-rc3
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.0-rc3'**
 
@@ -5006,7 +5056,7 @@
 
 
 ## v6.0-rc2
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.0-rc2'**
 
@@ -5050,7 +5100,7 @@
 
 
 ## v6.0-rc1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.0-rc1'**
 
@@ -5109,7 +5159,7 @@
 
 
 ## v6.0-beta2
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.0-beta2'**
 
@@ -5138,7 +5188,7 @@
 
 
 ## v6.0-beta1
-### Generic changes
+### No issue
 
 **Merge branch 'release/6.0-beta1'**
 
@@ -5439,7 +5489,7 @@
 
 
 ## v5.1.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/5.1.1'**
 
@@ -5483,7 +5533,7 @@
 
 
 ## v5.1
-### Generic changes
+### No issue
 
 **Merge branch 'release/5.1'**
 
@@ -5562,7 +5612,7 @@
 
 
 ## v5.0
-### Generic changes
+### No issue
 
 **Merge branch 'release/5.0'**
 
@@ -5651,7 +5701,7 @@
 
 
 ## v5.0-rc5
-### Generic changes
+### No issue
 
 **Merge branch 'release/5.0-rc5'**
 
@@ -5700,7 +5750,7 @@
 
 
 ## v5.0-rc4
-### Generic changes
+### No issue
 
 **Merge branch 'release/5.0-rc4'**
 
@@ -5764,7 +5814,7 @@
 
 
 ## v5.0-rc3
-### Generic changes
+### No issue
 
 **Merge branch 'release/5.0-rc3'**
 
@@ -6114,7 +6164,7 @@
 
 
 ## v5.0-beta2
-### Generic changes
+### No issue
 
 **merge new release**
 
@@ -6143,7 +6193,7 @@
 
 
 ## v5.0-beta1
-### Generic changes
+### No issue
 
 **Merge branch 'release/5.0-beta1'**
 
@@ -6513,7 +6563,7 @@
 
 
 ## v4.13
-### Generic changes
+### No issue
 
 **Merge branch 'support/4.x'**
 
@@ -6542,7 +6592,7 @@
 
 
 ## v4.12
-### Generic changes
+### No issue
 
 **update doc**
 
@@ -6561,7 +6611,7 @@
 
 
 ## v4.11
-### Generic changes
+### No issue
 
 **remove title**
 
@@ -6686,7 +6736,7 @@
 
 
 ## v4.10
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.10'**
 
@@ -6705,7 +6755,7 @@
 
 
 ## v4.9.1
-### Generic changes
+### No issue
 
 **Merge branch 'hotfix/4.9.1'**
 
@@ -6734,7 +6784,7 @@
 
 
 ## v4.9
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.9'**
 
@@ -6798,7 +6848,7 @@
 
 
 ## v4.8
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.8'**
 
@@ -6882,7 +6932,7 @@
 
 
 ## v4.7
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.7'**
 
@@ -6931,7 +6981,7 @@
 
 
 ## v4.6
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.6'**
 
@@ -7005,7 +7055,7 @@
 
 
 ## v4.5
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.5'**
 
@@ -7083,7 +7133,7 @@
 
 
 ## v4.4.3
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.4.3'**
 
@@ -7165,7 +7215,7 @@
 
 
 ## v4.4.2
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.4.2'**
 
@@ -7377,7 +7427,7 @@
 
 
 ## v4.4.1
-### Generic changes
+### No issue
 
 **Updating develop poms back to pre merge state**
 
@@ -7401,7 +7451,7 @@
 
 
 ## v4.4-fix-report
-### Generic changes
+### No issue
 
 **Merge branch 'hotfix/4.4-fix-report'**
 
@@ -7425,7 +7475,7 @@
 
 
 ## v4.4
-### Generic changes
+### No issue
 
 **Merge branch 'release/4.5'**
 
@@ -7797,7 +7847,7 @@
 
 
 ## maven-confluence-parent-4.2
-### Generic changes
+### No issue
 
 **merge pull request #76**
 
@@ -8407,7 +8457,7 @@
 
 
 ## v3.4.4-rc1
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release v3.4.4-rc1**
 
@@ -8441,7 +8491,7 @@
 
 
 ## maven-confluence-parent-3.4.3-SNAPSHOT
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.4.3-SNAPSHOT**
 
@@ -8485,7 +8535,7 @@
 
 
 ## maven-confluence-parent-3.4.2-SNAPSHOT
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.4.2-SNAPSHOT**
 
@@ -8509,7 +8559,7 @@
 
 
 ## maven-confluence-parent-3.4.1
-### Generic changes
+### No issue
 
 **Merge branch 'master' of https://code.google.com/p/maven-confluence-plugin**
 
@@ -9929,7 +9979,7 @@
 
 
 ## maven-confluence-parent-3.4.0
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.4.0**
 
@@ -9943,7 +9993,7 @@
 
 
 ## maven-confluence-parent-3.4.0-rc1
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release 3.4.0-rc1**
 
@@ -9957,7 +10007,7 @@
 
 
 ## v3.4.0-rc1
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.4.0-SNAPSHOT**
 
@@ -9971,7 +10021,7 @@
 
 
 ## maven-confluence-parent-3.4.0-SNAPSHOT
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.4.0-SNAPSHOT**
 
@@ -10038,7 +10088,7 @@
 
 
 ## maven-confluence-parent-3.3.0-rc1
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-rc1**
 
@@ -10062,7 +10112,7 @@
 
 
 ## maven-confluence-parent-3.3.0-beta4-SNAPSHOT
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-beta4-SNAPSHOT**
 
@@ -10096,7 +10146,7 @@
 
 
 ## maven-confluence-parent-3.3.0-beta3-SNAPSHOT
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-beta3-SNAPSHOT**
 
@@ -10115,7 +10165,7 @@
 
 
 ## maven-confluence-parent-3.3.0-beta2-SNAPSHOT
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-beta2-SNAPSHOT**
 
@@ -10165,7 +10215,7 @@
 
 
 ## maven-confluence-parent-3.3.0-SNAPSHOT
-### Generic changes
+### No issue
 
 **[maven-release-plugin] prepare release maven-confluence-parent-3.3.0-SNAPSHOT**
 
