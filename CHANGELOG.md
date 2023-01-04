@@ -5,6 +5,16 @@
 ## v7.9
 ### No issue
 
+**Merge branch 'release/7.9'**
+
+
+[b806b3be533c307](https://github.com/bsorrentino/maven-confluence-plugin/commit/b806b3be533c307) Build Pipeline *2023-01-04 17:03:35*
+
+**chore: prepare for release 7.9**
+
+
+[e08c9280fcf2d6b](https://github.com/bsorrentino/maven-confluence-plugin/commit/e08c9280fcf2d6b) Build Pipeline *2023-01-04 17:03:20*
+
 **build: move to next developer version**
 
 
@@ -50,25 +60,6 @@
  * release 7.8
 
 [bb382a136fa4ef8](https://github.com/bsorrentino/maven-confluence-plugin/commit/bb382a136fa4ef8) Build Pipeline *2022-12-09 12:04:56*
-
-
-## v7.8
-### No issue
-
-**Merge branch 'release/7.8'**
-
-
-[5a323c9c160b9f2](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a323c9c160b9f2) Build Pipeline *2022-12-09 12:04:43*
-
-**build: update version to next release**
-
-
-[548da3f0e09bd90](https://github.com/bsorrentino/maven-confluence-plugin/commit/548da3f0e09bd90) Build Pipeline *2022-12-09 12:04:38*
-
-**docs: update documentation**
-
-
-[b2c477701450e30](https://github.com/bsorrentino/maven-confluence-plugin/commit/b2c477701450e30) Build Pipeline *2022-12-09 12:02:52*
 
 **docs(changelog): update changelog**
 
@@ -119,35 +110,10 @@
 
 [225a47cd72b1a9d](https://github.com/bsorrentino/maven-confluence-plugin/commit/225a47cd72b1a9d) bsorrentino *2022-11-16 19:43:00*
 
-**Merge branch 'hotfix/7.7.1'**
-
-
-[e2aad8fa16600af](https://github.com/bsorrentino/maven-confluence-plugin/commit/e2aad8fa16600af) bsorrentino *2022-11-16 19:42:47*
-
-**build: update version**
-
-
-[d29f009e0948e80](https://github.com/bsorrentino/maven-confluence-plugin/commit/d29f009e0948e80) bsorrentino *2022-11-16 19:41:45*
-
-**fix: update jackson.version**
-
-
-[7793bfd5a591b0a](https://github.com/bsorrentino/maven-confluence-plugin/commit/7793bfd5a591b0a) bsorrentino *2022-11-16 19:41:12*
-
-**chore: update ignore**
-
-
-[5889ff3c17e160e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5889ff3c17e160e) bsorrentino *2022-11-16 19:39:15*
-
 **Merge branch 'master' into develop**
 
 
 [368a150f5e45e9a](https://github.com/bsorrentino/maven-confluence-plugin/commit/368a150f5e45e9a) bsorrentino *2022-11-16 19:12:42*
-
-**Merge branch 'hotfix/pr279'**
-
-
-[e5006a61bbccda5](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5006a61bbccda5) bsorrentino *2022-11-16 19:12:22*
 
 **Merge branch 'bugfix/pr279' into develop**
 
@@ -159,64 +125,16 @@
 
 [b5ee8537b0bcafe](https://github.com/bsorrentino/maven-confluence-plugin/commit/b5ee8537b0bcafe) bsorrentino *2022-11-16 19:10:17*
 
-**build(deps): bump jackson-databind from 2.12.7 to 2.12.7.1 in /core**
-
- * Bumps [jackson-databind](https://github.com/FasterXML/jackson) from 2.12.7 to 2.12.7.1.
- * - [Release notes](https://github.com/FasterXML/jackson/releases)
- * - [Commits](https://github.com/FasterXML/jackson/commits)
- * ---
- * updated-dependencies:
- * - dependency-name: com.fasterxml.jackson.core:jackson-databind
- * dependency-type: direct:production
- * ...
- * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
-
-[faacebdbfa0e682](https://github.com/bsorrentino/maven-confluence-plugin/commit/faacebdbfa0e682) dependabot[bot] *2022-11-16 03:17:00*
-
 **Merge branch 'master' into develop**
 
 
 [2b63e994334aeff](https://github.com/bsorrentino/maven-confluence-plugin/commit/2b63e994334aeff) bsorrentino *2022-07-03 09:38:49*
-
-**Merge branch 'hotfix/changelog'**
-
-
-[54725c0add5d5e4](https://github.com/bsorrentino/maven-confluence-plugin/commit/54725c0add5d5e4) bsorrentino *2022-07-03 09:38:46*
-
-**docs: update changelog**
-
-
-[a0b7d62758f5c64](https://github.com/bsorrentino/maven-confluence-plugin/commit/a0b7d62758f5c64) bsorrentino *2022-07-03 09:38:32*
 
 **Merge tag 'v7.7' into develop**
 
  * new release
 
 [bdb9dd2141340ab](https://github.com/bsorrentino/maven-confluence-plugin/commit/bdb9dd2141340ab) bsorrentino *2022-07-03 09:36:58*
-
-
-## v7.7
-### No issue
-
-**Merge branch 'release/7.7'**
-
-
-[d9ebdd04542ff85](https://github.com/bsorrentino/maven-confluence-plugin/commit/d9ebdd04542ff85) bsorrentino *2022-07-03 09:36:47*
-
-**build: move to next release**
-
-
-[e592d4b897f1557](https://github.com/bsorrentino/maven-confluence-plugin/commit/e592d4b897f1557) bsorrentino *2022-07-03 09:36:32*
-
-**docs: update docs**
-
-
-[9663dc4f774d0eb](https://github.com/bsorrentino/maven-confluence-plugin/commit/9663dc4f774d0eb) bsorrentino *2022-07-03 09:33:37*
-
-**docs: update docs**
-
-
-[c3880713797ccb8](https://github.com/bsorrentino/maven-confluence-plugin/commit/c3880713797ccb8) bsorrentino *2022-07-03 09:30:00*
 
 **Merge branch 'feature/pr266' into develop**
 
@@ -326,6 +244,104 @@
 
 [f4407d6363f4172](https://github.com/bsorrentino/maven-confluence-plugin/commit/f4407d6363f4172) dependabot[bot] *2022-06-20 22:47:41*
 
+**Adding JSON Support**
+
+ * - Tested
+
+[c1201ad21afbf54](https://github.com/bsorrentino/maven-confluence-plugin/commit/c1201ad21afbf54) Julian *2022-05-30 18:30:18*
+
+
+## v7.8
+### No issue
+
+**Merge branch 'release/7.8'**
+
+
+[5a323c9c160b9f2](https://github.com/bsorrentino/maven-confluence-plugin/commit/5a323c9c160b9f2) Build Pipeline *2022-12-09 12:04:43*
+
+**build: update version to next release**
+
+
+[548da3f0e09bd90](https://github.com/bsorrentino/maven-confluence-plugin/commit/548da3f0e09bd90) Build Pipeline *2022-12-09 12:04:38*
+
+**docs: update documentation**
+
+
+[b2c477701450e30](https://github.com/bsorrentino/maven-confluence-plugin/commit/b2c477701450e30) Build Pipeline *2022-12-09 12:02:52*
+
+**Merge branch 'hotfix/7.7.1'**
+
+
+[e2aad8fa16600af](https://github.com/bsorrentino/maven-confluence-plugin/commit/e2aad8fa16600af) bsorrentino *2022-11-16 19:42:47*
+
+**build: update version**
+
+
+[d29f009e0948e80](https://github.com/bsorrentino/maven-confluence-plugin/commit/d29f009e0948e80) bsorrentino *2022-11-16 19:41:45*
+
+**fix: update jackson.version**
+
+
+[7793bfd5a591b0a](https://github.com/bsorrentino/maven-confluence-plugin/commit/7793bfd5a591b0a) bsorrentino *2022-11-16 19:41:12*
+
+**chore: update ignore**
+
+
+[5889ff3c17e160e](https://github.com/bsorrentino/maven-confluence-plugin/commit/5889ff3c17e160e) bsorrentino *2022-11-16 19:39:15*
+
+**Merge branch 'hotfix/pr279'**
+
+
+[e5006a61bbccda5](https://github.com/bsorrentino/maven-confluence-plugin/commit/e5006a61bbccda5) bsorrentino *2022-11-16 19:12:22*
+
+**build(deps): bump jackson-databind from 2.12.7 to 2.12.7.1 in /core**
+
+ * Bumps [jackson-databind](https://github.com/FasterXML/jackson) from 2.12.7 to 2.12.7.1.
+ * - [Release notes](https://github.com/FasterXML/jackson/releases)
+ * - [Commits](https://github.com/FasterXML/jackson/commits)
+ * ---
+ * updated-dependencies:
+ * - dependency-name: com.fasterxml.jackson.core:jackson-databind
+ * dependency-type: direct:production
+ * ...
+ * Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+
+[faacebdbfa0e682](https://github.com/bsorrentino/maven-confluence-plugin/commit/faacebdbfa0e682) dependabot[bot] *2022-11-16 03:17:00*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[54725c0add5d5e4](https://github.com/bsorrentino/maven-confluence-plugin/commit/54725c0add5d5e4) bsorrentino *2022-07-03 09:38:46*
+
+**docs: update changelog**
+
+
+[a0b7d62758f5c64](https://github.com/bsorrentino/maven-confluence-plugin/commit/a0b7d62758f5c64) bsorrentino *2022-07-03 09:38:32*
+
+
+## v7.7
+### No issue
+
+**Merge branch 'release/7.7'**
+
+
+[d9ebdd04542ff85](https://github.com/bsorrentino/maven-confluence-plugin/commit/d9ebdd04542ff85) bsorrentino *2022-07-03 09:36:47*
+
+**build: move to next release**
+
+
+[e592d4b897f1557](https://github.com/bsorrentino/maven-confluence-plugin/commit/e592d4b897f1557) bsorrentino *2022-07-03 09:36:32*
+
+**docs: update docs**
+
+
+[9663dc4f774d0eb](https://github.com/bsorrentino/maven-confluence-plugin/commit/9663dc4f774d0eb) bsorrentino *2022-07-03 09:33:37*
+
+**docs: update docs**
+
+
+[c3880713797ccb8](https://github.com/bsorrentino/maven-confluence-plugin/commit/c3880713797ccb8) bsorrentino *2022-07-03 09:30:00*
+
 **docs: update changelog**
 
 
@@ -372,12 +388,6 @@
 
 
 [ecea4d2b9767cc5](https://github.com/bsorrentino/maven-confluence-plugin/commit/ecea4d2b9767cc5) tspindler *2022-06-01 12:13:07*
-
-**Adding JSON Support**
-
- * - Tested
-
-[c1201ad21afbf54](https://github.com/bsorrentino/maven-confluence-plugin/commit/c1201ad21afbf54) Julian *2022-05-30 18:30:18*
 
 **Merge tag 'v7.5' into develop**
 
