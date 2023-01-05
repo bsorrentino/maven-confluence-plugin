@@ -1,5 +1,21 @@
 # Release History
 
+## 2021
+
+Date  | Release | Info
+--- | --- | ---
+| **Aug 09, 2021** | [Release 7.3.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3.2)         | Fix problem with **ReadTimeout** & **WriteTimeout**. Refer to [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256). see the PR [#257](https://github.com/bsorrentino/maven-confluence-plugin/pull/257) for details. Thanks to [qwazer](https://github.com/qwazer) for contribution. |
+| **Aug 07, 2021** | [Release 7.3.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3.1)         | Refer to  [#256](https://github.com/bsorrentino/maven-confluence-plugin/issues/256) for details  |
+| **Jul 31, 2021** | [Release 7.3](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.3)             | Refer to discussion [#247](https://github.com/bsorrentino/maven-confluence-plugin/discussions/247) for details |
+| **Jul 19, 2021** | [Release 7.2.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.2.1)         | Refer to [#253](https://github.com/bsorrentino/maven-confluence-plugin/issues/253) for details   |
+| **Jun 10, 2021** | [Release 7.2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.2)             | Refer to [#252](https://github.com/bsorrentino/maven-confluence-plugin/issues/252) for details     |
+| **Jun 01, 2021** | [Release 7.1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.1)             | Refer to [#248](https://github.com/bsorrentino/maven-confluence-plugin/issues/248) for details    |
+| **May 18, 2021** | [Release 7.0](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0)             | Refer to [Major Release 7.0](https://github.com/bsorrentino/maven-confluence-plugin/projects/1) for details |
+| **Mar 07, 2021** | [Release 7.0-rc2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-rc2)     | Refer to [#245](https://github.com/bsorrentino/maven-confluence-plugin/issues/245) npe when children uri from classpath  |
+| **Feb 11, 2021** | [Release 7.0-rc1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-rc1)     | Refer to [#244](https://github.com/bsorrentino/maven-confluence-plugin/issues/244) processor-freemarker doesn't work on 70-beta2.  |
+| **Feb 09, 2021** | [Release 7.0-beta2](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-beta2) | Refer to [#240](https://github.com/bsorrentino/maven-confluence-plugin/issues/240) add the `page id` to the deploy history(state) manager. <br> Refer to [#241](https://github.com/bsorrentino/maven-confluence-plugin/issues/241) Increase socket timeout. <br> Refer to [#242](https://github.com/bsorrentino/maven-confluence-plugin/issues/242) add i18n titles to ProjectSummaryRenderer and ScmRenderer. **Thanks to [3a04huk ](https://github.com/bsorrentino/maven-confluence-plugin/issues?q=is%3Apr+author%3A3a04huk) for the [PR](https://github.com/bsorrentino/maven-confluence-plugin/pull/243)** |
+| **Jan 03, 2021** | [Release 7.0-beta1](https://github.com/bsorrentino/maven-confluence-plugin/releases/tag/v7.0-beta1) | This release introduce [multi version jar](http://openjdk.java.net/jeps/238) support. Refer to [#224](https://github.com/bsorrentino/maven-confluence-plugin/issues/224).<br> From this release the **Pegdown markdown parser** has been removed as dependency and it will be not supported anymore.It has been replaced by **Commonmark**  |
+
 ## 2020
 
 Date  | Release | Info
