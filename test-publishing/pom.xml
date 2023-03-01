@@ -428,6 +428,22 @@
                             <siteDescriptor>${basedir}/src/site/confluence/issue261/site.yml</siteDescriptor>
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue284
+                    mvn confluence-reporting:delete@issue284
+                    -->
+                    <execution>
+                        <id>issue284</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue284/site.yml</siteDescriptor>
+                        </configuration>
+                    </execution>
 
                 </executions>
             </plugin>
