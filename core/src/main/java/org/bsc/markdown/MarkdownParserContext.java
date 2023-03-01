@@ -12,6 +12,13 @@ import static java.util.Optional.empty;
 public interface MarkdownParserContext {
 
     /**
+     * skip html tag parsing
+     *
+     * @return true|false
+     */
+    boolean isSkipHtml();
+
+    /**
      * The Site Model Object
      *
      * @return site object. nullable

@@ -4,7 +4,6 @@ import org.apache.commons.io.IOUtils
 import org.bsc.confluence.model.Site
 import org.bsc.markdown.MarkdownParserContext
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor
-import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.fail
 import java.nio.charset.Charset
 import java.util.*
@@ -15,6 +14,7 @@ fun parseContent(site: Site, content: String, linkPrefixEnabled: Boolean = true)
         val root = CommonmarkConfluenceWikiVisitor.parser().parse(content)
 
         val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext {
+                override fun isSkipHtml() = false
 
                 override fun getSite() = Optional.of(site)
 

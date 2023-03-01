@@ -292,6 +292,11 @@ public class SiteProcessor {
 
         return MarkdownProcessor.shared.processMarkdown(new MarkdownParserContext() {
             @Override
+            public boolean isSkipHtml() {
+                return MarkdownProcessor.shared.isSkipHtml();
+            }
+
+            @Override
             public Optional<Site> getSite() {
                 return Optional.of(site);
             }
