@@ -323,6 +323,9 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(HtmlBlock node) {
+        // GUARD
+        if( parseContext.isSkipHtml() ) return;
+
         final String literal = node.getLiteral();
 
         final Matcher m = parseHTMLComment(literal);
@@ -342,6 +345,9 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(HtmlInline node) {
+        // GUARD
+        if( parseContext.isSkipHtml() ) return;
+
         processChildren(node)
                 //.pre("<<HTMI>>").post("<</HTMI>>")
                 .process().nl();

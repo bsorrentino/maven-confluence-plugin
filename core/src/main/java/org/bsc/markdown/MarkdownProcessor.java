@@ -31,18 +31,6 @@ public interface MarkdownProcessor {
     String processMarkdown( MarkdownParserContext context, String content ) throws IOException;
 
     /**
-     * default method
-     *
-     * @param content
-     * @return
-     * @throws IOException
-     */
-    default String processMarkdown( String content ) throws IOException {
-        return processMarkdown(new MarkdownParserContext() {
-        }, content);
-    }
-
-    /**
      * factory method
      *
      * @return
@@ -63,6 +51,21 @@ public interface MarkdownProcessor {
         private String name = "commonmark";
         private MarkdownProcessor processor;
 
+        private boolean skipHtml = false;
+
+        public boolean isSkipHtml() {
+            return skipHtml;
+        }
+
+        /**
+         * set skip html tag processing
+         *
+         * @return true|false
+         */
+        public void setSkipHtml(boolean skipHtml) {
+            this.skipHtml = skipHtml;
+        }
+
         @Override
         public String getName() {
             return ofNullable(shared.name)
@@ -74,6 +77,15 @@ public interface MarkdownProcessor {
             return ofNullable(processor)
                     .orElseThrow( () -> new IllegalStateException( "processor has not been initialized yet!" ))
                     .processMarkdown( context, content);
+        }
+
+        public String processMarkdown(String content) throws IOException {
+            return ofNullable(processor)
+                .orElseThrow( () -> new IllegalStateException( "processor has not been initialized yet!" ))
+                .processMarkdown( new MarkdownParserContext() {
+                    @Override
+                    public boolean isSkipHtml() { return isSkipHtml(); }
+                }, content);
         }
 
         public void setName(String value) {
@@ -92,6 +104,8 @@ public interface MarkdownProcessor {
             }
             return processor;
         }
+
+
     }
 
     Shared shared = new Shared();

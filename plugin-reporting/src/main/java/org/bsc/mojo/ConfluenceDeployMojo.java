@@ -229,7 +229,8 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
      * Markdown processor Info<br>
      * <pre>
      *   &lt;markdownProcessor>
-     *     &lt;name>processor name&lt;/name> &lt;git branch!-- default: pegdown -->
+     *     &lt;name>processor name&lt;/name> &lt;-- default: pegdown -->
+     *     &lt;skipHtml>true | false&lt;/skipHtml> &lt;-- default: false -->
      *   &lt;/markdownProcessor>
      * </pre>
      *

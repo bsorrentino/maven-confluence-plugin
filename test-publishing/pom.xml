@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.9</version>
+        <version>7.10</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -426,6 +426,26 @@
                             <encoding>UTF-8</encoding>
                             <failOnError>true</failOnError>
                             <siteDescriptor>${basedir}/src/site/confluence/issue261/site.yml</siteDescriptor>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue284
+                    mvn confluence-reporting:delete@issue284
+                    -->
+                    <execution>
+                        <id>issue284</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue284/site.yml</siteDescriptor>
+                            <markdownProcessor>
+                                <skipHtml>true</skipHtml>
+                            </markdownProcessor>
+
                         </configuration>
                     </execution>
 
