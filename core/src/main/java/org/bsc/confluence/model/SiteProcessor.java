@@ -117,18 +117,18 @@ public class SiteProcessor {
      *
      * @param site
      * @param child
-     * @param page
+     * @param page - Nullable
      * @param uri
-     * @param pagePrefixToApply
+     * @param pagePrefixToApply - Nullable
      * @param <P>
      * @return
      */
    public static <P extends Site.Page> CompletableFuture<PageContent> processPageUri(
            final Site site,
            final P child,
-           final Optional<Model.Page> page,
+           final Model.Page page,
            final java.net.URI uri, 
-           final Optional<String> pagePrefixToApply)
+           final String pagePrefixToApply)
    {
        requireNonNull(uri, "uri is null!");
 
@@ -196,20 +196,22 @@ public class SiteProcessor {
        return result;
    }
 
-    
     /**
-    *
-    * @param uri
-    * @return
-    * @throws Exception
-    */
+     *
+     * @param site
+     * @param child
+     * @param uri
+     * @param homePageTitle - Nullable
+     * @return
+     * @param <P>
+     */
    public static
    <P extends Site.Page> CompletableFuture<PageContent>
    processUriContent(
                final Site site,
                final P child,
                final java.net.URI uri,                                  
-               final Optional<String> homePageTitle )
+               final String homePageTitle )
    {
        requireNonNull(uri, "uri is null!");
 
@@ -243,7 +245,7 @@ public class SiteProcessor {
            try {
                final String candidateContent = IOUtils.toString(is.get(), Charset.defaultCharset());
 
-               content = (isMarkdown) ? processMarkdown(site, child, empty(), candidateContent, homePageTitle) : candidateContent;
+               content = (isMarkdown) ? processMarkdown(site, child, null, candidateContent, homePageTitle) : candidateContent;
 
             } catch (IOException e) {
                 result.completeExceptionally( new Exception( format("error processing page [%s] ", source)));
@@ -260,7 +262,7 @@ public class SiteProcessor {
                final String candidateContent = IOUtils.toString(is, Charset.defaultCharset());
 
                content = (isMarkdown) ?
-                       processMarkdown( site, child, empty(), candidateContent, homePageTitle) :
+                       processMarkdown( site, child, null, candidateContent, homePageTitle) :
                        candidateContent;
 
            } catch (IOException e) {
@@ -277,18 +279,18 @@ public class SiteProcessor {
      *
      * @param site
      * @param child
-     * @param page
+     * @param page - Nullable
      * @param content
-     * @param pagePrefixToApply
+     * @param pagePrefixToApply - Nullable
      * @return
      * @throws IOException
      */
     public static  String processMarkdown(
             final Site site,
             final Site.Page child,
-            final Optional<ConfluenceService.Model.Page> page,
+            final ConfluenceService.Model.Page page,
             final String content,
-            final Optional<String> pagePrefixToApply) throws IOException {
+            final String pagePrefixToApply) throws IOException {
 
         return MarkdownProcessor.shared.processMarkdown(new MarkdownParserContext() {
             @Override
@@ -308,14 +310,14 @@ public class SiteProcessor {
 
             @Override
             public Optional<String> getPagePrefixToApply() {
-                return pagePrefixToApply;
+                return Optional.of(pagePrefixToApply);
             }
 
             @Override
             public boolean isLinkPrefixEnabled() {
                 if( child.isIgnoreVariables() ) return false;
 
-                return page.map( p -> !p.getTitle().contains("[") ).orElse(true);
+                return Optional.of(page).map( p -> !p.getTitle().contains("[") ).orElse(true);
 
             }
         }, content);

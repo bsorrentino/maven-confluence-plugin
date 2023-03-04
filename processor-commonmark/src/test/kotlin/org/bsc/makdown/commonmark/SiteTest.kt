@@ -70,14 +70,14 @@ class SiteTest : SiteFactory.Model {
     @Test
     @Throws(IOException::class)
     fun shouldSupportRefLink() {
-        val parentPageTitle = Optional.of("Test")
+        val parentPageTitle = "Test"
         val stream = javaClass.classLoader.getResourceAsStream("withRefLink.md")
         Assertions.assertNotNull(stream)
-        val content = SiteProcessor.processMarkdown(site, site!!.home, Optional.empty(), IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
+        val content = SiteProcessor.processMarkdown(site, site!!.home, null, IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
         Assertions.assertNotNull(content)
         val converted = content.split("\n+".toRegex()).toTypedArray()
         var i = 1
-        Assertions.assertEquals(String.format("* relative link to another page [SECOND PAGE|%s - page 2].", parentPageTitle.get()), converted[i++])
+        Assertions.assertEquals(String.format("* relative link to another page [SECOND PAGE|%s - page 2].", parentPageTitle), converted[i++])
         Assertions.assertEquals("* This one is [inline|http://google.com|Google].", converted[i++])
         Assertions.assertEquals("* This one is [inline *wo* title|http://google.com].", converted[i++])
         Assertions.assertEquals("* This is my [google|http://google.com] link defined after.", converted[i++])
@@ -90,10 +90,10 @@ class SiteTest : SiteFactory.Model {
     @Throws(IOException::class)
     fun shouldSupportImgRefLink() {
         val page: ConfluenceService.Model.Page = TestPage("\${page.title}", "spaceKey")
-        val parentPageTitle = Optional.of("Test IMG")
+        val parentPageTitle = "Test IMG"
         val stream = javaClass.classLoader.getResourceAsStream("withImgRefLink.md")
         Assertions.assertNotNull(stream)
-        val content = SiteProcessor.processMarkdown(site, site!!.home, Optional.of(page), IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
+        val content = SiteProcessor.processMarkdown(site, site!!.home, page, IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
         Assertions.assertNotNull(content)
         val converted = content.split("\n+".toRegex()).toTypedArray()
         var i = 1
@@ -109,10 +109,10 @@ class SiteTest : SiteFactory.Model {
     @Test
     @Throws(IOException::class)
     fun shouldSupportSimpleNode() {
-        val parentPageTitle = Optional.of("Test")
+        val parentPageTitle = "Test"
         val stream = javaClass.classLoader.getResourceAsStream("simpleNodes.md")
         Assertions.assertNotNull(stream)
-        val converted = SiteProcessor.processMarkdown(site, site!!.home, Optional.empty(), IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
+        val converted = SiteProcessor.processMarkdown(site, site!!.home, null, IOUtils.toString(stream, Charset.defaultCharset()), parentPageTitle)
         Assertions.assertNotNull(converted)
         Assertions.assertLinesMatch(listOf(
                 "h1. Horizontal rules",
