@@ -144,18 +144,44 @@ public class MarkdownVisitorHelper {
      * [Match multiline text using regular expression](https://stackoverflow.com/a/3652392/521197)
      */
     private static Pattern isConfluenceMacroPattern = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$", Pattern.DOTALL  );
-    private static Pattern isConfluenceVariable = Pattern.compile( "^[\\s]*\\$\\{([\\w-\\.]+)\\}[\\s]*$" );
+    private static Pattern isConfluenceMacroWithContentPattern = Pattern.compile("^\\s*(\\{.+\\})(.+)(\\{.+\\})\\s*$", Pattern.DOTALL );
+    private static Pattern isConfluenceVariablePattern = Pattern.compile( "^[\\s]*\\$\\{([\\w-\\.]+)\\}[\\s]*$" );
 
     /**
      *
      * @param text
      * @return
      */
-    public static boolean isConfluenceMacro( String text ) {
+    public static boolean isConfluenceMacroOrVariable( String text ) {
         // GUARD
         if( text == null || text.isEmpty() ) return false;
-        return  isConfluenceMacroPattern.matcher(text).matches() ||
-                isConfluenceVariable.matcher(text).matches();
+        return isConfluenceMacroPattern.matcher(text).matches() ||
+            isConfluenceVariablePattern.matcher(text).matches();
+    }
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public static boolean isConfluenceMacro2( String text ) {
+        // GUARD
+        if( text == null || text.isEmpty() ) return false;
+        return  isConfluenceMacroPattern.matcher(text).matches();
+    }
+
+    public static boolean isConfluenceVariable( String text ) {
+        // GUARD
+        if( text == null || text.isEmpty() ) return false;
+        return isConfluenceVariablePattern.matcher(text).matches();
+    }
+
+    /**
+     *
+     * @param text
+     * @return
+     */
+    public static Matcher parseConfluenceMacro( @NonNull String text ) {
+        return isConfluenceMacroWithContentPattern.matcher(text);
     }
 
     /**

@@ -321,17 +321,31 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
                 .process();
     }
 
+    private String processConfluenceMacro( String content ) {
+//        final Node node = parser().parse(content);
+//
+//        final CommonmarkConfluenceWikiVisitor visitor = new CommonmarkConfluenceWikiVisitor( parseContext );
+//
+//        node.accept(visitor);
+//
+//        return visitor.toString();
+
+        return content;
+    }
+
     @Override
     public void visit(HtmlBlock node) {
 
         final String literal = node.getLiteral();
 
         final Matcher m = parseHTMLComment(literal);
-        if( m.matches() && isConfluenceMacro( m.group(2) ) ) {
+        if( m.matches() && isConfluenceMacroOrVariable( m.group(2) ) ) {
+
+            final String parsedText = processConfluenceMacro(m.group(2));
 
             processChildren(node)
                     .pre(() -> m.group(1))
-                    .post(() -> m.group(2))
+                    .post(() -> parsedText)
                     .process().nl();
         }
         else if( !parseContext.isSkipHtml() ) {
