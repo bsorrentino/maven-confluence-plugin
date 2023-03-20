@@ -141,9 +141,9 @@ public class MarkdownVisitorHelper {
 //    }
 
     /**
-     *
+     * [Match multiline text using regular expression](https://stackoverflow.com/a/3652392/521197)
      */
-    private static Pattern isConfluenceMacroPattern = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$" );
+    private static Pattern isConfluenceMacroPattern = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$", Pattern.DOTALL  );
     private static Pattern isConfluenceVariable = Pattern.compile( "^[\\s]*\\$\\{([\\w-\\.]+)\\}[\\s]*$" );
 
     /**

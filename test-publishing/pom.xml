@@ -448,6 +448,26 @@
 
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue285
+                    mvn confluence-reporting:delete@issue285
+                    -->
+                    <execution>
+                        <id>issue285</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue285/site.yml</siteDescriptor>
+                            <markdownProcessor>
+                                <skipHtml>true</skipHtml>
+                            </markdownProcessor>
+
+                        </configuration>
+                    </execution>
 
                 </executions>
             </plugin>

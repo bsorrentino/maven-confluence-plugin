@@ -1,6 +1,7 @@
 package org.bsc.makdown.commonmark
 
 import org.bsc.confluence.model.Site
+import org.bsc.markdown.MarkdownVisitorHelper.isConfluenceMacro
 import org.bsc.markdown.commonmark.CommonmarkConfluenceWikiVisitor.parseHTMLComment
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -26,11 +27,14 @@ class Issue285Test {
 
         assertTrue( multiLineMatcher.matches() )
         assertEquals( 2, multiLineMatcher.groupCount() )
+
+        val content = multiLineMatcher.group(2).trimEnd()
         assertEquals( """
             {excerpt:title=MyExcerpt}
             This is the content that I want to use as my excerpt.
             {excerpt}
-            """.trimIndent(), multiLineMatcher.group(2).trimEnd() )
+            """.trimIndent(), content )
+        assertTrue( isConfluenceMacro( content ), "$content\n It is not recognized as confluence macro!" )
 
     }
 
