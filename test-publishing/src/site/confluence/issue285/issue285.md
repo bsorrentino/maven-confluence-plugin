@@ -3,6 +3,8 @@
 
 <!-- {excerpt:title=MyExcerpt}
 This is the content that I want to use as my excerpt.
+
+### new element
 {excerpt} -->
 
 <!-- {excerpt:title=MyExcerpt} This is the content that I want to use as my excerpt. {excerpt} -->
