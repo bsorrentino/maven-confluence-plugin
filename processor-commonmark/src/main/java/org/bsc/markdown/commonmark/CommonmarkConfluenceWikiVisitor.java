@@ -323,19 +323,19 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
 
     @Override
     public void visit(HtmlBlock node) {
-        // GUARD
-        if( parseContext.isSkipHtml() ) return;
 
         final String literal = node.getLiteral();
 
         final Matcher m = parseHTMLComment(literal);
         if( m.matches() && isConfluenceMacro( m.group(2) ) ) {
+
             processChildren(node)
                     .pre(() -> m.group(1))
                     .post(() -> m.group(2))
                     .process().nl();
         }
-        else {
+        else if( !parseContext.isSkipHtml() ) {
+
             processChildren(node)
                     .pre(() -> format("{html}\n%s\n", literal) )
                     .post(() -> "{html}")
