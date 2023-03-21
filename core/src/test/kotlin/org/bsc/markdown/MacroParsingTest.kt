@@ -1,6 +1,6 @@
 package org.bsc.markdown
 
-import org.bsc.markdown.MarkdownVisitorHelper.isConfluenceMacro
+import org.bsc.markdown.MarkdownVisitorHelper.isConfluenceMacroOrVariable
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertTrue
 
@@ -44,7 +44,7 @@ class MacroParsingTest {
 
         for( literal in macros )  {
             println( "evaluate macro $literal")
-            assertTrue( isConfluenceMacro(literal) )
+            assertTrue( isConfluenceMacroOrVariable(literal) )
         }
 
     }

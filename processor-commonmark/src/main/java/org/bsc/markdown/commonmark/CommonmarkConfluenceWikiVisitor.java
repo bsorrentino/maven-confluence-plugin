@@ -44,6 +44,16 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             return parser.parse(content);
         }
 
+        public final String parseMarkdown(  MarkdownParserContext context, String content ) {
+            final Node node =  parser.parse(content);
+
+            final CommonmarkConfluenceWikiVisitor visitor = new CommonmarkConfluenceWikiVisitor( context );
+
+            node.accept(visitor);
+
+            return visitor.toString();
+
+        }
     }
 
     public static Parser parser() {
@@ -321,17 +331,34 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
                 .process();
     }
 
+    private String processConfluenceMacro( String content ) {
+
+        final Matcher m = parseConfluenceMacro(content);
+
+        // GUARD
+        if( !m.matches() || m.groupCount() != 3 ) {
+            return content;
+        }
+
+        final String mdContent = parser().parseMarkdown( parseContext, m.group(2) );
+
+        return String.format( "%s\n%s\n%s\n", m.group(1), mdContent, m.group(3) );
+    }
+
     @Override
     public void visit(HtmlBlock node) {
 
         final String literal = node.getLiteral();
 
         final Matcher m = parseHTMLComment(literal);
-        if( m.matches() && isConfluenceMacro( m.group(2) ) ) {
+        if( m.matches() && isConfluenceMacroOrVariable( m.group(2) ) ) {
+
+            final String parsedText = m.group(2);
 
             processChildren(node)
                     .pre(() -> m.group(1))
-                    .post(() -> m.group(2))
+                    .post(() -> isConfluenceMacro(parsedText) ?
+                                    processConfluenceMacro(parsedText) : parsedText )
                     .process().nl();
         }
         else if( !parseContext.isSkipHtml() ) {
