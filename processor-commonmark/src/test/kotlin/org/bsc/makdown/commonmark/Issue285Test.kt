@@ -80,19 +80,78 @@ class Issue285Test {
             """.trimIndent(), m.group(2))
 
 
-        val mdcontent = parseContent( site, m.group(2) )
+        val mdContent = parseContent( site, m.group(2) )
 
         assertEquals( """
             h1. Title
             This is the content that I *want* to use as my excerpt.
-            """.trimIndent(), mdcontent )
+            """.trimIndent(), mdContent )
 
         assertEquals( """
             {excerpt:title=MyExcerpt}
             h1. Title
             This is the content that I *want* to use as my excerpt.
             {excerpt}
-            """.trimIndent(), "${m.group(1)}\n$mdcontent\n${m.group(3)}" )
+            """.trimIndent(), "${m.group(1)}\n$mdContent\n${m.group(3)}" )
+
+    }
+    @Test
+    fun `parse document with excerpt macros having markdown content`() {
+
+        val mdContent = """
+            <!-- {excerpt:title=MyExcerpt}
+            # Title
+            This is the content that I **want** to use as my excerpt.
+            {excerpt} -->
+            
+            # New Title
+            this is a paragraph                      
+        """.trimIndent()
+
+
+        val wikiContent = parseContent( site, mdContent )
+
+        assertEquals( """
+            {excerpt:title=MyExcerpt}
+            h1. Title
+            This is the content that I *want* to use as my excerpt.
+            
+            
+            {excerpt}
+            
+            h1. New Title
+            this is a paragraph
+            """.trimIndent(), wikiContent )
+
+    }
+
+    @Test
+    fun `parse document with excerpt macros without markdown content`() {
+
+        val mdContent = """
+            <!-- {excerpt:title=MyExcerpt}
+            h1. Title
+            This is the content that I _want_ to use as my excerpt.
+            {excerpt} -->
+            
+            # New Title
+            this is a paragraph                     
+        """.trimIndent()
+
+
+        val wikiContent = parseContent( site, mdContent )
+
+        assertEquals( """
+            {excerpt:title=MyExcerpt}
+            h1. Title
+            This is the content that I _want_ to use as my excerpt.
+            
+            
+            {excerpt}
+  
+            h1. New Title
+            this is a paragraph
+            """.trimIndent(), wikiContent )
 
     }
 
