@@ -44,6 +44,16 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
             return parser.parse(content);
         }
 
+        public final String parseMarkdown(  MarkdownParserContext context, String content ) {
+            final Node node =  parser.parse(content);
+
+            final CommonmarkConfluenceWikiVisitor visitor = new CommonmarkConfluenceWikiVisitor( context );
+
+            node.accept(visitor);
+
+            return visitor.toString();
+
+        }
     }
 
     public static Parser parser() {
@@ -322,15 +332,17 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     }
 
     private String processConfluenceMacro( String content ) {
-//        final Node node = parser().parse(content);
-//
-//        final CommonmarkConfluenceWikiVisitor visitor = new CommonmarkConfluenceWikiVisitor( parseContext );
-//
-//        node.accept(visitor);
-//
-//        return visitor.toString();
 
-        return content;
+        final Matcher m = parseConfluenceMacro(content);
+
+        // GUARD
+        if( !m.matches() || m.groupCount() != 3 ) {
+            return content;
+        }
+
+        final String mdContent = parser().parseMarkdown( parseContext, m.group(2) );
+
+        return String.format( "%s\n%s\n%s\n", m.group(1), mdContent, m.group(3) );
     }
 
     @Override
@@ -341,11 +353,12 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final Matcher m = parseHTMLComment(literal);
         if( m.matches() && isConfluenceMacroOrVariable( m.group(2) ) ) {
 
-            final String parsedText = processConfluenceMacro(m.group(2));
+            final String parsedText = m.group(2);
 
             processChildren(node)
                     .pre(() -> m.group(1))
-                    .post(() -> parsedText)
+                    .post(() -> isConfluenceMacro(parsedText) ?
+                                    processConfluenceMacro(parsedText) : parsedText )
                     .process().nl();
         }
         else if( !parseContext.isSkipHtml() ) {

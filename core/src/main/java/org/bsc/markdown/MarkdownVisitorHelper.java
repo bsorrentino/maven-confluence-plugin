@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -144,7 +143,7 @@ public class MarkdownVisitorHelper {
      * [Match multiline text using regular expression](https://stackoverflow.com/a/3652392/521197)
      */
     private static Pattern isConfluenceMacroPattern = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$", Pattern.DOTALL  );
-    private static Pattern isConfluenceMacroWithContentPattern = Pattern.compile("^\\s*(\\{.+\\})(.+)(\\{.+\\})\\s*$", Pattern.DOTALL );
+    private static Pattern confluenceMacroWithContentPattern = Pattern.compile("^\\s*(\\{.+\\})(.+)(\\{.+\\})\\s*$", Pattern.DOTALL );
     private static Pattern isConfluenceVariablePattern = Pattern.compile( "^[\\s]*\\$\\{([\\w-\\.]+)\\}[\\s]*$" );
 
     /**
@@ -163,7 +162,7 @@ public class MarkdownVisitorHelper {
      * @param text
      * @return
      */
-    public static boolean isConfluenceMacro2( String text ) {
+    public static boolean isConfluenceMacro( String text ) {
         // GUARD
         if( text == null || text.isEmpty() ) return false;
         return  isConfluenceMacroPattern.matcher(text).matches();
@@ -181,7 +180,7 @@ public class MarkdownVisitorHelper {
      * @return
      */
     public static Matcher parseConfluenceMacro( @NonNull String text ) {
-        return isConfluenceMacroWithContentPattern.matcher(text);
+        return confluenceMacroWithContentPattern.matcher(text);
     }
 
     /**
