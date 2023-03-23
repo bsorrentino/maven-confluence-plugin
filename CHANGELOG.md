@@ -2,8 +2,114 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## v7.10
+## v7.11
 ### Generic changes
+
+**Merge branch 'release/7.11'**
+
+
+[c537baae22c86ed](https://github.com/bsorrentino/maven-confluence-plugin/commit/c537baae22c86ed) Build Pipeline *2023-03-23 09:02:22*
+
+**docs(README.md): update**
+
+
+[e2bf2642b267fc3](https://github.com/bsorrentino/maven-confluence-plugin/commit/e2bf2642b267fc3) Build Pipeline *2023-03-23 09:01:53*
+
+**build: move to new production version**
+
+
+[433a77c09a5acc0](https://github.com/bsorrentino/maven-confluence-plugin/commit/433a77c09a5acc0) Build Pipeline *2023-03-23 08:58:14*
+
+**Merge branch 'bugfix/issue285' into develop**
+
+
+[e9665cea785db3d](https://github.com/bsorrentino/maven-confluence-plugin/commit/e9665cea785db3d) Build Pipeline *2023-03-21 11:58:16*
+
+**fix: finalize implementation**
+
+ * implement &#x27;processConfluenceMacro&#x27; method in CommonmarkConfluenceWikiVisitor invoked on visit( HtmlBlock )
+ * #285
+
+[d5703c3836874e0](https://github.com/bsorrentino/maven-confluence-plugin/commit/d5703c3836874e0) Build Pipeline *2023-03-21 11:57:53*
+
+**test: improve test cases**
+
+ * #285
+
+[7e4ddefd59e0f80](https://github.com/bsorrentino/maven-confluence-plugin/commit/7e4ddefd59e0f80) Build Pipeline *2023-03-21 11:56:11*
+
+**feat: enable nested markdown processing**
+
+ * #285
+
+[0ff0fe8d7c75840](https://github.com/bsorrentino/maven-confluence-plugin/commit/0ff0fe8d7c75840) Build Pipeline *2023-03-20 18:47:45*
+
+**test: refactor test**
+
+ * #285
+
+[04f6530c2e56715](https://github.com/bsorrentino/maven-confluence-plugin/commit/04f6530c2e56715) Build Pipeline *2023-03-20 18:47:02*
+
+**test(issue285.md): update publish test**
+
+ * #285
+
+[d657e4447e7542f](https://github.com/bsorrentino/maven-confluence-plugin/commit/d657e4447e7542f) Build Pipeline *2023-03-20 14:55:33*
+
+**Merge branch 'bugfix/issue285' into develop**
+
+
+[bf031092d0e16e0](https://github.com/bsorrentino/maven-confluence-plugin/commit/bf031092d0e16e0) bsorrentino *2023-03-20 09:40:26*
+
+**fix(CommonmarkConfluenceWikiVisitor.java): update regex**
+
+ * update regex for detecting html comment to handle multiline content
+ * #285
+
+[b3d6a756bc2089c](https://github.com/bsorrentino/maven-confluence-plugin/commit/b3d6a756bc2089c) bsorrentino *2023-03-20 09:40:02*
+
+**test: test parse multiline html comment**
+
+ * test multiline html comment for identify confluence macro + test publishing
+ * #285
+
+[17ba7f4988e367a](https://github.com/bsorrentino/maven-confluence-plugin/commit/17ba7f4988e367a) bsorrentino *2023-03-20 09:38:07*
+
+**test(Issue285Test.kt): test parse multiline html comment**
+
+
+[282538730cf0e33](https://github.com/bsorrentino/maven-confluence-plugin/commit/282538730cf0e33) bsorrentino *2023-03-19 18:58:45*
+
+**refactor: remove the Optionals as arguments**
+
+
+[b755fdf659e7044](https://github.com/bsorrentino/maven-confluence-plugin/commit/b755fdf659e7044) bsorrentino *2023-03-04 11:26:09*
+
+**build(pom): move to next dev version**
+
+
+[42b16e8ec0f8323](https://github.com/bsorrentino/maven-confluence-plugin/commit/42b16e8ec0f8323) bsorrentino *2023-03-04 11:24:28*
+
+**Merge branch 'master' into develop**
+
+
+[2e7485308678d97](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e7485308678d97) bsorrentino *2023-03-04 11:15:31*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[d6f4ef7a3cea055](https://github.com/bsorrentino/maven-confluence-plugin/commit/d6f4ef7a3cea055) bsorrentino *2023-03-04 11:15:29*
+
+**docs(changelog): update**
+
+
+[2e120d732d1cbf1](https://github.com/bsorrentino/maven-confluence-plugin/commit/2e120d732d1cbf1) bsorrentino *2023-03-04 11:15:11*
+
+**Merge tag 'v7.10' into develop**
+
+ * new release
+
+[20e7233fad07815](https://github.com/bsorrentino/maven-confluence-plugin/commit/20e7233fad07815) bsorrentino *2023-03-04 11:13:15*
 
 **Merge branch 'release/7.10'**
 
@@ -341,10 +447,6 @@
 
 
 [b2c477701450e30](https://github.com/bsorrentino/maven-confluence-plugin/commit/b2c477701450e30) Build Pipeline *2022-12-09 12:02:52*
-
-
-## v7.7.1
-### Generic changes
 
 **Merge branch 'hotfix/7.7.1'**
 
