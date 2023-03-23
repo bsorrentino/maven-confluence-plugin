@@ -278,7 +278,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
     /**
      *
      * @param <T>
-     * @param pageToUpdate
+     * @param pageToUpdate - Nullable
      * @param site
      * @param source
      * @param child
@@ -286,13 +286,13 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @return
      */
     private <T extends Site.Page> CompletableFuture<Storage> getPageContent(
-            final Optional<Model.Page> pageToUpdate,
+            final Model.Page pageToUpdate,
             final Site site,
             final java.net.URI source,
             final T child,
             final String pageTitleToApply)
     {
-        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed()) ? ofNullable(this.getPageTitle()) : empty();
+        final String pagePrefixToApply = (isChildrenTitlesPrefixed()) ? this.getPageTitle() : null;
 
         return processPageUri(site, child, pageToUpdate, source, pagePrefixToApply)
                 .thenCompose( content -> {
@@ -413,13 +413,13 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
         // Update Page Inline Function
         final AsyncProcessPageFunc updatePageFunction = p ->
                     updatePageIfNeeded(child,p,
-                        () -> getPageContent( ofNullable(p), site, uri, child, pageTitleToApply )
+                        () -> getPageContent( p, site, uri, child, pageTitleToApply )
                                 .thenCompose( storage -> confluence.storePage(p, storage))
                                 .thenCompose( page -> saveAttributesToDeployStateManager(child, page )));
 
         // Create Page Function
         final AsyncPageSupplier createPageFunction = () ->
-                        getPageContent( empty(), site, uri, child, pageTitleToApply )
+                        getPageContent( null, site, uri, child, pageTitleToApply )
                             .thenCompose( storage -> confluence.createPage(parentPage, pageTitleToApply, storage))
                             .thenCompose( page -> saveAttributesToDeployStateManager(child, page ));
 
@@ -549,10 +549,10 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      */
     private CompletableFuture<String> processUriContent(Site site, Site.Page child, java.net.URI uri, final Charset charset)  {
 
-        final Optional<String> pagePrefixToApply =
+        final String pagePrefixToApply =
                 (isChildrenTitlesPrefixed()) ?
-                        ofNullable(this.getPageTitle()) :
-                        empty();
+                        this.getPageTitle() :
+                        null;
 
         return SiteProcessor.processUriContent(site, child, uri, pagePrefixToApply)
                 .thenApply( pageContent -> pageContent.getContent(charset) );

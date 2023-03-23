@@ -491,17 +491,24 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
     }
 
+    /**
+     *
+     * @param site
+     * @param homePage - Nullable
+     * @param locale
+     * @return
+     */
     private CompletableFuture<Storage> getHomeContent(
                 final Site site,
-                final Optional<Model.Page> homePage,
+                final Model.Page homePage,
                 final Locale locale )
     {
 
         final Site.Page home = site.getHome();
         final java.net.URI uri = home.getUri();
-        final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed())
-                    ? ofNullable(this.getPageTitle())
-                    : Optional.empty();
+        final String pagePrefixToApply = (isChildrenTitlesPrefixed())
+                    ? this.getPageTitle()
+                    : null;
 
         return processPageUri( site, home, homePage, uri, pagePrefixToApply)
                 .thenCompose( content -> {
@@ -545,11 +552,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
         final AsyncProcessPageFunc updateHomePage = p ->
             updatePageIfNeeded(site.getHome(), p, () ->
-                    getHomeContent(site, Optional.of(p), locale)
+                    getHomeContent(site, p, locale)
                             .thenCompose( content -> confluence.storePage(p, content )));
 
         final AsyncProcessPageFunc createHomePage = _parentPage ->
-                    getHomeContent(  site, Optional.empty(), locale )
+                    getHomeContent(  site, null, locale )
                         .thenCompose( content -> confluence.createPage(_parentPage, _homePageTitle,content) );
 
 
@@ -803,14 +810,14 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         /**
          *
          * @param site
-         * @param homePage
+         * @param homePage - Nullable
          * @param pluginDescriptor
          * @param locale
          * @return
          */
         private CompletableFuture<Storage> getHomeContent(
             final Site site,
-            final Optional<Model.Page> homePage,
+            final Model.Page homePage,
             final PluginDescriptor pluginDescriptor,
             final Locale locale)
         {
@@ -826,9 +833,9 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             }
 
             final String title = getPageTitle();
-            final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed())
-                    ? ofNullable(getPageTitle())
-                    : Optional.empty();
+            final String pagePrefixToApply = (isChildrenTitlesPrefixed())
+                    ? getPageTitle()
+                    : null ;
 
             return processPageUri(site, site.getHome(), homePage, site.getHome().getUri(), pagePrefixToApply )
                     .thenCompose( content -> {
@@ -930,11 +937,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
             }
 
             final String title = getPageTitle();
-            final Optional<String> pagePrefixToApply = (isChildrenTitlesPrefixed())
-                    ? ofNullable(getPageTitle())
-                    : Optional.empty();
+            final String pagePrefixToApply = (isChildrenTitlesPrefixed())
+                    ? getPageTitle()
+                    : null ;
 
-            return processPageUri(site, site.getHome(), Optional.of(homePage), site.getHome().getUri(), pagePrefixToApply )
+            return processPageUri(site, site.getHome(), homePage, site.getHome().getUri(), pagePrefixToApply )
                     .thenCompose( content -> {
 
                     try {
@@ -1042,11 +1049,11 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
 
             final Function<Model.Page, CompletableFuture<Model.Page>> updatePage = (p) ->
                 updatePageIfNeeded( site.getHome(),p,
-                        () -> getHomeContent( site, Optional.of(p), pluginDescriptor, locale)
+                        () -> getHomeContent( site, p, pluginDescriptor, locale)
                                         .thenCompose( content -> confluence.storePage(p, content)));
 
             final Function<Model.Page, CompletableFuture<Model.Page>> createPage = (parent) ->
-                        getHomeContent(site, Optional.empty(), pluginDescriptor, locale)
+                        getHomeContent(site, null, pluginDescriptor, locale)
                         .thenCompose( content ->confluence.createPage(parent, title, content));
 
             return removeSnaphot(confluence, parentPage, title)

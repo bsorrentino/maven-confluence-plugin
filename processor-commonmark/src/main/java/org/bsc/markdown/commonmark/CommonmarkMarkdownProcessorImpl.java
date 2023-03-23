@@ -22,13 +22,6 @@ public class CommonmarkMarkdownProcessorImpl implements MarkdownProcessor {
      */
     @Override
     public String processMarkdown( MarkdownParserContext context, String content ) throws IOException {
-
-        final Node node =  CommonmarkConfluenceWikiVisitor.parser().parse(content);
-
-        final CommonmarkConfluenceWikiVisitor visitor = new CommonmarkConfluenceWikiVisitor( context );
-
-        node.accept(visitor);
-
-        return visitor.toString();
+        return CommonmarkConfluenceWikiVisitor.parser().parseMarkdown( context, content );
     }
 }

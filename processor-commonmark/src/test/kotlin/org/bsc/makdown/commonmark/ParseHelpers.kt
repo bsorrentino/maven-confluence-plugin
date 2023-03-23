@@ -8,27 +8,25 @@ import org.junit.jupiter.api.fail
 import java.nio.charset.Charset
 import java.util.*
 
+fun newMarkdownParserContext( site: Site, linkPrefixEnabled: Boolean ) = object :MarkdownParserContext {
+        override fun isSkipHtml() = false
+
+        override fun getSite() = Optional.of(site)
+
+        override fun getPage(): Optional<Site.Page> = Optional.of(site.home)
+
+        override fun isLinkPrefixEnabled() = linkPrefixEnabled
+
+}
 
 fun parseContent(site: Site, content: String, linkPrefixEnabled: Boolean = true): String {
 
-        val root = CommonmarkConfluenceWikiVisitor.parser().parse(content)
+        val context = newMarkdownParserContext( site, linkPrefixEnabled)
 
-        val visitor = CommonmarkConfluenceWikiVisitor(object : MarkdownParserContext {
-                override fun isSkipHtml() = false
-
-                override fun getSite() = Optional.of(site)
-
-                override fun getPage(): Optional<Site.Page> = Optional.of(site.home)
-
-                override fun isLinkPrefixEnabled() = linkPrefixEnabled
-
-        })
-
-        root.accept(visitor)
-
-        return visitor.toString().trimEnd()
+        return  CommonmarkConfluenceWikiVisitor.parser().parseMarkdown(context, content ).trimEnd()
 
 }
+
 
 fun parseResource(type: Class<*>, name: String, site: Site): String? =
         try {
