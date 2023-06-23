@@ -310,14 +310,14 @@ public class SiteProcessor {
 
             @Override
             public Optional<String> getPagePrefixToApply() {
-                return Optional.of(pagePrefixToApply);
+                return Optional.ofNullable(pagePrefixToApply);
             }
 
             @Override
             public boolean isLinkPrefixEnabled() {
                 if( child.isIgnoreVariables() ) return false;
 
-                return Optional.of(page).map( p -> !p.getTitle().contains("[") ).orElse(true);
+                return Optional.ofNullable(page).map( p -> !p.getTitle().contains("[") ).orElse(true);
 
             }
         }, content);
