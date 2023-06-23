@@ -310,12 +310,18 @@ public class SiteProcessor {
 
             @Override
             public Optional<String> getPagePrefixToApply() {
+                if (pagePrefixToApply == null)
+                    return MarkdownParserContext.super.getPagePrefixToApply();
+
                 return Optional.of(pagePrefixToApply);
             }
 
             @Override
             public boolean isLinkPrefixEnabled() {
                 if( child.isIgnoreVariables() ) return false;
+
+                if (page == null)
+                    return MarkdownParserContext.super.isLinkPrefixEnabled();
 
                 return Optional.of(page).map( p -> !p.getTitle().contains("[") ).orElse(true);
 
