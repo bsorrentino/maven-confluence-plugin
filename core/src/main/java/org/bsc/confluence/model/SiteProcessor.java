@@ -300,12 +300,12 @@ public class SiteProcessor {
 
             @Override
             public Optional<Site> getSite() {
-                return Optional.of(site);
+                return Optional.ofNullable(site);
             }
 
             @Override
             public Optional<Site.Page> getPage() {
-                return Optional.of(child);
+                return Optional.ofNullable(child);
             }
 
             @Override
