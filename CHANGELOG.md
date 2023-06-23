@@ -2,6 +2,67 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**build: move to next version 7.12**
+
+
+[f70f9d5c308c422](https://github.com/bsorrentino/maven-confluence-plugin/commit/f70f9d5c308c422) bsorrentino *2023-06-23 18:38:02*
+
+**build: move to next dev version**
+
+
+[96d0999f4057f0d](https://github.com/bsorrentino/maven-confluence-plugin/commit/96d0999f4057f0d) bsorrentino *2023-06-23 18:17:05*
+
+**Merge branch 'feature/pr288' into develop**
+
+
+[c4b960e134429a2](https://github.com/bsorrentino/maven-confluence-plugin/commit/c4b960e134429a2) bsorrentino *2023-06-23 18:15:11*
+
+**refactor(SiteProcessor.java): Optional usage refinement**
+
+ * use Optional.OfNullable() instead Optional.of()
+
+[220426a4c952a9f](https://github.com/bsorrentino/maven-confluence-plugin/commit/220426a4c952a9f) bsorrentino *2023-06-23 18:14:03*
+
+**Merge branch 'williamschey-master' into feature/pr288**
+
+
+[83e977cc998064b](https://github.com/bsorrentino/maven-confluence-plugin/commit/83e977cc998064b) bsorrentino *2023-06-23 18:07:45*
+
+**#287: Changed to use Optional.ofNullable to deal with nulls**
+
+
+[5997ce7ddffd33a](https://github.com/bsorrentino/maven-confluence-plugin/commit/5997ce7ddffd33a) William Schey *2023-06-23 08:06:10*
+
+**#287: Fix for NPE that is throw when trying to link internally to project**
+
+
+[622ae475a55a570](https://github.com/bsorrentino/maven-confluence-plugin/commit/622ae475a55a570) William Schey *2023-06-23 06:32:50*
+
+**Merge branch 'master' into develop**
+
+
+[90b6784c533e68f](https://github.com/bsorrentino/maven-confluence-plugin/commit/90b6784c533e68f) Build Pipeline *2023-03-23 09:05:22*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[3ba40fc5a0c85de](https://github.com/bsorrentino/maven-confluence-plugin/commit/3ba40fc5a0c85de) Build Pipeline *2023-03-23 09:05:20*
+
+**docs(CHANGELOG.md): update**
+
+
+[345993d38a96642](https://github.com/bsorrentino/maven-confluence-plugin/commit/345993d38a96642) Build Pipeline *2023-03-23 09:05:00*
+
+**Merge tag 'v7.11' into develop**
+
+ * new release
+
+[a3511124ab4627f](https://github.com/bsorrentino/maven-confluence-plugin/commit/a3511124ab4627f) Build Pipeline *2023-03-23 09:02:31*
+
+
 ## v7.11
 ### Generic changes
 
@@ -110,6 +171,10 @@
  * new release
 
 [20e7233fad07815](https://github.com/bsorrentino/maven-confluence-plugin/commit/20e7233fad07815) bsorrentino *2023-03-04 11:13:15*
+
+
+## v7.10
+### Generic changes
 
 **Merge branch 'release/7.10'**
 
@@ -447,6 +512,10 @@
 
 
 [b2c477701450e30](https://github.com/bsorrentino/maven-confluence-plugin/commit/b2c477701450e30) Build Pipeline *2022-12-09 12:02:52*
+
+
+## v7.7.1
+### Generic changes
 
 **Merge branch 'hotfix/7.7.1'**
 
