@@ -300,24 +300,24 @@ public class SiteProcessor {
 
             @Override
             public Optional<Site> getSite() {
-                return Optional.of(site);
+                return Optional.ofNullable(site);
             }
 
             @Override
             public Optional<Site.Page> getPage() {
-                return Optional.of(child);
+                return Optional.ofNullable(child);
             }
 
             @Override
             public Optional<String> getPagePrefixToApply() {
-                return Optional.of(pagePrefixToApply);
+                return Optional.ofNullable(pagePrefixToApply);
             }
 
             @Override
             public boolean isLinkPrefixEnabled() {
                 if( child.isIgnoreVariables() ) return false;
 
-                return Optional.of(page).map( p -> !p.getTitle().contains("[") ).orElse(true);
+                return Optional.ofNullable(page).map( p -> !p.getTitle().contains("[") ).orElse(true);
 
             }
         }, content);
