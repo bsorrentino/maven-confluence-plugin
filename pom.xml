@@ -76,7 +76,7 @@
 
         <pluginToolsVersion>3.6.0</pluginToolsVersion>
         <addTimestamp>true</addTimestamp>
-        <mavenVersion>3.3.1</mavenVersion>
+        <mavenVersion>3.8.1</mavenVersion>
         <!--reports-plugin-version>3.1.1</reports-plugin-version-->
         <reports-plugin-version>2.4</reports-plugin-version>
         <tag>${project.artifactId}-${project.version}</tag>
