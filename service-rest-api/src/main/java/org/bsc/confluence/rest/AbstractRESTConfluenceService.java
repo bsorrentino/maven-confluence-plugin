@@ -5,7 +5,6 @@
  */
 package org.bsc.confluence.rest;
 
-import lombok.val;
 import okhttp3.*;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
@@ -58,7 +57,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
      */
     public CompletableFuture<Response> fromRequestAsync( final Request req ) {
 
-        val result = new CompletableFuture<Response>();
+        final CompletableFuture<Response> result = new CompletableFuture<Response>();
         
         client.build().newCall(req).enqueue( new Callback() {
                 
