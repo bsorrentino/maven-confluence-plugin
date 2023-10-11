@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -110,11 +111,14 @@ public class MarkdownVisitorHelper {
             return result;
         };
 
+
         return parseContext.getSite()
                 .flatMap( site -> site.getHome().findPage( comparePath ) )
                 .map( page -> parseContext.getPagePrefixToApply()
-                        .filter( prefixToApply -> !url.startsWith(prefixToApply) )
-                        .map( prefixToApply -> format( "%s - %s", prefixToApply, page.getName() ) )
+                        .map( prefixToApply -> prefixToApply.concat(" - "))
+                        .filter( prefixToApply -> !url.startsWith(prefixToApply) ) // check prefix already applied
+                        .filter( prefixToApply -> !page.getName().startsWith(prefixToApply) ) // check prefix already applied
+                        .map( prefixToApply -> prefixToApply.concat( page.getName() ) )
                         .orElse( page.getName() ) )
                 .orElse(url)
                 ;
