@@ -93,6 +93,23 @@
                 </configuration>
                 <executions>
                     <!--
+                    mvn confluence-reporting:deploy@issue294
+                    mvn confluence-reporting:delete@issue294
+                    -->
+                    <execution>
+                        <id>issue294</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue294/site.yaml</siteDescriptor>
+                        </configuration>
+                    </execution>
+
+                    <!--
                     mvn confluence-reporting:export@issue148
                     -->
                     <execution>

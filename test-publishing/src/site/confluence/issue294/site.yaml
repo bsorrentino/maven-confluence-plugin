@@ -1,0 +1,11 @@
+home:
+  name: Issue-294
+  uri: home.md
+  children:
+    - name: Page-A
+      uri: a.md
+      children:
+        - name: Page-B
+          uri: b.md
+        - name: Page-C
+          uri: c.md
