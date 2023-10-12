@@ -2,6 +2,89 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
+## Next release
+### Generic changes
+
+**Merge branch 'bugfix/curly_braces_in_table_#295' into develop**
+
+
+[761397a935fbc5b](https://github.com/bsorrentino/maven-confluence-plugin/commit/761397a935fbc5b) bsorrentino *2023-10-12 17:19:03*
+
+**feat: enhance escapeMarkdownText method**
+
+ * enable fine grained escaping on markdown text
+ * resolve #295
+
+[1157223261d86b6](https://github.com/bsorrentino/maven-confluence-plugin/commit/1157223261d86b6) bsorrentino *2023-10-12 17:17:40*
+
+**fix: enable escaping on TableCell**
+
+ * working on #295
+
+[ee97f605962a828](https://github.com/bsorrentino/maven-confluence-plugin/commit/ee97f605962a828) bsorrentino *2023-10-12 17:16:46*
+
+**test: add unit test**
+
+ * working on #295
+
+[a65b74a001e9bb5](https://github.com/bsorrentino/maven-confluence-plugin/commit/a65b74a001e9bb5) bsorrentino *2023-10-12 17:16:07*
+
+**Merge branch 'bugfix/relative_link_#294' into develop**
+
+
+[3019d28e99fceff](https://github.com/bsorrentino/maven-confluence-plugin/commit/3019d28e99fceff) bsorrentino *2023-10-11 16:49:16*
+
+**fix: check prefix before apply**
+
+ * check link prefix before apply it
+ * resolve #294
+
+[c8d619ed504b8f7](https://github.com/bsorrentino/maven-confluence-plugin/commit/c8d619ed504b8f7) bsorrentino *2023-10-11 14:56:15*
+
+**test: add test data**
+
+ * prepare for reproduce issue
+ * working #294
+
+[c6550ce83a6b3d7](https://github.com/bsorrentino/maven-confluence-plugin/commit/c6550ce83a6b3d7) bsorrentino *2023-10-11 14:55:23*
+
+**build: move to next development version**
+
+
+[e102f99740d02ab](https://github.com/bsorrentino/maven-confluence-plugin/commit/e102f99740d02ab) bsorrentino *2023-10-11 08:29:13*
+
+**refactor: remove lombok usage**
+
+
+[5786d8cff33c956](https://github.com/bsorrentino/maven-confluence-plugin/commit/5786d8cff33c956) bsorrentino *2023-10-11 08:02:47*
+
+**build: move to maven 3.6.0 compatibility**
+
+
+[14ccb9769202ef8](https://github.com/bsorrentino/maven-confluence-plugin/commit/14ccb9769202ef8) bsorrentino *2023-10-11 07:56:27*
+
+**Merge branch 'master' into develop**
+
+
+[1158634c0129498](https://github.com/bsorrentino/maven-confluence-plugin/commit/1158634c0129498) bsorrentino *2023-06-26 09:07:59*
+
+**Merge branch 'hotfix/changelog'**
+
+
+[e3810ee009337d4](https://github.com/bsorrentino/maven-confluence-plugin/commit/e3810ee009337d4) bsorrentino *2023-06-26 09:07:57*
+
+**docs(changelog.md): update**
+
+
+[e69cb1d0ab22f21](https://github.com/bsorrentino/maven-confluence-plugin/commit/e69cb1d0ab22f21) bsorrentino *2023-06-26 09:07:31*
+
+**Merge tag 'v7.12' into develop**
+
+ * new release
+
+[8736e5277f5d031](https://github.com/bsorrentino/maven-confluence-plugin/commit/8736e5277f5d031) bsorrentino *2023-06-26 09:05:20*
+
+
 ## v7.12
 ### Generic changes
 

@@ -3,7 +3,7 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.12</version>
+        <version>7.13</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -92,6 +92,40 @@
                     -->
                 </configuration>
                 <executions>
+                    <!--
+                    mvn confluence-reporting:deploy@commonmark
+                    mvn confluence-reporting:delete@commonmark
+                    -->
+                    <execution>
+                        <id>commonmark</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
+                            <deployState/>
+                            <!--childrenTitlesPrefixed>false</childrenTitlesPrefixed-->
+                            <wikiFilesExt>wiki</wikiFilesExt>
+                        </configuration>
+                    </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue294
+                    mvn confluence-reporting:delete@issue294
+                    -->
+                    <execution>
+                        <id>issue294</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue294/site.yaml</siteDescriptor>
+                        </configuration>
+                    </execution>
+
                     <!--
                     mvn confluence-reporting:export@issue148
                     -->
@@ -327,23 +361,6 @@
                                 <version>beta</version>
                                 <skip>${scrollversions.skip}</skip>
                             </scrollVersions>
-                        </configuration>
-                    </execution>
-                    <!--
-                    mvn confluence-reporting:deploy@commonmark
-                    mvn confluence-reporting:delete@commonmark
-                    -->
-                    <execution>
-                        <id>commonmark</id>
-                        <goals>
-                            <goal>deploy</goal>
-                            <goal>delete</goal>
-                        </goals>
-                        <configuration>
-                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
-                            <deployState/>
-                            <!--childrenTitlesPrefixed>false</childrenTitlesPrefixed-->
-                            <wikiFilesExt>wiki</wikiFilesExt>
                         </configuration>
                     </execution>
                     <!--

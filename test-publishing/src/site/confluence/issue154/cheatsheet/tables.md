@@ -14,3 +14,8 @@ Markdown | Less | Pretty
 --- | --- | ---
 *Still* | `renders` | **nicely**
 1 | 2 | 3
+
+## Issue [#295](https://github.com/bsorrentino/maven-confluence-plugin/issues/295)
+| Property  | Default   | Required | Description                                   | Example |
+|-----------|-----------|----------|-----------------------------------------------|---------|
+| someEntry | `{0,128}` | false    | value that is being misinterpreted as a macro | -       |

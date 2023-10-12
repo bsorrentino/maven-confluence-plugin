@@ -9,7 +9,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -110,11 +109,14 @@ public class MarkdownVisitorHelper {
             return result;
         };
 
+
         return parseContext.getSite()
                 .flatMap( site -> site.getHome().findPage( comparePath ) )
                 .map( page -> parseContext.getPagePrefixToApply()
-                        .filter( prefixToApply -> !url.startsWith(prefixToApply) )
-                        .map( prefixToApply -> format( "%s - %s", prefixToApply, page.getName() ) )
+                        .map( prefixToApply -> prefixToApply.concat(" - "))
+                        .filter( prefixToApply -> !url.startsWith(prefixToApply) ) // check prefix already applied
+                        .filter( prefixToApply -> !page.getName().startsWith(prefixToApply) ) // check prefix already applied
+                        .map( prefixToApply -> prefixToApply.concat( page.getName() ) )
                         .orElse( page.getName() ) )
                 .orElse(url)
                 ;
@@ -183,19 +185,20 @@ public class MarkdownVisitorHelper {
         return confluenceMacroWithContentPattern.matcher(text);
     }
 
-    /**
-     *
-     * @param text
-     * @return
-     */
-    public static String escapeMarkdownText( String text ) {
-        // GUARD
-        if( text == null || text.isEmpty() ) return text;
+    public enum EscapeTextEnum {
+        LeftCurlyBrace( "(\\\\)?(\\{)" ),
+        RightCurlyBrace("(\\\\)?(\\})"),
+        LeftSquareBrace("(\\\\)?(\\[)"),
+        RightSquareBrace("(\\\\)?(])");
 
-//        if( SkipEscapeMarkdownText.TOC.matches( text ) ) return text;
-//        if( SkipEscapeMarkdownText.CHILDREN.matches( text ) ) return text;
+        private final  String pattern;
+        EscapeTextEnum( String pattern) {
+            this.pattern = pattern;
+        }
 
-        final BiFunction<String,String,String> replaceAll = (pattern, value ) -> {
+        public String replaceAll( String value)   {
+            if( value == null || value.isEmpty() ) return value;
+
             final Matcher m = Pattern.compile(pattern).matcher(value);
 
             boolean result = m.find();
@@ -210,17 +213,23 @@ public class MarkdownVisitorHelper {
                 return sb.toString();
             }
             return value;
-        };
+        }
+    }
 
-        final String leftS[] = { "(\\\\)?(\\[)", "(\\\\)?(\\{)" };
-        final String rightS[] = { "(\\\\)?(])", "(\\\\)?(\\})" };
-
-        return replaceAll
-                .andThen( result -> replaceAll.apply( rightS[0], result ) )
-                .andThen( result -> replaceAll.apply( rightS[1], result ) )
-                .andThen( result -> replaceAll.apply( leftS[0], result ) )
-                .apply( leftS[1], text );
-
+    /**
+     * Escapes special Markdown characters in a string.
+     *
+     * @param text text The text to escape
+     * @param firstEscape
+     * @param nextEscapes
+     * @return The escaped text
+     */
+    public static String escapeMarkdownText(String text, EscapeTextEnum firstEscape, EscapeTextEnum... nextEscapes ) {
+        String result = firstEscape.replaceAll(text);
+        for (EscapeTextEnum escapeTextEnum : nextEscapes) {
+            result = escapeTextEnum.replaceAll(result);
+        }
+        return result;
     }
 
 }
