@@ -22,7 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.bsc.markdown.MarkdownVisitorHelper.*;
 
@@ -91,8 +90,14 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
      * @return
      */
     public static String escapeMarkdownText( Node node, String text ) {
-        if( node!=null && node.getParent() instanceof TableCell) return text;
-        return MarkdownVisitorHelper.escapeMarkdownText(text);
+
+        if( node!=null && node.getParent() instanceof TableCell  ) {
+            return MarkdownVisitorHelper.escapeMarkdownText(text, EscapeTextEnum.LeftCurlyBrace);
+        }
+        return MarkdownVisitorHelper.escapeMarkdownText(text,  EscapeTextEnum.LeftCurlyBrace,
+                                                                EscapeTextEnum.LeftSquareBrace,
+                                                                EscapeTextEnum.RightCurlyBrace,
+                                                                EscapeTextEnum.RightSquareBrace);
     }
 
     private final static Pattern isHTMLCommentPattern = Pattern.compile( "^([\\s]*)<!--(?:[\\s]*)(.+)-->$", Pattern.DOTALL );
