@@ -2,8 +2,23 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## Next release
+## v7.13
 ### Generic changes
+
+**Merge branch 'release/7.13'**
+
+
+[c7543325ddd2ddb](https://github.com/bsorrentino/maven-confluence-plugin/commit/c7543325ddd2ddb) bsorrentino *2023-10-12 17:27:56*
+
+**docs: update readme and changelog**
+
+
+[641992e2571b4d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/641992e2571b4d2) bsorrentino *2023-10-12 17:27:37*
+
+**build: set the new release version**
+
+
+[513d97305872a08](https://github.com/bsorrentino/maven-confluence-plugin/commit/513d97305872a08) bsorrentino *2023-10-12 17:27:20*
 
 **Merge branch 'bugfix/curly_braces_in_table_#295' into develop**
 
