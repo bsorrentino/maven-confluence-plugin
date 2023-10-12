@@ -93,6 +93,23 @@
                 </configuration>
                 <executions>
                     <!--
+                    mvn confluence-reporting:deploy@commonmark
+                    mvn confluence-reporting:delete@commonmark
+                    -->
+                    <execution>
+                        <id>commonmark</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
+                            <deployState/>
+                            <!--childrenTitlesPrefixed>false</childrenTitlesPrefixed-->
+                            <wikiFilesExt>wiki</wikiFilesExt>
+                        </configuration>
+                    </execution>
+                    <!--
                     mvn confluence-reporting:deploy@issue294
                     mvn confluence-reporting:delete@issue294
                     -->
@@ -344,23 +361,6 @@
                                 <version>beta</version>
                                 <skip>${scrollversions.skip}</skip>
                             </scrollVersions>
-                        </configuration>
-                    </execution>
-                    <!--
-                    mvn confluence-reporting:deploy@commonmark
-                    mvn confluence-reporting:delete@commonmark
-                    -->
-                    <execution>
-                        <id>commonmark</id>
-                        <goals>
-                            <goal>deploy</goal>
-                            <goal>delete</goal>
-                        </goals>
-                        <configuration>
-                            <siteDescriptor>${basedir}/src/site/confluence/issue154/site-commonmark.yaml</siteDescriptor>
-                            <deployState/>
-                            <!--childrenTitlesPrefixed>false</childrenTitlesPrefixed-->
-                            <wikiFilesExt>wiki</wikiFilesExt>
                         </configuration>
                     </execution>
                     <!--
