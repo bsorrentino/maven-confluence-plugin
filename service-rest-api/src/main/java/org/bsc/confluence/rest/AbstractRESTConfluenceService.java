@@ -26,9 +26,11 @@ import java.util.stream.Stream;
 import static java.lang.String.format;
 
 /**
- *
- * @author softphone
- */
+ * AbstractRESTConfluenceService is an abstract class that implements the IdHelper interface.
+ * It provides common functionality for making REST API calls to Confluence
+ * Sub-classes need to implement getCredentials() and urlBuilder() to provide
+ * the necessary information for making API calls.
+*/
 public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     private static final String EXPAND = "space,version,container";
