@@ -1,6 +1,5 @@
 package org.bsc.confluence.rest.scrollversions;
 
-import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
@@ -20,22 +19,22 @@ public class ScrollVersionsTest {
         final String regex = "/rest/api(/?)$";
         
         {
-        val confluenceUrl       = "http://localhost:8090/rest/api";     
-        val scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
+        final var confluenceUrl       = "http://localhost:8090/rest/api";     
+        final var scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
         
         assertEquals( "http://localhost:8090/rest/scroll-versions/1.0", scrollVersionsUrl );
         }
         
         {
-        val confluenceUrl       = "http://localhost:8090/rest/api/";     
-        val scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
+        final var confluenceUrl       = "http://localhost:8090/rest/api/";     
+        final var scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
 
         assertEquals( "http://localhost:8090/rest/scroll-versions/1.0", scrollVersionsUrl );
         }
         
         {
-        val confluenceUrl       = "http://localhost:8090/rest/api/xxx/rest/api";     
-        val scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
+        final var confluenceUrl       = "http://localhost:8090/rest/api/xxx/rest/api";     
+        final var scrollVersionsUrl   = confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0");
 
             assertEquals( "http://localhost:8090/rest/api/xxx/rest/scroll-versions/1.0", scrollVersionsUrl );
         }
@@ -44,9 +43,9 @@ public class ScrollVersionsTest {
 
     @Test
     public void decodeScrollVersionsTitle() {
-        val p = Pattern.compile( "^[\\.](.+)\\sv(.+)$");
+        final var p = Pattern.compile( "^[\\.](.+)\\sv(.+)$");
 
-        val m = p.matcher(".Parent - Issue#194 valpha");
+        final var m = p.matcher(".Parent - Issue#194 valpha");
 
         assertTrue( m.matches() );
         assertEquals( "Parent - Issue#194", m.group(1));

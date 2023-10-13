@@ -4,7 +4,6 @@
  */
 package org.bsc.mojo;
 
-import lombok.val;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -89,7 +88,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
         Optional<String> optStartPageTitle = empty();
 
         if( isSiteDescriptorValid() ) {
-            val site = createSiteFromModel(getSiteModelVariables());
+            final var site = createSiteFromModel(getSiteModelVariables());
 
             optStartPageTitle = ofNullable( site.getHome().getName());
         }

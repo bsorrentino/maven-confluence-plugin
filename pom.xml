@@ -5,7 +5,7 @@
     <groupId>org.bsc.maven</groupId>
     <artifactId>maven-confluence-parent</artifactId>
     <packaging>pom</packaging>
-    <version>7.13</version>
+    <version>8.0-SNAPSHOT</version>
     <name>CONFLUENCE-REPORTING::Parent</name>
     <description>Maven's plugin that allow to generate "project's documentation" directly to confluence allowing, in the
         same time, to keep in-sync both project &amp; documentation
@@ -85,8 +85,8 @@
         <junit.platform.version>1.5.2</junit.platform.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <kotlin.version>1.6.0</kotlin.version>
     </properties>
@@ -222,12 +222,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.16</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -305,7 +299,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.6.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -319,13 +313,6 @@
                         <arg>-Xlint:unchecked</arg>
                         <arg>-Xlint:deprecation</arg>
                     </compilerArgs>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.22</version>
-                        </path>
-                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -382,6 +369,7 @@
                 <configuration>
                     <additionalJOptions>-Xdoclint:none</additionalJOptions>
                     <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
+                    <failOnError>false</failOnError>
                 </configuration>
             </plugin>
         </plugins>

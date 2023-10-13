@@ -6,7 +6,6 @@
 
 package org.bsc.mojo;
 
-import lombok.val;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -66,13 +65,13 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
     
     private CompletableFuture<Void> exportPage(ConfluenceService confluence, Model.Page parentPage )   {
 
-        val result = new CompletableFuture<Void>();
+        final var result = new CompletableFuture<Void>();
 
-        val exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
+        final var exfmt = ExportFormat.valueOf( outputType.toUpperCase() );
 
         outputFile = ofNullable(outputFile).orElseGet( () -> {
 
-            val fileName = format("%s.%s", pageTitle, exfmt.name().toLowerCase());
+            final var fileName = format("%s.%s", pageTitle, exfmt.name().toLowerCase());
 
             final java.io.File file =
                     ofNullable(outputDirectory)
@@ -85,9 +84,9 @@ public class ConfluenceExportMojo extends AbstractBaseConfluenceMojo {
         try {
             FileUtils.forceMkdir( new java.io.File(outputFile.getParent()) );
 
-            val url = ConfluenceService.Protocol.XMLRPC.removeFrom(ConfluenceExportMojo.super.getEndPoint());
+            final var url = ConfluenceService.Protocol.XMLRPC.removeFrom(ConfluenceExportMojo.super.getEndPoint());
 
-            val exporter =
+            final var exporter =
                     new ConfluenceExportDecorator( confluence, url );
 
             exporter.exportPage(parentPage.getSpace(),

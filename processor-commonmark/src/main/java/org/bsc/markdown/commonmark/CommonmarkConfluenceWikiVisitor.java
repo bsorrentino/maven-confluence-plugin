@@ -1,6 +1,5 @@
 package org.bsc.markdown.commonmark;
 
-import lombok.NonNull;
 import org.bsc.markdown.MarkdownParserContext;
 import org.bsc.markdown.MarkdownVisitorHelper;
 import org.bsc.markdown.commonmark.extension.NoticeBlock;
@@ -11,10 +10,7 @@ import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.*;
 import org.commonmark.node.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -107,7 +103,8 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
      * @param text
      * @return
      */
-    public static Matcher parseHTMLComment( @NonNull String text ) {
+    public static Matcher parseHTMLComment( String text ) {
+        Objects.requireNonNull(text);
         return isHTMLCommentPattern.matcher(text);
     }
 
