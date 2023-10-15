@@ -5,8 +5,6 @@
  */
 package org.bsc.confluence.rest;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.rest.model.Attachment;
 import org.bsc.confluence.rest.model.Blogpost;
@@ -16,15 +14,22 @@ import org.bsc.ssl.SSLCertificateInfo;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -43,9 +48,9 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 
     final java.net.URL endpoint;
 
-    static {
-        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
-    }
+//    static {
+//        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
+//    }
 
     /**
      * @param url
@@ -72,32 +77,70 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 
         this.credentials = credentials;
 
-        client.connectTimeout(ConfluenceService.getConnectTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
-        client.writeTimeout(ConfluenceService.getWriteTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
-        client.readTimeout(ConfluenceService.getReadTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
+        var clientBuilder = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(ConfluenceService.getConnectTimeout(TimeUnit.SECONDS)))
+                ;
+        // client.writeTimeout(ConfluenceService.getWriteTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
+        // client.readTimeout(ConfluenceService.getReadTimeout(TimeUnit.SECONDS), TimeUnit.SECONDS);
 
         if (!sslInfo.isIgnore() && "https".equals(this.endpoint.getProtocol())) {
 
-            client.hostnameVerifier(sslInfo.getHostnameVerifier())
-                    .sslSocketFactory(sslInfo.getSSLSocketFactory(), sslInfo.getTrustManager())
-            ;
+            try {
+                var sslContext  = SSLContext.getInstance("TLSv1.3");
+                sslContext.init(null, null, null);
+
+                clientBuilder.sslContext( sslContext );
+
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                throw new Error(e);
+            }
+
+
+//            clientBuilder.hostnameVerifier(sslInfo.getHostnameVerifier())
+//                    .sslSocketFactory(sslInfo.getSSLSocketFactory(), sslInfo.getTrustManager())
+//            ;
         }
 
         // Use interceptor which transparently adds credentials and HTTP headers for each request
-        client.addInterceptor(chain -> {
-            Request.Builder requestBuilder = chain.request().newBuilder();
-            if (credentials.username != null) {
-                final String credential =
-                    okhttp3.Credentials.basic(credentials.username, credentials.password);
-                requestBuilder.header("Authorization", credential);
-            }
-            if (!credentials.httpHeaders.isEmpty()) {
-                credentials.httpHeaders.entrySet().forEach(entry ->
-                    requestBuilder.header(entry.getKey(), entry.getValue()));
-            }
-            return chain.proceed(requestBuilder.build());
-        });
+//        clientBuilder.addInterceptor(chain -> {
+//            Request.Builder requestBuilder = chain.request().newBuilder();
+//            if (credentials.username != null) {
+//                final String credential =
+//                    okhttp3.Credentials.basic(credentials.username, credentials.password);
+//                requestBuilder.header("Authorization", credential);
+//            }
+//            if (!credentials.httpHeaders.isEmpty()) {
+//                credentials.httpHeaders.entrySet().forEach(entry ->
+//                    requestBuilder.header(entry.getKey(), entry.getValue()));
+//            }
+//            return chain.proceed(requestBuilder.build());
+//        });
 
+        client = clientBuilder.build();
+    }
+
+    private HttpRequest.Builder processHeaderBeforeRequest( HttpRequest.Builder reqBuilder ) {
+        if (credentials.username != null) {
+            final String credential =
+                    "Basic " + Base64.getEncoder().encodeToString((credentials.username + ":" + credentials.password).getBytes());
+            reqBuilder.header("Authorization", credential);
+        }
+        if (!credentials.httpHeaders.isEmpty()) {
+            credentials.httpHeaders.forEach(reqBuilder::header);
+        }
+
+        return reqBuilder;
+    }
+
+    @Override
+    protected void fromRequest(HttpRequest.Builder reqBuilder, String description, Consumer<HttpResponse<String>> consumer) {
+        processHeaderBeforeRequest(reqBuilder);
+        super.fromRequest(reqBuilder, description, consumer);
+    }
+
+    @Override
+    protected CompletableFuture<HttpResponse<String>> fromRequestAsync(HttpRequest.Builder reqBuilder) {
+        return super.fromRequestAsync(processHeaderBeforeRequest(reqBuilder));
     }
 
     @SuppressWarnings("unchecked")
@@ -157,7 +200,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 
         String path = endpoint.getPath();
 
-        path = (path.startsWith("/")) ? path.substring(1) : path;
+        // path = (path.startsWith("/")) ? path.substring(1) : path;
 
         return new URI(
                 endpoint.getProtocol(),

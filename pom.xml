@@ -30,15 +30,11 @@
         <module>test-publishing</module>
         <module>test-plugin</module>
         <module>processor-freemarker</module>
-        <module>addon-scrollversions</module>
         <module>processor-commonmark</module>
         <module>gitlog+jira</module>
         <module>service-rest-api</module>
         <module>service-xmlrpc-api</module>
-        <!--
-        <module>test-integration</module>
-        <module>processor-pegdown</module>
-        -->
+        <!--module>addon-scrollversions</module-->
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>

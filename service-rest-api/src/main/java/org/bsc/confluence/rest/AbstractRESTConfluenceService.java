@@ -5,7 +5,6 @@
  */
 package org.bsc.confluence.rest;
 
-import okhttp3.HttpUrl;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceUtils;
@@ -22,7 +21,11 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -41,7 +44,7 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     private static final String EXPAND = "space,version,container";
 
-    protected HttpClient client = HttpClient.newHttpClient();
+    protected HttpClient client;
 
     public abstract ConfluenceService.Credentials getCredentials();
 
@@ -58,13 +61,47 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     }
 
+    public static class MultiPartBodyBuilder {
+        private final StringBuilder formData = new StringBuilder();
+        private static final String LINE_FEED = "\r\n";
+        public final String boundary = UUID.randomUUID().toString();
+
+        public MultiPartBodyBuilder addFormDataPart(  final String name, final String value ) {
+            formData
+                .append( "--").append(boundary).append(LINE_FEED)
+                .append( "Content-Disposition: form-data; name=\"").append(name).append("\"").append(LINE_FEED).append(LINE_FEED)
+                //.append( "Content-Type: text/plain; charset=UTF-8").append(LINE_FEED).append(LINE_FEED)
+                .append(value).append(LINE_FEED)
+                ;
+            return this;
+        }
+
+        public MultiPartBodyBuilder addFormFilePart( final String fieldName, final String fileName, final String mimeType, final java.io.InputStream data ) throws IOException {
+
+            formData
+                .append("--").append(boundary).append(LINE_FEED)
+                .append(format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"", fieldName, fileName)).append(LINE_FEED)
+                .append(format("Content-Type: %s", mimeType)).append(LINE_FEED).append(LINE_FEED)
+                .append( IOUtils.toCharArray(data, StandardCharsets.UTF_8) ).append(LINE_FEED)
+                .append("--").append(boundary).append(LINE_FEED)
+                ;
+
+            return this;
+        }
+
+        public String build() {
+            return formData.toString();
+        }
+    }
+
     /**
      *
      * @param req
      * @return
      */
-    public CompletableFuture<HttpResponse<String>> fromRequestAsync(final HttpRequest req ) {
+    protected CompletableFuture<HttpResponse<String>> fromRequestAsync(final HttpRequest.Builder reqBuilder) {
 
+        final var req = reqBuilder.build();
         return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
                 .thenApply( (res) -> {
                     int statusCode = res.statusCode();
@@ -76,10 +113,11 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 });
     }
     
-    public void fromRequest(final HttpRequest req, final String description, Consumer<HttpResponse<String>> consumer) {
+    protected void fromRequest(final HttpRequest.Builder reqBuilder, final String description, Consumer<HttpResponse<String>> consumer) {
 
         try{
-            final HttpResponse<String> res = client.send( req , HttpResponse.BodyHandlers.ofString());
+
+            final HttpResponse<String> res = client.send( reqBuilder.build() , HttpResponse.BodyHandlers.ofString());
 
             int statusCode = res.statusCode();
             if (statusCode >= 300 ) {
@@ -94,50 +132,15 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     }
 
-    protected void fromUrlGET(final URI url, final String description, Consumer<HttpResponse<String>> consumer ) {
+    private void fromUrlGET(final URI url, final String description, Consumer<HttpResponse<String>> consumer ) {
         final var req = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
-                .build();
+                ;
 
         fromRequest(req, description, consumer);
     }
 
-    protected void fromUrlDELETE( final URI url, final String description, Consumer<HttpResponse<String>> consumer ) {
-        final var req = HttpRequest.newBuilder()
-                .uri(url)
-                .DELETE()
-                .build();
-
-        fromRequest(req, description, consumer);
-    }
-
-    protected void fromUrlPOST(final URI url, HttpRequest.BodyPublisher inputBody, final String description, Consumer<HttpResponse<String>> consumer  ) {
-        final var req = HttpRequest.newBuilder()
-                .uri(url)
-                .POST( inputBody )
-                .build();
-
-        fromRequest(req, description, consumer);
-    }
-
-    protected void fromUrlPUT( final URI url,  HttpRequest.BodyPublisher inputBody, final String description, Consumer<HttpResponse<String>> consumer  ) {
-        final var req = HttpRequest.newBuilder()
-                .header("X-Atlassian-Token","nocheck")
-                .uri( url )
-                .PUT( inputBody)
-                .build();
-
-        fromRequest(req, description, consumer);
-    }
-
-    protected void debugBody( HttpResponse<String> res ) {
-
-        final var body = res.body();
-        System.out.printf( "BODY\n%s\n", body );
-
-    }
-    
     protected Stream<JsonObject> mapToStream( HttpResponse<String> res)  {
 
         final var body = res.body();
@@ -310,7 +313,12 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 List.of( "content",id ),
                 emptyMap());
 
-        fromUrlDELETE( url, "delete page", res -> result.complete(true) );
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .DELETE()
+                ;
+
+        fromRequest(req, "delete page", res -> result.complete(true) );
 
         return result;
     }
@@ -323,15 +331,19 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
     public final CompletableFuture<Optional<JsonObject>> createPage( final JsonObject inputData ) {
         final CompletableFuture<Optional<JsonObject>> result = new CompletableFuture<>();
 
-        final MediaType storageFormat = MediaType.parse("application/json");
-
-        final RequestBody inputBody = RequestBody.create(inputData.toString(), storageFormat);
+        final var inputBody = HttpRequest.BodyPublishers.ofString(inputData.toString(), StandardCharsets.UTF_8);
 
         final var url = buildUrl(
                 List.of( "content" ),
                 emptyMap());
 
-        fromUrlPOST(url, inputBody, "create page", res ->
+        final var req = HttpRequest.newBuilder()
+                .header("Content-Type", "application/json")
+                .uri(url)
+                .POST( inputBody )
+                ;
+
+        fromRequest(req, "create page", res ->
                 result.complete(Stream.of(res).map(this::mapToObject).findFirst()));
 
         return result;
@@ -341,15 +353,20 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final CompletableFuture<Optional<JsonObject>> result = new CompletableFuture<>();
 
-        final MediaType storageFormat = MediaType.parse("application/json");
-
-        final RequestBody inputBody = RequestBody.create(inputData.toString(), storageFormat);
+        final var inputBody = HttpRequest.BodyPublishers.ofString(inputData.toString(), StandardCharsets.UTF_8);
 
         final var url = buildUrl(
                 List.of( "content", pageId ),
                 emptyMap());
 
-        fromUrlPUT(url, inputBody, "update page", res ->
+        final var req = HttpRequest.newBuilder()
+                .header("X-Atlassian-Token","nocheck")
+                .header("Content-Type", "application/json")
+                .uri( url )
+                .PUT( inputBody)
+                ;
+
+        fromRequest(req, "update page", res ->
                 result.complete(Stream.of(res).map(this::mapToObject).findFirst()));
 
         return result;
@@ -378,16 +395,19 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final JsonArray inputData = inputBuilder.build();
 
-        final MediaType storageFormat = MediaType.parse("application/json");
-
-        final RequestBody inputBody =
-                RequestBody.create(inputData.toString(), storageFormat);
+        final var inputBody = HttpRequest.BodyPublishers.ofString(inputData.toString(), StandardCharsets.UTF_8);
 
         final var url = buildUrl(
                 List.of( "content", id, "label" ),
                 emptyMap());
 
-        fromUrlPOST(url, inputBody, "add label", res -> result.complete(null));
+        final var req = HttpRequest.newBuilder()
+                .header("Content-Type", "application/json")
+                .uri(url)
+                .POST( inputBody )
+                ;
+
+        fromRequest(req, "add label", res -> result.complete(null));
 
         return result;
     }
@@ -420,40 +440,41 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
         return result;
     }
 
+
     protected CompletableFuture<List<JsonObject>> addAttachment( final String id, final Attachment att, final java.io.InputStream data ) {
 
         final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
-        final RequestBody fileBody;
-
         try {
-            fileBody = RequestBody.create( IOUtils.toByteArray(data), MediaType.parse(att.getContentType()) );
-        } catch (IOException ex) {
-            throw new Error( ex );
-        }
-
-        final RequestBody inputBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("comment", att.getComment())
-                .addFormDataPart("minorEdit", "true")
-                .addFormDataPart("file", att.getFileName(), fileBody)
-                .build();
-
-        final var path = ( att.getId() != null ) ?
+            var formData = new MultiPartBodyBuilder()
+                    .addFormDataPart(  "comment", att.getComment() )
+                    .addFormDataPart(  "minorEdit", "true" )
+                    .addFormFilePart( "file", att.getFileName(), att.getContentType(), data)
+                    ;
+            final var path = ( att.getId() != null ) ?
                     List.of( "content", id, "child", "attachment", att.getId(), "data" ) :
                     List.of(  "content", id, "child", "attachment");
 
-        final var url = buildUrl(
-                path,
-                emptyMap());
+            final var url = buildUrl(
+                    path,
+                    emptyMap());
 
+            final var req = HttpRequest.newBuilder()
+                    .headers("Content-Type","multipart/form-data","boundary",formData.boundary)
+                    .uri(url)
+                    .POST( HttpRequest.BodyPublishers.ofString(formData.build(), StandardCharsets.UTF_8) )
+                    ;
 
-        fromUrlPOST(url, inputBody, "create attachment", res ->
-                result.complete( Stream.of(res).flatMap( post ->
-                        (att.getId() != null)
-                            ? Stream.of(mapToObject(post))
-                            : mapToStream(post))
-                        .collect( Collectors.toList() )));
+            fromRequest(req, "create page", res ->
+                    result.complete( Stream.of(res).flatMap( post ->
+                                    (att.getId() != null)
+                                            ? Stream.of(mapToObject(post))
+                                            : mapToStream(post))
+                            .collect( Collectors.toList() )));
+
+        } catch (IOException ex) {
+            result.completeExceptionally(ex);
+        }
 
         return result;
 
