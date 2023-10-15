@@ -5,7 +5,7 @@
  */
 package org.bsc.confluence.rest;
 
-import okhttp3.*;
+import okhttp3.HttpUrl;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceUtils;
@@ -16,14 +16,20 @@ import javax.json.*;
 import javax.json.stream.JsonParsingException;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
-import java.util.Optional;
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyMap;
 
 /**
  * AbstractRESTConfluenceService is an abstract class that implements the IdHelper interface.
@@ -35,17 +41,17 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     private static final String EXPAND = "space,version,container";
 
-    protected final OkHttpClient.Builder client = new OkHttpClient.Builder();
+    protected HttpClient client = HttpClient.newHttpClient();
 
     public abstract ConfluenceService.Credentials getCredentials();
 
-    protected abstract HttpUrl.Builder urlBuilder();
+    protected abstract URI urlBuilder() throws URISyntaxException;
 
     @SuppressWarnings("serial")
 	public static class ServiceException extends Error {
-        public final Response res;
+        public final HttpResponse<String> res;
 
-        public ServiceException(String message, Response res ) {
+        public ServiceException(String message, HttpResponse<String> res ) {
             super(message);
             this.res = res;
         }
@@ -57,110 +63,86 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
      * @param req
      * @return
      */
-    public CompletableFuture<Response> fromRequestAsync( final Request req ) {
+    public CompletableFuture<HttpResponse<String>> fromRequestAsync(final HttpRequest req ) {
 
-        final CompletableFuture<Response> result = new CompletableFuture<Response>();
-        
-        client.build().newCall(req).enqueue( new Callback() {
-                
-            @Override
-            public void onResponse(Call call, Response res) throws IOException {
-                if( !res.isSuccessful() ) {
-                    
-                    result.completeExceptionally( 
-                            new ServiceException( 
-                                    format("error: %s\n%s", 
-                                         res.toString(),
-                                        res.body().string()), 
-                                        res));
-                    return;
-                }
-                
-                result.complete(res);
-                
-            }
-            
-            @Override
-            public void onFailure(Call call, IOException e) {          
-                result.completeExceptionally( e );
-            }
-            
-        });
-
-        return result;
-
+        return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                .thenApply( (res) -> {
+                    int statusCode = res.statusCode();
+                    if (statusCode >= 300 ) {
+                        throw new ServiceException(
+                                format("error: %s\n%s\n%s", req.uri(), res,res.body()), res);
+                    }
+                    return res;
+                });
     }
     
-    public void fromRequest(final Request req, final String description, Consumer<Response> consumer) {
+    public void fromRequest(final HttpRequest req, final String description, Consumer<HttpResponse<String>> consumer) {
 
-        try(final Response res = client.build().newCall(req).execute()) {
+        try{
+            final HttpResponse<String> res = client.send( req , HttpResponse.BodyHandlers.ofString());
 
-            if( !res.isSuccessful() ) {
-                throw new ServiceException( 
-                        format("error: %s\n%s\n%s", description, res.toString(),res.body().string()), res);
+            int statusCode = res.statusCode();
+            if (statusCode >= 300 ) {
+                throw new ServiceException(
+                        format("error: %s\n%s\n%s", description, res,res.body()), res);
             }
             consumer.accept(res);
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new Error(ex);
         }
 
     }
 
-    protected void fromUrlGET( final HttpUrl url, final String description, Consumer<Response> consumer ) {
-        final Request req = new Request.Builder()
-                .url( url )
-                .get()
+    protected void fromUrlGET(final URI url, final String description, Consumer<HttpResponse<String>> consumer ) {
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
                 .build();
 
         fromRequest(req, description, consumer);
     }
 
-    protected void fromUrlDELETE( final HttpUrl url, final String description, Consumer<Response> consumer ) {
-        final Request req = new Request.Builder()
-                .url( url )
-                .delete()
+    protected void fromUrlDELETE( final URI url, final String description, Consumer<HttpResponse<String>> consumer ) {
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .DELETE()
                 .build();
 
         fromRequest(req, description, consumer);
     }
 
-    protected void fromUrlPOST( final HttpUrl url, RequestBody inputBody, final String description, Consumer<Response> consumer  ) {
-        final Request req = new Request.Builder()
+    protected void fromUrlPOST(final URI url, HttpRequest.BodyPublisher inputBody, final String description, Consumer<HttpResponse<String>> consumer  ) {
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .POST( inputBody )
+                .build();
+
+        fromRequest(req, description, consumer);
+    }
+
+    protected void fromUrlPUT( final URI url,  HttpRequest.BodyPublisher inputBody, final String description, Consumer<HttpResponse<String>> consumer  ) {
+        final var req = HttpRequest.newBuilder()
                 .header("X-Atlassian-Token","nocheck")
-                .url( url )
-                .post( inputBody)
+                .uri( url )
+                .PUT( inputBody)
                 .build();
 
         fromRequest(req, description, consumer);
     }
 
-    protected void fromUrlPUT( final HttpUrl url, RequestBody inputBody, final String description, Consumer<Response> consumer  ) {
-        final Request req = new Request.Builder()
-                .header("X-Atlassian-Token","nocheck")
-                .url( url )
-                .put( inputBody)
-                .build();
+    protected void debugBody( HttpResponse<String> res ) {
 
-        fromRequest(req, description, consumer);
-    }
-
-    protected void debugBody( Response res ) {
-
-    		final ResponseBody body = res.body();
-
-        try {
-			System.out.printf( "BODY\n%s\n", new String(body.bytes()) );
-		} catch (IOException e) {
-			System.out.printf( "READ BODY EXCEPTION\n%s\n", e.getMessage() );
-		}
+        final var body = res.body();
+        System.out.printf( "BODY\n%s\n", body );
 
     }
     
-    protected Stream<JsonObject> mapToStream( Response res)  {
+    protected Stream<JsonObject> mapToStream( HttpResponse<String> res)  {
 
-        try (final ResponseBody body = res.body();
-             final Reader r = body.charStream();
+        final var body = res.body();
+
+        try( final Reader r = new StringReader(body);
              final JsonReader rdr = Json.createReader(r) )
         {
 
@@ -189,16 +171,14 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     }
 
-    protected JsonObject mapToObject(Response res ) {
-        final ResponseBody body = res.body();
+    protected JsonObject mapToObject(HttpResponse<String> res ) {
+        final var body = res.body();
 
-        try (Reader r = body.charStream()) {
+        try (Reader r = new StringReader(body)) {
 
             final JsonReader rdr = Json.createReader(r);
 
-            final JsonObject root = rdr.readObject();
-
-            return root;
+            return rdr.readObject();
 
         } catch (IOException ex) {
 
@@ -206,15 +186,55 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
         }
     };
 
+    private URI buildUrl( List<String> path, Map<String, String> query) {
+
+        try {
+            final var url = urlBuilder();
+
+            final var previousPath = url.getPath();
+            var newPath = previousPath;
+            if( !path.isEmpty() ) {
+                newPath = String.join("/", path);
+
+                if (previousPath != null) {
+                    newPath = format("%s/%s", previousPath, newPath);
+                }
+            }
+
+            final var previousQuery = url.getQuery();
+            var newQuery = previousQuery;
+            if( !query.isEmpty() ) {
+                newQuery = query.entrySet().stream()
+                        .map(kv -> format("%s=%s", kv.getKey(), kv.getValue()))
+                        .collect(Collectors.joining("&"));
+
+                if (previousQuery != null) {
+                    newQuery = format("%s&%s", previousQuery, newQuery);
+                }
+            }
+
+            return new URI(
+                    url.getScheme(),
+                    url.getUserInfo(),
+                    url.getHost(),
+                    url.getPort(),
+                    newPath, // path
+                    newQuery, // query
+                    url.getFragment()
+            );
+
+        }
+        catch( URISyntaxException ex ) {
+            throw new Error(ex);
+        }
+
+
+    }
 
     protected CompletableFuture<Optional<JsonObject>> findPageById( final String id ) {
 
         final CompletableFuture<Optional<JsonObject>> result = new CompletableFuture<>();
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")
-                                    .addPathSegment(id)
-                                    .addQueryParameter("expand", EXPAND)
-                                    .build();
+        final var url = buildUrl( List.of( "content", id ), Map.of( "expand", EXPAND ));
 
         fromUrlGET( url, "find page", res ->
                 result.complete(Stream.of(res).flatMap(this::mapToStream).findFirst()) );
@@ -226,12 +246,11 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
     protected CompletableFuture<List<JsonObject>> findPages( final String spaceKey, final String title ) {
 
         final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")
-                                    .addQueryParameter("spaceKey", spaceKey)
-                                    .addQueryParameter("title", title)
-                                    .addQueryParameter("expand", EXPAND)
-                                    .build();
+
+        final var url = buildUrl(
+                List.of( "content" ),
+                Map.of( "spaceKey", spaceKey, "title", title, "expand", EXPAND ));
+
         fromUrlGET( url, "find pages", res ->
                 result.complete( Stream.of(res).flatMap(this::mapToStream).collect( Collectors.toList())));
         return result;
@@ -241,13 +260,9 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")
-                                    .addPathSegment(String.valueOf(id))
-                                    //.addPathSegments("descendant/page")
-                                    .addPathSegments("child/page")
-                                    .addQueryParameter("expand", EXPAND)
-                                    .build();
+        final var url = buildUrl(
+                List.of( "content", String.valueOf(id), "child", "page" ),
+                Map.of( "expand", EXPAND ));
 
         fromUrlGET( url, "get descendant pages", res ->
                 result.complete(
@@ -265,12 +280,11 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     protected CompletableFuture<List<JsonObject>> childrenPages( final String id ) {
         final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")
-                                    .addPathSegment(id)
-                                    .addPathSegments("child/page")
-                                    .addQueryParameter("expand", EXPAND)
-                                    .build();
+
+        final var url = buildUrl(
+                List.of( "content", id, "child", "page" ),
+                Map.of( "expand", EXPAND ));
+
         fromUrlGET( url, "get children pages", res ->
             result.complete(Stream.of(res).flatMap(this::mapToStream).collect( Collectors.toList() )));
 
@@ -291,11 +305,11 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
     protected CompletableFuture<Boolean> deletePageById( final String id ) {
 
         final CompletableFuture<Boolean> result = new CompletableFuture<>();
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")
-                                    .addPathSegment(id)
-                                    //.addQueryParameter("status", "")
-                                    .build();
+
+        final var url = buildUrl(
+                List.of( "content",id ),
+                emptyMap());
+
         fromUrlDELETE( url, "delete page", res -> result.complete(true) );
 
         return result;
@@ -313,9 +327,9 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final RequestBody inputBody = RequestBody.create(inputData.toString(), storageFormat);
 
-        final HttpUrl url =  urlBuilder()
-                                .addPathSegment("content")
-                                .build();
+        final var url = buildUrl(
+                List.of( "content" ),
+                emptyMap());
 
         fromUrlPOST(url, inputBody, "create page", res ->
                 result.complete(Stream.of(res).map(this::mapToObject).findFirst()));
@@ -331,10 +345,9 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final RequestBody inputBody = RequestBody.create(inputData.toString(), storageFormat);
 
-        final HttpUrl url =  urlBuilder()
-                                .addPathSegment("content")
-                                .addPathSegment(pageId)
-                                .build();
+        final var url = buildUrl(
+                List.of( "content", pageId ),
+                emptyMap());
 
         fromUrlPUT(url, inputBody, "update page", res ->
                 result.complete(Stream.of(res).map(this::mapToObject).findFirst()));
@@ -370,11 +383,9 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
         final RequestBody inputBody =
                 RequestBody.create(inputData.toString(), storageFormat);
 
-        final HttpUrl url =  urlBuilder()
-                                .addPathSegment("content")
-                                .addPathSegment(id)
-                                .addPathSegment("label")
-                                .build();
+        final var url = buildUrl(
+                List.of( "content", id, "label" ),
+                emptyMap());
 
         fromUrlPOST(url, inputBody, "add label", res -> result.complete(null));
 
@@ -385,12 +396,9 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")
-                                    .addPathSegment(id)
-                                    .addPathSegments("child/attachment")
-                                    .addQueryParameter("expand", EXPAND)
-                                    .build();
+        final var url = buildUrl(
+                List.of( "content", id, "child", "attachment" ),
+                Map.of( "expand", EXPAND ));
 
         fromUrlGET( url, "get attachments", res ->
                 result.complete( Stream.of(res).flatMap(this::mapToStream).collect(Collectors.toList())));
@@ -402,13 +410,9 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
-        final HttpUrl url =  urlBuilder()
-                                    .addPathSegment("content")
-                                    .addPathSegment(id)
-                                    .addPathSegments("child/attachment")
-                                    .addQueryParameter("filename", fileName)
-                                    .addQueryParameter("expand", EXPAND)
-                                    .build();
+        final var url = buildUrl(
+                List.of( "content", id, "child", "attachment" ),
+                Map.of( "filename", fileName, "expand", EXPAND ));
 
         fromUrlGET( url, "get attachment", res ->
                 result.complete(Stream.of(res).flatMap(this::mapToStream).collect(Collectors.toList())));
@@ -435,17 +439,16 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 .addFormDataPart("file", att.getFileName(), fileBody)
                 .build();
 
-        final HttpUrl.Builder builder = urlBuilder()
-                                    .addPathSegment("content")
-                                    .addPathSegment(id)
-                                    .addPathSegments("child/attachment");
-        if( att.getId() != null ) {
-            builder.addPathSegment( att.getId() )
-                    .addPathSegment("data");
+        final var path = ( att.getId() != null ) ?
+                    List.of( "content", id, "child", "attachment", att.getId(), "data" ) :
+                    List.of(  "content", id, "child", "attachment");
 
-        }
+        final var url = buildUrl(
+                path,
+                emptyMap());
 
-        fromUrlPOST(builder.build(), inputBody, "create attachment", res ->
+
+        fromUrlPOST(url, inputBody, "create attachment", res ->
                 result.complete( Stream.of(res).flatMap( post ->
                         (att.getId() != null)
                             ? Stream.of(mapToObject(post))

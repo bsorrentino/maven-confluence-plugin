@@ -5,7 +5,6 @@
  */
 package org.bsc.confluence.rest;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.bsc.confluence.ConfluenceService;
@@ -20,6 +19,8 @@ import javax.json.JsonObjectBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -149,7 +150,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
      * @return
      */
     @Override
-    protected HttpUrl.Builder urlBuilder() {
+    protected URI urlBuilder() throws URISyntaxException {
 
         int port = endpoint.getPort();
         port = (port > -1) ? port : endpoint.getDefaultPort();
@@ -158,13 +159,16 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
 
         path = (path.startsWith("/")) ? path.substring(1) : path;
 
-        return new HttpUrl.Builder()
-                .scheme(endpoint.getProtocol())
-                .host(endpoint.getHost())
-                .port(port)
-                .addPathSegments(path)
-                //.addPathSegments(ConfluenceService.Protocol.REST.path())
-                ;
+        return new URI(
+                endpoint.getProtocol(),
+                null, // user info,
+                endpoint.getHost(),
+                port,
+                path,
+                null, // query
+                null // fragment
+        );
+
     }
 
     @Override
