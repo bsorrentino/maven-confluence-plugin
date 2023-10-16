@@ -5,9 +5,6 @@
  */
 package org.bsc.confluence.rest;
 
-import lombok.Value;
-import lombok.val;
-import lombok.var;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
@@ -29,10 +26,18 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 
-@Value(staticConstructor="of")
 class PageTuple2 {
-    ConfluenceService.Model.Page page1;
-    ConfluenceService.Model.Page page2;
+    final ConfluenceService.Model.Page page1;
+    final ConfluenceService.Model.Page page2;
+
+    private PageTuple2( Model.Page page1, Model.Page page2) {
+        this.page1 = page1;
+        this.page2 = page2;
+    }
+
+    public static PageTuple2 of(Model.Page page1, Model.Page page2) {
+        return new PageTuple2(page1, page2);
+    }
 }
 
 /**
@@ -118,16 +123,16 @@ public abstract class AbstractRestConfluence {
     @Test 
     public void test101_getOrCreatePageAndStoreWiki() throws Exception  {
 
-        val title           = Pages.MyPage2.name();
+        final var title           = Pages.MyPage2.name();
 
-        val p = service.getOrCreatePage(spaceKey, getParentPageTitle(), title).get();
+        final var p = service.getOrCreatePage(spaceKey, getParentPageTitle(), title).get();
 
         int version = p.getVersion();
         assertThat( p, notNullValue());
         assertThat(p.getSpace(), equalTo(spaceKey));
         assertThat( version > 0, is(true));
 
-        val content = new StringBuilder()
+        final var content = new StringBuilder()
                             .append("h1.")
                             .append(" TEST ")
                             .append(System.currentTimeMillis()).append('\n')
@@ -135,7 +140,7 @@ public abstract class AbstractRestConfluence {
                             .append("*'wiki' \"wiki\"*")
                             .toString();
         
-        val p1 = service.storePage(p, Storage.of(content, Storage.Representation.WIKI)).get();
+        final var p1 = service.storePage(p, Storage.of(content, Storage.Representation.WIKI)).get();
 
         assertThat( p1, notNullValue());
         assertThat( p1.getSpace(), equalTo(spaceKey));
@@ -183,7 +188,7 @@ public abstract class AbstractRestConfluence {
     @Test
     public void test102_getOrCreatePageAndStoreStorage() throws Exception  {
 
-        val title           = Pages.MyPage3.name();
+        final var title           = Pages.MyPage3.name();
 
         final PageTuple2 result =
                 service.getOrCreatePage(spaceKey, getParentPageTitle(), title)
@@ -223,7 +228,7 @@ public abstract class AbstractRestConfluence {
             
             assertThat( page.isPresent(), equalTo(true) );
            
-            val descendents = service.getDescendents( page.get().getId() ).join();
+            final var descendents = service.getDescendents( page.get().getId() ).join();
 
             assertThat( descendents, notNullValue() );
             assertThat( descendents.isEmpty(), is(false) );

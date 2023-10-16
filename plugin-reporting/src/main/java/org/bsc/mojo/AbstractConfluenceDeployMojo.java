@@ -5,7 +5,6 @@
 package org.bsc.mojo;
 
 import biz.source_code.miniTemplator.MiniTemplator;
-import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -617,7 +616,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
             try {
 
                 if (!Files.isDirectory(attachmentPath)) {
-                    val result = generateAttachment(confluence, site, confluencePage, attachment).get();
+                    final var result = generateAttachment(confluence, site, confluencePage, attachment).get();
 
                     getLog().debug(format("generated attachment: %s", result.toString()));
                 } else {
@@ -637,7 +636,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                 fileAttachment.setContentType(attachment.getContentType());
                             }
 
-                            val result = generateAttachment(confluence, site, confluencePage, fileAttachment).get();
+                            final var result = generateAttachment(confluence, site, confluencePage, fileAttachment).get();
                             getLog().debug(format("generated attachment: %s", result.toString()));
 
                         }

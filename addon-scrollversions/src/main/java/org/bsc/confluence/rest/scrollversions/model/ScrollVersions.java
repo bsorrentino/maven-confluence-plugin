@@ -2,7 +2,6 @@ package org.bsc.confluence.rest.scrollversions.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import lombok.Value;
 import org.bsc.confluence.ConfluenceService;
 
 import java.util.List;
@@ -81,10 +80,27 @@ public interface ScrollVersions {
 
         }
 
-        @Value(staticConstructor = "of")
         class PageResult implements ConfluenceService.Model.Page, Result {
-            ScrollVersions.Model.Page masterPage;
-            List<Page> versionPages;
+            final ScrollVersions.Model.Page masterPage;
+            final List<Page> versionPages;
+
+            public Page getMasterPage() {
+                return masterPage;
+            }
+
+            public List<Page> getVersionPages() {
+                return versionPages;
+            }
+
+
+            public static PageResult of(ScrollVersions.Model.Page masterPage, List<Page> versionPage ) {
+                return new PageResult(masterPage, versionPage);
+            }
+            
+            private PageResult(ScrollVersions.Model.Page masterPage, List<Page> versionPages) {
+                this.masterPage = masterPage;
+                this.versionPages = versionPages;
+            }
 
             private Page resolvePage() {
                 return (versionPages.isEmpty() || versionPages.size() >  1 )

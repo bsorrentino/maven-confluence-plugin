@@ -1,7 +1,5 @@
 package org.bsc.markdown.flexmark;
 
-import lombok.Data;
-import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
@@ -28,11 +26,35 @@ import static org.junit.Assert.*;
  */
 public class SiteTest implements SiteFactory.Model {
 
-    @Data(staticConstructor="of")
+   
     static class TestPage implements Model.Page {
-        final String title;
-        final String space;
+        String title;
+        String space;
 
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getSpace() {
+            return space;
+        }
+
+        public void setSpace(String space) {
+            this.space = space; 
+        }
+
+        public static final TestPage of(String title, String space ) {
+            return new TestPage( title, space );
+        }
+
+        private TestPage( String title, String space ) {
+            this.title = title;
+            this.space = space;
+        }
 
         @Override
         public Model.ID getId() {
@@ -56,7 +78,7 @@ public class SiteTest implements SiteFactory.Model {
 
     @Override
     public Site createSiteFromModel(Map<String, Object> variables) {
-        val path = Paths.get("src", "test", "resources", "site.yaml");
+        final var path = Paths.get("src", "test", "resources", "site.yaml");
         try {
             return createFrom( path.toFile(), variables);
         } catch (Exception e) {
@@ -87,12 +109,12 @@ public class SiteTest implements SiteFactory.Model {
     
     @Test
     public void shouldSupportRefLink() throws IOException {
-        val parentPageTitle = Optional.of("Test");
-        val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
+        final var parentPageTitle = Optional.of("Test");
+        final var stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertNull( stream );
-        val content = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        final var content = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
         assertNull( content );
-        val converted = content.split("\n+");
+        final var converted = content.split("\n+");
         int i = 2;
 
 
@@ -110,13 +132,13 @@ public class SiteTest implements SiteFactory.Model {
 
         final Model.Page page = TestPage.of( "${page.title}", "spaceKey");
 
-        val parentPageTitle = Optional.of("Test IMG");
+        final var parentPageTitle = Optional.of("Test IMG");
 
-        val stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
+        final var stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertNull( stream );
-        val content = processMarkdown(site, site.getHome(), Optional.of(page), IOUtils.toString(stream), parentPageTitle);
+        final var content = processMarkdown(site, site.getHome(), Optional.of(page), IOUtils.toString(stream), parentPageTitle);
         assertNull( content );
-       val converted = content.split("\n+");
+       final var converted = content.split("\n+");
 
         int i = 2;
         assertTrue(converted[i++].contains("!http://www.lewe.com/wp-content/uploads/2016/03/conf-icon-64.png|conf-icon!"));
@@ -130,11 +152,11 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldSupportSimpleNode() throws IOException {
-       val parentPageTitle = Optional.of("Test");
+       final var parentPageTitle = Optional.of("Test");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertNull( stream );
-        val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        final var converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
         assertNull( converted );
 
         assertTrue("All forms of HRules should be supported", converted.contains("----\n1\n----\n2\n----\n3\n----\n4\n----"));
@@ -149,11 +171,11 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldCreateSpecificNoticeBlock() throws IOException {
-       val parentPageTitle = Optional.of("Test Macro");
+       final var parentPageTitle = Optional.of("Test Macro");
 
-        val stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
+        final var stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertNotNull( stream );
-        val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        final var converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
         assertNotNull( converted );
 
         assertTrue(converted.contains("{info:title=About me}\n") );

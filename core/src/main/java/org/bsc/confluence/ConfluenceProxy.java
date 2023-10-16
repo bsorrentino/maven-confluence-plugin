@@ -5,20 +5,29 @@
  */
 package org.bsc.confluence;
 
-import lombok.Value;
 
 /**
  *
  * @author bsorrentino
  */
-@Value(staticConstructor="of")
 public class ConfluenceProxy {
 
-    public String host;
-    public int port;
+    final public String host;
+    final public int port;
 
-    public String userName;
-    public String password;
-    public String nonProxyHosts;
+    final public String userName;
+    final public String password;
+    final public String nonProxyHosts;
 
+    private ConfluenceProxy( String host, int port, String userName, String password, String nonProxyHosts) {
+        this.host = host;
+        this.port = port;
+        this.userName = userName;
+        this.password = password;
+        this.nonProxyHosts = nonProxyHosts;
+    }
+
+    public static ConfluenceProxy of( String host, int port, String userName, String password, String nonProxyHosts) {
+        return new ConfluenceProxy( host, port, userName, password, nonProxyHosts);
+    }
 }
