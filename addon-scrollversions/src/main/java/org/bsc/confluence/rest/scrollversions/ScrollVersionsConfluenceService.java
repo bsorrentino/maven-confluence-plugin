@@ -1,8 +1,8 @@
 package org.bsc.confluence.rest.scrollversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.rest.FormBody;
 import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.scrollversions.model.ScrollVersions;
 import org.bsc.ssl.SSLCertificateInfo;
@@ -10,10 +10,12 @@ import org.bsc.ssl.SSLCertificateInfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -39,8 +41,6 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
         }
     }
 
-
-    static final MediaType  JSON_MEDIA_TYPE     = MediaType.parse("application/json; charset=utf-8");
     static final String     REQUEST_BODY_FORMAT = "[{\"queryArg\": \"%s\", \"value\": \"%s\"}]";
 
     final RESTConfluenceService delegate;
@@ -72,23 +72,31 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
 
     }
 
-    private HttpUrl.Builder urlBuilder() {
+    private URI urlBuilder() throws URISyntaxException {
 
         int port = scrollVersionsUrl.getPort();
         port = (port > -1 ) ? port : scrollVersionsUrl.getDefaultPort();
 
-        return new HttpUrl.Builder().scheme(scrollVersionsUrl.getProtocol())
-                .host(scrollVersionsUrl.getHost())
-                .port(port)
-                .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
+        return new URI(
+                scrollVersionsUrl.getProtocol(),
+                null, // user info,
+                scrollVersionsUrl.getHost(),
+                port,
+                scrollVersionsUrl.getPath(),
+                null, // query
+                null // fragment
+        );
     }
 
 
-    private Request.Builder requestBuilder() {
-        final var credentials = getCredentials();
-        return new Request.Builder()
-                .header("Authorization", okhttp3.Credentials.basic(credentials.username, credentials.password))
-                .header("X-Atlassian-Token", "nocheck");
+    private HttpRequest.Builder newRequestBuilder() {
+//        final var credentials = getCredentials();
+//        final String auth =
+//                "Basic " + Base64.getEncoder().encodeToString((credentials.username + ":" + credentials.password).getBytes());
+        return HttpRequest.newBuilder()
+                //.header("Authorization", auth)
+                .header("X-Atlassian-Token", "nocheck")
+                ;
     }
 
     /**
@@ -114,9 +122,6 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
                                         completeExceptionally( new Exception(format("version [%s] doesn't exists!", versionName)) )
                                     )
                         ));
-
-
-
     }
 
     /**
@@ -126,43 +131,46 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
      */
     CompletableFuture<List<ScrollVersions.Model.Version>> getScrollVersions(String spaceKey) {
 
+        try {
+            var url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of("versions", spaceKey),
+                    Map.of());
 
-        final var httpUrl =
-                urlBuilder()
-                .addPathSegment("versions")
-                .addPathSegment(spaceKey)
-                .build();
-        final var request = requestBuilder()
-                .url(httpUrl)
-                .get()
-                .build();
+            final var request = newRequestBuilder()
+                    .uri(url)
+                    .GET();
 
-        //debug( "getScrollVersions( '%s' )",spaceKey );
-        return delegate.fromRequestAsync(request).thenCompose( response -> {
+            //debug( "getScrollVersions( '%s' )",spaceKey );
+            return delegate.fromRequestAsync(request).thenCompose(response -> {
 
-            final var futureResult = new CompletableFuture<List<ScrollVersions.Model.Version>>();
+                final var futureResult = new CompletableFuture<List<ScrollVersions.Model.Version>>();
 
-            return ofNullable(response.body()).map(b -> {
+                return ofNullable(response.body()).map(responseBodyString -> {
 
-                try {
-                    final var responseBodyString = b.string();
-                    //trace( "getScrollVersions response\n%s", responseBodyString );
-                    final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Version[].class);
+                    try {
 
-                    futureResult.complete(asList(result));
+                        //trace( "getScrollVersions response\n%s", responseBodyString );
+                        final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Version[].class);
 
-                } catch (IOException e) {
-                    futureResult.completeExceptionally(e);
-                }
+                        futureResult.complete(asList(result));
 
-                return futureResult;
+                    } catch (IOException e) {
+                        futureResult.completeExceptionally(e);
+                    }
 
-            }).orElseGet(() -> {
-                futureResult.completeExceptionally(new Exception("could not retrieve versions info!"));
-                return futureResult;
+                    return futureResult;
+
+                }).orElseGet(() -> {
+                    futureResult.completeExceptionally(new Exception("could not retrieve versions info!"));
+                    return futureResult;
+                });
+
             });
-
-        });
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /**
@@ -172,38 +180,46 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
      */
     CompletableFuture<List<ScrollVersions.Model.Page>> getVersionsPages(String spaceKey, String queryArg, String value) {
 
-        final var httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment(spaceKey)
-                        .build();
+        URI url;
 
-        final var body = RequestBody.create(format(REQUEST_BODY_FORMAT, queryArg, value), JSON_MEDIA_TYPE );
+        try {
+            url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of( "page", spaceKey),
+                    Map.of())
+            ;
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
-        final var request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
+        final var body = HttpRequest.BodyPublishers.ofString(format(REQUEST_BODY_FORMAT, queryArg, value), StandardCharsets.UTF_8);
+
+        final var request = newRequestBuilder()
+                .header("Content-Type", "application/json")
+                .uri(url)
+                .POST(body)
+                ;
 
         //debug( "getVersionPage( '%s', '%', '%s')",spaceKey, queryArg, value );
-        return delegate.fromRequestAsync(request).thenCompose( response -> {
+        return delegate.fromRequestAsync(request).thenCompose(response -> {
 
             final var futureResult = new CompletableFuture<List<ScrollVersions.Model.Page>>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map(responseBodyString -> {
                 try {
-                    final var responseBodyString = b.string();
+
                     //trace( "getVersionsPages response\n%s", responseBodyString );
                     final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Page[].class);
 
-                    futureResult.complete( asList(result) );
+                    futureResult.complete(asList(result));
 
 
                 } catch (IOException e) {
-                    futureResult.completeExceptionally( e );
+                    futureResult.completeExceptionally(e);
                 }
                 return futureResult;
-            }).orElseGet( () -> {
+            }).orElseGet(() -> {
                 futureResult.completeExceptionally(new Exception("could not retrieve versions info!s"));
                 return futureResult;
             });
@@ -220,27 +236,34 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
      */
     CompletableFuture<Optional<ScrollVersions.Model.PageResult>> getVersionPage(String spaceKey, String title) {
 
-        final var httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment(spaceKey)
-                        .build();
+        URI url;
 
-        final var body = RequestBody.create(format(REQUEST_BODY_FORMAT, "scrollPageTitle", title), JSON_MEDIA_TYPE );
+        try {
+            url = RESTConfluenceService.buildUrl(
+                            urlBuilder(),
+                            List.of("page", spaceKey),
+                            Map.of());
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
-        final var request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
+        final var body = HttpRequest.BodyPublishers.ofString(format(REQUEST_BODY_FORMAT, "scrollPageTitle", title), StandardCharsets.UTF_8);
+
+        final var request = newRequestBuilder()
+                .header("Content-Type", "application/json")
+                .uri(url)
+                .POST(body)
+                ;
 
         //debug( "getVersionPage( '%s', '%s')",spaceKey, title );
         return delegate.fromRequestAsync(request).thenCompose( response -> {
 
             final var futureResult = new CompletableFuture<Optional<ScrollVersions.Model.PageResult>>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map( responseBodyString -> {
                 try {
-                    final var responseBodyString = b.string();
+
                     //trace( "getVersionPage response\n%s", responseBodyString );
                     final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Page[].class);
 
@@ -309,32 +332,38 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
      */
     CompletableFuture<ScrollVersions.Model.NewPageResult> createVersionPage(String spaceKey, Model.ID masterPageId, String title, ScrollVersions.Model.Version version) {
 
-        final var httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment("new")
-                        .addPathSegment(spaceKey)
-                        .build();
+        URI url;
+
+        try {
+            url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of("page", "new", spaceKey),
+                    Map.of());
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
         final var body = new FormBody.Builder()
                 .add("parentConfluenceId", masterPageId.toString() )
                 .add( "versionId", version.getId() )
                 .add( "pageTitle", title )
-                .build();
+                .build()
+                ;
 
-        final var request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
+        final var request = newRequestBuilder()
+                .header("Content-Type", FormBody.getContentType())
+                .uri(url)
+                .POST(body)
+                ;
 
         //debug( "createVersionPage( '%s', '%d', '%s', '%s')",spaceKey, masterPageId, title, version.getName() );
         return delegate.fromRequestAsync(request).thenCompose( response -> {
 
             final var futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map( responseBodyString -> {
                 try {
-                    final var responseBodyString = b.string();
                     //debug( "createVersionPage response\n%s", responseBodyString );
                     final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);
 
@@ -362,33 +391,38 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
      * @return
      */
     CompletableFuture<ScrollVersions.Model.NewPageResult> manageVersionPage(Model.ID masterPageId, String title, ScrollVersions.Model.Version version, ChangeType changeType ) {
+        URI url;
 
-        final var httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment("modify")
-                        .build();
+        try {
+            url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of("page", "modify"),
+                    Map.of());
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
         final var body = new FormBody.Builder()
                 .add("masterPageId", masterPageId.toString() )
                 .add( "pageTitle", title)
                 .add( "versionId", version.getId() )
                 .add( "changeType", changeType.typeName )
-                .build();
+                .build()
+                ;
 
-        final var request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
-
+        final var request = newRequestBuilder()
+                .header("Content-Type", FormBody.getContentType())
+                .uri(url)
+                .POST(body)
+                ;
         //debug( "manageVersionPage( '%s', '%s', '%s', '%s')",masterPageId, title, version.getName(), changeType.typeName );
         return delegate.fromRequestAsync(request).thenCompose( response -> {
 
             final var futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map( responseBodyString -> {
                 try {
-                    final var responseBodyString = b.string();
                     //trace( "manageVersionPage response\n%s", responseBodyString );
 
                     final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);

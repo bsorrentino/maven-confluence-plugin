@@ -34,7 +34,7 @@
         <module>gitlog+jira</module>
         <module>service-rest-api</module>
         <module>service-xmlrpc-api</module>
-        <!--module>addon-scrollversions</module-->
+        <module>addon-scrollversions</module>
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
@@ -170,12 +170,6 @@
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>3.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>4.7.2</version>
             </dependency>
 
             <dependency>

@@ -139,7 +139,7 @@ public class RESTConfluenceService extends AbstractRESTConfluenceService impleme
     }
 
     @Override
-    protected CompletableFuture<HttpResponse<String>> fromRequestAsync(HttpRequest.Builder reqBuilder) {
+    public CompletableFuture<HttpResponse<String>> fromRequestAsync(HttpRequest.Builder reqBuilder) {
         return super.fromRequestAsync(processHeaderBeforeRequest(reqBuilder));
     }
 

@@ -5,7 +5,6 @@
  */
 package org.bsc.confluence.rest;
 
-import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceUtils;
 import org.bsc.confluence.rest.model.Attachment;
@@ -18,6 +17,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -61,45 +60,12 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
     }
 
-    public static class MultiPartBodyBuilder {
-        private final StringBuilder formData = new StringBuilder();
-        private static final String LINE_FEED = "\r\n";
-        public final String boundary = UUID.randomUUID().toString();
-
-        public MultiPartBodyBuilder addFormDataPart(  final String name, final String value ) {
-            formData
-                .append( "--").append(boundary).append(LINE_FEED)
-                .append( "Content-Disposition: form-data; name=\"").append(name).append("\"").append(LINE_FEED).append(LINE_FEED)
-                //.append( "Content-Type: text/plain; charset=UTF-8").append(LINE_FEED).append(LINE_FEED)
-                .append(value).append(LINE_FEED)
-                ;
-            return this;
-        }
-
-        public MultiPartBodyBuilder addFormFilePart( final String fieldName, final String fileName, final String mimeType, final java.io.InputStream data ) throws IOException {
-
-            formData
-                .append("--").append(boundary).append(LINE_FEED)
-                .append(format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"", fieldName, fileName)).append(LINE_FEED)
-                .append(format("Content-Type: %s", mimeType)).append(LINE_FEED).append(LINE_FEED)
-                .append( IOUtils.toCharArray(data, StandardCharsets.UTF_8) ).append(LINE_FEED)
-                .append("--").append(boundary).append(LINE_FEED)
-                ;
-
-            return this;
-        }
-
-        public String build() {
-            return formData.toString();
-        }
-    }
-
     /**
      *
-     * @param req
+     * @param reqBuilder
      * @return
      */
-    protected CompletableFuture<HttpResponse<String>> fromRequestAsync(final HttpRequest.Builder reqBuilder) {
+    public CompletableFuture<HttpResponse<String>> fromRequestAsync(final HttpRequest.Builder reqBuilder) {
 
         final var req = reqBuilder.build();
         return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
@@ -130,15 +96,6 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
             throw new Error(ex);
         }
 
-    }
-
-    private void fromUrlGET(final URI url, final String description, Consumer<HttpResponse<String>> consumer ) {
-        final var req = HttpRequest.newBuilder()
-                .uri(url)
-                .GET()
-                ;
-
-        fromRequest(req, description, consumer);
     }
 
     protected Stream<JsonObject> mapToStream( HttpResponse<String> res)  {
@@ -189,49 +146,50 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
         }
     };
 
+    public static URI buildUrl( URI url, List<String> path, Map<String, String> query) throws URISyntaxException {
+
+        final var previousPath = url.getPath();
+        var newPath = previousPath;
+        if( !path.isEmpty() ) {
+            newPath = String.join("/", path);
+
+            if (previousPath != null) {
+                newPath = format("%s/%s", previousPath, newPath);
+            }
+        }
+
+        final var previousQuery = url.getQuery();
+        var newQuery = previousQuery;
+        if( !query.isEmpty() ) {
+            newQuery = query.entrySet().stream()
+                    .map(kv -> format("%s=%s", kv.getKey(), kv.getValue()))
+                    .collect(Collectors.joining("&"));
+
+            if (previousQuery != null) {
+                newQuery = format("%s&%s", previousQuery, newQuery);
+            }
+        }
+
+        return new URI(
+                url.getScheme(),
+                url.getUserInfo(),
+                url.getHost(),
+                url.getPort(),
+                newPath, // path
+                newQuery, // query
+                url.getFragment()
+        );
+
+    }
+
     private URI buildUrl( List<String> path, Map<String, String> query) {
 
         try {
-            final var url = urlBuilder();
-
-            final var previousPath = url.getPath();
-            var newPath = previousPath;
-            if( !path.isEmpty() ) {
-                newPath = String.join("/", path);
-
-                if (previousPath != null) {
-                    newPath = format("%s/%s", previousPath, newPath);
-                }
-            }
-
-            final var previousQuery = url.getQuery();
-            var newQuery = previousQuery;
-            if( !query.isEmpty() ) {
-                newQuery = query.entrySet().stream()
-                        .map(kv -> format("%s=%s", kv.getKey(), kv.getValue()))
-                        .collect(Collectors.joining("&"));
-
-                if (previousQuery != null) {
-                    newQuery = format("%s&%s", previousQuery, newQuery);
-                }
-            }
-
-            return new URI(
-                    url.getScheme(),
-                    url.getUserInfo(),
-                    url.getHost(),
-                    url.getPort(),
-                    newPath, // path
-                    newQuery, // query
-                    url.getFragment()
-            );
-
+            return buildUrl( urlBuilder(), path, query );
         }
         catch( URISyntaxException ex ) {
             throw new Error(ex);
         }
-
-
     }
 
     protected CompletableFuture<Optional<JsonObject>> findPageById( final String id ) {
@@ -239,7 +197,12 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
         final CompletableFuture<Optional<JsonObject>> result = new CompletableFuture<>();
         final var url = buildUrl( List.of( "content", id ), Map.of( "expand", EXPAND ));
 
-        fromUrlGET( url, "find page", res ->
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
+                ;
+
+        fromRequest(req, "find page", res ->
                 result.complete(Stream.of(res).flatMap(this::mapToStream).findFirst()) );
 
          return result;
@@ -254,8 +217,14 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 List.of( "content" ),
                 Map.of( "spaceKey", spaceKey, "title", title, "expand", EXPAND ));
 
-        fromUrlGET( url, "find pages", res ->
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
+                ;
+
+        fromRequest(req,"find pages", res ->
                 result.complete( Stream.of(res).flatMap(this::mapToStream).collect( Collectors.toList())));
+
         return result;
     }
 
@@ -267,14 +236,19 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 List.of( "content", String.valueOf(id), "child", "page" ),
                 Map.of( "expand", EXPAND ));
 
-        fromUrlGET( url, "get descendant pages", res ->
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
+                ;
+
+        fromRequest(req, "get descendant pages", res ->
                 result.complete(
                         Stream.of(res).flatMap(this::mapToStream)
-                        .flatMap( o -> {
-                            final long childId = IdHelper.getId( o );
-                            return Stream.concat(Stream.of(o), descendantPages(childId).join().stream()) ;
-                        })
-                .collect( Collectors.toList() )));
+                                .flatMap( o -> {
+                                    final long childId = IdHelper.getId( o );
+                                    return Stream.concat(Stream.of(o), descendantPages(childId).join().stream()) ;
+                                })
+                                .collect( Collectors.toList() )));
         return result ;
 
 
@@ -288,8 +262,13 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 List.of( "content", id, "child", "page" ),
                 Map.of( "expand", EXPAND ));
 
-        fromUrlGET( url, "get children pages", res ->
-            result.complete(Stream.of(res).flatMap(this::mapToStream).collect( Collectors.toList() )));
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
+                ;
+
+        fromRequest(req, "get children pages", res ->
+                result.complete(Stream.of(res).flatMap(this::mapToStream).collect( Collectors.toList() )));
 
         return result;
     }
@@ -420,7 +399,12 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 List.of( "content", id, "child", "attachment" ),
                 Map.of( "expand", EXPAND ));
 
-        fromUrlGET( url, "get attachments", res ->
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
+                ;
+
+        fromRequest(req, "get attachments", res ->
                 result.complete( Stream.of(res).flatMap(this::mapToStream).collect(Collectors.toList())));
 
         return result;
@@ -434,7 +418,12 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
                 List.of( "content", id, "child", "attachment" ),
                 Map.of( "filename", fileName, "expand", EXPAND ));
 
-        fromUrlGET( url, "get attachment", res ->
+        final var req = HttpRequest.newBuilder()
+                .uri(url)
+                .GET()
+                ;
+
+        fromRequest(req, "get attachment", res ->
                 result.complete(Stream.of(res).flatMap(this::mapToStream).collect(Collectors.toList())));
 
         return result;
@@ -445,36 +434,33 @@ public abstract class AbstractRESTConfluenceService implements IdHelper {
 
         final CompletableFuture<List<JsonObject>> result = new CompletableFuture<>();
 
-        try {
-            var formData = new MultiPartBodyBuilder()
-                    .addFormDataPart(  "comment", att.getComment() )
-                    .addFormDataPart(  "minorEdit", "true" )
-                    .addFormFilePart( "file", att.getFileName(), att.getContentType(), data)
-                    ;
-            final var path = ( att.getId() != null ) ?
-                    List.of( "content", id, "child", "attachment", att.getId(), "data" ) :
-                    List.of(  "content", id, "child", "attachment");
-
-            final var url = buildUrl(
-                    path,
-                    emptyMap());
-
-            final var req = HttpRequest.newBuilder()
-                    .headers("Content-Type","multipart/form-data","boundary",formData.boundary)
-                    .uri(url)
-                    .POST( HttpRequest.BodyPublishers.ofString(formData.build(), StandardCharsets.UTF_8) )
+        var bodyPublisher = new MultipartFormDataBodyPublisher()
+                    .add( "comment", att.getComment()  )
+                    .add( "minorEdit", "true")
+                    .addStream(  "file", att.getFileName(), () -> data, att.getContentType() )
                     ;
 
-            fromRequest(req, "create page", res ->
-                    result.complete( Stream.of(res).flatMap( post ->
-                                    (att.getId() != null)
-                                            ? Stream.of(mapToObject(post))
-                                            : mapToStream(post))
-                            .collect( Collectors.toList() )));
+        final var path = ( att.getId() != null ) ?
+                List.of( "content", id, "child", "attachment", att.getId(), "data" ) :
+                List.of(  "content", id, "child", "attachment");
 
-        } catch (IOException ex) {
-            result.completeExceptionally(ex);
-        }
+        final var url = buildUrl(
+                path,
+                emptyMap());
+
+        final var req = HttpRequest.newBuilder()
+                .header("X-Atlassian-Token","nocheck")
+                .headers("Content-Type", bodyPublisher.contentType())
+                .uri(url)
+                .POST( bodyPublisher )
+                ;
+
+        fromRequest(req, "create page", res ->
+                result.complete( Stream.of(res).flatMap( post ->
+                                (att.getId() != null)
+                                        ? Stream.of(mapToObject(post))
+                                        : mapToStream(post))
+                        .collect( Collectors.toList() )));
 
         return result;
 
