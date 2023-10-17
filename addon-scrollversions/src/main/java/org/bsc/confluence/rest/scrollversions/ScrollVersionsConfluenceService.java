@@ -2,7 +2,7 @@ package org.bsc.confluence.rest.scrollversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.rest.FormBody;
+import org.bsc.confluence.rest.FormUrlEncodedBodyPublisher;
 import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.scrollversions.model.ScrollVersions;
 import org.bsc.ssl.SSLCertificateInfo;
@@ -15,7 +15,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -344,15 +347,14 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
             return CompletableFuture.failedFuture(e);
         }
 
-        final var body = new FormBody.Builder()
-                .add("parentConfluenceId", masterPageId.toString() )
-                .add( "versionId", version.getId() )
-                .add( "pageTitle", title )
-                .build()
-                ;
+        final var body = new FormUrlEncodedBodyPublisher( Map.of(
+        "parentConfluenceId", masterPageId.toString(),
+        "versionId", version.getId(),
+        "pageTitle", title
+        ));
 
         final var request = newRequestBuilder()
-                .header("Content-Type", FormBody.getContentType())
+                .header("Content-Type", body.getContentType())
                 .uri(url)
                 .POST(body)
                 ;
@@ -403,16 +405,15 @@ private static final java.util.logging.Logger log = java.util.logging.Logger.get
             return CompletableFuture.failedFuture(e);
         }
 
-        final var body = new FormBody.Builder()
-                .add("masterPageId", masterPageId.toString() )
-                .add( "pageTitle", title)
-                .add( "versionId", version.getId() )
-                .add( "changeType", changeType.typeName )
-                .build()
+        final var body = new FormUrlEncodedBodyPublisher( Map.of(
+                "masterPageId", masterPageId.toString(),
+                "pageTitle", title,
+                "versionId", version.getId(),
+                "changeType", changeType.typeName))
                 ;
 
         final var request = newRequestBuilder()
-                .header("Content-Type", FormBody.getContentType())
+                .header("Content-Type", body.getContentType())
                 .uri(url)
                 .POST(body)
                 ;
