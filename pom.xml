@@ -26,7 +26,7 @@
     </developers>
     <modules>
         <module>core</module>
-        <module>plugin-reporting</module>
+        <module>mojo</module>
         <module>test-publishing</module>
         <module>test-plugin</module>
         <module>processor-freemarker</module>
@@ -35,6 +35,7 @@
         <module>service-rest-api</module>
         <module>service-xmlrpc-api</module>
         <module>addon-scrollversions</module>
+        <module>plugin-report</module>
     </modules>
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-plugin.git</connection>
