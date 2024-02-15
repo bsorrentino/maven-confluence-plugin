@@ -1,4 +1,5 @@
-package org.bsc.reporting.renderer;
+package org.bsc.plugin.renderer;
+
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

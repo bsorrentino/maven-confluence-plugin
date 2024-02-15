@@ -1,4 +1,5 @@
-package org.bsc.reporting.sink;
+package org.bsc.plugin.sink;
+
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

@@ -1,4 +1,5 @@
-package org.bsc.reporting.renderer;
+package org.bsc.plugin.renderer;
+
 
 import java.util.ArrayList;
 import java.util.Collection;

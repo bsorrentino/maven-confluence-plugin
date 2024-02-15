@@ -166,16 +166,25 @@
             <artifactId>maven-confluence-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>confluence-xmlrpc-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.bsc.maven</groupId>
             <artifactId>confluence-rest-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>confluence-plugin-report</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
 
         <!--
         =================================

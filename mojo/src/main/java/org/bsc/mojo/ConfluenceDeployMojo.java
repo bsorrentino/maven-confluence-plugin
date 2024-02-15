@@ -51,15 +51,11 @@ import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
 import org.bsc.mojo.configuration.MarkdownProcessorInfo;
-import org.bsc.reporting.plugin.PluginConfluenceDocGenerator;
+import org.bsc.plugin.PluginConfluenceDocGenerator;
+import org.bsc.plugin.renderer.*;
+import org.bsc.plugin.sink.ConfluenceSink;
 import org.bsc.reporting.renderer.CalculateRuleForSinceTagName;
-import org.bsc.reporting.renderer.DependenciesRenderer;
 import org.bsc.reporting.renderer.GitLogJiraIssuesRenderer;
-import org.bsc.reporting.renderer.ProjectSummaryRenderer;
-import org.bsc.reporting.renderer.ProjectTeamRenderer;
-import org.bsc.reporting.renderer.ReportingResolutionListener;
-import org.bsc.reporting.renderer.ScmRenderer;
-import org.bsc.reporting.sink.ConfluenceSink;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.i18n.I18N;
 
@@ -656,9 +652,6 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     public String getName(Locale locale) {
         return "confluence";
     }
-
-
-
 
 /////////////////////////////////////////////////////////
 ///
