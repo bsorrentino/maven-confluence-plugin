@@ -12,7 +12,7 @@
     <artifactId>maven-confluence-core</artifactId>
     <name>CONFLUENCE-REPORTING::Core</name>
     <description>maven confluence plugin - core project</description>
-    <url>http://code.google.com/p/maven-confluence-plugin/</url>
+    <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
 
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
