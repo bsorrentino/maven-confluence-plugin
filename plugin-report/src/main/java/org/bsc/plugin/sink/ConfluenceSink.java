@@ -1,4 +1,4 @@
-package org.bsc.reporting.sink;
+package org.bsc.plugin.sink;
 
 import java.io.PrintWriter;
 import java.io.Writer;

@@ -1,8 +1,16 @@
-package org.bsc.reporting.plugin;
+package org.bsc.plugin;
 
-import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
-import static org.bsc.reporting.plugin.ConfluenceWikiWriter.createAnchor;
-import static org.bsc.reporting.plugin.ConfluenceWikiWriter.createLinkToAnchor;
+import org.apache.maven.plugin.descriptor.MojoDescriptor;
+import org.apache.maven.plugin.descriptor.Parameter;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.tools.plugin.PluginToolsRequest;
+import org.apache.maven.tools.plugin.generator.Generator;
+import org.apache.maven.tools.plugin.generator.GeneratorException;
+import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.ConfluenceService.Model;
+import org.bsc.confluence.ConfluenceService.Storage;
+import org.bsc.confluence.ConfluenceService.Storage.Representation;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,18 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.maven.plugin.descriptor.MojoDescriptor;
-import org.apache.maven.plugin.descriptor.Parameter;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.tools.plugin.PluginToolsRequest;
-import org.apache.maven.tools.plugin.generator.Generator;
-import org.apache.maven.tools.plugin.generator.GeneratorException;
-import org.bsc.confluence.ConfluenceHtmlUtils;
-import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model;
-import org.bsc.confluence.ConfluenceService.Storage;
-import org.bsc.confluence.ConfluenceService.Storage.Representation;
-import org.codehaus.plexus.util.StringUtils;
+import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
+import static org.bsc.plugin.ConfluenceWikiWriter.createAnchor;
+import static org.bsc.plugin.ConfluenceWikiWriter.createLinkToAnchor;
 
 /**
  *
@@ -424,7 +423,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         if( parameterList == null) 
             return Collections.emptyList();
         
-        final List<Parameter> list = new ArrayList<Parameter>();
+        final List<Parameter> list = new ArrayList<>();
 
         for (Parameter parameter : parameterList) {
             if (parameter.isRequired() == required) {
