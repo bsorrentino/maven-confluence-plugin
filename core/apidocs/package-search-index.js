@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.bsc.confluence"},{"l":"org.bsc.confluence.model"},{"l":"org.bsc.markdown"},{"l":"org.bsc.preprocessor"},{"l":"org.bsc.ssl"}]
