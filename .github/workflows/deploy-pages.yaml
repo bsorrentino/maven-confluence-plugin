@@ -25,7 +25,7 @@ jobs:
           java-version: 11
       - name: Deploy site to Github pages
         run: |
-          mvn -B install --file pom.xml -s settings-template.xml
+          mvn -B --projects core javadoc:javadoc --file pom.xml -s settings-template.xml
           mvn -B --projects mojo site --file pom.xml -s settings-template.xml
           cp -R core/target/site mojo/target/site/core
       - name: Deploy
