@@ -2,23 +2,129 @@
 
 <!-- Changelog for bsorrentino maven-confluence-plugin. -->
 
-## v7.13
+## v8.0-beta1
 ### Generic changes
 
-**Merge branch 'release/7.13'**
+**Merge branch 'release/8.0-beta1'**
 
 
-[c7543325ddd2ddb](https://github.com/bsorrentino/maven-confluence-plugin/commit/c7543325ddd2ddb) bsorrentino *2023-10-12 17:27:56*
+[249a5ce9f0855ab](https://github.com/bsorrentino/maven-confluence-plugin/commit/249a5ce9f0855ab) bsorrentino *2024-02-29 17:18:23*
 
-**docs: update readme and changelog**
-
-
-[641992e2571b4d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/641992e2571b4d2) bsorrentino *2023-10-12 17:27:37*
-
-**build: set the new release version**
+**build: move to next version**
 
 
-[513d97305872a08](https://github.com/bsorrentino/maven-confluence-plugin/commit/513d97305872a08) bsorrentino *2023-10-12 17:27:20*
+[08e11cf9887e17a](https://github.com/bsorrentino/maven-confluence-plugin/commit/08e11cf9887e17a) bsorrentino *2024-02-29 17:18:17*
+
+**fix: update github action for deploy site**
+
+
+[deb52334990eff4](https://github.com/bsorrentino/maven-confluence-plugin/commit/deb52334990eff4) bsorrentino *2024-02-29 16:52:33*
+
+**refactor: move generateGoalsPages method in AbstractPluginConfluenceDocGenerator**
+
+
+[d1a9a91979a070c](https://github.com/bsorrentino/maven-confluence-plugin/commit/d1a9a91979a070c) bsorrentino *2024-02-29 16:51:31*
+
+**Merge branch 'feature/plugin_report_module' into develop**
+
+
+[564e2b94871edb6](https://github.com/bsorrentino/maven-confluence-plugin/commit/564e2b94871edb6) bsorrentino *2024-02-15 18:59:03*
+
+**chore: clean code**
+
+
+[a3a2ba9ae723b41](https://github.com/bsorrentino/maven-confluence-plugin/commit/a3a2ba9ae723b41) bsorrentino *2024-02-15 18:58:43*
+
+**refactor: add new module**
+
+
+[ef1a7bba76c0e81](https://github.com/bsorrentino/maven-confluence-plugin/commit/ef1a7bba76c0e81) bsorrentino *2024-02-15 18:58:29*
+
+**refactor: update import**
+
+
+[e4cc2fda67e8472](https://github.com/bsorrentino/maven-confluence-plugin/commit/e4cc2fda67e8472) bsorrentino *2024-02-15 18:58:16*
+
+**refactor: move package**
+
+ * move renderer, sink package from mojo to plugin-report module
+
+[6040da26f290832](https://github.com/bsorrentino/maven-confluence-plugin/commit/6040da26f290832) bsorrentino *2024-02-15 18:57:42*
+
+**refactor(core): update module url**
+
+
+[d8e8430bd9941e5](https://github.com/bsorrentino/maven-confluence-plugin/commit/d8e8430bd9941e5) bsorrentino *2024-02-15 18:16:18*
+
+**refactor: rename module**
+
+ * from plugin-reporting to mojo
+
+[26cb771d7677dd5](https://github.com/bsorrentino/maven-confluence-plugin/commit/26cb771d7677dd5) bsorrentino *2024-02-15 18:15:57*
+
+**refactor: isolate xmlrpc-client, commons-httpclient deps in xmlrpc module**
+
+
+[a15cc05c180b42c](https://github.com/bsorrentino/maven-confluence-plugin/commit/a15cc05c180b42c) bsorrentino *2023-10-17 08:11:10*
+
+**feat: replace FormBody with a BodyPublisher**
+
+ * #296
+
+[bbf698047c72ea9](https://github.com/bsorrentino/maven-confluence-plugin/commit/bbf698047c72ea9) bsorrentino *2023-10-17 08:05:50*
+
+**build: update action to work on java11**
+
+ * #296
+
+[1ebd081d36d1070](https://github.com/bsorrentino/maven-confluence-plugin/commit/1ebd081d36d1070) bsorrentino *2023-10-16 15:58:05*
+
+**Merge branch 'feature/move_to_java11_#296' into develop**
+
+
+[6eb2b8af4bb9727](https://github.com/bsorrentino/maven-confluence-plugin/commit/6eb2b8af4bb9727) bsorrentino *2023-10-16 15:55:43*
+
+**refactor: complete replacing OkHttp with built-ih Http Client**
+
+ * resolve #296
+
+[20a8d9fede25454](https://github.com/bsorrentino/maven-confluence-plugin/commit/20a8d9fede25454) bsorrentino *2023-10-16 15:55:19*
+
+**refactor: continue replacing OkHttp with built-ih Http Client**
+
+ * working on #296
+
+[6347e579e1b0a2f](https://github.com/bsorrentino/maven-confluence-plugin/commit/6347e579e1b0a2f) bsorrentino *2023-10-15 21:36:27*
+
+**refactor: start replacing OkHttp with built-ih Http Client**
+
+ * working on #296
+
+[13f5b5fc0005342](https://github.com/bsorrentino/maven-confluence-plugin/commit/13f5b5fc0005342) bsorrentino *2023-10-15 17:44:30*
+
+**docs: update javadoc**
+
+
+[f425bdc7b31b22b](https://github.com/bsorrentino/maven-confluence-plugin/commit/f425bdc7b31b22b) bsorrentino *2023-10-13 16:02:07*
+
+**build: move to java11**
+
+ * update compiler target
+ * remove lombok usage
+ * working on #296
+
+[e37a86bfcff6ab8](https://github.com/bsorrentino/maven-confluence-plugin/commit/e37a86bfcff6ab8) bsorrentino *2023-10-13 15:47:38*
+
+**docs: changelog**
+
+
+[b3b6e9695ecd0c0](https://github.com/bsorrentino/maven-confluence-plugin/commit/b3b6e9695ecd0c0) bsorrentino *2023-10-12 17:29:23*
+
+**Merge tag 'v7.13' into develop**
+
+ * new release
+
+[6f964924f2363c6](https://github.com/bsorrentino/maven-confluence-plugin/commit/6f964924f2363c6) bsorrentino *2023-10-12 17:28:02*
 
 **Merge branch 'bugfix/curly_braces_in_table_#295' into develop**
 
@@ -83,6 +189,31 @@
 
 [1158634c0129498](https://github.com/bsorrentino/maven-confluence-plugin/commit/1158634c0129498) bsorrentino *2023-06-26 09:07:59*
 
+**Merge tag 'v7.12' into develop**
+
+ * new release
+
+[8736e5277f5d031](https://github.com/bsorrentino/maven-confluence-plugin/commit/8736e5277f5d031) bsorrentino *2023-06-26 09:05:20*
+
+
+## v7.13
+### Generic changes
+
+**Merge branch 'release/7.13'**
+
+
+[c7543325ddd2ddb](https://github.com/bsorrentino/maven-confluence-plugin/commit/c7543325ddd2ddb) bsorrentino *2023-10-12 17:27:56*
+
+**docs: update readme and changelog**
+
+
+[641992e2571b4d2](https://github.com/bsorrentino/maven-confluence-plugin/commit/641992e2571b4d2) bsorrentino *2023-10-12 17:27:37*
+
+**build: set the new release version**
+
+
+[513d97305872a08](https://github.com/bsorrentino/maven-confluence-plugin/commit/513d97305872a08) bsorrentino *2023-10-12 17:27:20*
+
 **Merge branch 'hotfix/changelog'**
 
 
@@ -92,12 +223,6 @@
 
 
 [e69cb1d0ab22f21](https://github.com/bsorrentino/maven-confluence-plugin/commit/e69cb1d0ab22f21) bsorrentino *2023-06-26 09:07:31*
-
-**Merge tag 'v7.12' into develop**
-
- * new release
-
-[8736e5277f5d031](https://github.com/bsorrentino/maven-confluence-plugin/commit/8736e5277f5d031) bsorrentino *2023-06-26 09:05:20*
 
 
 ## v7.12
