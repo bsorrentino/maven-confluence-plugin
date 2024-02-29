@@ -32,6 +32,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -51,7 +52,7 @@ import org.bsc.confluence.DeployStateManager;
 import org.bsc.confluence.ParentChildTuple;
 import org.bsc.confluence.model.Site;
 import org.bsc.mojo.configuration.MarkdownProcessorInfo;
-import org.bsc.plugin.PluginConfluenceDocGenerator;
+import org.bsc.plugin.AbstractPluginConfluenceDocGenerator;
 import org.bsc.plugin.renderer.*;
 import org.bsc.plugin.sink.ConfluenceSink;
 import org.bsc.reporting.renderer.CalculateRuleForSinceTagName;
@@ -77,8 +78,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
     private static final String GITLOG_JIRA_ISSUES_VAR      = "gitlog.jiraIssues";
     private static final String GITLOG_SINCE_TAG_NAME       = "gitlog.sinceTagName";
 
-    public static final String PLUGIN_SUMMARY_VAR           = "plugin.summary";
-    public static final String PLUGIN_GOALS_VAR             = "plugin.goals";
+
 
     /**
      * Local Repository.
@@ -769,36 +769,15 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
         //
     }
 
-    class PluginGenerator extends PluginConfluenceDocGenerator {
+    class PluginGenerator extends AbstractPluginConfluenceDocGenerator {
 
 
-        final java.util.List<Goal> goals = new ArrayList<>();
 
-        void generateGoalsPages(final ConfluenceService confluence,
-                                final Model.Page confluenceHome,
-                                final Map<String, Model.Page> varsToParentPageMap) {
-
-            // GENERATE GOAL
-            getLog().info(format("Get the right page to generate the %s pages under", PLUGIN_GOALS_VAR));
-
-            Model.Page goalsParentPage = confluenceHome;
-
-            if (varsToParentPageMap.containsKey(PLUGIN_GOALS_VAR)) {
-                goalsParentPage = varsToParentPageMap.get(PLUGIN_GOALS_VAR);
-            }
-
-            getLog().info(format("Plugin Goals parentPage is: %s", goalsParentPage.getTitle()));
-
-            for (PluginConfluenceDocGenerator.Goal goal : goals) {
-                try {
-                    getLog().info(format("- generating: %s", goal.getPageName(confluenceHome.getTitle()) ));
-                    goal.generatePage(confluence, goalsParentPage, confluenceHome.getTitle());
-                } catch (Exception ex) {
-                    getLog().warn(format("error generatig page for goal [%s]", goal.descriptor.getGoal()), ex);
-                }
-            }
-
+        @Override
+        public Log getLog() {
+            return ConfluenceDeployMojo.this.getLog();
         }
+
 
         /**
          *
@@ -874,7 +853,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                                 final StringWriter writer = new StringWriter(100 * 1024);
 
                                 //writeGoals(writer, mojos);
-                                goals.addAll(writeGoalsAsChildren(writer, title, mojos));
+                                getGoals().addAll(writeGoalsAsChildren(writer, title, mojos));
 
                                 writer.flush();
 
@@ -978,7 +957,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                             final StringWriter writer = new StringWriter(100 * 1024);
 
                             //writeGoals(writer, mojos);
-                            goals.addAll(writeGoalsAsChildren(writer, title, mojos));
+                            getGoals().addAll(writeGoalsAsChildren(writer, title, mojos));
 
                             writer.flush();
 
@@ -1062,5 +1041,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     .join();
 
         }
+
+
     }
 }

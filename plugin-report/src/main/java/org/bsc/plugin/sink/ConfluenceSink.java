@@ -13,7 +13,7 @@ import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
  * 
  * Sink to produce confluence wiki render.
  * 
- * @plexus.component role="cosm.maven.reporting.Sink" role-hint="Confluence"
+ * @plexus.component role="com.maven.reporting.Sink" role-hint="Confluence"
  * 
  * @author Sorrentino
  *

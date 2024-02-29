@@ -16,12 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static java.lang.String.format;
 import static org.bsc.confluence.ConfluenceHtmlUtils.replaceHTML;
 import static org.bsc.plugin.ConfluenceWikiWriter.createAnchor;
 import static org.bsc.plugin.ConfluenceWikiWriter.createLinkToAnchor;
@@ -31,9 +29,10 @@ import static org.bsc.plugin.ConfluenceWikiWriter.createLinkToAnchor;
  * @author Sorrentino
  *
  */
-public abstract class PluginConfluenceDocGenerator implements Generator {
+public abstract class AbstractPluginConfluenceDocGenerator implements Generator {
 
-    //private static final Logger LOGGER = LoggerFactory.getLogger(PluginConfluenceDocGenerator.class);
+    public static final String PLUGIN_SUMMARY_VAR           = "plugin.summary";
+    public static final String PLUGIN_GOALS_VAR             = "plugin.goals";
 
     public static final String DEFAULT_PLUGIN_TEMPLATE_WIKI = "defaultPluginTemplate.confluence";
 
@@ -66,13 +65,10 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             writeParameterTable( w);
 
         }
-        
-        public String getPageName( String parentName ) {
-            final String goalName = String.format( "%s - %s", parentName, descriptor.getGoal());
-            
-            return goalName;
-        }
 
+        public String getPageName(String parentName ) {
+            return String.format( "%s - %s", parentName, descriptor.getGoal());
+        }
         public Model.Page generatePage( ConfluenceService confluence,  Model.Page parent, String parentName ) throws Exception {
             
             final String goalName = getPageName( parentName );
@@ -99,7 +95,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         
         /**
          *
-         * @param w
+         * @param w ConfluenceWikiWriter
          */
         private void writeAttributes(ConfluenceWikiWriter w) {
             w.printNormalHeading("Mojo Attributes");
@@ -166,7 +162,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
         /**
          *
-         * @param w
+         * @param w ConfluenceWikiWriter
          */
         private void writeParameterTable(ConfluenceWikiWriter w) {
             List<Parameter> parameterList = descriptor.getParameters();
@@ -182,8 +178,44 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
         }
 
     };
-    
-    
+
+    public abstract org.apache.maven.plugin.logging.Log getLog();
+
+
+    final java.util.List<Goal> goals = new ArrayList<>();
+
+    public  java.util.List<Goal> getGoals() {
+        return goals;
+    }
+
+    public void generateGoalsPages(final ConfluenceService confluence,
+                                   final Model.Page confluenceHome,
+                                   final Map<String, Model.Page> varsToParentPageMap) {
+
+        // GENERATE GOAL
+        getLog().info(format("Get the right page to generate the %s pages under", PLUGIN_GOALS_VAR));
+
+        Model.Page goalsParentPage = confluenceHome;
+
+        if (varsToParentPageMap.containsKey(PLUGIN_GOALS_VAR)) {
+            goalsParentPage = varsToParentPageMap.get(PLUGIN_GOALS_VAR);
+        }
+
+        getLog().info(format("Plugin Goals parentPage is: %s", goalsParentPage.getTitle()));
+
+        for (Goal goal : goals) {
+            try {
+                getLog().info(format("- generating: %s", goal.getPageName(confluenceHome.getTitle()) ));
+                var page = goal.generatePage(confluence, goalsParentPage, confluenceHome.getTitle());
+                getLog().debug(format("page generated: %s", page.getTitle()));
+
+            } catch (Exception ex) {
+                getLog().warn(format("error generating page for goal [%s]", goal.descriptor.getGoal()), ex);
+            }
+        }
+
+    }
+
     /**
      * 
      * @param destinationDirectory
@@ -210,8 +242,8 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     /**
      * 
-     * @param writer
-     * @param pluginDescriptor
+     * @param writer Writer
+     * @param pluginDescriptor Plugin Descriptor
      */
     protected void writeSummary(Writer writer, PluginDescriptor pluginDescriptor) {
 
@@ -220,7 +252,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
             w.printBiggerHeading("Description");
     
             Optional.ofNullable(pluginDescriptor.getDescription())
-                .ifPresent( description -> w.println(description) ); 
+                .ifPresent(w::println);
     
             w.printNewParagraph();
         }
@@ -278,11 +310,7 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     }
 
-    /**
-     *
-     * @param parameterList
-     * @return
-     */
+
     private List<Parameter> filterParameters(List<Parameter> parameterList) {
         List<Parameter> filtered = new ArrayList<Parameter>();
 
@@ -304,8 +332,8 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     /**
      *
-     * @param parameterList
-     * @param w
+     * @param parameterList list of parameters
+     * @param w writer
      */
     private void writeParameterDetails(List<Parameter> parameterList, ConfluenceWikiWriter w) {
         w.printNormalHeading("Parameter Details");
@@ -351,8 +379,8 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     /**
      *
-     * @param parameterList
-     * @param w
+     * @param parameterList list of parameters
+     * @param w writer
      */
     private void writeParameterSummary(List<Parameter> parameterList, ConfluenceWikiWriter w) {
         List<Parameter>  requiredParams = getParametersByRequired(true, parameterList);
@@ -368,9 +396,9 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     /**
      *
-     * @param title
-     * @param parameterList
-     * @param w
+     * @param title title
+     * @param parameterList list of parameters
+     * @param w writer
      */
     private void writeParameterList(String title, List<Parameter> parameterList, ConfluenceWikiWriter w) {
         w.printNormalHeading(title);
@@ -415,9 +443,9 @@ public abstract class PluginConfluenceDocGenerator implements Generator {
 
     /**
      *
-     * @param required
-     * @param parameterList
-     * @return
+     * @param required  true if required, false if optional
+     * @param parameterList list of parameters
+     * @return list of parameters
      */
     private List<Parameter> getParametersByRequired(boolean required, List<Parameter> parameterList) {
         if( parameterList == null) 

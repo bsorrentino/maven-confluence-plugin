@@ -44,7 +44,7 @@ public class ConfluenceWikiWriter extends PrintWriter {
 	 *	This macro is useful for including helpful information in your confluence pages
 	 *	{info}
 	 *
-	 * @param value
+	 * @param value value
 	 */
 	public void printInfo( String title, String value ) {
 		printf( "{info:title=%s}\n%s\n{info}", title, value );
