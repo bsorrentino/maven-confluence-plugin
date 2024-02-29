@@ -1,7 +1,5 @@
 package org.bsc.markdown.pegdown;
 
-import lombok.Data;
-import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.model.Site;
@@ -28,11 +26,34 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class SiteTest implements SiteFactory.Model {
 
-    @Data(staticConstructor="of")
     static class TestPage implements Model.Page {
         final String title;
         final String space;
 
+        public static final TestPage of(String title, String space ) {
+            return new TestPage( title, space );
+        }
+        
+        private TestPage( String title, String space ) {
+            this.title = title;
+            this.space = space;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        String getSpace() {
+            return space;
+        }
+
+        public void setSpace(String space) {
+            this.space = space;
+        }
 
         @Override
         public Model.ID getId() {
@@ -56,7 +77,7 @@ public class SiteTest implements SiteFactory.Model {
 
     @Override
     public Site createSiteFromModel(Map<String, Object> variables) {
-        val path = Paths.get("src", "test", "resources", "site.yaml");
+        final var path = Paths.get("src", "test", "resources", "site.yaml");
         try {
             return createFrom( path.toFile(), variables);
         } catch (Exception e) {
@@ -87,12 +108,12 @@ public class SiteTest implements SiteFactory.Model {
     
     @Test
     public void shouldSupportRefLink() throws IOException {
-        val parentPageTitle = Optional.of("Test");
-        val stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
+        final var parentPageTitle = Optional.of("Test");
+        final var stream = getClass().getClassLoader().getResourceAsStream("withRefLink.md");
         assertNotNull( stream );
-        val content = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        final var content = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
         assertNotNull( content );
-        val converted = content.split("\n+");
+        final var converted = content.split("\n+");
 
         int i = 2;
         assertEquals( format("* This is a relative link to another page [SECOND PAGE|%s - page 2|].", parentPageTitle.get()), converted[i++] );
@@ -109,11 +130,11 @@ public class SiteTest implements SiteFactory.Model {
 
         final Model.Page page = TestPage.of( "${page.title}", "spaceKey");
 
-        final val parentPageTitle = Optional.of("Test IMG");
+        final final var parentPageTitle = Optional.of("Test IMG");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("withImgRefLink.md");
         assertNotNull( stream );
-        val content = processMarkdown(site, site.getHome(), Optional.of(page), IOUtils.toString(stream), parentPageTitle);
+        final var content = processMarkdown(site, site.getHome(), Optional.of(page), IOUtils.toString(stream), parentPageTitle);
         assertNotNull( content );
         final String converted[] = content.split("\n+");
 
@@ -129,11 +150,11 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldSupportSimpleNode() throws IOException {
-        val parentPageTitle = Optional.of("Test");
+        final var parentPageTitle = Optional.of("Test");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("simpleNodes.md");
         assertNotNull( stream );
-        val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        final var converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
         assertNotNull( converted );
 
         assertTrue(converted.contains("----\n1\n----\n2\n----\n3\n----\n4\n----"), "All forms of HRules should be supported" );
@@ -148,11 +169,11 @@ public class SiteTest implements SiteFactory.Model {
 
     @Test
     public void shouldCreateSpecificNoticeBlock() throws IOException {
-        val parentPageTitle = Optional.of("Test Macro");
+        final var parentPageTitle = Optional.of("Test Macro");
 
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("createSpecificNoticeBlock.md");
         assertNotNull( stream );
-        val converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
+        final var converted = processMarkdown(site, site.getHome(), Optional.empty(), IOUtils.toString(stream), parentPageTitle);
         assertNotNull( converted );
 
         assertTrue( converted.contains("{info:title=About me}\n") );

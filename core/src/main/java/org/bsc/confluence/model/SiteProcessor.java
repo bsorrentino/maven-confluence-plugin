@@ -1,7 +1,5 @@
 package org.bsc.confluence.model;
 
-import lombok.NonNull;
-import lombok.Value;
 import org.apache.commons.io.IOUtils;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
@@ -23,12 +21,28 @@ import static org.bsc.confluence.FileExtension.*;
 
 public class SiteProcessor {
    
-    @Value(staticConstructor="of")
+    
     public static class PageContent {
-        @NonNull
-        String content;
-        @NonNull
-        Storage.Representation type;
+        final String content;
+        final Storage.Representation type;
+
+        public String getContent() {
+            return content;     
+        }
+
+        public Storage.Representation getType() {
+            return type;
+        }
+        
+        public static PageContent of( String content, Storage.Representation type ) {
+            return new PageContent( content, type );
+        }
+        private PageContent( String content, Storage.Representation type ) {
+            requireNonNull(content);
+            requireNonNull(type);
+            this.content = content;
+            this.type = type;
+        }
 
         /**
          * use {@link #getInputStream(Charset)}

@@ -5,14 +5,14 @@
     <parent>
         <artifactId>maven-confluence-parent</artifactId>
         <groupId>org.bsc.maven</groupId>
-        <version>7.13</version>
+        <version>8.0-beta1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-confluence-core</artifactId>
     <name>CONFLUENCE-REPORTING::Core</name>
     <description>maven confluence plugin - core project</description>
-    <url>http://code.google.com/p/maven-confluence-plugin/</url>
+    <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
 
     <scm>
         <connection>scm:git:https://github.com/bsorrentino/maven-confluence-reporting-plugin.git</connection>
@@ -113,21 +113,6 @@
     <build>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                        <configuration>
-                            <failOnError>false</failOnError>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <!-- Separates the unit tests from the integration tests. -->
             <plugin>

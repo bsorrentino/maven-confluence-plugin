@@ -1,10 +1,8 @@
 package org.bsc.confluence.rest.scrollversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.java.Log;
-import lombok.val;
-import okhttp3.*;
 import org.bsc.confluence.ConfluenceService;
+import org.bsc.confluence.rest.FormUrlEncodedBodyPublisher;
 import org.bsc.confluence.rest.RESTConfluenceService;
 import org.bsc.confluence.rest.scrollversions.model.ScrollVersions;
 import org.bsc.ssl.SSLCertificateInfo;
@@ -12,9 +10,14 @@ import org.bsc.ssl.SSLCertificateInfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -28,9 +31,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.stream.Collectors.toList;
 
-@Log( topic = "confluence-maven-plugin" )
 public class ScrollVersionsConfluenceService implements ConfluenceService {
-
+private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger("confluence-maven-plugin");
     enum ChangeType {
         ADD_VERSION("Modify"),
         REMOVE_VERSION("Remove");
@@ -42,8 +44,6 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         }
     }
 
-
-    static final MediaType  JSON_MEDIA_TYPE     = MediaType.parse("application/json; charset=utf-8");
     static final String     REQUEST_BODY_FORMAT = "[{\"queryArg\": \"%s\", \"value\": \"%s\"}]";
 
     final RESTConfluenceService delegate;
@@ -65,7 +65,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         this.versionName = versionName;
 
         try {
-            val regex = "/rest/api(/?)$";
+            final var regex = "/rest/api(/?)$";
             this.scrollVersionsUrl = new URL(confluenceUrl.replaceAll(regex, "/rest/scroll-versions/1.0"));
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("invalid Scroll Versions url", e);
@@ -75,23 +75,31 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
 
     }
 
-    private HttpUrl.Builder urlBuilder() {
+    private URI urlBuilder() throws URISyntaxException {
 
         int port = scrollVersionsUrl.getPort();
         port = (port > -1 ) ? port : scrollVersionsUrl.getDefaultPort();
 
-        return new HttpUrl.Builder().scheme(scrollVersionsUrl.getProtocol())
-                .host(scrollVersionsUrl.getHost())
-                .port(port)
-                .addPathSegments(scrollVersionsUrl.getPath().replaceAll("^/+", ""));
+        return new URI(
+                scrollVersionsUrl.getProtocol(),
+                null, // user info,
+                scrollVersionsUrl.getHost(),
+                port,
+                scrollVersionsUrl.getPath(),
+                null, // query
+                null // fragment
+        );
     }
 
 
-    private Request.Builder requestBuilder() {
-        val credentials = getCredentials();
-        return new Request.Builder()
-                .header("Authorization", okhttp3.Credentials.basic(credentials.username, credentials.password))
-                .header("X-Atlassian-Token", "nocheck");
+    private HttpRequest.Builder newRequestBuilder() {
+//        final var credentials = getCredentials();
+//        final String auth =
+//                "Basic " + Base64.getEncoder().encodeToString((credentials.username + ":" + credentials.password).getBytes());
+        return HttpRequest.newBuilder()
+                //.header("Authorization", auth)
+                .header("X-Atlassian-Token", "nocheck")
+                ;
     }
 
     /**
@@ -117,9 +125,6 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                                         completeExceptionally( new Exception(format("version [%s] doesn't exists!", versionName)) )
                                     )
                         ));
-
-
-
     }
 
     /**
@@ -129,43 +134,46 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      */
     CompletableFuture<List<ScrollVersions.Model.Version>> getScrollVersions(String spaceKey) {
 
+        try {
+            var url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of("versions", spaceKey),
+                    Map.of());
 
-        val httpUrl =
-                urlBuilder()
-                .addPathSegment("versions")
-                .addPathSegment(spaceKey)
-                .build();
-        val request = requestBuilder()
-                .url(httpUrl)
-                .get()
-                .build();
+            final var request = newRequestBuilder()
+                    .uri(url)
+                    .GET();
 
-        //debug( "getScrollVersions( '%s' )",spaceKey );
-        return delegate.fromRequestAsync(request).thenCompose( response -> {
+            //debug( "getScrollVersions( '%s' )",spaceKey );
+            return delegate.fromRequestAsync(request).thenCompose(response -> {
 
-            val futureResult = new CompletableFuture<List<ScrollVersions.Model.Version>>();
+                final var futureResult = new CompletableFuture<List<ScrollVersions.Model.Version>>();
 
-            return ofNullable(response.body()).map(b -> {
+                return ofNullable(response.body()).map(responseBodyString -> {
 
-                try {
-                    val responseBodyString = b.string();
-                    //trace( "getScrollVersions response\n%s", responseBodyString );
-                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Version[].class);
+                    try {
 
-                    futureResult.complete(asList(result));
+                        //trace( "getScrollVersions response\n%s", responseBodyString );
+                        final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Version[].class);
 
-                } catch (IOException e) {
-                    futureResult.completeExceptionally(e);
-                }
+                        futureResult.complete(asList(result));
 
-                return futureResult;
+                    } catch (IOException e) {
+                        futureResult.completeExceptionally(e);
+                    }
 
-            }).orElseGet(() -> {
-                futureResult.completeExceptionally(new Exception("could not retrieve versions info!"));
-                return futureResult;
+                    return futureResult;
+
+                }).orElseGet(() -> {
+                    futureResult.completeExceptionally(new Exception("could not retrieve versions info!"));
+                    return futureResult;
+                });
+
             });
-
-        });
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /**
@@ -175,38 +183,46 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      */
     CompletableFuture<List<ScrollVersions.Model.Page>> getVersionsPages(String spaceKey, String queryArg, String value) {
 
-        val httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment(spaceKey)
-                        .build();
+        URI url;
 
-        val body = RequestBody.create(format(REQUEST_BODY_FORMAT, queryArg, value), JSON_MEDIA_TYPE );
+        try {
+            url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of( "page", spaceKey),
+                    Map.of())
+            ;
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
-        val request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
+        final var body = HttpRequest.BodyPublishers.ofString(format(REQUEST_BODY_FORMAT, queryArg, value), StandardCharsets.UTF_8);
+
+        final var request = newRequestBuilder()
+                .header("Content-Type", "application/json")
+                .uri(url)
+                .POST(body)
+                ;
 
         //debug( "getVersionPage( '%s', '%', '%s')",spaceKey, queryArg, value );
-        return delegate.fromRequestAsync(request).thenCompose( response -> {
+        return delegate.fromRequestAsync(request).thenCompose(response -> {
 
-            val futureResult = new CompletableFuture<List<ScrollVersions.Model.Page>>();
+            final var futureResult = new CompletableFuture<List<ScrollVersions.Model.Page>>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map(responseBodyString -> {
                 try {
-                    val responseBodyString = b.string();
-                    //trace( "getVersionsPages response\n%s", responseBodyString );
-                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Page[].class);
 
-                    futureResult.complete( asList(result) );
+                    //trace( "getVersionsPages response\n%s", responseBodyString );
+                    final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Page[].class);
+
+                    futureResult.complete(asList(result));
 
 
                 } catch (IOException e) {
-                    futureResult.completeExceptionally( e );
+                    futureResult.completeExceptionally(e);
                 }
                 return futureResult;
-            }).orElseGet( () -> {
+            }).orElseGet(() -> {
                 futureResult.completeExceptionally(new Exception("could not retrieve versions info!s"));
                 return futureResult;
             });
@@ -223,29 +239,36 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      */
     CompletableFuture<Optional<ScrollVersions.Model.PageResult>> getVersionPage(String spaceKey, String title) {
 
-        val httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment(spaceKey)
-                        .build();
+        URI url;
 
-        val body = RequestBody.create(format(REQUEST_BODY_FORMAT, "scrollPageTitle", title), JSON_MEDIA_TYPE );
+        try {
+            url = RESTConfluenceService.buildUrl(
+                            urlBuilder(),
+                            List.of("page", spaceKey),
+                            Map.of());
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
-        val request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
+        final var body = HttpRequest.BodyPublishers.ofString(format(REQUEST_BODY_FORMAT, "scrollPageTitle", title), StandardCharsets.UTF_8);
+
+        final var request = newRequestBuilder()
+                .header("Content-Type", "application/json")
+                .uri(url)
+                .POST(body)
+                ;
 
         //debug( "getVersionPage( '%s', '%s')",spaceKey, title );
         return delegate.fromRequestAsync(request).thenCompose( response -> {
 
-            val futureResult = new CompletableFuture<Optional<ScrollVersions.Model.PageResult>>();
+            final var futureResult = new CompletableFuture<Optional<ScrollVersions.Model.PageResult>>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map( responseBodyString -> {
                 try {
-                    val responseBodyString = b.string();
+
                     //trace( "getVersionPage response\n%s", responseBodyString );
-                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Page[].class);
+                    final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.Page[].class);
 
                     if( result == null || result.length == 0 ) {
                         futureResult.complete( Optional.empty() );
@@ -256,11 +279,11 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                             futureResult.complete( Optional.of( ScrollVersions.Model.PageResult.of( result[0], emptyList())) );
                         }
                         else {
-                            val masterPage = Arrays.stream(result).filter( p -> p.isMasterPage() ).findFirst();
+                            final var masterPage = Arrays.stream(result).filter( p -> p.isMasterPage() ).findFirst();
 
                             futureResult.complete(
                                     masterPage.map( mp -> {
-                                        val versionPages = Arrays.stream(result).filter( p -> !p.isMasterPage() ).collect(toList());
+                                        final var versionPages = Arrays.stream(result).filter( p -> !p.isMasterPage() ).collect(toList());
                                         return Optional.of( ScrollVersions.Model.PageResult.of( mp, versionPages ) );
                                     }).orElse( Optional.empty()));
                         }
@@ -312,34 +335,39 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      */
     CompletableFuture<ScrollVersions.Model.NewPageResult> createVersionPage(String spaceKey, Model.ID masterPageId, String title, ScrollVersions.Model.Version version) {
 
-        val httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment("new")
-                        .addPathSegment(spaceKey)
-                        .build();
+        URI url;
 
-        val body = new FormBody.Builder()
-                .add("parentConfluenceId", masterPageId.toString() )
-                .add( "versionId", version.getId() )
-                .add( "pageTitle", title )
-                .build();
+        try {
+            url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of("page", "new", spaceKey),
+                    Map.of());
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
-        val request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
+        final var body = new FormUrlEncodedBodyPublisher( Map.of(
+        "parentConfluenceId", masterPageId.toString(),
+        "versionId", version.getId(),
+        "pageTitle", title
+        ));
+
+        final var request = newRequestBuilder()
+                .header("Content-Type", body.getContentType())
+                .uri(url)
+                .POST(body)
+                ;
 
         //debug( "createVersionPage( '%s', '%d', '%s', '%s')",spaceKey, masterPageId, title, version.getName() );
         return delegate.fromRequestAsync(request).thenCompose( response -> {
 
-            val futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
+            final var futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map( responseBodyString -> {
                 try {
-                    val responseBodyString = b.string();
                     //debug( "createVersionPage response\n%s", responseBodyString );
-                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);
+                    final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);
 
                     futureResult.complete( result );
 
@@ -365,36 +393,40 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      * @return
      */
     CompletableFuture<ScrollVersions.Model.NewPageResult> manageVersionPage(Model.ID masterPageId, String title, ScrollVersions.Model.Version version, ChangeType changeType ) {
+        URI url;
 
-        val httpUrl =
-                urlBuilder()
-                        .addPathSegment("page")
-                        .addPathSegment("modify")
-                        .build();
+        try {
+            url = RESTConfluenceService.buildUrl(
+                    urlBuilder(),
+                    List.of("page", "modify"),
+                    Map.of());
+        }
+        catch( URISyntaxException e ) {
+            return CompletableFuture.failedFuture(e);
+        }
 
-        val body = new FormBody.Builder()
-                .add("masterPageId", masterPageId.toString() )
-                .add( "pageTitle", title)
-                .add( "versionId", version.getId() )
-                .add( "changeType", changeType.typeName )
-                .build();
+        final var body = new FormUrlEncodedBodyPublisher( Map.of(
+                "masterPageId", masterPageId.toString(),
+                "pageTitle", title,
+                "versionId", version.getId(),
+                "changeType", changeType.typeName))
+                ;
 
-        val request = requestBuilder()
-                .url(httpUrl)
-                .post(body)
-                .build();
-
+        final var request = newRequestBuilder()
+                .header("Content-Type", body.getContentType())
+                .uri(url)
+                .POST(body)
+                ;
         //debug( "manageVersionPage( '%s', '%s', '%s', '%s')",masterPageId, title, version.getName(), changeType.typeName );
         return delegate.fromRequestAsync(request).thenCompose( response -> {
 
-            val futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
+            final var futureResult = new CompletableFuture<ScrollVersions.Model.NewPageResult>();
 
-            return ofNullable(response.body()).map( b -> {
+            return ofNullable(response.body()).map( responseBodyString -> {
                 try {
-                    val responseBodyString = b.string();
                     //trace( "manageVersionPage response\n%s", responseBodyString );
 
-                    val result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);
+                    final var result = objectMapper.readValue(responseBodyString, ScrollVersions.Model.NewPageResult.class);
 
                     futureResult.complete( result );
 
@@ -432,7 +464,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
         throw new IllegalArgumentException(format("page [%s] is not a result type! %s", page.getTitle(), page,getClass().getName() ));
 //        debug( "page [%s] is not a result type! %s", page.getTitle(), page,getClass().getName() );
 //
-//        val result = new ScrollVersions.Model.Result() {
+//        final var result = new ScrollVersions.Model.Result() {
 //
 //            @Override
 //            public Model.ID getMasterPageId() {
@@ -451,7 +483,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      * @return
      */
     static <U> CompletableFuture<U> completeExceptionally( Throwable ex ) {
-        val future = new CompletableFuture<U>();
+        final var future = new CompletableFuture<U>();
         future.completeExceptionally( ex );
         return future;
     }
@@ -469,9 +501,9 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     private static Pattern vesrsionsTitlePattern = Pattern.compile( "^[\\.](.+)\\sv(.+)$");
 
     private String decodeTitle( String title ) {
-        val m = vesrsionsTitlePattern.matcher(title);
+        final var m = vesrsionsTitlePattern.matcher(title);
 
-        val result =  (m.matches())
+        final var result =  (m.matches())
                 ? m.group(1)
                 : title;
         //debug( "decodeTitle('%s')='%s'", title,  result );
@@ -487,7 +519,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     }
 
     private boolean isVersion( String title, ScrollVersions.Model.Version version ) {
-        val m = vesrsionsTitlePattern.matcher(title);
+        final var m = vesrsionsTitlePattern.matcher(title);
 
         return ( m.matches() )
                 ? m.group(2).equals( version.getName() )
@@ -517,7 +549,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
      * @return
      */
     private CompletableFuture<ScrollVersions.Model.NewPageResult> storeVersionedPage(ScrollVersions.Model.NewPageResult newPage, Storage content, ScrollVersions.Model.Version version ) {
-        val title = newPage.getScrollPageTitle();
+        final var title = newPage.getScrollPageTitle();
 
         newPage.setScrollPageTitle( encodeTitle(title, version ) ); // update title if it is not versioned
 
@@ -590,7 +622,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
                         cast(page.map( pp -> toResult(pp)
                                     .thenCompose( result -> delegate.getDescendents( result.getMasterPageId()))
                                     .thenApply( result -> {
-                                        val list = result.stream()
+                                        final var list = result.stream()
                                                 .filter( p -> isVersion(p.getTitle(), currentVersion.get()))
                                                 .filter( p -> pageId.compareTo(p.getId())!=0)
                                                 .collect( toList() );
@@ -617,7 +649,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     public CompletableFuture<Boolean> removePage(Model.Page parentPage, String title) {
         //debug( "removePage( parent.title:[%s], title:[%s])", parentPage.getTitle(), title );
 
-        val getPage = getPage( parentPage.getSpace(), title );
+        final var getPage = getPage( parentPage.getSpace(), title );
 
         if( removeHard ) {
             return getPage
@@ -647,7 +679,7 @@ public class ScrollVersionsConfluenceService implements ConfluenceService {
     public CompletableFuture<Boolean> removePage(Model.ID pageId) {
         //debug( "removePage( pageId:[%s])", pageId );
 
-        val getPage = getPage(pageId);
+        final var getPage = getPage(pageId);
 
         if( removeHard ) {
             return getPage

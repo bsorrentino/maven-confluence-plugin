@@ -7,7 +7,6 @@ package org.bsc.confluence.rest.scrollversions;
 
 import static java.util.Collections.emptyMap;
 
-import lombok.val;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.ssl.SSLCertificateInfo;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,22 +30,22 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
 
     @BeforeAll
     public static void clearSpace() {
-        val ssl = new SSLCertificateInfo();
+        final var ssl = new SSLCertificateInfo();
 
-        val service = new ScrollVersionsConfluenceService(
+        final var service = new ScrollVersionsConfluenceService(
                 "http://localhost:8090/rest/api",
                 "alpha",
                 new ConfluenceService.Credentials( "admin", "admin", emptyMap()),
                 ssl);
 
-        val space = "SVTS";
+        final var space = "SVTS";
 
         clearSpace( service, space).join();
 
     }
 
     private static CompletableFuture<Void> sleep( TimeUnit timeunit, long unit ) {
-        val result = new CompletableFuture<Void>();
+        final var result = new CompletableFuture<Void>();
         try {
             timeunit.sleep( unit);
             result.complete(null);
@@ -58,7 +57,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
 
     }
     public static CompletableFuture<Void> clearSpace(final ScrollVersionsConfluenceService service, final String space ) {
-        val unversioned = service.getVersionsPages(space, "isUnversioned", "true")
+        final var unversioned = service.getVersionsPages(space, "isUnversioned", "true")
                 .thenAccept(p -> {
                     p.forEach(u -> {
                             debug("unversioned [%s]", u.getConfluencePageTitle());
@@ -67,7 +66,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
                                     .join();
                     });
                 });
-        val versioned = service.getVersionsPages(space, "pageType", "change")
+        final var versioned = service.getVersionsPages(space, "pageType", "change")
                 .thenAccept(p -> {
                     p.forEach(u -> {
                         debug("versioned [%s]", u.getConfluencePageTitle());
@@ -77,7 +76,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
 
                     });
                 });
-        val masters = service.getVersionsPages(space, "pageType", "masterPage")
+        final var masters = service.getVersionsPages(space, "pageType", "masterPage")
                 .thenAccept(p -> {
                     p.forEach(u -> {
                         debug("master [%s]", u.getConfluencePageTitle());
@@ -87,7 +86,7 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
                     });
                 });
 
-        val page = "Topic 1";
+        final var page = "Topic 1";
 
         CompletableFuture<Void> createFirstPage =
                 service.getScrollVersions(space)
@@ -109,15 +108,15 @@ public class ScrollVersionsConfluenceServiceIntegrationTest {
 
     @BeforeEach
     public void createService() {
-        val ssl = new SSLCertificateInfo();
+        final var ssl = new SSLCertificateInfo();
 
-        val service = new ScrollVersionsConfluenceService(
+        final var service = new ScrollVersionsConfluenceService(
                 "http://localhost:8090/rest/api",
                 "alpha",
                 new ConfluenceService.Credentials( "admin", "admin", emptyMap()),
                 ssl);
 
-        val space = "SVTS";
+        final var space = "SVTS";
 
     }
     @Test

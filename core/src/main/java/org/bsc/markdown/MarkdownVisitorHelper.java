@@ -1,6 +1,5 @@
 package org.bsc.markdown;
 
-import lombok.NonNull;
 import org.bsc.confluence.FileExtension;
 import org.bsc.confluence.model.Site;
 
@@ -8,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -181,7 +181,9 @@ public class MarkdownVisitorHelper {
      * @param text
      * @return
      */
-    public static Matcher parseConfluenceMacro( @NonNull String text ) {
+    public static Matcher parseConfluenceMacro( String text ) {
+        // GUARD
+        Objects.requireNonNull(text);
         return confluenceMacroWithContentPattern.matcher(text);
     }
 

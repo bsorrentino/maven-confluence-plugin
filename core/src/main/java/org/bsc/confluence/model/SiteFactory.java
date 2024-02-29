@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.bsc.preprocessor.SiteProcessorService;
@@ -28,8 +27,9 @@ import static java.lang.String.format;
  */
 public interface SiteFactory {
 
-    @Log
     final class LogHolder {
+
+        private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(LogHolder.class.getName());
     }
 
     interface Folder {

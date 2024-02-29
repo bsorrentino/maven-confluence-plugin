@@ -1,6 +1,5 @@
 open module maven.confluence.core {
 
-    requires lombok;
     //requires okhttp3;
 
     requires org.apache.commons.codec;

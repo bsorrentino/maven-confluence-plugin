@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-confluence-parent</artifactId>
-        <version>7.13</version>
+        <version>8.0-beta1</version>
     </parent>
     <artifactId>maven-confluence-processor-freemarker</artifactId>
     <name>CONFLUENCE-REPORTING::Freemaker::Processor</name>
@@ -33,68 +33,4 @@
 
     </dependencies>
 
-    <build>
-
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>compile-java-8</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <compileSourceRoots>
-                                <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
-                            </compileSourceRoots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-    <profiles>
-        <profile>
-            <id>java9above</id>
-            <activation>
-                <jdk>[9,)</jdk><!-- java9 and above -->
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>compile-java-9</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                                <configuration>
-                                    <release>9</release>
-                                    <compileSourceRoots>
-                                        <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
-                                        <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-                                    </compileSourceRoots>
-                                    <compilerArgs>
-                                    </compilerArgs>
-                                    <outputDirectory>${project.build.outputDirectory}/META-INF/versions/9
-                                    </outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-            </dependencies>
-        </profile>
-
-    </profiles>
 </project>

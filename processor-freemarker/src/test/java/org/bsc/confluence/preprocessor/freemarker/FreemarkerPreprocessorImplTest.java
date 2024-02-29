@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import lombok.val;
 import org.bsc.preprocessor.freemarker.FreemarkerPreprocessorImpl;
 import org.junit.jupiter.api.Test;
 
@@ -37,10 +36,10 @@ public class FreemarkerPreprocessorImplTest {
     }
 
     private void testInternal(String resourceName) throws URISyntaxException, IOException {
-        val p = new FreemarkerPreprocessorImpl();
-        val readInput = read(resourceName + ".input");
+        final var p = new FreemarkerPreprocessorImpl();
+        final var readInput = read(resourceName + ".input");
         final Map<String,Object> varInput = singletonMap("key", singletonMap("innerKey", "value1"));
-        val readOutput = read(resourceName + ".output");
+        final var readOutput = read(resourceName + ".output");
         assertEquals(readOutput, p.process(readInput, varInput).join() );
     }
 
