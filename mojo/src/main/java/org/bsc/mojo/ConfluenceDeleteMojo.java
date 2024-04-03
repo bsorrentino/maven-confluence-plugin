@@ -7,8 +7,8 @@ package org.bsc.mojo;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.bsc.async.AsyncGenerator;
 import org.bsc.confluence.ConfluenceService;
-import org.bsc.confluence.ConfluenceService.Model.PageSummary;
 import org.bsc.confluence.DeployStateManager;
 import org.bsc.mojo.configuration.DeployStateInfo;
 
@@ -84,7 +84,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
      * @param confluence
      * @return
      */
-    private boolean deletePage(ConfluenceService confluence)  {
+    private CompletableFuture<Boolean> deletePage(ConfluenceService confluence)  {
         Optional<String> optStartPageTitle = empty();
 
         if( isSiteDescriptorValid() ) {
@@ -97,10 +97,10 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
             optStartPageTitle = ofNullable(getPageTitle());
         }
 
-        return optStartPageTitle.map( startPageTitle -> deletePage( confluence, startPageTitle ))
+        return optStartPageTitle.map( startPageTitle -> deletePage( confluence, startPageTitle ) )
                 .orElseGet( () -> {
                     getLog().warn( "page title has not been provided!" );
-                    return false;
+                    return completedFuture(false);
                 });
     }
 
@@ -108,18 +108,20 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
     <T extends ConfluenceService.Model.PageSummary>
     CompletableFuture<Void>  deleteDescendents( ConfluenceService confluence, String startPageTitle, T parentPage)
     {
-        if (!recursive) return completedFuture(null);
+        if (!recursive) {
+            return completedFuture(null);
+        }
 
-        return confluence.getDescendents(parentPage.getId())
-            .thenAccept(descendents -> {
+        return confluence.getDescendents( parentPage.getId() )
+            .thenCompose( descendents -> {
+
                 if (descendents == null || descendents.isEmpty()) {
                     getLog().warn(format("Page [%s]/[%s] in [%s] has not descendents!", parentPage.getTitle(), startPageTitle, parentPage.getSpace()));
-                    return;
+                    return completedFuture(null);
                 }
 
-                for (PageSummary descendent : descendents) {
-
-                    confluence.removePage(descendent.getId())
+                return AsyncGenerator.map(descendents, descendent ->
+                        confluence.removePage(descendent.getId())
                             .exceptionally(ex -> {
                                 getLog().warn(format("cannot remove descendent %s", descendent.getTitle()), ex);
                                 return false;
@@ -140,9 +142,8 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
                                             parentPage.getSpace()));
                                 }
                             })
-                            .join();
-                }
-            });
+                    ).toCompletableFuture();
+                });
 
     }
 
@@ -151,7 +152,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
      * @param confluence
      * @return
      */
-    private boolean deletePage(ConfluenceService confluence, String startPageTitle)  {
+    private CompletableFuture<Boolean> deletePage(ConfluenceService confluence, String startPageTitle)  {
         getLog().debug(  String.format( "start deleting from page [%s]", startPageTitle));
 
         final Function<Boolean,Boolean> clearDeployState = ( result ) -> {
@@ -186,8 +187,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
                 getLog().warn(ex.getMessage());
                 return false;
             })
-            .thenApply( clearDeployState )
-            .join();
+            .thenApply( clearDeployState );
     }
 
     @Override
@@ -195,7 +195,7 @@ public class ConfluenceDeleteMojo extends AbstractBaseConfluenceSiteMojo impleme
 
         _deployStateManager = initDeployStateManager().orElse(null);
 
-        deletePage(confluence);
+        deletePage(confluence).join();
         
     }
  

@@ -567,7 +567,7 @@ public class ConfluenceDeployMojo extends AbstractConfluenceDeployMojo {
                     })
                     .thenCompose( page -> confluence.addLabelsByName(page.getId(), site.getHome().getComputedLabels() ).thenApply( v -> page ))
             )
-            .thenAccept( confluenceHomePage ->
+            .thenCompose( confluenceHomePage ->
                     generateChildren(
                             confluence,
                             site,

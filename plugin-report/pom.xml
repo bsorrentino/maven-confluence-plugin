@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>confluence-plugin-report</artifactId>
-    <name>CONFLUENCE-REPORTING::Plugin-Report</name>
+    <name>CONFLUENCE-REPORTING::Plugin::Report</name>
     <description>maven confluence plugin - plugin report</description>
     <url>https://github.com/bsorrentino/maven-confluence-plugin</url>
 

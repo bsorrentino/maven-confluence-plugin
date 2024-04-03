@@ -1,13 +1,13 @@
 {
   "name": "maven-confluence-plugin",
-  "version": "8.0-beta1",
+  "version": "8.0-SNAPSHOT",
   "description": "",
   "private": true,
   "scripts": {
     "version:set": "mvn versions:set -DnewVersion=$npm_package_version",
     "version:commit": "mvn versions:commit",
     "version:rollback": "mvn versions:rollback",
-    "test:deploy": " mvn -Pcloud -pl test-publishing confluence-reporting:deploy@commonmark",
+    "test:deploy": " mvn -Pcloud -pl test-publishing confluence-reporting:deploy@commonmark -X",
     "test:delete": " mvn -Pcloud -pl test-publishing confluence-reporting:delete@commonmark",
     "changelog:tag": "mvn git-changelog-maven-plugin:git-changelog -N -DtoRef=refs/tags/v$npm_package_version",
     "changelog:release": "mvn git-changelog-maven-plugin:git-changelog -N -DtoRef=refs/heads/release/$npm_package_version"
