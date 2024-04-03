@@ -8,6 +8,7 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.bsc.async.AsyncGenerator;
 import org.bsc.confluence.ConfluenceService;
 import org.bsc.confluence.ConfluenceService.Model;
 import org.bsc.confluence.ConfluenceService.Storage;
@@ -33,8 +34,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
@@ -375,7 +378,7 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param parentPage
      * @return
      */
-    protected <T extends Site.Page> Model.Page generateChild(final ConfluenceService confluence,
+    protected <T extends Site.Page> CompletableFuture<Model.Page> generateChild(final ConfluenceService confluence,
                                                              final Site site,
                                                              final T child,
                                                              final Model.Page parentPage)
@@ -385,8 +388,8 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
 
         if( getLog().isDebugEnabled() ) {
             getLog().debug( new StringBuilder()
-                            .append( format("generateChild", parentPage.getSpace()) ).append("\n\t")
-                            .append( format("spacekey=[%s]", homeTitle ) ).append("\n\t")
+                            .append( "generateChild" ).append("\n\t")
+                            .append( format("spacekey=[%s]", parentPage.getSpace()) ).append("\n\t")
                             .append( format("home=[%s]", homeTitle ) ).append("\n\t")
                             .append( format("parent=[%s]", parentPage.getTitle() ) ).append("\n\t")
                             .append( format("page=[%s]", child.getName() ) ).append("\n\t")
@@ -448,8 +451,8 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                 .thenApply( p -> {
                     child.setName(pageTitleToApply);
                     return p;
-                })
-                .join();
+                });
+                //.join();
 
     }
     /**
@@ -603,22 +606,18 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param confluence
      * @param confluencePage
      */
-    private void generateAttachments(final ConfluenceService confluence, Site site, Site.Page page,
-            final Model.Page confluencePage) /* throws MavenReportException */ {
+    private AsyncGenerator<Model.Attachment> generateAttachments(final ConfluenceService confluence, Site site, Site.Page page,
+                                                                 final Model.Page confluencePage) /* throws MavenReportException */ {
 
         getLog().debug(format("generateAttachments pageId [%s] title [%s]", confluencePage.getId(),
                 confluencePage.getTitle()));
 
-        for (final Site.Attachment attachment : page.getAttachments()) {
+        return AsyncGenerator.collect( page.getAttachments(), (attachment, add) -> {
 
-            final Path attachmentPath = Paths.get(attachment.getUri());
-
-            try {
+                final Path attachmentPath = Paths.get(attachment.getUri());
 
                 if (!Files.isDirectory(attachmentPath)) {
-                    final var result = generateAttachment(confluence, site, confluencePage, attachment).get();
-
-                    getLog().debug(format("generated attachment: %s", result.toString()));
+                    add.accept( generateAttachment(confluence, site, confluencePage, attachment) );
                 } else {
                     try (final DirectoryStream<Path> dirStream = newDirectoryStream(attachmentPath, attachment)) {
 
@@ -636,21 +635,16 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
                                 fileAttachment.setContentType(attachment.getContentType());
                             }
 
-                            final var result = generateAttachment(confluence, site, confluencePage, fileAttachment).get();
-                            getLog().debug(format("generated attachment: %s", result.toString()));
+                            add.accept( generateAttachment(confluence, site, confluencePage, fileAttachment) );
 
                         }
 
                     } catch (IOException ex) {
                         getLog().warn(format("error reading directory [%s]", attachmentPath), ex);
                     }
-
                 }
-            } catch (InterruptedException | ExecutionException ex) {
-                getLog().warn(format("error generating remote attachment from [%s]", attachment.getName()), ex);
 
-            }
-        }
+        });
     }
 
     private CompletableFuture<Model.Attachment> updateAttachmentData(final ConfluenceService confluence,
@@ -761,28 +755,31 @@ public abstract class AbstractConfluenceDeployMojo extends AbstractBaseConfluenc
      * @param confluenceParentPage
      * @param confluenceParentPage
      */
-    protected void generateChildren(final ConfluenceService confluence, final Site site, final Site.Page parentPage,
-            final Model.Page confluenceParentPage, final Map<String, Model.Page> varsToParentPageMap) {
+    protected CompletableFuture<Void> generateChildren(final ConfluenceService confluence, final Site site, final Site.Page parentPage,
+                                                       final Model.Page confluenceParentPage, final Map<String, Model.Page> varsToParentPageMap) {
 
         getLog().debug(format("generateChildren # [%d]", parentPage.getChildren().size()));
 
-        generateAttachments(confluence, site, parentPage, confluenceParentPage);
+        CompletableFuture<Void> attachments = generateAttachments(confluence, site, parentPage, confluenceParentPage)
+                .forEachAsync( attachment -> getLog().debug(format("generated attachment: %s", attachment.toString())));
 
-        for (Site.Page child : parentPage.getChildren()) {
+        CompletableFuture<Void> children =  AsyncGenerator.map( parentPage.getChildren(), child ->
+                generateChild(confluence, site, child, confluenceParentPage)
+                        .thenCompose( confluencePage -> {
 
-            final Model.Page confluencePage = generateChild(confluence, site, child, confluenceParentPage);
+                            for (Site.Page.Generated generated : child.getGenerateds()) {
+                                varsToParentPageMap.put(generated.getRef(), confluencePage);
+                            }
 
-            for (Site.Page.Generated generated : child.getGenerateds()) {
-                varsToParentPageMap.put(generated.getRef(), confluencePage);
-            }
+                            if (confluencePage != null) {
+                                return generateChildren(confluence, site, child, confluencePage, varsToParentPageMap);
+                            }
 
-            if (confluencePage != null) {
+                            return completedFuture(null);
+                        })
+        ).toCompletableFuture();
 
-                generateChildren(confluence, site, child, confluencePage, varsToParentPageMap);
-            }
-
-        }
-
+        return CompletableFuture.allOf( attachments, children );
     }
 
     /**
