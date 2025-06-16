@@ -145,7 +145,7 @@ public class MarkdownVisitorHelper {
      * [Match multiline text using regular expression](https://stackoverflow.com/a/3652392/521197)
      */
     private static Pattern isConfluenceMacroPattern = Pattern.compile( "^[\\s]*\\{([\\w-]+)(([:][\\w-]+(=(.+))?)([|].+)*)?\\}[\\s]*$", Pattern.DOTALL  );
-    private static Pattern confluenceMacroWithContentPattern = Pattern.compile("^\\s*(\\{.+\\})(.+)(\\{.+\\})\\s*$", Pattern.DOTALL );
+    private static Pattern isConfluenceMacroWithContentPattern = Pattern.compile("^\\s*(\\{.+\\})(.+)(\\{.+\\})\\s*$", Pattern.DOTALL );
     private static Pattern isConfluenceVariablePattern = Pattern.compile( "^[\\s]*\\$\\{([\\w-\\.]+)\\}[\\s]*$" );
 
     /**
@@ -156,8 +156,10 @@ public class MarkdownVisitorHelper {
     public static boolean isConfluenceMacroOrVariable( String text ) {
         // GUARD
         if( text == null || text.isEmpty() ) return false;
+
         return isConfluenceMacroPattern.matcher(text).matches() ||
-            isConfluenceVariablePattern.matcher(text).matches();
+                isConfluenceMacroWithContentPattern.matcher(text).matches() ||
+                isConfluenceVariablePattern.matcher(text).matches();
     }
     /**
      *
@@ -184,7 +186,7 @@ public class MarkdownVisitorHelper {
     public static Matcher parseConfluenceMacro( String text ) {
         // GUARD
         Objects.requireNonNull(text);
-        return confluenceMacroWithContentPattern.matcher(text);
+        return isConfluenceMacroWithContentPattern.matcher(text);
     }
 
     public enum EscapeTextEnum {

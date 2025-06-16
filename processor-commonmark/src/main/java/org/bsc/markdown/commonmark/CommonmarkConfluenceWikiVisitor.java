@@ -96,16 +96,16 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
                                                                 EscapeTextEnum.RightSquareBrace);
     }
 
-    private final static Pattern isHTMLCommentPattern = Pattern.compile( "^([\\s]*)<!--(?:[\\s]*)(.+)-->$", Pattern.DOTALL );
+    // Pattern.compile("^(\\s*)(?:<!--\\s*|<!\\[CDATA\\[\\s*)(.+)(?:-->|]]>)\\s*$", Pattern.DOTALL);
+    // Pattern.compile("^([\\s]*)<!--[\\s]*(.+)-->$", Pattern.DOTALL );
+    // Pattern.compile("^([\\s]*)<!\\[CDATA\\[\\s*(.+)]]>$", Pattern.DOTALL );
+    private final static Pattern isHTMLCommentPattern =
+            Pattern.compile("^(\\s*)(?:<!--\\s*|<!\\[CDATA\\[\\s*)(.+)(?:-->|]]>)\\s*$", Pattern.DOTALL);
 
-    /**
-     *
-     * @param text
-     * @return
-     */
+
     public static Matcher parseHTMLComment( String text ) {
         Objects.requireNonNull(text);
-        return isHTMLCommentPattern.matcher(text);
+        return isHTMLCommentPattern.matcher(text) ;
     }
 
     /**
@@ -325,7 +325,6 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
     public void visit( TableCell node ) {
         processChildren(node)
                 .captureOutput( ( value ) -> {
-                    // System.out.printf("\n\n===> TableCell [%s]\n\n", value);
                     buffer().append( value.isEmpty() ? ' ' : value );
                 })
                 .pre( () -> ( node.isHeader()) ? "|" : "" )
@@ -353,10 +352,9 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
         final String literal = node.getLiteral();
 
         final Matcher m = parseHTMLComment(literal);
-        if( m.matches() && isConfluenceMacroOrVariable( m.group(2) ) ) {
+        if( m.matches() && isConfluenceMacroOrVariable( m.group(2) )) {
 
             final String parsedText = m.group(2);
-
             processChildren(node)
                     .pre(() -> m.group(1))
                     .post(() -> isConfluenceMacro(parsedText) ?
@@ -364,7 +362,6 @@ public class CommonmarkConfluenceWikiVisitor /*extends AbstractVisitor*/ impleme
                     .process().nl();
         }
         else if( !parseContext.isSkipHtml() ) {
-
             processChildren(node)
                     .pre(() -> format("{html}\n%s\n", literal) )
                     .post(() -> "{html}")
