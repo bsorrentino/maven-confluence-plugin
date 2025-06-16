@@ -485,6 +485,23 @@
 
                         </configuration>
                     </execution>
+                    <!--
+                    mvn confluence-reporting:deploy@issue301
+                    mvn confluence-reporting:delete@issue301
+                    -->
+                    <execution>
+                        <id>issue301</id>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>delete</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <failOnError>true</failOnError>
+                            <siteDescriptor>${basedir}/src/site/confluence/issue301/site.yaml</siteDescriptor>
+
+                        </configuration>
+                    </execution>
 
                 </executions>
             </plugin>
