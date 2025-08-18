@@ -48,16 +48,18 @@
         <url>https://github.com/bsorrentino/maven-confluence-plugin/issues</url>
     </issueManagement>
     <distributionManagement>
+        <!-- 
         <repository>
             <id>${release.repo.id}</id>
-            <name>central</name>
+            <name>sonatype-central</name>
             <url>${release.repo.url}</url>
         </repository>
         <snapshotRepository>
             <id>${snapshot.repo.id}</id>
-            <name>snapshots</name>
+            <name>sonatype-central-snapshots</name>
             <url>${snapshot.repo.url}</url>
         </snapshotRepository>
+        -->
         <!--
         <site>
           <id>google-project</id>
@@ -352,6 +354,18 @@
                     <failOnError>false</failOnError>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                <publishingServerId>sonatype-central</publishingServerId>
+                <autoPublish>true</autoPublish>
+                <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -436,6 +450,7 @@
                             </gpgArguments>
                         </configuration>
                     </plugin>
+                    <!--
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -447,6 +462,7 @@
                             <stagingProfileId/>
                         </configuration>
                     </plugin>
+                    -->
                 </plugins>
             </build>
         </profile>
