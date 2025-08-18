@@ -151,7 +151,6 @@
         <dependency>
             <groupId>org.bsc.async</groupId>
             <artifactId>async-generator</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
